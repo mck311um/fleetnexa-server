@@ -1,49 +1,56 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
+import { AuthRequest } from "../types/express";
 
 const prisma = new PrismaClient();
 
-const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
+const requireAuth = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    return res.status(401).json({ error: "Authorization token is required" });
+    res.status(401).json({ error: "Authorization token is required" });
+    return;
   }
 
   const token = authorization.split(" ")[1];
 
   try {
-    const { id, tenantCode } = jwt.verify(
+    const { userId, tenantCode } = jwt.verify(
       token,
       process.env.JWT_SECRET as string
-    ) as { id: number; tenantCode: string };
+    ) as { userId: number; tenantCode: string };
 
     const tenant = await prisma.tenant.findUnique({
       where: { tenantCode: tenantCode },
     });
 
     if (!tenant) {
-      return res.status(401).json({ error: "Invalid tenant code" });
+      res.status(401).json({ error: "Invalid tenant code" });
+      return;
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: id },
+      where: { id: userId },
       include: { tenant: true },
     });
 
     if (!user || user.tenant.tenantCode !== tenantCode) {
-      return res
-        .status(401)
-        .json({ error: "User not found or invalid tenant" });
+      res.status(401).json({ error: "User not found or invalid tenant" });
+      return;
     }
 
     req.user = user;
     req.tenant = tenant;
 
     next();
-  } catch (error) {
-    return res.status(403).json({ error: "Invalid or expired token" });
+  } catch (error: any) {
+    res.status(403).json({ error: error.message });
+    return;
   }
 };
 

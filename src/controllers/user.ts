@@ -59,6 +59,9 @@ export const loginUser = async (username: string, password: string) => {
   const data = {
     userId: user.id,
     username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    initials: user.firstName[0] + user.lastName[0],
     name: user.firstName + " " + user.lastName,
     tenantCode: user.tenant?.tenantCode,
   };
@@ -70,7 +73,7 @@ export const loginUser = async (username: string, password: string) => {
       tenantCode: user.tenant?.tenantCode,
     },
     process.env.JWT_SECRET!,
-    { expiresIn: "2h" }
+    { expiresIn: "7d" }
   );
 
   return { data, token };
