@@ -36,7 +36,6 @@ model Tenant {
   invoiceSequenceId     String?
   invoiceSequence       InvoiceSequence? @relation(fields: [invoiceSequenceId], references: [id])
 
-  vehicles              Vehicle[]   @relation("TenantVehicles")
   vehicleGroups         VehicleGroup[] @relation("TenantVehicleGroups")
 
   createdAt             DateTime   @default(now())
@@ -130,10 +129,7 @@ model Vehicle {
       
   vehicleStatusId        String
   vehicleStatus          VehicleStatus @relation(fields: [vehicleStatusId], references: [id])
-      
-  tenantId               String      
-  tenant                 Tenant   @relation("TenantVehicles", fields: [tenantId], references: [id]) 
-      
+            
   fuelTypeId             String
   fuelType               FuelType @relation(fields: [fuelTypeId], references: [id])
       

@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
+import aws from "../utils/awsUtils";
 
 const prisma = new PrismaClient();
 
@@ -18,6 +19,7 @@ const addTenant = async (req: any, res: any) => {
 
     res.status(201).end();
   } catch (error: any) {
+    console.error(error.message);
     res.status(400).json({ message: error.message });
   }
 };
@@ -31,8 +33,12 @@ const getTenantData = async (req: any, res: any) => {
       include: {
         paymentMethods: true,
         services: true,
-        vehicles: true,
-        vehicleGroups: true,
+        vehicleGroups: {
+          include: {
+            discounts: true,
+            vehicles: true,
+          },
+        },
         address: true,
       },
     });
@@ -52,12 +58,10 @@ const setUpTenant = async (req: any, res: any) => {
   const { tenantCode } = req.params;
   const { data } = req.body;
 
-  const uploadedLogo = "";
-
   try {
-    let addressId: string | null = null;
+    await aws.createS3Folder(data.tenantCode);
 
-    console.log(data.address);
+    let addressId: string | null = null;
 
     if (data.address) {
       const address = await prisma.address.upsert({
@@ -89,7 +93,7 @@ const setUpTenant = async (req: any, res: any) => {
         email: data.email,
         invoiceFootNotes: data.invoiceFootNotes,
         invoiceSequenceId: data.invoiceSequenceId,
-        logo: uploadedLogo,
+        logo: data.logo,
         number: data.number,
         tenantName: data.tenantName,
       },
@@ -108,15 +112,34 @@ const setUpTenant = async (req: any, res: any) => {
     };
 
     if (data.vehicleGroups && data.vehicleGroups.length > 0) {
-      await prisma.vehicleGroup.deleteMany({
-        where: {
-          tenantId: data.id,
-        },
-      });
-
       for (const group of data.vehicleGroups) {
-        await prisma.vehicleGroup.create({
-          data: {
+        await prisma.vehicleGroup.upsert({
+          where: {
+            id: group.id,
+          },
+          update: {
+            tenantId: data.id,
+            group: group.group,
+            minimumBooking: group.minimumBooking,
+            maximumBooking: group.maximumBooking,
+            minimumAge: group.minimumAge,
+            drivingExperience: group.drivingExperience,
+            chargeTypeId: group.chargeTypeId,
+            description: group.description,
+            price: group.price,
+            fuelPolicyId: group.fuelPolicyId,
+            securityDeposit: group.securityDeposit,
+            securityDepositPolicy: group.securityDepositPolicy,
+            cancellationAmount: group.cancellationAmount,
+            cancellationPolicy: group.cancellationPolicy,
+            lateFee: group.lateFee,
+            lateFeePolicy: group.lateFeePolicy,
+            refundPolicy: group.refundPolicy,
+            refundAmount: group.refundAmount,
+            damagePolicy: group.damagePolicy,
+            damageAmount: group.damageAmount,
+          },
+          create: {
             tenantId: data.id,
             id: group.id,
             group: group.group,
