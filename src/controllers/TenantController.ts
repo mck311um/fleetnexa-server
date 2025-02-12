@@ -1,24 +1,18 @@
-import { PrismaClient, RentalType } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 
 const addTenant = async (req: any, res: any) => {
-  const { tenantCode, name, email, number } = req.body;
+  const { tenantCode, tenantName, email, number } = req.body;
   try {
     await prisma.tenant.create({
       data: {
         tenantCode,
-        name,
+        tenantName,
         email,
         number,
-        setupComplete: false,
-        minimumBooking: 0,
-        rentalType: RentalType.DAILY,
-        discounts: {},
-        paymentMethods: {},
-        pickupLocations: {},
-        dropoffLocations: {},
-        services: {},
+        setupCompleted: false,
       },
     });
 
@@ -31,19 +25,15 @@ const addTenant = async (req: any, res: any) => {
 const getTenantData = async (req: any, res: any) => {
   const { tenantCode } = req.params;
 
-  console.log(tenantCode);
-
   try {
     const tenant = await prisma.tenant.findUnique({
       where: { tenantCode },
       include: {
-        discounts: true,
         paymentMethods: true,
-        pickupLocations: true,
-        dropoffLocations: true,
         services: true,
-        users: true,
         vehicles: true,
+        vehicleGroups: true,
+        address: true,
       },
     });
 
@@ -58,7 +48,150 @@ const getTenantData = async (req: any, res: any) => {
   }
 };
 
+const setUpTenant = async (req: any, res: any) => {
+  const { tenantCode } = req.params;
+  const { data } = req.body;
+
+  const uploadedLogo = "";
+
+  try {
+    let addressId: string | null = null;
+
+    console.log(data.address);
+
+    if (data.address) {
+      const address = await prisma.address.upsert({
+        where: { tenantId: data.id },
+        update: {
+          street: data.address.street,
+          zipCode: data.address.zipCode.toString(),
+          village: { connect: { id: data.address.villageId } },
+          state: { connect: { id: data.address.stateId } },
+          country: { connect: { id: data.address.countryId } },
+        },
+        create: {
+          tenant: { connect: { id: data.id } },
+          street: data.address.street,
+          zipCode: data.address.zipCode.toString(),
+          village: { connect: { id: data.address.villageId } },
+          state: { connect: { id: data.address.stateId } },
+          country: { connect: { id: data.address.countryId } },
+        },
+      });
+
+      addressId = address.id;
+    }
+
+    await prisma.tenant.update({
+      where: { id: data.id },
+      data: {
+        currencyId: data.currencyId,
+        email: data.email,
+        invoiceFootNotes: data.invoiceFootNotes,
+        invoiceSequenceId: data.invoiceSequenceId,
+        logo: uploadedLogo,
+        number: data.number,
+        tenantName: data.tenantName,
+      },
+    });
+
+    async () => {
+      const tenantPaymentMethods = data.paymentMethods.map((method: any) => ({
+        tenantId: method.tenantId,
+        paymentMethodId: method.paymentMethodId,
+      }));
+
+      await prisma.tenantPaymentMethod.createMany({
+        data: tenantPaymentMethods,
+        skipDuplicates: true,
+      });
+    };
+
+    if (data.vehicleGroups && data.vehicleGroups.length > 0) {
+      await prisma.vehicleGroup.deleteMany({
+        where: {
+          tenantId: data.id,
+        },
+      });
+
+      for (const group of data.vehicleGroups) {
+        await prisma.vehicleGroup.create({
+          data: {
+            tenantId: data.id,
+            id: group.id,
+            group: group.group,
+            minimumBooking: group.minimumBooking,
+            maximumBooking: group.maximumBooking,
+            minimumAge: group.minimumAge,
+            drivingExperience: group.drivingExperience,
+            chargeTypeId: group.chargeTypeId,
+            description: group.description,
+            price: group.price,
+            fuelPolicyId: group.fuelPolicyId,
+            securityDeposit: group.securityDeposit,
+            securityDepositPolicy: group.securityDepositPolicy,
+            cancellationAmount: group.cancellationAmount,
+            cancellationPolicy: group.cancellationPolicy,
+            lateFee: group.lateFee,
+            lateFeePolicy: group.lateFeePolicy,
+            refundPolicy: group.refundPolicy,
+            refundAmount: group.refundAmount,
+            damagePolicy: group.damagePolicy,
+            damageAmount: group.damageAmount,
+          },
+        });
+
+        if (group.discounts && group.discounts.length > 0) {
+          await prisma.vehicleDiscount.createMany({
+            data: group.discounts.map((discount: any) => ({
+              id: discount.id,
+              vehicleGroupId: group.id,
+              periodMin: discount.periodMin,
+              periodMax: discount.periodMax,
+              amount: discount.amount,
+              discountPolicy: discount.discountPolicy,
+            })),
+            skipDuplicates: true,
+          });
+        }
+      }
+    }
+
+    res.status(201).end();
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// #region Services
+const addService = async (req: any, res: any) => {
+  const { service, description, price, status } = req.body;
+  const { tenant } = req;
+
+  console.log(req);
+
+  try {
+    await prisma.service.create({
+      data: {
+        service,
+        description,
+        price,
+        status,
+        tenant,
+      },
+    });
+    res.status(201).end();
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(400).json({ message: error.message });
+  }
+};
+// #endregion
+
 export default {
   addTenant,
   getTenantData,
+  addService,
+  setUpTenant,
 };

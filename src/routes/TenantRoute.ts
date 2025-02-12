@@ -16,5 +16,7 @@ router.use(
 router.get("/:tenantCode", controller.getTenantData);
 
 router.post("/create", controller.addTenant);
+router.post("/service", controller.addService);
+router.post("/setup", controller.setUpTenant);
 
 export default router;

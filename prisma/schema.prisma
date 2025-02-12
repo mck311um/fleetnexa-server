@@ -7,135 +7,374 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum RentalType {
-  HOURLY
-  DAILY
-  WEEKLY
-  MONTHLY
+enum Severity {
+  MINOR
+  MODERATE
+  SEVERE
 }
 
 
 model Tenant {
-  id          Int      @id @default(autoincrement())
-  tenantCode  String   @unique 
-  name        String
-  email       String   @unique
-  number      String   @unique
-  setupComplete     Boolean
-  minimumBooking Int
-  rentalType  RentalType
-  discounts   TenantDiscount[]
-  paymentMethods PaymentMethod[]
-  pickupLocations       PickupLocation[]
-  dropoffLocations      DropoffLocation[]
-  services Services[]
+  id                    String      @id @default(dbgenerated("gen_random_uuid()")) 
+  tenantCode            String      @unique 
+  tenantName            String 
+  email                 String      @unique
+  number                String      @unique
+  logo                  String?
+  setupCompleted        Boolean     @default(false)
+  invoiceFootNotes      String      @default("")
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  paymentMethods        TenantPaymentMethod[]
+  services              Service[]
+  users                 User[]   
 
-  users       User[]   
-  vehicles    Vehicle[] @relation("TenantVehicles")
+  address               Address?
+
+  currencyId            String?
+  currency              Currency?   @relation(fields: [currencyId], references: [id])
+
+  invoiceSequenceId     String?
+  invoiceSequence       InvoiceSequence? @relation(fields: [invoiceSequenceId], references: [id])
+
+  vehicles              Vehicle[]   @relation("TenantVehicles")
+  vehicleGroups         VehicleGroup[] @relation("TenantVehicleGroups")
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+
 }
 
-model TenantDiscount {
-  id               Int      @id @default(autoincrement())
-  tenantId         Int
-  tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  threshold        Int    
-  percentage       Float    
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+model VehicleDiscount {
+  id                    String     @id @default(dbgenerated("gen_random_uuid()")) 
+  periodMin             Int
+  periodMax             Int
+  amount                Decimal @db.Decimal(10, 2)
+  discountPolicy        String  
+
+  vehicleGroupId        String
+  vehicleGroup          VehicleGroup? @relation(fields: [vehicleGroupId], references: [id])
+  
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?   @updatedAt
 }
 
 model PaymentMethod {
-  id               Int      @id @default(autoincrement())
-  tenantId         Int
-  tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  method           String 
+  id                    String     @id @default(dbgenerated("gen_random_uuid()")) 
+  method                String 
 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  tenants               TenantPaymentMethod[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?   @updatedAt
 }
 
-model PickupLocation {
-  id               Int      @id @default(autoincrement())
-  tenantId         Int
-  tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  name             String   
-  address          String  
-  latitude         Float
-  longitude        Float
-  price            Float
 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+model TenantPaymentMethod {
+  tenantId               String
+  tenant                 Tenant     @relation(fields: [tenantId], references: [id])
+      
+  paymentMethodId        String
+  paymentMethod          PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+      
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime?  @updatedAt
+
+  @@id([tenantId, paymentMethodId]) 
 }
 
-model DropoffLocation {
-  id               Int      @id @default(autoincrement())
-  tenantId         Int
-  tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  name             String   
-  address          String 
-  latitude         Float
-  longitude        Float
-  price            Float
+model Service {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  tenantId               String
+  tenant                 Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  service                String   
+  description            String  
+  price                  Float
+  status                 Boolean
 
-
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-}
-
-model Services {
-  id               Int      @id @default(autoincrement())
-  tenantId         Int
-  tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  name             String   
-  description      String  
-  price            Float
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
 }
 
 
 model User {
-  id          Int      @id @default(autoincrement())
-  password    String
-  firstName     String
-  lastName    String
-  username    String  @unique
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  password               String
+  firstName               String
+  lastName               String
+  username               String     @unique
+        
+  tenantId               String      
+  tenant                 Tenant     @relation(fields: [tenantId], references: [id]) 
 
-  tenantId    Int      
-  tenant      Tenant   @relation(fields: [tenantId], references: [id]) 
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime?  @updatedAt
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  VehicleDamage VehicleDamage[]
 }
 
 model Vehicle {
-  id           Int      @id @default(autoincrement())
-  make         String
-  model        String
-  year         Int
-  color        String
-  licensePlate String   @unique
-  status       String   @default("available") 
-  mileage      Int
-  fuelType     String
-  transmission String
-  engineVolume Int
-  wheelDrive   String
-  pricePerDay  Float  
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  make                   String
+  model                  String
+  year                   Int
+  color                  String
+  licensePlate           String   @unique
+  engineVolume           Int
+  vin                    String
+  odometer               Int
+  fuelLevel              Int
+  tankVolume             Int
+      
+  vehicleGroupId         String
+  vehicleGroup           VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
+      
+  vehicleStatusId        String
+  vehicleStatus          VehicleStatus @relation(fields: [vehicleStatusId], references: [id])
+      
+  tenantId               String      
+  tenant                 Tenant   @relation("TenantVehicles", fields: [tenantId], references: [id]) 
+      
+  fuelTypeId             String
+  fuelType               FuelType @relation(fields: [fuelTypeId], references: [id])
+      
+  transmissionId         String
+  transmission           Transmission @relation(fields: [transmissionId], references: [id])
+      
+  wheelDriveId           String
+  wheelDrive             WheelDrive @relation(fields: [wheelDriveId], references: [id])
+      
+  features               VehicleFeature[] 
+  damages                VehicleDamage[]
+ 
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime?  @updatedAt
+}
 
-  tenantId    Int      
-  tenant      Tenant   @relation("TenantVehicles", fields: [tenantId], references: [id]) 
+model VehicleGroup {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  group                  String
+  description            String
+  price                  Float
+  minimumBooking         Int        @default(1)
+  maximumBooking         Int        @default(10)
+  minimumAge             Int        @default(18)
+  drivingExperience      Int        @default(1)
+  securityDeposit        Int        @default(0)
+  securityDepositPolicy  String     @default("percent")
+  cancellationAmount     Int        @default(0)
+  cancellationPolicy     String     @default("percent")
+  lateFee                Int        @default(0)
+  lateFeePolicy          String     @default("percent")
+  refundAmount           Int        @default(100) 
+  refundPolicy           String     @default("percent")
+  damageAmount           Int        @default(0) 
+  damagePolicy           String     @default("percent")
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
+  discounts              VehicleDiscount[]
+
+  tenantId               String      
+  tenant                 Tenant     @relation("TenantVehicleGroups", fields: [tenantId], references: [id])
+
+  chargeTypeId           String?     
+  chargeType             ChargeType?  @relation(fields: [chargeTypeId], references: [id])
+
+  fuelPolicyId           String?
+  fuelType               FuelPolicy? @relation(fields: [fuelPolicyId], references: [id])
+
+  vehicles               Vehicle[]
+
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime? @updatedAt
 
 }
 
+model VehicleDamage {
+  id                    String      @id @default(dbgenerated("gen_random_uuid()"))
+  description           String?
+  isRepaired            Boolean
+  severity              Severity    @default(MINOR)
+  estimatedRepairCost   Float?
+  damagePhotos          String[]
+
+  partId                String
+  part                  VehiclePart @relation(fields: [partId], references: [id])  
+
+  vehicleId             String
+  vehicle               Vehicle    @relation(fields: [vehicleId], references: [id])
+
+  reportedByUserId     String?
+  reportedByUser       User?       @relation(fields: [reportedByUserId], references: [id])
+
+  reportedAt            DateTime    @default(now())
+  repairedAt            DateTime?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime?   @updatedAt
+}
+
 model VehiclePart {
-  id             Int      @id @default(autoincrement())
-  partId         String
-  partName       String
+  id             String          @id @default(dbgenerated("gen_random_uuid()"))  
+  partName       String  
+
+  vehicleDamages VehicleDamage[]  
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+}
+
+model ChargeType {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  chargeType             String
+  unit                   String
+
+  VehicleGroup VehicleGroup[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+}
+
+model VehicleStatus {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  status String
+
+  vehicles    Vehicle[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+}
+
+model FuelType {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  fuel String
+
+
+  Vehicle Vehicle[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+}
+
+model Transmission {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  transmission String
+  vehicles    Vehicle[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+}
+
+model VehicleFeature {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  feature String
+  vehicles    Vehicle[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+}
+
+model Currency {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  currency               String?
+  code                   String
+
+  tenants                Tenant[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+}
+
+model FuelPolicy {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  policy                 String
+  code                   String
+
+  VehicleGroup           VehicleGroup[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+}
+
+model WheelDrive {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  drive                  String
+  code                   String
+  vehicles               Vehicle[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+
+}
+
+model Address {
+  id                     String   @id @default(dbgenerated("gen_random_uuid()"))
+  street                 String
+  zipCode                String
+
+  villageId             String
+  stateId               String
+  countryId             String
+
+  country               Country  @relation(fields: [countryId], references: [id])
+  state                 State    @relation(fields: [stateId], references: [id])
+  village               Village  @relation(fields: [villageId], references: [id])
+
+  tenantId              String   @unique
+  tenant                Tenant   @relation(fields: [tenantId], references: [id])
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime? @updatedAt
+}
+
+
+model Country {
+  id         String     @id @default(dbgenerated("gen_random_uuid()"))
+  country       String
+  code  String @unique
+  states     State[]
+  villages   Village[]
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime?  @updatedAt
+
+  Address Address[]
+}
+
+model State {
+  id         String     @id @default(dbgenerated("gen_random_uuid()"))
+  state       String
+  countryId  String
+
+  country    Country    @relation(fields: [countryId], references: [id])
+  villages   Village[]
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime?  @updatedAt
+
+  Address Address[]
+}
+
+model Village {
+  id         String     @id @default(dbgenerated("gen_random_uuid()"))
+  village       String
+  stateId    String
+
+  state      State      @relation(fields: [stateId], references: [id])
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime?  @updatedAt
+
+  Country Country[]
+
+  Address Address[]
+}
+
+model InvoiceSequence {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()"))
+  prefix                  String
+  example                String
+
+  Tenant                 Tenant[]
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
 }

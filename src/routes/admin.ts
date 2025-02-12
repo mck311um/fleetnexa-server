@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import controller from "../controllers/admin";
+import controller from "../controllers/AdminController";
 import requireAuth from "../middleware/requireAuth";
 
 const router = express.Router();
@@ -16,7 +16,5 @@ router.use(
 router.use(requireAuth);
 
 router.get("/", controller.getData);
-
-router.post("/part", controller.addVehiclePart);
 
 export default router;

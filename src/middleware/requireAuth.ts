@@ -23,7 +23,7 @@ const requireAuth = async (
     const { userId, tenantCode } = jwt.verify(
       token,
       process.env.JWT_SECRET as string
-    ) as { userId: number; tenantCode: string };
+    ) as { userId: string; tenantCode: string };
 
     const tenant = await prisma.tenant.findUnique({
       where: { tenantCode: tenantCode },
