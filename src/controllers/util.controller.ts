@@ -1,4 +1,4 @@
-import aws from "../utils/awsUtils";
+import aws from "../utils/aws.utils";
 import multer from "multer";
 
 const storage = multer.memoryStorage();

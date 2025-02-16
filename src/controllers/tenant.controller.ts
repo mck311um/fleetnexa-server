@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
-import aws from "../utils/awsUtils";
+import aws from "../utils/aws.utils";
 
 const prisma = new PrismaClient();
 

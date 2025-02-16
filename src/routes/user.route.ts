@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import * as controller from "../controllers/user";
+import * as controller from "../controllers/user.controller";
 import requireAuth from "../middleware/requireAuth";
 
 const router = express.Router();

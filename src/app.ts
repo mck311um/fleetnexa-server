@@ -1,10 +1,10 @@
 import express, { Application } from "express";
 import dotenv from "dotenv";
 
-import tenantRoutes from "./routes/TenantRoute";
-import userRoutes from "./routes/user";
-import adminRoutes from "./routes/admin";
-import utilRoutes from "./routes/UtilRoutes";
+import tenantRoutes from "./routes/tenant.route";
+import userRoutes from "./routes/user.route";
+import adminRoutes from "./routes/admin.route";
+import utilRoutes from "./routes/util.route";
 
 dotenv.config();
 

@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import controller from "../controllers/TenantController";
+import controller from "../controllers/tenant.controller";
 
 const router = express.Router();
 
