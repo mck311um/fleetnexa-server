@@ -17,4 +17,8 @@ router.use(requireAuth);
 
 router.get("/", controller.getData);
 
+router.post("/vehicle-make", controller.addVehicleMake);
+router.post("/vehicle-model", controller.addVehicleModel);
+router.post("/vehicle-type", controller.addVehicleType);
+
 export default router;

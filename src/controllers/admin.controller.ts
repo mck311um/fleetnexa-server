@@ -18,6 +18,9 @@ const getData = async (req: any, res: any) => {
     const states = await prisma.state.findMany();
     const villages = await prisma.village.findMany();
     const invoiceSequences = await prisma.invoiceSequence.findMany();
+    const vehicleModels = await prisma.vehicleModel.findMany();
+    const vehicleMakes = await prisma.vehicleMake.findMany();
+    const vehicleTypes = await prisma.vehicleType.findMany();
 
     res.status(201).json({
       vehicleParts,
@@ -34,6 +37,9 @@ const getData = async (req: any, res: any) => {
       states,
       villages,
       invoiceSequences,
+      vehicleModels,
+      vehicleMakes,
+      vehicleTypes,
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -41,29 +47,102 @@ const getData = async (req: any, res: any) => {
   }
 };
 
-// const addVehiclePart = async (req: any, res: any) => {
-//   try {
-//     const { partId, partName } = req.body;
+const addVehicleMake = async (req: any, res: any) => {
+  const { make } = req.body;
 
-//     await prisma.vehiclePart.create({
-//       data: {
-//         partId,
-//         partName,
-//       },
-//     });
+  try {
+    const existingMake = await prisma.vehicleMake.findFirst({
+      where: {
+        make: {
+          equals: make.toLowerCase(),
+          mode: "insensitive",
+        },
+      },
+    });
 
-//     res.status(201).end();
-//   } catch (error: any) {
-//     res.status(400).json({ message: error.message });
-//     return;
-//   }
-// };
+    if (existingMake) {
+      return res.status(409).json({ message: "Vehicle make already exists" });
+    }
 
-export const getVehicleParts = async () => {
-  const vehicleParts = await prisma.vehiclePart.findMany();
-  return vehicleParts;
+    await prisma.vehicleMake.create({
+      data: {
+        make,
+      },
+    });
+
+    const vehicleMakes = await prisma.vehicleMake.findMany();
+
+    res.status(201).json({ ...vehicleMakes });
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const addVehicleType = async (req: any, res: any) => {
+  const { type } = req.body;
+
+  try {
+    const existingType = await prisma.vehicleType.findFirst({
+      where: {
+        type: {
+          equals: type.toLowerCase(),
+          mode: "insensitive",
+        },
+      },
+    });
+
+    if (existingType) {
+      return res.status(409).json({ message: "Vehicle type already exists" });
+    }
+
+    await prisma.vehicleType.create({
+      data: {
+        type,
+      },
+    });
+
+    const vehicleTypes = await prisma.vehicleType.findMany();
+
+    res.status(201).json({ ...vehicleTypes });
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const addVehicleModel = async (req: any, res: any) => {
+  const { makeId, model, typeId } = req.body;
+
+  try {
+    const vehicleMake = await prisma.vehicleMake.findUnique({
+      where: { id: makeId },
+    });
+
+    if (!vehicleMake) {
+      return res.status(404).json({ message: "Vehicle make not found" });
+    }
+
+    await prisma.vehicleModel.create({
+      data: {
+        make: { connect: { id: makeId } },
+        type: { connect: { id: typeId } },
+        model,
+      },
+    });
+
+    const vehicleModels = await prisma.vehicleModel.findMany();
+
+    res.status(201).json({ ...vehicleModels });
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(400).json({ message: error.message });
+  }
 };
 
 export default {
   getData,
+  addVehicleMake,
+  addVehicleModel,
+  addVehicleType,
 };

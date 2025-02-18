@@ -113,8 +113,6 @@ model User {
 
 model Vehicle {
   id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
-  make                   String
-  model                  String
   year                   Int
   color                  String
   licensePlate           String   @unique
@@ -123,7 +121,13 @@ model Vehicle {
   odometer               Int
   fuelLevel              Int
   tankVolume             Int
-      
+
+  makeId                 String
+  make                   VehicleMake @relation(fields: [makeId], references: [id])
+
+  modelId                String
+  model                  VehicleModel @relation(fields: [modelId], references: [id])
+
   vehicleGroupId         String
   vehicleGroup           VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
       
@@ -373,4 +377,43 @@ model InvoiceSequence {
 
   createdAt             DateTime   @default(now())
   updatedAt             DateTime?  @updatedAt
+}
+
+model VehicleMake {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  make                  String
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+
+  VehicleModels VehicleModel[]
+  Vehicle Vehicle[]
+}
+
+model VehicleModel {
+  id                    String     @id @default(dbgenerated("gen_random_uuid()")) 
+  model                 String
+
+  makeId                String
+  make                  VehicleMake @relation(fields: [makeId], references: [id])
+
+  typeId                String?
+  type                  VehicleType? @relation(fields: [typeId], references: [id])
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+
+
+  Vehicle Vehicle[]
+}
+
+model VehicleType {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()")) 
+  type                  String
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime?  @updatedAt
+
+
+  VehicleModel VehicleModel[]
 }
