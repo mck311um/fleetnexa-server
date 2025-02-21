@@ -109,6 +109,7 @@ model User {
   updatedAt              DateTime?  @updatedAt
 
   VehicleDamage VehicleDamage[]
+
 }
 
 model Vehicle {
@@ -169,7 +170,8 @@ model VehicleGroup {
   refundPolicy           String     @default("percent")
   damageAmount           Int        @default(0) 
   damagePolicy           String     @default("percent")
-
+  isDeleted              Boolean    @default(false)
+  updatedBy              String?
 
   discounts              VehicleDiscount[]
 

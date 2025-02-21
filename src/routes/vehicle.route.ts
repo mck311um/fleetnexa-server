@@ -19,4 +19,6 @@ router.get("/vehicle-groups/:tenantId", controller.getVehicleGroups);
 
 router.post("/vehicle-group", controller.upsertVehicleGroup);
 
+router.delete("/vehicle-group/:groupId", controller.deleteVehicleGroup);
+
 export default router;

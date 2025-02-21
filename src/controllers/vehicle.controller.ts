@@ -12,6 +12,7 @@ const getVehicleGroups = async (req: any, res: any) => {
     const vehicleGroups = await prisma.vehicleGroup.findMany({
       where: {
         tenantId,
+        isDeleted: false,
       },
       include: {
         discounts: true,
@@ -29,24 +30,9 @@ const getVehicleGroups = async (req: any, res: any) => {
 };
 const upsertVehicleGroup = async (req: any, res: any) => {
   const { newGroup } = req.body;
-
-  console.log(newGroup);
+  const { id: userId } = req.user;
 
   try {
-    const existingGroup = await prisma.vehicleGroup.findFirst({
-      where: {
-        tenantId: newGroup.tenantId,
-        group: {
-          equals: newGroup.group.toLowerCase(),
-          mode: "insensitive",
-        },
-      },
-    });
-
-    if (existingGroup) {
-      return res.status(409).json({ message: "Vehicle group already exists" });
-    }
-
     await prisma.vehicleGroup.upsert({
       where: { id: newGroup.id },
       update: {
@@ -71,6 +57,7 @@ const upsertVehicleGroup = async (req: any, res: any) => {
         chargeTypeId: newGroup.chargeTypeId,
         fuelPolicyId: newGroup.fuelPolicyId,
         updatedAt: new Date(),
+        updatedBy: userId,
       },
       create: {
         id: newGroup.id,
@@ -96,6 +83,7 @@ const upsertVehicleGroup = async (req: any, res: any) => {
         fuelPolicyId: newGroup.fuelPolicyId,
         createdAt: new Date(),
         updatedAt: new Date(),
+        updatedBy: userId,
       },
     });
 
@@ -125,6 +113,7 @@ const upsertVehicleGroup = async (req: any, res: any) => {
     const vehicleGroups = await prisma.vehicleGroup.findMany({
       where: {
         tenantId: newGroup.tenantId,
+        isDeleted: false,
       },
       include: {
         discounts: true,
@@ -137,10 +126,42 @@ const upsertVehicleGroup = async (req: any, res: any) => {
     res.status(400).json({ message: error.message });
   }
 };
+const deleteVehicleGroup = async (req: any, res: any) => {
+  const { groupId } = req.params;
+  const { id } = req.user;
+  const { id: tenantId } = req.user.tenant;
+
+  try {
+    await prisma.vehicleGroup.update({
+      where: { id: groupId },
+      data: {
+        isDeleted: true,
+        updatedAt: new Date(),
+        updatedBy: id,
+      },
+    });
+
+    const vehicleGroups = await prisma.vehicleGroup.findMany({
+      where: {
+        tenantId: tenantId,
+        isDeleted: false,
+      },
+      include: {
+        discounts: true,
+      },
+    });
+
+    res.status(200).json({ ...vehicleGroups });
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(400).json({ message: error.message });
+  }
+};
 // #endregion
 
 export default {
   addVehicle,
   getVehicleGroups,
   upsertVehicleGroup,
+  deleteVehicleGroup,
 };
