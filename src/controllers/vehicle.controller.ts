@@ -3,6 +3,27 @@ import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
+// #region Vehicle Group
+const getVehicleGroups = async (req: Request, res: Response) => {
+  const tenantId = req.user?.tenantId;
+
+  try {
+    const vehicleGroups = await prisma.vehicleGroup.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        discounts: true,
+        _count: {
+          select: { vehicles: true },
+        },
+      },
+    });
+
+    res.status(200).json(vehicleGroups);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
 const upsertVehicleGroup = async (req: Request, res: Response) => {
   const { vehicleGroup } = req.body;
   const userId = req.user?.id;
@@ -104,6 +125,7 @@ const upsertVehicleGroup = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+// #endregion
 
 const addVehicleGroupDiscount = async (req: Request, res: Response) => {
   const { discount } = req.body;
@@ -186,6 +208,7 @@ const deleteVehicleGroupDiscount = async (req: Request, res: Response) => {
 };
 
 export default {
+  getVehicleGroups,
   upsertVehicleGroup,
   addVehicleGroupDiscount,
   updateVehicleGroupDiscount,
