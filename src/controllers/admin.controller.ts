@@ -68,6 +68,8 @@ const addVehicleMake = async (req: any, res: any) => {
     await prisma.vehicleMake.create({
       data: {
         make,
+        updatedAt: new Date(),
+        createdAt: new Date(),
       },
     });
 

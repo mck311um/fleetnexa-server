@@ -230,6 +230,7 @@ model FuelType {
 model Transmission {
   id           String    @id @default(dbgenerated("gen_random_uuid()"))
   transmission String
+  transmissionCode String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime? @updatedAt
   vehicles     Vehicle[]
