@@ -12,6 +12,7 @@ const getVehicleGroups = async (req: Request, res: Response) => {
       where: { tenantId, isDeleted: false },
       include: {
         discounts: true,
+        maintenanceServices: true,
         _count: {
           select: { vehicles: true },
         },
@@ -54,6 +55,7 @@ const upsertVehicleGroup = async (req: Request, res: Response) => {
         chargeTypeId: vehicleGroup.chargeTypeId,
         fuelPolicyId: vehicleGroup.fuelPolicyId,
         timeBetweenRentals: vehicleGroup.timeBetweenRentals,
+        maintenanceEnabled: vehicleGroup.maintenanceEnabled,
         updatedAt: new Date(),
         updatedBy: userId,
       },
@@ -80,6 +82,7 @@ const upsertVehicleGroup = async (req: Request, res: Response) => {
         chargeTypeId: vehicleGroup.chargeTypeId,
         fuelPolicyId: vehicleGroup.fuelPolicyId,
         timeBetweenRentals: vehicleGroup.timeBetweenRentals,
+        maintenanceEnabled: vehicleGroup.maintenanceEnabled,
         createdAt: new Date(),
         updatedAt: new Date(),
         updatedBy: userId,
@@ -114,9 +117,37 @@ const upsertVehicleGroup = async (req: Request, res: Response) => {
       }
     }
 
+    if (
+      vehicleGroup.maintenanceServices &&
+      vehicleGroup.maintenanceServices.length > 0
+    ) {
+      for (const maintenanceService of vehicleGroup.maintenanceServices) {
+        await prisma.vehicleGroupMaintenanceService.upsert({
+          where: { id: maintenanceService.id },
+          update: {
+            vehicleGroupId: vehicleGroup.id,
+            serviceId: maintenanceService.serviceId,
+            period: maintenanceService.period,
+            enabled: maintenanceService.enabled,
+            updatedAt: new Date(),
+            updatedBy: userId,
+          },
+          create: {
+            vehicleGroupId: vehicleGroup.id,
+            serviceId: maintenanceService.serviceId,
+            period: maintenanceService.period,
+            enabled: maintenanceService.enabled,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            updatedBy: userId,
+          },
+        });
+      }
+    }
+
     const vehicleGroups = await prisma.vehicleGroup.findMany({
       where: { tenantId, isDeleted: false },
-      include: { discounts: true },
+      include: { discounts: true, maintenanceServices: true },
     });
 
     res.status(201).json({ ...vehicleGroups });
@@ -207,10 +238,50 @@ const deleteVehicleGroupDiscount = async (req: Request, res: Response) => {
   }
 };
 
+const addVehicleGroupMaintenance = async (req: Request, res: Response) => {
+  const { body } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.vehicleGroupMaintenanceService.upsert({
+      where: { id: body.id },
+      update: {
+        vehicleGroupId: body.vehicleGroupId,
+        serviceId: body.serviceId,
+        period: body.period,
+        enabled: body.enabled,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+      create: {
+        vehicleGroupId: body.vehicleGroupId,
+        serviceId: body.serviceId,
+        period: body.period,
+        enabled: body.enabled,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const vehicleGroupMaintenance =
+      await prisma.vehicleGroupMaintenanceService.findMany({
+        where: { vehicleGroupId: body.vehicleGroupId },
+      });
+
+    res.status(201).json({ ...vehicleGroupMaintenance });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 export default {
   getVehicleGroups,
   upsertVehicleGroup,
   addVehicleGroupDiscount,
   updateVehicleGroupDiscount,
   deleteVehicleGroupDiscount,
+  addVehicleGroupMaintenance,
 };

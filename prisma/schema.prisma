@@ -89,6 +89,8 @@ model VehicleGroup {
   chargeType            ChargeType?       @relation(fields: [chargeTypeId], references: [id])
   fuelType              FuelPolicy?       @relation(fields: [fuelPolicyId], references: [id])
   tenant                Tenant            @relation("TenantVehicleGroups", fields: [tenantId], references: [id])
+  maintenanceEnabled    Boolean           @default(false)
+  maintenanceServices   VehicleGroupMaintenanceService[]
 }
 
 model Vehicle {
@@ -329,6 +331,30 @@ model Village {
   Country   Country[] @relation("CountryToVillage")
 }
 
+model MaintenanceService {
+  id          String    @id @default(dbgenerated("gen_random_uuid()"))
+  service     String
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+
+  VehicleGroupMaintenanceServices VehicleGroupMaintenanceService[]
+}
+
+model VehicleGroupMaintenanceService {
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  vehicleGroupId   String
+  serviceId        String
+  period           Int
+  enabled          Boolean
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime? @updatedAt
+  updatedBy        String?
+  
+  vehicleGroup     VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
+  maintenanceService MaintenanceService @relation(fields: [serviceId], references: [id])
+
+}
 
 
 enum Severity {
