@@ -16,6 +16,7 @@ router.use(
 
 router.get("/groups", auth, controller.getVehicleGroups);
 
+router.post("/vehicle", auth, controller.upsertVehicle);
 router.post("/discount", auth, controller.addVehicleGroupDiscount);
 router.post("/group", auth, controller.upsertVehicleGroup);
 router.post("/maintenance", auth, controller.addVehicleGroupMaintenance);

@@ -106,21 +106,32 @@ model Vehicle {
   wheelDriveId    String
   createdAt       DateTime         @default(now())
   updatedAt       DateTime?        @updatedAt
+  isDeleted       Boolean          @default(false)
   fuelLevel       Int
   odometer        Int
   tankVolume      Int
+  featuredImage   String
+  images          String[]
+  insurance       String
+  insuranceExpiry DateTime
+  registrationNumber    String
+  registrationExpiry DateTime
+  numberOfSeats   Int
+  numberOfDoors   Int
   vin             String
   makeId          String
   modelId         String
   createdBy       String?
   updatedBy       String?
-  fuelType        FuelType         @relation(fields: [fuelTypeId], references: [id])
-  make            VehicleMake      @relation(fields: [makeId], references: [id])
-  model           VehicleModel     @relation(fields: [modelId], references: [id])
-  transmission    Transmission     @relation(fields: [transmissionId], references: [id])
-  vehicleGroup    VehicleGroup     @relation(fields: [vehicleGroupId], references: [id])
-  vehicleStatus   VehicleStatus    @relation(fields: [vehicleStatusId], references: [id])
-  wheelDrive      WheelDrive       @relation(fields: [wheelDriveId], references: [id])
+
+
+  fuelType        FuelType?         @relation(fields: [fuelTypeId], references: [id])
+  make            VehicleMake?      @relation(fields: [makeId], references: [id])
+  model           VehicleModel?     @relation(fields: [modelId], references: [id])
+  transmission    Transmission?     @relation(fields: [transmissionId], references: [id])
+  vehicleGroup    VehicleGroup?     @relation(fields: [vehicleGroupId], references: [id])
+  vehicleStatus   VehicleStatus?    @relation(fields: [vehicleStatusId], references: [id])
+  wheelDrive      WheelDrive?      @relation(fields: [wheelDriveId], references: [id])
   damages         VehicleDamage[]
   features        VehicleFeature[] @relation("VehicleToVehicleFeature")
 }
@@ -140,23 +151,28 @@ model VehicleDiscount {
 }
 
 model VehicleDamage {
-  id                  String      @id @default(dbgenerated("gen_random_uuid()"))
-  description         String?
-  isRepaired          Boolean
-  severity            Severity    @default(MINOR)
-  estimatedRepairCost Float?
-  damagePhotos        String[]
-  partId              String
-  vehicleId           String
-  repairedAt          DateTime?
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime?   @updatedAt
-  createdBy           String?
-  updatedBy           String?
-  customerId          String?
-  isDeleted           Boolean     @default(false)
-  part                VehiclePart @relation(fields: [partId], references: [id])
-  vehicle             Vehicle     @relation(fields: [vehicleId], references: [id])
+  id                    String          @id @default(dbgenerated("gen_random_uuid()"))
+  description           String?
+  title                 String
+  isRepaired            Boolean
+  severity              Severity         @default(MINOR)
+  location              DamageLocation   @default(EXTERIOR)
+  estimatedRepairCost   Float?
+  damagePhotos          String[]
+  partId                String
+  vehicleId             String
+  repairedAt            DateTime?
+  createdBy             String?
+  updatedBy             String?
+  customerId            String?
+  images                String[]
+
+  isDeleted             Boolean          @default(false)
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime?        @updatedAt
+
+  vehicle               Vehicle             @relation(fields: [vehicleId], references: [id])
+  customer              Customer?           @relation(fields: [customerId], references: [id])
 }
 
 model VehiclePart {
@@ -164,7 +180,6 @@ model VehiclePart {
   partName       String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime?       @updatedAt
-  vehicleDamages VehicleDamage[]
 }
 
 model ChargeType {
@@ -244,6 +259,7 @@ model VehicleFeature {
   feature   String
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
+  
   vehicles  Vehicle[] @relation("VehicleToVehicleFeature")
 }
 
@@ -377,6 +393,8 @@ model Customer {
   address           CustomerAddress[]
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   documents         CustomerDocument[]
+
+  VehicleDamage VehicleDamage[]
 }
 
 model CustomerAddress {
@@ -426,4 +444,9 @@ enum Severity {
   MODERATE
   SEVERE
   CRITICAL
+}
+
+enum DamageLocation{
+  INTERIOR
+  EXTERIOR
 }

@@ -1,7 +1,132 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { connect } from "http2";
 
 const prisma = new PrismaClient();
+
+const upsertVehicle = async (req: Request, res: Response) => {
+  const { vehicle } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.vehicle.upsert({
+      where: { id: vehicle.id },
+      update: {
+        color: vehicle.color,
+        engineVolume: vehicle.engineVolume,
+        featuredImage: vehicle.featuredImage,
+        features: {
+          connect: vehicle.features.map((feature: any) => ({ id: feature.id })),
+        },
+        fuelLevel: parseInt(vehicle.fuelLevel),
+        fuelType: { connect: { id: vehicle.fuelTypeId } },
+        images: vehicle.images,
+        insurance: vehicle.insurance,
+        insuranceExpiry: vehicle.insuranceExpiry,
+        licensePlate: vehicle.licensePlate,
+        make: { connect: { id: vehicle.make } },
+        model: { connect: { id: vehicle.model } },
+        numberOfSeats: vehicle.numberOfSeats,
+        numberOfDoors: vehicle.numberOfDoors,
+        odometer: vehicle.odometer,
+        registrationExpiry: vehicle.registrationExpiry,
+        registrationNumber: vehicle.registrationNumber,
+        tankVolume: vehicle.tankVolume,
+        transmission: { connect: { id: vehicle.transmissionId } },
+        vehicleGroup: { connect: { id: vehicle.vehicleGroupId } },
+        vehicleStatus: { connect: { id: vehicle.vehicleStatusId } },
+        vin: vehicle.vin,
+        year: vehicle.year,
+        wheelDrive: { connect: { id: vehicle.wheelDriveId } },
+      },
+      create: {
+        id: vehicle.id,
+        color: vehicle.color,
+        engineVolume: vehicle.engineVolume,
+        featuredImage: vehicle.featuredImage,
+        features: {
+          connect: vehicle.features.map((feature: any) => ({ id: feature.id })),
+        },
+        fuelLevel: parseInt(vehicle.fuelLevel),
+        images: vehicle.images,
+        insurance: vehicle.insurance,
+        insuranceExpiry: vehicle.insuranceExpiry,
+        licensePlate: vehicle.licensePlate,
+        make: { connect: { id: vehicle.make } },
+        model: { connect: { id: vehicle.model } },
+        numberOfSeats: vehicle.numberOfSeats,
+        numberOfDoors: vehicle.numberOfDoors,
+        odometer: vehicle.odometer,
+        registrationExpiry: vehicle.registrationExpiry,
+        registrationNumber: vehicle.registrationNumber,
+        tankVolume: vehicle.tankVolume,
+        vin: vehicle.vin,
+        year: vehicle.year,
+        transmission: { connect: { id: vehicle.transmissionId } },
+        vehicleGroup: { connect: { id: vehicle.vehicleGroupId } },
+        vehicleStatus: { connect: { id: vehicle.vehicleStatusId } },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        updatedBy: userId,
+        wheelDrive: { connect: { id: vehicle.wheelDriveId } },
+        fuelType: { connect: { id: vehicle.fuelTypeId } },
+      },
+    });
+
+    if (vehicle.damages && vehicle.damages.length > 0) {
+      for (const damage of vehicle.damages) {
+        await prisma.vehicleDamage.upsert({
+          where: { id: damage.id },
+          update: {
+            vehicleId: vehicle.id,
+            description: damage.description,
+            customerId: damage.customerId,
+            images: damage.image,
+            isRepaired: damage.isRepaired,
+            partId: damage.partId,
+            location: damage.location,
+            repairedAt: damage.repairedAt,
+            severity: damage.severity,
+            title: damage.title,
+            updatedAt: new Date(),
+            updatedBy: userId,
+          },
+          create: {
+            id: damage.id,
+            vehicleId: vehicle.id,
+            description: damage.description,
+            images: damage.image,
+            isRepaired: false,
+            partId: damage.partId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            updatedBy: userId,
+            customerId: damage.customerId,
+            location: damage.location,
+            repairedAt: damage.repairedAt,
+            severity: damage.severity,
+            title: damage.title,
+          },
+        });
+      }
+    }
+
+    const vehicleGroups = await prisma.vehicleGroup.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        discounts: true,
+        maintenanceServices: true,
+        vehicles: true,
+      },
+    });
+
+    res.status(201).json({ ...vehicleGroups });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 // #region Vehicle Group
 const getVehicleGroups = async (req: Request, res: Response) => {
@@ -147,7 +272,7 @@ const upsertVehicleGroup = async (req: Request, res: Response) => {
 
     const vehicleGroups = await prisma.vehicleGroup.findMany({
       where: { tenantId, isDeleted: false },
-      include: { discounts: true, maintenanceServices: true },
+      include: { discounts: true, maintenanceServices: true, vehicles: true },
     });
 
     res.status(201).json({ ...vehicleGroups });
@@ -284,4 +409,5 @@ export default {
   updateVehicleGroupDiscount,
   deleteVehicleGroupDiscount,
   addVehicleGroupMaintenance,
+  upsertVehicle,
 };
