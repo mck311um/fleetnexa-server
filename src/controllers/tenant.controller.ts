@@ -14,6 +14,7 @@ const getTenantById = async (req: Request, res: Response) => {
         currency: true,
         invoiceSequence: true,
         paymentMethods: true,
+        customers: true,
         vehicleGroups: {
           include: {
             discounts: true,

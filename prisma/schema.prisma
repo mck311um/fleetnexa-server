@@ -28,6 +28,7 @@ model Tenant {
   invoiceSequence     InvoiceSequence?      @relation(fields: [invoiceSequenceId], references: [id])
   users               User[]
   vehicleGroups       VehicleGroup[]        @relation("TenantVehicleGroups")
+  customers Customer[]
 }
 
 model User {
@@ -42,7 +43,6 @@ model User {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime?       @updatedAt
   tenant        Tenant          @relation(fields: [tenantId], references: [id])
-  VehicleDamage VehicleDamage[]
 }
 
 model Service {
@@ -148,13 +148,14 @@ model VehicleDamage {
   damagePhotos        String[]
   partId              String
   vehicleId           String
-  reportedByUserId    String?
-  reportedAt          DateTime    @default(now())
   repairedAt          DateTime?
   createdAt           DateTime    @default(now())
   updatedAt           DateTime?   @updatedAt
+  createdBy           String?
+  updatedBy           String?
+  customerId          String?
+  isDeleted           Boolean     @default(false)
   part                VehiclePart @relation(fields: [partId], references: [id])
-  reportedByUser      User?       @relation(fields: [reportedByUserId], references: [id])
   vehicle             Vehicle     @relation(fields: [vehicleId], references: [id])
 }
 
@@ -307,6 +308,8 @@ model Country {
   addresses Address[]
   states    State[]
   villages  Village[] @relation("CountryToVillage")
+
+  CustomerAddress CustomerAddress[]
 }
 
 model State {
@@ -318,6 +321,8 @@ model State {
   Address   Address[]
   country   Country   @relation(fields: [countryId], references: [id])
   villages  Village[]
+
+  CustomerAddress CustomerAddress[]
 }
 
 model Village {
@@ -329,6 +334,8 @@ model Village {
   Address   Address[]
   state     State     @relation(fields: [stateId], references: [id])
   Country   Country[] @relation("CountryToVillage")
+
+  CustomerAddress CustomerAddress[]
 }
 
 model MaintenanceService {
@@ -356,9 +363,67 @@ model VehicleGroupMaintenanceService {
 
 }
 
+model Customer {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  firstName          String
+  lastName          String
+  gender            String
+  dateOfBirth       DateTime
+  email             String    @unique
+  phone             String    @unique
+  createdAt         DateTime  @default(now())
+  tenantId          String
+  updatedAt         DateTime? @updatedAt
+  address           CustomerAddress[]
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  documents         CustomerDocument[]
+}
+
+model CustomerAddress {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  street            String
+  zipCode           String
+  countryId         String
+  customerId        String    @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  stateId           String
+  villageId         String
+  country           Country   @relation(fields: [countryId], references: [id])
+  state             State     @relation(fields: [stateId], references: [id])
+  customer          Customer? @relation(fields: [customerId], references: [id])
+  village           Village   @relation(fields: [villageId], references: [id])
+}
+
+model IdentificationDocument {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  type      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  CustomerDocument CustomerDocument[]
+}
+
+model CustomerDocument {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()"))
+  documentId         String
+  customerId         String
+  documentNumber     String
+  issuedDate         DateTime
+  expiryDate         DateTime
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime? @updatedAt
+  document           IdentificationDocument @relation(fields: [documentId], references: [id])
+  customer           Customer   @relation(fields: [customerId], references: [id])
+  images             String[]
+  notes              String?
+  @@unique([customerId, documentId])
+}
+
 
 enum Severity {
   MINOR
   MODERATE
   SEVERE
+  CRITICAL
 }
