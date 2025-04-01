@@ -4,6 +4,34 @@ import { connect } from "http2";
 
 const prisma = new PrismaClient();
 
+const getVehicles = async (req: Request, res: Response) => {
+  const tenantId = req.user?.tenantId;
+
+  try {
+    const vehicles = await prisma.vehicle.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        make: true,
+        model: {
+          include: {
+            type: true,
+          },
+        },
+        vehicleStatus: true,
+        vehicleGroup: true,
+        transmission: true,
+        wheelDrive: true,
+        fuelType: true,
+        features: true,
+      },
+    });
+
+    res.status(200).json(vehicles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 const upsertVehicle = async (req: Request, res: Response) => {
   const { vehicle } = req.body;
   const userId = req.user?.id;
@@ -410,4 +438,5 @@ export default {
   deleteVehicleGroupDiscount,
   addVehicleGroupMaintenance,
   upsertVehicle,
+  getVehicles,
 };

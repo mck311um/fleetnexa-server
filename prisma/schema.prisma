@@ -29,6 +29,8 @@ model Tenant {
   users               User[]
   vehicleGroups       VehicleGroup[]        @relation("TenantVehicleGroups")
   customers Customer[]
+
+  Vehicle Vehicle[]
 }
 
 model User {
@@ -123,7 +125,10 @@ model Vehicle {
   modelId         String
   createdBy       String?
   updatedBy       String?
+  tenantId        String?
 
+  damages         VehicleDamage[]
+  features        VehicleFeature[] @relation("VehicleToVehicleFeature")
 
   fuelType        FuelType?         @relation(fields: [fuelTypeId], references: [id])
   make            VehicleMake?      @relation(fields: [makeId], references: [id])
@@ -132,8 +137,8 @@ model Vehicle {
   vehicleGroup    VehicleGroup?     @relation(fields: [vehicleGroupId], references: [id])
   vehicleStatus   VehicleStatus?    @relation(fields: [vehicleStatusId], references: [id])
   wheelDrive      WheelDrive?      @relation(fields: [wheelDriveId], references: [id])
-  damages         VehicleDamage[]
-  features        VehicleFeature[] @relation("VehicleToVehicleFeature")
+  tenant          Tenant?          @relation(fields: [tenantId], references: [id])
+
 }
 
 model VehicleDiscount {
