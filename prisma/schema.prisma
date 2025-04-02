@@ -390,35 +390,37 @@ model Customer {
   lastName          String
   gender            String
   dateOfBirth       DateTime
-  email             String    @unique
-  phone             String    @unique
+  email             String?   
+  phone             String    
   createdAt         DateTime  @default(now())
   tenantId          String
   updatedAt         DateTime? @updatedAt
   address           CustomerAddress[]
+  profileImage       String?
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   documents         CustomerDocument[]
-
-  VehicleDamage VehicleDamage[]
+  createdBy         String?
+  updatedBy         String?
+  VehicleDamage     VehicleDamage[]
 }
 
 model CustomerAddress {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  street            String
-  zipCode           String
-  countryId         String
+  street            String?
+  zipCode           String?
+  countryId         String?
   customerId        String    @unique
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt
-  stateId           String
-  villageId         String
-  country           Country   @relation(fields: [countryId], references: [id])
-  state             State     @relation(fields: [stateId], references: [id])
+  stateId           String?
+  villageId         String?
+  country           Country?   @relation(fields: [countryId], references: [id])
+  state             State?     @relation(fields: [stateId], references: [id])
   customer          Customer? @relation(fields: [customerId], references: [id])
-  village           Village   @relation(fields: [villageId], references: [id])
+  village           Village?   @relation(fields: [villageId], references: [id])
 }
 
-model IdentificationDocument {
+model DocumentType {
   id        String    @id @default(dbgenerated("gen_random_uuid()"))
   type      String
   createdAt DateTime  @default(now())
@@ -436,9 +438,11 @@ model CustomerDocument {
   expiryDate         DateTime
   createdAt          DateTime  @default(now())
   updatedAt          DateTime? @updatedAt
-  document           IdentificationDocument @relation(fields: [documentId], references: [id])
+  createdBy          String?
+  updatedBy          String?
+  document           DocumentType @relation(fields: [documentId], references: [id])
   customer           Customer   @relation(fields: [customerId], references: [id])
-  images             String[]
+  documents          String[]
   notes              String?
   @@unique([customerId, documentId])
 }

@@ -316,8 +316,6 @@ const addVehicleGroupDiscount = async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
-  console.log(req.body);
-
   try {
     await prisma.vehicleDiscount.create({
       data: {

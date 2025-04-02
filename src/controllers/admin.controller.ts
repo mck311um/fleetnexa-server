@@ -23,6 +23,7 @@ const getData = async (req: Request, res: Response) => {
     const vehicleMakes = await prisma.vehicleMake.findMany();
     const vehicleTypes = await prisma.vehicleType.findMany();
     const maintenanceServices = await prisma.maintenanceService.findMany();
+    const documentTypes = await prisma.documentType.findMany();
 
     res.status(201).json({
       vehicleParts,
@@ -43,6 +44,7 @@ const getData = async (req: Request, res: Response) => {
       vehicleMakes,
       vehicleTypes,
       maintenanceServices,
+      documentTypes,
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

@@ -8,6 +8,7 @@ import tenantRoutes from "./routes/tenant.routes";
 import fileRoutes from "./routes/file.routes";
 import adminRoutes from "./routes/admin.routes";
 import vehicleRoutes from "./routes/vehicle.routes";
+import customerRoutes from "./routes/customer.routes";
 
 dotenv.config();
 
@@ -24,5 +25,6 @@ app.use("/api/tenant", tenantRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/vehicle", vehicleRoutes);
+app.use("/api/customer", customerRoutes);
 
 export default app;
