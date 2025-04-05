@@ -14,6 +14,7 @@ router.use(
   })
 );
 
+router.get("/locations", auth, controller.getTenantLocations);
 router.get("/:id", auth, controller.getTenantById);
 
 router.post("/", controller.createTenant);

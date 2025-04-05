@@ -15,6 +15,7 @@ router.use(
   })
 );
 
+router.get("/", auth, controller.getCustomers);
 router.post("/", auth, controller.upsertCustomer);
 
 export default router;

@@ -3,6 +3,27 @@ import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
+const getCustomers = async (req: Request, res: Response) => {
+  const tenantId = req.user?.tenantId;
+
+  try {
+    const customers = await prisma.customer.findMany({
+      where: {
+        tenantId: tenantId,
+      },
+      include: {
+        address: true,
+        documents: true,
+      },
+    });
+
+    res.status(200).json(customers);
+  } catch (error) {
+    console.error("Error fetching customers:", error);
+    res.status(500).json({ error: "Failed to fetch customers" });
+  }
+};
+
 const upsertCustomer = async (req: Request, res: Response) => {
   const { customer } = req.body;
   const userId = req.user?.id;
@@ -118,5 +139,6 @@ const addCustomerDocument = async (req: Request, res: Response) => {
 
 export default {
   upsertCustomer,
+  getCustomers,
   addCustomerDocument,
 };

@@ -22,15 +22,22 @@ model Tenant {
   invoiceSequenceId   String?
   invoiceFootNotes    String                @default("")
   address             Address?
-  services            Service[]
-  paymentMethods      PaymentMethod[]
   currency            Currency?             @relation(fields: [currencyId], references: [id])
   invoiceSequence     InvoiceSequence?      @relation(fields: [invoiceSequenceId], references: [id])
-  users               User[]
-  vehicleGroups       VehicleGroup[]        @relation("TenantVehicleGroups")
-  customers Customer[]
 
-  Vehicle Vehicle[]
+  services            Service[]
+  paymentMethods      PaymentMethod[]
+  users               User[]
+  vehicleGroups       VehicleGroup[]       
+  customers           Customer[]
+  vehicles            Vehicle[]
+  tenantLocations     TenantLocation[]
+  additions           Addition[]
+  bookings            Booking[]
+  invoices            Invoice[]
+  payments            Payments[]
+
+  
 }
 
 model User {
@@ -64,8 +71,6 @@ model VehicleGroup {
   group                 String
   description           String
   tenantId              String
-  createdAt             DateTime          @default(now())
-  updatedAt             DateTime?         @updatedAt
   cancellationAmount    Int               @default(0)
   cancellationPolicy    String            @default("percent")
   fuelPolicyId          String?
@@ -84,75 +89,94 @@ model VehicleGroup {
   drivingExperience     Int               @default(1)
   refundAmount          Int               @default(100)
   refundPolicy          String            @default("percent")
-  isDeleted             Boolean           @default(false)
-  updatedBy             String?
-  vehicles              Vehicle[]
-  discounts             VehicleDiscount[]
+  maintenanceEnabled    Boolean           @default(false)
+
   chargeType            ChargeType?       @relation(fields: [chargeTypeId], references: [id])
   fuelType              FuelPolicy?       @relation(fields: [fuelPolicyId], references: [id])
-  tenant                Tenant            @relation("TenantVehicleGroups", fields: [tenantId], references: [id])
-  maintenanceEnabled    Boolean           @default(false)
+  tenant                Tenant            @relation(fields: [tenantId], references: [id])
+
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  createdBy             String?
+  updatedBy             String?
+
+  Booking               Booking[]
+  vehicles              Vehicle[]
+  discounts             VehicleDiscount[]
   maintenanceServices   VehicleGroupMaintenanceService[]
+
+  
 }
 
 model Vehicle {
-  id              String           @id @default(dbgenerated("gen_random_uuid()"))
-  year            Int
-  color           String
-  licensePlate    String           @unique
-  engineVolume    Int
-  vehicleGroupId  String
-  vehicleStatusId String
-  fuelTypeId      String
-  transmissionId  String
-  wheelDriveId    String
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime?        @updatedAt
-  isDeleted       Boolean          @default(false)
-  fuelLevel       Int
-  odometer        Int
-  tankVolume      Int
-  featuredImage   String
-  images          String[]
-  insurance       String
-  insuranceExpiry DateTime
+  id                    String           @id @default(dbgenerated("gen_random_uuid()"))
+  year                  Int
+  color                 String
+  licensePlate          String           @unique
+  engineVolume          Int
+  vehicleGroupId        String
+  vehicleStatusId       String
+  fuelTypeId            String
+  transmissionId        String
+  wheelDriveId          String
+  fuelLevel             Int
+  odometer              Int
+  tankVolume            Int
+  featuredImage         String
+  images                String[]
+  insurance             String
+  insuranceExpiry       DateTime
   registrationNumber    String
-  registrationExpiry DateTime
-  numberOfSeats   Int
-  numberOfDoors   Int
-  vin             String
-  makeId          String
-  modelId         String
-  createdBy       String?
-  updatedBy       String?
-  tenantId        String?
+  registrationExpiry    DateTime
+  numberOfSeats         Int
+  numberOfDoors         Int
+  vin                   String
+  makeId                String
+  modelId               String
+  tenantId              String?
+  locationId            String?
 
-  damages         VehicleDamage[]
-  features        VehicleFeature[] @relation("VehicleToVehicleFeature")
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  createdBy             String?
+  updatedBy             String?
 
-  fuelType        FuelType?         @relation(fields: [fuelTypeId], references: [id])
-  make            VehicleMake?      @relation(fields: [makeId], references: [id])
-  model           VehicleModel?     @relation(fields: [modelId], references: [id])
-  transmission    Transmission?     @relation(fields: [transmissionId], references: [id])
-  vehicleGroup    VehicleGroup?     @relation(fields: [vehicleGroupId], references: [id])
-  vehicleStatus   VehicleStatus?    @relation(fields: [vehicleStatusId], references: [id])
-  wheelDrive      WheelDrive?      @relation(fields: [wheelDriveId], references: [id])
-  tenant          Tenant?          @relation(fields: [tenantId], references: [id])
+  damages               VehicleDamage[]
+  features              VehicleFeature[] @relation("VehicleToVehicleFeature")
+  bookings              Booking[]
 
+  fuelType              FuelType?         @relation(fields: [fuelTypeId], references: [id])
+  make                  VehicleMake?      @relation(fields: [makeId], references: [id])
+  model                 VehicleModel?     @relation(fields: [modelId], references: [id])
+  transmission          Transmission?     @relation(fields: [transmissionId], references: [id])
+  vehicleGroup          VehicleGroup?     @relation(fields: [vehicleGroupId], references: [id])
+  vehicleStatus         VehicleStatus?    @relation(fields: [vehicleStatusId], references: [id])
+  wheelDrive            WheelDrive?      @relation(fields: [wheelDriveId], references: [id])
+  tenant                Tenant?          @relation(fields: [tenantId], references: [id])
+  location              TenantLocation?   @relation(fields: [locationId], references: [id])
 }
 
 model VehicleDiscount {
-  id             String       @id @default(dbgenerated("gen_random_uuid()"))
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime?    @updatedAt
-  updatedBy      String?
-  isDeleted      Boolean      @default(false)
-  amount         Decimal      @db.Decimal(10, 2)
-  discountPolicy String
-  periodMax      Int
-  periodMin      Int
-  vehicleGroupId String
+  id                    String       @id @default(dbgenerated("gen_random_uuid()"))
+  amount                Decimal      @db.Decimal(10, 2)
+  discountPolicy        String
+  periodMax             Int
+  periodMin             Int
+  vehicleGroupId        String
+
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  createdBy             String?
+  updatedBy             String?
+
   vehicleGroup   VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
+  
 }
 
 model VehicleDamage {
@@ -167,17 +191,18 @@ model VehicleDamage {
   partId                String
   vehicleId             String
   repairedAt            DateTime?
-  createdBy             String?
-  updatedBy             String?
   customerId            String?
   images                String[]
 
-  isDeleted             Boolean          @default(false)
-  createdAt             DateTime         @default(now())
-  updatedAt             DateTime?        @updatedAt
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  createdBy             String?
+  updatedBy             String?
 
-  vehicle               Vehicle             @relation(fields: [vehicleId], references: [id])
-  customer              Customer?           @relation(fields: [customerId], references: [id])
+  vehicle               Vehicle @relation(fields: [vehicleId], references: [id])
+  customer              Customer? @relation(fields: [customerId], references: [id])
 }
 
 model VehiclePart {
@@ -296,28 +321,30 @@ model PaymentMethod {
 }
 
 model InvoiceSequence {
-  id        String    @id @default(dbgenerated("gen_random_uuid()"))
-  prefix    String
-  example   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  Tenant    Tenant[]
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  prefix               String
+  example             String
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime? @updatedAt
+
+  Tenant              Tenant[]
 }
 
 model Address {
-  id        String    @id @default(dbgenerated("gen_random_uuid()"))
-  street    String
-  zipCode   String
-  countryId String
-  tenantId  String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  stateId   String
-  villageId String
-  country   Country   @relation(fields: [countryId], references: [id])
-  state     State     @relation(fields: [stateId], references: [id])
-  tenant    Tenant    @relation(fields: [tenantId], references: [id])
-  village   Village   @relation(fields: [villageId], references: [id])
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  street              String
+  zipCode             String
+  countryId           String
+  tenantId            String    @unique
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime? @updatedAt
+  stateId             String
+  villageId           String
+
+  country             Country   @relation(fields: [countryId], references: [id])
+  state               State     @relation(fields: [stateId], references: [id])
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  village             Village   @relation(fields: [villageId], references: [id])
 }
 
 model Country {
@@ -392,16 +419,23 @@ model Customer {
   dateOfBirth       DateTime
   email             String?   
   phone             String    
-  createdAt         DateTime  @default(now())
   tenantId          String
-  updatedAt         DateTime? @updatedAt
-  address           CustomerAddress[]
   profileImage       String?
-  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  
+  address           CustomerAddress[]
   documents         CustomerDocument[]
+  VehicleDamage     VehicleDamage[]
+  Booking           Booking[]
+
+  isActive          Boolean   @default(false)
+  isDeleted         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
   createdBy         String?
   updatedBy         String?
-  VehicleDamage     VehicleDamage[]
+
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+
 }
 
 model CustomerAddress {
@@ -444,7 +478,109 @@ model CustomerDocument {
   customer           Customer   @relation(fields: [customerId], references: [id])
   documents          String[]
   notes              String?
-  @@unique([customerId, documentId])
+}
+
+model TenantLocation {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  locationName      String
+  locationAddress   String
+  phone             String
+  pickupEnabled     Boolean
+  returnEnabled     Boolean
+  deliveryEnabled   Boolean
+  deliveryFee       Float
+  returnFee         Float
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+
+  isActive          Boolean
+  isDeleted         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  createdBy         String?
+  updatedBy         String?
+
+  BookingPickup     Booking[] @relation("PickupLocation")
+  BookingReturn     Booking[] @relation("ReturnLocation")
+  vehicles          Vehicle[]
+}
+
+model Addition {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  name              String
+  description       String
+  price             Float
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  Booking           Booking[]
+}
+
+model Payments {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  amount            Float
+  paymentMethodId   String
+  invoiceId         String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  tenantId          String
+  status            String    @default("pending")
+  createdBy         String?
+  updatedBy         String?
+
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  invoice           Invoice   @relation(fields: [invoiceId], references: [id])
+}
+
+model Invoice {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  invoiceNumber     String
+  amount            Float
+  bookingId         String
+  tenantId          String
+  status            String    @default("pending")
+  payments          Payments[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  createdBy         String?
+  updatedBy         String?
+
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  booking           Booking   @relation(fields: [bookingId], references: [id])
+}
+
+model Booking {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  startDate         DateTime
+  endDate           DateTime
+  pickupLocationId  String
+  pickup            String
+  returnLocationId  String
+  return            String
+  vehicleId         String
+  customerId        String
+  agent             Agent
+  signature         String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  vehicleGroupId    String
+  tenantId          String
+  status            String    @default("pending")
+  createdBy         String?
+  updatedBy         String?
+  notes             String?
+  additions         Addition[]
+  invoice           Invoice[]
+
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  pickupLocation    TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])
+  returnLocation    TenantLocation @relation("ReturnLocation", fields: [returnLocationId], references: [id])
+  vehicle           Vehicle   @relation(fields: [vehicleId], references: [id])
+  vehicleGroup      VehicleGroup   @relation(fields: [vehicleGroupId], references: [id])
+  customer          Customer   @relation(fields: [customerId], references: [id])
+
 }
 
 
@@ -453,6 +589,11 @@ enum Severity {
   MODERATE
   SEVERE
   CRITICAL
+}
+
+enum Agent {
+  MANUAL
+  RENTNEXA
 }
 
 enum DamageLocation{

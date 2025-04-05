@@ -15,6 +15,7 @@ const getTenantById = async (req: Request, res: Response) => {
         invoiceSequence: true,
         paymentMethods: true,
         customers: true,
+        tenantLocations: true,
         vehicleGroups: {
           include: {
             discounts: true,
@@ -163,4 +164,33 @@ const setupTenant = async (req: Request, res: Response) => {
   }
 };
 
-export default { getTenantById, createTenant, updateTenant, setupTenant };
+// #region Tenant Location
+const getTenantLocations = async (req: Request, res: Response) => {
+  const { tenantId } = req.params;
+
+  try {
+    const tenantLocations = await prisma.tenantLocation.findMany({
+      where: { tenantId },
+      include: {
+        vehicles: true,
+        _count: {
+          select: { vehicles: true },
+        },
+      },
+    });
+
+    res.json(tenantLocations);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+// #endregion
+
+export default {
+  getTenantById,
+  createTenant,
+  updateTenant,
+  setupTenant,
+  getTenantLocations,
+};
