@@ -2,10 +2,9 @@ import express from "express";
 import controller from "../controllers/tenant.controller";
 import { auth } from "../middleware/auth";
 import cors from "cors";
+import { allowedOrigins } from "../config/cors";
 
 const router = express.Router();
-
-const allowedOrigins = ["http://localhost:5173"];
 
 router.use(
   cors({
