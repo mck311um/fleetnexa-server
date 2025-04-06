@@ -25,7 +25,6 @@ model Tenant {
   currency            Currency?             @relation(fields: [currencyId], references: [id])
   invoiceSequence     InvoiceSequence?      @relation(fields: [invoiceSequenceId], references: [id])
 
-  services            Service[]
   paymentMethods      PaymentMethod[]
   users               User[]
   vehicleGroups       VehicleGroup[]       
@@ -36,8 +35,7 @@ model Tenant {
   bookings            Booking[]
   invoices            Invoice[]
   payments            Payments[]
-
-  
+  tenantServices      TenantService[]
 }
 
 model User {
@@ -55,15 +53,29 @@ model User {
 }
 
 model Service {
-  id          String    @id @default(dbgenerated("gen_random_uuid()"))
-  tenantId    String
-  service     String
-  description String
-  price       Float
-  status      Boolean
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  id            String          @id @default(dbgenerated("gen_random_uuid()"))
+  service       String
+  description   String
+
+  TenantService TenantService[]
+}
+
+model TenantService {
+  id                    String          @id @default(dbgenerated("gen_random_uuid()"))
+  serviceId             String
+  tenantId              String
+  amount                Float         
+
+
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  createdBy             String?
+  updatedBy             String?
+
+  service               Service   @relation(fields: [serviceId], references: [id])
+  tenant                Tenant    @relation(fields: [tenantId], references: [id])
 }
 
 model VehicleGroup {
@@ -358,6 +370,7 @@ model Country {
   villages  Village[] @relation("CountryToVillage")
 
   CustomerAddress CustomerAddress[]
+  presetLocations PresetLocation[]
 }
 
 model State {
@@ -371,6 +384,7 @@ model State {
   villages  Village[]
 
   CustomerAddress CustomerAddress[]
+  presetLocations PresetLocation[]
 }
 
 model Village {
@@ -384,6 +398,7 @@ model Village {
   Country   Country[] @relation("CountryToVillage")
 
   CustomerAddress CustomerAddress[]
+  presetLocations PresetLocation[]
 }
 
 model MaintenanceService {
@@ -480,6 +495,26 @@ model CustomerDocument {
   notes              String?
 }
 
+model PresetLocation {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  location          String
+  street            String
+  villageId         String
+  stateId           String
+  countryId         String
+
+  country           Country?   @relation(fields: [countryId], references: [id])
+  state             State?     @relation(fields: [stateId], references: [id])
+  village           Village?   @relation(fields: [villageId], references: [id])
+}
+
+model LocationType {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  type              String
+
+  tenantLocations TenantLocation[]
+}
+
 model TenantLocation {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   locationName      String
@@ -487,11 +522,10 @@ model TenantLocation {
   phone             String
   pickupEnabled     Boolean
   returnEnabled     Boolean
-  deliveryEnabled   Boolean
-  deliveryFee       Float
+  pickupFee         Float
   returnFee         Float
   tenantId          String
-  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  locationTypeId    String
 
   isActive          Boolean
   isDeleted         Boolean   @default(false)
@@ -503,6 +537,9 @@ model TenantLocation {
   BookingPickup     Booking[] @relation("PickupLocation")
   BookingReturn     Booking[] @relation("ReturnLocation")
   vehicles          Vehicle[]
+
+  locationType      LocationType @relation(fields: [locationTypeId], references: [id])
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
 }
 
 model Addition {
