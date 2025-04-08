@@ -17,6 +17,7 @@ const getTenantById = async (req: Request, res: Response) => {
         customers: true,
         tenantServices: true,
         tenantLocations: {
+          where: { isDeleted: false },
           include: {
             vehicles: true,
             address: true,
@@ -179,9 +180,10 @@ const getTenantLocations = async (req: Request, res: Response) => {
 
   try {
     const tenantLocations = await prisma.tenantLocation.findMany({
-      where: { tenantId },
+      where: { tenantId, isDeleted: false },
       include: {
         vehicles: true,
+        address: true,
         _count: {
           select: { vehicles: true },
         },
