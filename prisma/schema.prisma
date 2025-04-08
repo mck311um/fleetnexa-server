@@ -71,7 +71,6 @@ model TenantService {
   isDeleted             Boolean   @default(false)
   createdAt             DateTime  @default(now())
   updatedAt             DateTime? @updatedAt
-  createdBy             String?
   updatedBy             String?
 
   service               Service   @relation(fields: [serviceId], references: [id])
@@ -371,6 +370,8 @@ model Country {
 
   CustomerAddress CustomerAddress[]
   presetLocations PresetLocation[]
+
+  TenantLocationAddress TenantLocationAddress[]
 }
 
 model State {
@@ -385,6 +386,8 @@ model State {
 
   CustomerAddress CustomerAddress[]
   presetLocations PresetLocation[]
+
+  TenantLocationAddress TenantLocationAddress[]
 }
 
 model Village {
@@ -399,6 +402,8 @@ model Village {
 
   CustomerAddress CustomerAddress[]
   presetLocations PresetLocation[]
+
+  TenantLocationAddress TenantLocationAddress[]
 }
 
 model MaintenanceService {
@@ -517,13 +522,13 @@ model LocationType {
 
 model TenantLocation {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  locationName      String
-  locationAddress   String
-  phone             String
+  location          String
+  addressId         String
+  phone             String?
   pickupEnabled     Boolean
   returnEnabled     Boolean
-  pickupFee         Float
-  returnFee         Float
+  deliveryFee       Float
+  collectionFee     Float
   tenantId          String
   locationTypeId    String
 
@@ -531,7 +536,6 @@ model TenantLocation {
   isDeleted         Boolean   @default(false)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt
-  createdBy         String?
   updatedBy         String?
 
   BookingPickup     Booking[] @relation("PickupLocation")
@@ -539,7 +543,24 @@ model TenantLocation {
   vehicles          Vehicle[]
 
   locationType      LocationType @relation(fields: [locationTypeId], references: [id])
+  address           TenantLocationAddress @relation(fields: [addressId], references: [id])
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
+}
+
+model TenantLocationAddress {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  street            String?
+  countryId         String?
+  stateId           String?
+  villageId         String?
+  country           Country?   @relation(fields: [countryId], references: [id])
+  state             State?     @relation(fields: [stateId], references: [id])
+  village           Village?   @relation(fields: [villageId], references: [id])
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+
+  TenantLocation TenantLocation[]
 }
 
 model Addition {

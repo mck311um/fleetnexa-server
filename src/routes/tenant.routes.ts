@@ -14,11 +14,19 @@ router.use(
 );
 
 router.get("/locations", auth, controller.getTenantLocations);
+router.get("/services", auth, controller.getTenantServices);
 router.get("/:id", auth, controller.getTenantById);
 
 router.post("/", controller.createTenant);
 router.post("/setup", auth, controller.setupTenant);
+router.post("/location", auth, controller.createTenantLocation);
+router.post("/service", auth, controller.createTenantService);
 
 router.put("/:id", auth, controller.updateTenant);
+router.put("/location", auth, controller.updateTenantLocation);
+router.put("/service", auth, controller.updateTenantService);
+
+router.delete("/location/:id", auth, controller.deleteTenantLocation);
+router.delete("/service/:id", auth, controller.deleteTenantService);
 
 export default router;
