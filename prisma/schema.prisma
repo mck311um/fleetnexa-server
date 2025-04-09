@@ -155,6 +155,7 @@ model Vehicle {
   updatedAt             DateTime? @updatedAt
   createdBy             String?
   updatedBy             String?
+  
 
   damages               VehicleDamage[]
   features              VehicleFeature[] @relation("VehicleToVehicleFeature")
@@ -456,6 +457,8 @@ model Customer {
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
 
+
+  Invoice Invoice[]
 }
 
 model CustomerAddress {
@@ -516,6 +519,7 @@ model PresetLocation {
 model LocationType {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   type              String
+  isPermanent       Boolean  @default(true)
 
   tenantLocations TenantLocation[]
 }
@@ -597,6 +601,7 @@ model Invoice {
   amount            Float
   bookingId         String
   tenantId          String
+  customerId        String
   status            String    @default("pending")
   payments          Payments[]
 
@@ -607,6 +612,7 @@ model Invoice {
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   booking           Booking   @relation(fields: [bookingId], references: [id])
+  customer          Customer   @relation(fields: [customerId], references: [id])
 }
 
 model Booking {

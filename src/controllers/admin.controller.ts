@@ -140,7 +140,7 @@ const addVehicleModel = async (req: any, res: any) => {
       data: {
         make: { connect: { id: makeId } },
         type: { connect: { id: typeId } },
-        model,
+        model: model.toUpperCase(),
       },
     });
 

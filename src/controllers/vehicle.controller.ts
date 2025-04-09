@@ -53,8 +53,8 @@ const upsertVehicle = async (req: Request, res: Response) => {
         insurance: vehicle.insurance,
         insuranceExpiry: vehicle.insuranceExpiry,
         licensePlate: vehicle.licensePlate,
-        make: { connect: { id: vehicle.make } },
-        model: { connect: { id: vehicle.model } },
+        make: { connect: { id: vehicle.makeId } },
+        model: { connect: { id: vehicle.modelId } },
         numberOfSeats: vehicle.numberOfSeats,
         numberOfDoors: vehicle.numberOfDoors,
         odometer: vehicle.odometer,
@@ -67,6 +67,7 @@ const upsertVehicle = async (req: Request, res: Response) => {
         vin: vehicle.vin,
         year: vehicle.year,
         wheelDrive: { connect: { id: vehicle.wheelDriveId } },
+        tenant: { connect: { id: tenantId } },
       },
       create: {
         id: vehicle.id,
@@ -81,8 +82,8 @@ const upsertVehicle = async (req: Request, res: Response) => {
         insurance: vehicle.insurance,
         insuranceExpiry: vehicle.insuranceExpiry,
         licensePlate: vehicle.licensePlate,
-        make: { connect: { id: vehicle.make } },
-        model: { connect: { id: vehicle.model } },
+        make: { connect: { id: vehicle.makeId } },
+        model: { connect: { id: vehicle.modelId } },
         numberOfSeats: vehicle.numberOfSeats,
         numberOfDoors: vehicle.numberOfDoors,
         odometer: vehicle.odometer,
@@ -99,6 +100,7 @@ const upsertVehicle = async (req: Request, res: Response) => {
         updatedBy: userId,
         wheelDrive: { connect: { id: vehicle.wheelDriveId } },
         fuelType: { connect: { id: vehicle.fuelTypeId } },
+        tenant: { connect: { id: tenantId } },
       },
     });
 
@@ -166,6 +168,13 @@ const getVehicleGroups = async (req: Request, res: Response) => {
       include: {
         discounts: true,
         maintenanceServices: true,
+        vehicles: {
+          include: {
+            bookings: true,
+            make: true,
+            model: true,
+          },
+        },
         _count: {
           select: { vehicles: true },
         },
