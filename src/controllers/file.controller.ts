@@ -73,7 +73,9 @@ const uploadFile = async (req: Request, res: Response) => {
         Key: key,
       });
 
-      const url = await getSignedUrl(s3Client, getCommand, { expiresIn: 3600 });
+      const url = await getSignedUrl(s3Client, getCommand, {
+        expiresIn: 31536000,
+      });
 
       res.status(201).json({
         message: "File uploaded successfully",
