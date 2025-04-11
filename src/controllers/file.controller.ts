@@ -74,7 +74,7 @@ const uploadFile = async (req: Request, res: Response) => {
       });
 
       const url = await getSignedUrl(s3Client, getCommand, {
-        expiresIn: 31536000,
+        expiresIn: 3600,
       });
 
       res.status(201).json({
