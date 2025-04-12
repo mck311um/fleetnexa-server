@@ -27,6 +27,8 @@ const getData = async (req: Request, res: Response) => {
     const presetLocations = await prisma.presetLocation.findMany();
     const locationTypes = await prisma.locationType.findMany();
     const services = await prisma.service.findMany();
+    const licenseClasses = await prisma.licenseClass.findMany();
+    const messengerApps = await prisma.messengerApp.findMany();
 
     res.status(201).json({
       vehicleParts,
@@ -51,6 +53,8 @@ const getData = async (req: Request, res: Response) => {
       presetLocations,
       locationTypes,
       services,
+      licenseClasses,
+      messengerApps,
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

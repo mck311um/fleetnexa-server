@@ -186,10 +186,20 @@ model Addition {
 model LicenseClass {
   id            String    @id @default(dbgenerated("gen_random_uuid()"))
   class         String
+  name          String
   description   String
   countryId     String
 
   country       Country   @relation(fields: [countryId], references: [id])
 
   DriverLicense DriverLicense[]
+}
+
+model MessengerApp {
+  id           String    @id @default(dbgenerated("gen_random_uuid()"))
+  app          String
+  icon         String
+
+
+  customerApps CustomerMessengerApp[]
 }

@@ -16,6 +16,7 @@ model Customer {
   bookings          Booking[]
   invoices          Invoice[]
   licenses          DriverLicense[]
+  apps              CustomerMessengerApp[]
 
 
   isActive          Boolean   @default(false)
@@ -27,6 +28,19 @@ model Customer {
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
 
 
+
+}
+
+model CustomerMessengerApp {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  customerId        String
+  appId             String
+  account           String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+
+  customer          Customer   @relation(fields: [customerId], references: [id])
+  messengerApp      MessengerApp @relation(fields: [appId], references: [id])
 }
 
 model CustomerAddress {
