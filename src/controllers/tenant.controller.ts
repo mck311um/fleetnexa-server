@@ -45,7 +45,6 @@ const getTenantById = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 const createTenant = async (req: Request, res: Response) => {
   const { tenantCode, tenantName, email, number, logo } = req.body;
 
@@ -78,7 +77,6 @@ const createTenant = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 const updateTenant = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { tenantName, email, number, logo, setupCompleted, invoiceFootNotes } =
@@ -102,7 +100,6 @@ const updateTenant = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 const setupTenant = async (req: Request, res: Response) => {
   const { data } = req.body;
   const userId = req.user?.id;
@@ -234,6 +231,12 @@ const createTenantLocation = async (req: Request, res: Response) => {
 
     const tenantLocations = await prisma.tenantLocation.findMany({
       where: { tenantId: tenantId, isDeleted: false },
+      include: {
+        address: true,
+        _count: {
+          select: { vehicles: true },
+        },
+      },
     });
 
     res.status(201).json({ ...tenantLocations });
@@ -278,6 +281,12 @@ const updateTenantLocation = async (req: Request, res: Response) => {
 
     const tenantLocations = await prisma.tenantLocation.findMany({
       where: { tenantId: tenantId, isDeleted: false },
+      include: {
+        address: true,
+        _count: {
+          select: { vehicles: true },
+        },
+      },
     });
 
     res.status(201).json({ ...tenantLocations });
@@ -303,6 +312,12 @@ const deleteTenantLocation = async (req: Request, res: Response) => {
 
     const tenantLocations = await prisma.tenantLocation.findMany({
       where: { tenantId: tenantId, isDeleted: false },
+      include: {
+        address: true,
+        _count: {
+          select: { vehicles: true },
+        },
+      },
     });
 
     res.status(200).json({ ...tenantLocations });

@@ -151,9 +151,43 @@ const addVehicleModel = async (req: any, res: any) => {
   }
 };
 
+const addVehicleFeature = async (req: any, res: any) => {
+  const { feature } = req.body;
+  try {
+    const existingFeature = await prisma.vehicleFeature.findFirst({
+      where: {
+        feature: {
+          equals: feature.toLowerCase(),
+          mode: "insensitive",
+        },
+      },
+    });
+
+    if (existingFeature) {
+      return res
+        .status(409)
+        .json({ message: "Vehicle feature already exists" });
+    }
+
+    await prisma.vehicleFeature.create({
+      data: {
+        feature,
+      },
+    });
+
+    const vehicleFeatures = await prisma.vehicleFeature.findMany();
+
+    res.status(201).json({ ...vehicleFeatures });
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(400).json({ message: error.message });
+  }
+};
+
 export default {
   getData,
   addVehicleMake,
   addVehicleType,
   addVehicleModel,
+  addVehicleFeature,
 };

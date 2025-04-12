@@ -95,16 +95,17 @@ model InvoiceSequence {
 }
 
 model Country {
-  id        String    @id @default(dbgenerated("gen_random_uuid()"))
-  code      String    @unique
-  country   String
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  code              String    @unique
+  country           String
 
-  addresses Address[]
-  states    State[]
-  CustomerAddress CustomerAddress[]
-  presetLocations PresetLocation[]
-  TenantLocationAddress TenantLocationAddress[]
-
+  addresses         Address[]
+  states            State[]
+  customerAddresses CustomerAddress[]
+  presetLocations   PresetLocation[]
+  tenantLocations   TenantLocationAddress[]
+  licenseClasses    LicenseClass[]
+  driverLicenses    DriverLicense[]
 }
 
 model State {
@@ -180,4 +181,15 @@ model Addition {
   tenantId          String
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   Booking           Booking[]
+}
+
+model LicenseClass {
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  class         String
+  description   String
+  countryId     String
+
+  country       Country   @relation(fields: [countryId], references: [id])
+
+  DriverLicense DriverLicense[]
 }

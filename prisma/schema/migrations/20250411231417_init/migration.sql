@@ -193,6 +193,16 @@ CREATE TABLE "Addition" (
 );
 
 -- CreateTable
+CREATE TABLE "LicenseClass" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "class" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "countryId" TEXT NOT NULL,
+
+    CONSTRAINT "LicenseClass_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Booking" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "startDate" TIMESTAMP(3) NOT NULL,
@@ -302,6 +312,20 @@ CREATE TABLE "CustomerDocument" (
     "notes" TEXT,
 
     CONSTRAINT "CustomerDocument_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DriverLicense" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "classId" TEXT NOT NULL,
+    "countryId" TEXT NOT NULL,
+    "customerId" TEXT NOT NULL,
+    "licenseNumber" TEXT NOT NULL,
+    "licenseExpiry" TIMESTAMP(3) NOT NULL,
+    "licenseIssued" TIMESTAMP(3) NOT NULL,
+    "image" TEXT,
+
+    CONSTRAINT "DriverLicense_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -643,6 +667,9 @@ ALTER TABLE "PresetLocation" ADD CONSTRAINT "PresetLocation_villageId_fkey" FORE
 ALTER TABLE "Addition" ADD CONSTRAINT "Addition_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "LicenseClass" ADD CONSTRAINT "LicenseClass_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "Country"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -695,6 +722,15 @@ ALTER TABLE "CustomerDocument" ADD CONSTRAINT "CustomerDocument_documentId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "CustomerDocument" ADD CONSTRAINT "CustomerDocument_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DriverLicense" ADD CONSTRAINT "DriverLicense_classId_fkey" FOREIGN KEY ("classId") REFERENCES "LicenseClass"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DriverLicense" ADD CONSTRAINT "DriverLicense_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "Country"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DriverLicense" ADD CONSTRAINT "DriverLicense_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Tenant" ADD CONSTRAINT "Tenant_currencyId_fkey" FOREIGN KEY ("currencyId") REFERENCES "Currency"("id") ON DELETE SET NULL ON UPDATE CASCADE;

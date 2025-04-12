@@ -13,6 +13,9 @@ model Tenant {
   invoiceSequenceId   String?
   invoiceFootNotes    String                @default("")
   address             Address?
+  islandWideDelivery  Boolean               @default(true)
+  storefrontEnabled   Boolean               @default(true)
+
   currency            Currency?             @relation(fields: [currencyId], references: [id])
   invoiceSequence     InvoiceSequence?      @relation(fields: [invoiceSequenceId], references: [id])
 
