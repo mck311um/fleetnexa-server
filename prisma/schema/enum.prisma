@@ -13,6 +13,7 @@ enum Agent {
 enum CustomerStatus {
   ACTIVE
   INACTIVE
+  BANNED
   BLACKLISTED
 
 }

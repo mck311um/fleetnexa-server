@@ -80,8 +80,11 @@ const addCustomer = async (req: Request, res: Response) => {
       },
     });
 
+    console.log(customer.license);
+
     await prisma.driverLicense.create({
       data: {
+        id: customer.license.id,
         classId: customer.license.classId,
         countryId: customer.license.countryId,
         customerId: customer.id,
@@ -151,8 +154,6 @@ const updateCustomer = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    console.log(customer.status);
-
     await prisma.customer.update({
       where: { id: customer.id },
       data: {
@@ -166,6 +167,18 @@ const updateCustomer = async (req: Request, res: Response) => {
         updatedAt: new Date(),
         profileImage: customer.profileImage,
         status: customer.status,
+      },
+    });
+
+    await prisma.driverLicense.update({
+      where: { customerId: customer.id },
+      data: {
+        classId: customer.license.classId,
+        countryId: customer.license.countryId,
+        licenseNumber: customer.license.licenseNumber,
+        licenseIssued: customer.license.licenseIssued,
+        licenseExpiry: customer.license.licenseExpiry,
+        image: customer.license.image,
       },
     });
 

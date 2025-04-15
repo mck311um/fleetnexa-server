@@ -22,9 +22,9 @@ router.post("/setup", auth, controller.setupTenant);
 router.post("/location", auth, controller.createTenantLocation);
 router.post("/service", auth, controller.createTenantService);
 
-router.put("/:id", auth, controller.updateTenant);
 router.put("/location", auth, controller.updateTenantLocation);
 router.put("/service", auth, controller.updateTenantService);
+router.put("/:id", auth, controller.updateTenant);
 
 router.delete("/location/:id", auth, controller.deleteTenantLocation);
 router.delete("/service/:id", auth, controller.deleteTenantService);
