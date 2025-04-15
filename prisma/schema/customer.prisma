@@ -1,0 +1,94 @@
+model Customer {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  firstName          String
+  lastName          String
+  gender            String
+  dateOfBirth       DateTime
+  email             String?   
+  phone             String    
+  tenantId          String
+  profileImage       String?
+  status            CustomerStatus @default(ACTIVE)
+  experience        Int?
+  license           DriverLicense?
+  address           CustomerAddress?
+
+  documents         CustomerDocument[]
+  vehicleDamages    VehicleDamage[]
+  bookings          Booking[]
+  invoices          Invoice[]
+  apps              CustomerMessengerApp[]
+
+
+  isActive          Boolean   @default(false)
+  isDeleted         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  updatedBy         String?
+
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+
+
+}
+
+model CustomerMessengerApp {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  customerId        String
+  appId             String
+  account           String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+
+  customer          Customer   @relation(fields: [customerId], references: [id])
+  messengerApp      MessengerApp @relation(fields: [appId], references: [id])
+}
+
+model CustomerAddress {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  street            String?
+  zipCode           String?
+  countryId         String?
+  customerId        String    @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  stateId           String?
+  villageId         String?
+
+  country           Country?   @relation(fields: [countryId], references: [id])
+  state             State?     @relation(fields: [stateId], references: [id])
+  customer          Customer? @relation(fields: [customerId], references: [id])
+  village           Village?   @relation(fields: [villageId], references: [id])
+}
+
+model CustomerDocument {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()"))
+  documentId         String
+  customerId         String  @unique
+  documentNumber     String
+  issuedDate         DateTime
+  expiryDate         DateTime
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime? @updatedAt
+  createdBy          String?
+  updatedBy          String?
+  documents          String[]
+
+  document           DocumentType @relation(fields: [documentId], references: [id])
+  customer           Customer   @relation(fields: [customerId], references: [id])
+  notes              String?
+}
+
+model DriverLicense {
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  classId          String
+  countryId        String
+  customerId       String    @unique
+  licenseNumber    String
+  licenseExpiry    DateTime
+  licenseIssued    DateTime
+  image            String?
+
+  class            LicenseClass @relation(fields: [classId], references: [id])
+  country          Country @relation(fields: [countryId], references: [id])
+  customer         Customer @relation(fields: [customerId], references: [id])
+}

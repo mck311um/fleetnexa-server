@@ -27,6 +27,9 @@ const getData = async (req: Request, res: Response) => {
     const presetLocations = await prisma.presetLocation.findMany();
     const locationTypes = await prisma.locationType.findMany();
     const services = await prisma.service.findMany();
+    const licenseClasses = await prisma.licenseClass.findMany();
+    const messengerApps = await prisma.messengerApp.findMany();
+    const equipments = await prisma.equipment.findMany();
 
     res.status(201).json({
       vehicleParts,
@@ -51,6 +54,29 @@ const getData = async (req: Request, res: Response) => {
       presetLocations,
       locationTypes,
       services,
+      licenseClasses,
+      messengerApps,
+      equipments,
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+    return;
+  }
+};
+const formsGetData = async (req: Request, res: Response) => {
+  try {
+    const countries = await prisma.country.findMany();
+    const states = await prisma.state.findMany();
+    const villages = await prisma.village.findMany();
+    const licenseClasses = await prisma.licenseClass.findMany();
+    const messengerApps = await prisma.messengerApp.findMany();
+
+    res.status(201).json({
+      countries,
+      states,
+      villages,
+      licenseClasses,
+      messengerApps,
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -78,8 +104,6 @@ const addVehicleMake = async (req: any, res: any) => {
     await prisma.vehicleMake.create({
       data: {
         make,
-        updatedAt: new Date(),
-        createdAt: new Date(),
       },
     });
 
@@ -140,7 +164,7 @@ const addVehicleModel = async (req: any, res: any) => {
       data: {
         make: { connect: { id: makeId } },
         type: { connect: { id: typeId } },
-        model,
+        model: model.toUpperCase(),
       },
     });
 
@@ -153,9 +177,44 @@ const addVehicleModel = async (req: any, res: any) => {
   }
 };
 
+const addVehicleFeature = async (req: any, res: any) => {
+  const { feature } = req.body;
+  try {
+    const existingFeature = await prisma.vehicleFeature.findFirst({
+      where: {
+        feature: {
+          equals: feature.toLowerCase(),
+          mode: "insensitive",
+        },
+      },
+    });
+
+    if (existingFeature) {
+      return res
+        .status(409)
+        .json({ message: "Vehicle feature already exists" });
+    }
+
+    await prisma.vehicleFeature.create({
+      data: {
+        feature,
+      },
+    });
+
+    const vehicleFeatures = await prisma.vehicleFeature.findMany();
+
+    res.status(201).json({ ...vehicleFeatures });
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(400).json({ message: error.message });
+  }
+};
+
 export default {
   getData,
+  formsGetData,
   addVehicleMake,
   addVehicleType,
   addVehicleModel,
+  addVehicleFeature,
 };

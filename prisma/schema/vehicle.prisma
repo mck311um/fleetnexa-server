@@ -1,0 +1,168 @@
+model VehicleGroup {
+  id                    String            @id @default(dbgenerated("gen_random_uuid()"))
+  group                 String
+  description           String
+  tenantId              String
+  cancellationAmount    Int             @default(0)
+  cancellationPolicy    String          @default("percent")
+  fuelPolicyId          String?
+  lateFee               Int             @default(0)
+  lateFeePolicy         String          @default("percent")
+  maximumBooking        Int             @default(10)
+  minimumAge            Int             @default(18)
+  minimumBooking        Int             @default(1)
+  securityDeposit       Int             @default(0)
+  securityDepositPolicy String          @default("percent")
+  price                 Float
+  chargeTypeId          String?
+  timeBetweenRentals    Int             @default(0)
+  damageAmount          Int             @default(0)
+  damagePolicy          String          @default("percent")
+  drivingExperience     Int             @default(1)
+  refundAmount          Int             @default(100)
+  refundPolicy          String          @default("percent")
+  maintenanceEnabled    Boolean         @default(false)
+
+  chargeType            ChargeType?     @relation(fields: [chargeTypeId], references: [id])
+  fuelType              FuelPolicy?     @relation(fields: [fuelPolicyId], references: [id])
+  tenant                Tenant          @relation(fields: [tenantId], references: [id])
+
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  updatedBy             String?
+
+  Booking               Booking[]
+  vehicles              Vehicle[]
+  discounts             VehicleDiscount[]
+  maintenanceServices   VehicleGroupMaintenanceService[]
+
+  
+}
+
+model Vehicle {
+  id                    String           @id @default(dbgenerated("gen_random_uuid()"))
+  year                  Int
+  color                 String
+  licensePlate          String           @unique
+  engineVolume          Int
+  vehicleGroupId        String
+  vehicleStatusId       String
+  fuelTypeId            String
+  transmissionId        String
+  wheelDriveId          String
+  fuelLevel             Int
+  odometer              Int
+  tankVolume            Int
+  featuredImage         String
+  images                String[]
+  insurance             String
+  insuranceExpiry       DateTime
+  registrationNumber    String
+  registrationExpiry    DateTime
+  numberOfSeats         Int
+  numberOfDoors         Int
+  vin                   String
+  makeId                String
+  modelId               String
+  tenantId              String?
+  locationId            String?
+
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  createdBy             String?
+  updatedBy             String?
+  
+
+  damages               VehicleDamage[]
+  features              VehicleFeature[] @relation("VehicleToVehicleFeature")
+  bookings              Booking[]
+
+  fuelType              FuelType?         @relation(fields: [fuelTypeId], references: [id])
+  make                  VehicleMake?      @relation(fields: [makeId], references: [id])
+  model                 VehicleModel?     @relation(fields: [modelId], references: [id])
+  transmission          Transmission?     @relation(fields: [transmissionId], references: [id])
+  vehicleGroup          VehicleGroup?     @relation(fields: [vehicleGroupId], references: [id])
+  vehicleStatus         VehicleStatus?    @relation(fields: [vehicleStatusId], references: [id])
+  wheelDrive            WheelDrive?      @relation(fields: [wheelDriveId], references: [id])
+  tenant                Tenant?          @relation(fields: [tenantId], references: [id])
+  location              TenantLocation?   @relation(fields: [locationId], references: [id])
+}
+
+model VehicleDiscount {
+  id                    String       @id @default(dbgenerated("gen_random_uuid()"))
+  amount                Decimal      @db.Decimal(10, 2)
+  discountPolicy        String
+  periodMax             Int
+  periodMin             Int
+  vehicleGroupId        String
+
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  createdBy             String?
+  updatedBy             String?
+
+  vehicleGroup   VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
+  
+}
+
+model VehicleDamage {
+  id                    String          @id @default(dbgenerated("gen_random_uuid()"))
+  description           String?
+  title                 String
+  isRepaired            Boolean
+  severity              Severity         @default(MINOR)
+  location              DamageLocation   @default(EXTERIOR)
+  estimatedRepairCost   Float?
+  damagePhotos          String[]
+  partId                String
+  vehicleId             String
+  repairedAt            DateTime?
+  customerId            String?
+  images                String[]
+
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  createdBy             String?
+  updatedBy             String?
+
+  vehicle               Vehicle @relation(fields: [vehicleId], references: [id])
+  customer              Customer? @relation(fields: [customerId], references: [id])
+}
+
+model VehiclePart {
+  id             String          @id @default(dbgenerated("gen_random_uuid()"))
+  partName       String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?       @updatedAt
+}
+
+model FuelPolicy {
+  id           String         @id @default(dbgenerated("gen_random_uuid()"))
+  policy       String
+  code         String
+
+  VehicleGroup VehicleGroup[]
+}
+
+model VehicleGroupMaintenanceService {
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  vehicleGroupId   String
+  serviceId        String
+  period           Int
+  enabled          Boolean
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime? @updatedAt
+  updatedBy        String?
+  
+  vehicleGroup     VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
+  maintenanceService MaintenanceService @relation(fields: [serviceId], references: [id])
+
+}

@@ -1,0 +1,35 @@
+enum Severity {
+  MINOR
+  MODERATE
+  SEVERE
+  CRITICAL
+}
+
+enum Agent {
+  MANUAL
+  RENTNEXA
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  BANNED
+  BLACKLISTED
+
+}
+
+enum DamageLocation {
+  INTERIOR
+  EXTERIOR
+}
+
+enum ExtraType {
+  INSURANCE
+  EQUIPMENT
+}
+
+enum PricePolicy {
+  FIXED_AMOUNT
+  PERCENTAGE
+  DAILY_PRICE
+}

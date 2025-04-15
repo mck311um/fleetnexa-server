@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Tenant" ADD COLUMN     "color" TEXT NOT NULL DEFAULT '#0000FF',
-ADD COLUMN     "theme" TEXT NOT NULL DEFAULT 'light';

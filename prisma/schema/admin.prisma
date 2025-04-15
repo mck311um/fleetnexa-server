@@ -1,0 +1,213 @@
+model Service {
+  id            String          @id @default(dbgenerated("gen_random_uuid()"))
+  service       String
+  description   String
+
+  TenantService TenantService[]
+}
+
+model ChargeType {
+  id           String         @id @default(dbgenerated("gen_random_uuid()"))
+  chargeType   String
+  unit         String
+
+  VehicleGroup VehicleGroup[]
+}
+
+model VehicleMake {
+  id            String         @id @default(dbgenerated("gen_random_uuid()"))
+  make          String
+
+  Vehicle       Vehicle[]
+  VehicleModels VehicleModel[]
+}
+
+model VehicleModel {
+  id        String       @id @default(dbgenerated("gen_random_uuid()"))
+  model     String
+  makeId    String
+  typeId    String?
+
+  Vehicle   Vehicle[]
+
+  make      VehicleMake  @relation(fields: [makeId], references: [id])
+  type      VehicleType? @relation(fields: [typeId], references: [id])
+}
+
+model VehicleType {
+  id           String         @id @default(dbgenerated("gen_random_uuid()"))
+  type         String
+
+  VehicleModel VehicleModel[]
+}
+
+model VehicleStatus {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  status    String
+
+  vehicles  Vehicle[]
+}
+
+model FuelType {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  fuel      String
+
+  Vehicle   Vehicle[]
+}
+
+model Transmission {
+  id           String    @id @default(dbgenerated("gen_random_uuid()"))
+  transmission String
+  transmissionCode String?
+
+  vehicles     Vehicle[]
+}
+
+model VehicleFeature {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  feature   String
+
+  vehicles  Vehicle[] @relation("VehicleToVehicleFeature")
+}
+
+model WheelDrive {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  drive     String
+  code      String
+
+  vehicles  Vehicle[]
+}
+
+model Currency {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  code      String
+  currency  String?
+
+  tenants   Tenant[]
+}
+
+model InvoiceSequence {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  prefix               String
+  example             String
+
+  Tenant              Tenant[]
+}
+
+model Country {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  code              String    @unique
+  country           String
+
+  addresses         Address[]
+  states            State[]
+  customerAddresses CustomerAddress[]
+  presetLocations   PresetLocation[]
+  tenantLocations   TenantLocationAddress[]
+  licenseClasses    LicenseClass[]
+  driverLicenses    DriverLicense[]
+}
+
+model State {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()"))
+  countryId             String
+  state                 String
+  villages              Village[]
+
+  addresses             Address[]
+  customerAddresses     CustomerAddress[]
+  presetLocations       PresetLocation[]
+  tenantLocations       TenantLocationAddress[]
+
+  country               Country   @relation(fields: [countryId], references: [id])
+}
+
+model Village {
+  id                      String    @id @default(dbgenerated("gen_random_uuid()"))
+  stateId                 String
+  village                 String
+
+  addresses               Address[]
+  customerAddresses       CustomerAddress[]
+  presetLocations         PresetLocation[]
+  tenantLocations         TenantLocationAddress[]
+
+  state     State     @relation(fields: [stateId], references: [id])
+}
+
+model MaintenanceService {
+  id          String    @id @default(dbgenerated("gen_random_uuid()"))
+  service     String
+  description String
+
+  services VehicleGroupMaintenanceService[]
+}
+
+model DocumentType {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  type      String
+
+  customerDocument CustomerDocument[]
+}
+
+model PresetLocation {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  location          String
+  street            String
+  villageId         String
+  stateId           String
+  countryId         String
+
+  country           Country?   @relation(fields: [countryId], references: [id])
+  state             State?     @relation(fields: [stateId], references: [id])
+  village           Village?   @relation(fields: [villageId], references: [id])
+}
+
+model LocationType {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  type              String
+  isPermanent       Boolean  @default(true)
+
+  tenantLocations TenantLocation[]
+}
+
+model Addition {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  name              String
+  description       String
+  price             Float
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  Booking           Booking[]
+}
+
+model LicenseClass {
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  class         String
+  name          String
+  description   String
+  countryId     String
+
+  country       Country   @relation(fields: [countryId], references: [id])
+
+  DriverLicense DriverLicense[]
+}
+
+model MessengerApp {
+  id           String    @id @default(dbgenerated("gen_random_uuid()"))
+  app          String
+  icon         String
+
+
+  customerApps CustomerMessengerApp[]
+}
+
+model Equipment {
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  equipment     String
+  description   String
+
+  tenantEquipments TenantEquipment[]
+}

@@ -1,5 +1,5 @@
 import express from "express";
-import userController from "../controllers/user.controller";
+import controller from "../controllers/form.controller";
 import { auth } from "../middleware/auth";
 import cors from "cors";
 import { allowedOrigins } from "../config/cors";
@@ -13,6 +13,6 @@ const router = express.Router();
 //   })
 // );
 
-router.get("/me", auth, userController.getCurrentUser);
+router.post("/:type", auth, controller.dispatchForm);
 
 export default router;

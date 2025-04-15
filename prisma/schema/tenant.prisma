@@ -1,0 +1,138 @@
+model Tenant {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()"))
+  tenantCode          String                @unique
+  tenantName          String
+  email               String                @unique
+  number              String                @unique
+  currencyId          String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime?             @updatedAt
+  logo                String?
+  setupCompleted      Boolean               @default(false)
+  financialYearStart   String                @default("January")
+  invoiceSequenceId   String?
+  invoiceFootNotes    String                @default("")
+  address             Address?
+  islandWideDelivery  Boolean               @default(true)
+  storefrontEnabled   Boolean               @default(true)
+
+  currency            Currency?             @relation(fields: [currencyId], references: [id])
+  invoiceSequence     InvoiceSequence?      @relation(fields: [invoiceSequenceId], references: [id])
+
+  paymentMethods      PaymentMethod[]
+  users               User[]
+  vehicleGroups       VehicleGroup[]       
+  customers           Customer[]
+  vehicles            Vehicle[]
+  tenantLocations     TenantLocation[]
+  additions           Addition[]
+  bookings            Booking[]
+  invoices            Invoice[]
+  payments            Payments[]
+  tenantServices      TenantService[]
+  forms               Form[]
+}
+
+model TenantService {
+  id                    String          @id @default(dbgenerated("gen_random_uuid()"))
+  serviceId             String
+  tenantId              String
+  amount                Float         
+
+
+  isActive              Boolean   @default(false)
+  isDeleted             Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  updatedBy             String?
+
+  service               Service   @relation(fields: [serviceId], references: [id])
+  tenant                Tenant    @relation(fields: [tenantId], references: [id])
+}
+
+model PaymentMethod {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()"))
+  method              String
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime?             @updatedAt
+
+  Tenant Tenant[]
+}
+
+model Address {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  street              String
+  zipCode             String
+  countryId           String
+  tenantId            String    @unique
+  stateId             String
+  villageId           String
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime? @updatedAt
+
+  country             Country   @relation(fields: [countryId], references: [id])
+  state               State     @relation(fields: [stateId], references: [id])
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  village             Village   @relation(fields: [villageId], references: [id])
+}
+
+model TenantLocation {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  location          String
+  addressId         String
+  phone             String?
+  pickupEnabled     Boolean
+  returnEnabled     Boolean
+  deliveryFee       Float
+  collectionFee     Float
+  tenantId          String
+  locationTypeId    String
+
+  isActive          Boolean
+  isDeleted         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  updatedBy         String?
+
+  BookingPickup     Booking[] @relation("PickupLocation")
+  BookingReturn     Booking[] @relation("ReturnLocation")
+  vehicles          Vehicle[]
+
+  locationType      LocationType @relation(fields: [locationTypeId], references: [id])
+  address           TenantLocationAddress @relation(fields: [addressId], references: [id])
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+}
+
+model TenantLocationAddress {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  street            String?
+  countryId         String?
+  stateId           String?
+  villageId         String?
+  country           Country?   @relation(fields: [countryId], references: [id])
+  state             State?     @relation(fields: [stateId], references: [id])
+  village           Village?   @relation(fields: [villageId], references: [id])
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+
+  TenantLocation TenantLocation[]
+}
+
+model TenantInsurance {
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  name             String
+  description      String
+  pricePolicy      PricePolicy
+  price            Float
+}
+
+model TenantEquipment {
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  equipmentId      String
+  pricePolicy      PricePolicy
+  price            Float
+
+  equipment        Equipment   @relation(fields: [equipmentId], references: [id])
+}

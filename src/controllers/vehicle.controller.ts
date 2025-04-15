@@ -4,6 +4,7 @@ import { connect } from "http2";
 
 const prisma = new PrismaClient();
 
+// #region Vehicle
 const getVehicles = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
@@ -32,6 +33,205 @@ const getVehicles = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+const addVehicle = async (req: Request, res: Response) => {
+  const { vehicle } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    const existingPlate = await prisma.vehicle.findFirst({
+      where: { licensePlate: vehicle.licensePlate, isDeleted: false },
+    });
+
+    if (existingPlate) {
+      return res.status(400).json({ message: "License plate already exists" });
+    }
+
+    await prisma.vehicle.create({
+      data: {
+        id: vehicle.id,
+        color: vehicle.color,
+        engineVolume: vehicle.engineVolume,
+        featuredImage: vehicle.featuredImage,
+        features: {
+          connect: vehicle.features.map((feature: any) => ({ id: feature.id })),
+        },
+        fuelLevel: parseInt(vehicle.fuelLevel),
+        images: vehicle.images,
+        insurance: vehicle.insurance,
+        insuranceExpiry: vehicle.insuranceExpiry,
+        licensePlate: vehicle.licensePlate,
+        make: { connect: { id: vehicle.makeId } },
+        model: { connect: { id: vehicle.modelId } },
+        numberOfSeats: vehicle.numberOfSeats,
+        numberOfDoors: vehicle.numberOfDoors,
+        odometer: vehicle.odometer,
+        registrationExpiry: vehicle.registrationExpiry,
+        registrationNumber: vehicle.registrationNumber,
+        tankVolume: vehicle.tankVolume,
+        vin: vehicle.vin,
+        year: vehicle.year,
+        transmission: { connect: { id: vehicle.transmissionId } },
+        vehicleGroup: { connect: { id: vehicle.vehicleGroupId } },
+        vehicleStatus: { connect: { id: vehicle.vehicleStatusId } },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        updatedBy: userId,
+        wheelDrive: { connect: { id: vehicle.wheelDriveId } },
+        fuelType: { connect: { id: vehicle.fuelTypeId } },
+        tenant: { connect: { id: tenantId } },
+      },
+    });
+
+    const vehicles = await prisma.vehicle.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        make: true,
+        model: {
+          include: {
+            type: true,
+          },
+        },
+        vehicleStatus: true,
+        vehicleGroup: true,
+        transmission: true,
+        wheelDrive: true,
+        fuelType: true,
+        features: true,
+      },
+    });
+
+    res.status(201).json(vehicles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error Adding Vehicle" });
+  }
+};
+const updateVehicle = async (req: Request, res: Response) => {
+  const { vehicle } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.vehicle.update({
+      where: { id: vehicle.id },
+      data: {
+        color: vehicle.color,
+        engineVolume: vehicle.engineVolume,
+        featuredImage: vehicle.featuredImage,
+        features: {
+          connect: vehicle.features.map((feature: any) => ({ id: feature.id })),
+        },
+        fuelLevel: parseInt(vehicle.fuelLevel),
+        fuelType: { connect: { id: vehicle.fuelTypeId } },
+        images: vehicle.images,
+        insurance: vehicle.insurance,
+        insuranceExpiry: vehicle.insuranceExpiry,
+        licensePlate: vehicle.licensePlate,
+        make: { connect: { id: vehicle.makeId } },
+        model: { connect: { id: vehicle.modelId } },
+        numberOfSeats: vehicle.numberOfSeats,
+        numberOfDoors: vehicle.numberOfDoors,
+        odometer: vehicle.odometer,
+        registrationExpiry: vehicle.registrationExpiry,
+        registrationNumber: vehicle.registrationNumber,
+        tankVolume: vehicle.tankVolume,
+        transmission: { connect: { id: vehicle.transmissionId } },
+        vehicleGroup: { connect: { id: vehicle.vehicleGroupId } },
+        vehicleStatus: { connect: { id: vehicle.vehicleStatusId } },
+        vin: vehicle.vin,
+        year: vehicle.year,
+        wheelDrive: { connect: { id: vehicle.wheelDriveId } },
+        tenant: { connect: { id: tenantId } },
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const vehicles = await prisma.vehicle.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        make: true,
+        model: {
+          include: {
+            type: true,
+          },
+        },
+        vehicleStatus: true,
+        vehicleGroup: true,
+        transmission: true,
+        wheelDrive: true,
+        fuelType: true,
+        features: true,
+      },
+    });
+
+    res.status(201).json(vehicles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error Updating Vehicle" });
+  }
+};
+const deleteVehicle = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const userId = req.user?.id;
+
+  try {
+    await prisma.vehicle.update({
+      where: { id },
+      data: {
+        isDeleted: true,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    res.status(200).json({ message: "Vehicle deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error Deleting Vehicle" });
+  }
+};
+// #endregion
+
+// #region VehicleDamages
+const addVehicleDamage = async (req: Request, res: Response) => {
+  const { damage } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.vehicleDamage.create({
+      data: {
+        id: damage.id,
+        vehicleId: damage.vehicleId,
+        description: damage.description,
+        images: damage.image,
+        isRepaired: false,
+        partId: damage.partId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        updatedBy: userId,
+        customerId: damage.customerId,
+        location: damage.location,
+        repairedAt: damage.repairedAt,
+        severity: damage.severity,
+        title: damage.title,
+      },
+    });
+
+    const vehicleDamages = await prisma.vehicleDamage.findMany({
+      where: { vehicleId: damage.vehicleId, isDeleted: false },
+    });
+
+    res.status(201).json({ ...vehicleDamages });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error Adding Vehicle Damage" });
+  }
+};
+const updateVehicleDamage = async (req: Request, res: Response) => {};
+// #endregion
+
 const upsertVehicle = async (req: Request, res: Response) => {
   const { vehicle } = req.body;
   const userId = req.user?.id;
@@ -53,8 +253,8 @@ const upsertVehicle = async (req: Request, res: Response) => {
         insurance: vehicle.insurance,
         insuranceExpiry: vehicle.insuranceExpiry,
         licensePlate: vehicle.licensePlate,
-        make: { connect: { id: vehicle.make } },
-        model: { connect: { id: vehicle.model } },
+        make: { connect: { id: vehicle.makeId } },
+        model: { connect: { id: vehicle.modelId } },
         numberOfSeats: vehicle.numberOfSeats,
         numberOfDoors: vehicle.numberOfDoors,
         odometer: vehicle.odometer,
@@ -67,6 +267,7 @@ const upsertVehicle = async (req: Request, res: Response) => {
         vin: vehicle.vin,
         year: vehicle.year,
         wheelDrive: { connect: { id: vehicle.wheelDriveId } },
+        tenant: { connect: { id: tenantId } },
       },
       create: {
         id: vehicle.id,
@@ -81,8 +282,8 @@ const upsertVehicle = async (req: Request, res: Response) => {
         insurance: vehicle.insurance,
         insuranceExpiry: vehicle.insuranceExpiry,
         licensePlate: vehicle.licensePlate,
-        make: { connect: { id: vehicle.make } },
-        model: { connect: { id: vehicle.model } },
+        make: { connect: { id: vehicle.makeId } },
+        model: { connect: { id: vehicle.modelId } },
         numberOfSeats: vehicle.numberOfSeats,
         numberOfDoors: vehicle.numberOfDoors,
         odometer: vehicle.odometer,
@@ -99,6 +300,7 @@ const upsertVehicle = async (req: Request, res: Response) => {
         updatedBy: userId,
         wheelDrive: { connect: { id: vehicle.wheelDriveId } },
         fuelType: { connect: { id: vehicle.fuelTypeId } },
+        tenant: { connect: { id: tenantId } },
       },
     });
 
@@ -166,6 +368,13 @@ const getVehicleGroups = async (req: Request, res: Response) => {
       include: {
         discounts: true,
         maintenanceServices: true,
+        vehicles: {
+          include: {
+            bookings: true,
+            make: true,
+            model: true,
+          },
+        },
         _count: {
           select: { vehicles: true },
         },
@@ -437,4 +646,7 @@ export default {
   addVehicleGroupMaintenance,
   upsertVehicle,
   getVehicles,
+  addVehicle,
+  updateVehicle,
+  deleteVehicle,
 };
