@@ -9,13 +9,14 @@ model Customer {
   tenantId          String
   profileImage       String?
   status            CustomerStatus @default(ACTIVE)
-  
-  address           CustomerAddress[]
+  experience        Int?
+  license           DriverLicense?
+  address           CustomerAddress?
+
   documents         CustomerDocument[]
   vehicleDamages    VehicleDamage[]
   bookings          Booking[]
   invoices          Invoice[]
-  licenses          DriverLicense[]
   apps              CustomerMessengerApp[]
 
 
@@ -26,7 +27,6 @@ model Customer {
   updatedBy         String?
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
-
 
 
 }
@@ -63,7 +63,7 @@ model CustomerAddress {
 model CustomerDocument {
   id                 String    @id @default(dbgenerated("gen_random_uuid()"))
   documentId         String
-  customerId         String
+  customerId         String  @unique
   documentNumber     String
   issuedDate         DateTime
   expiryDate         DateTime
@@ -82,7 +82,7 @@ model DriverLicense {
   id               String    @id @default(dbgenerated("gen_random_uuid()"))
   classId          String
   countryId        String
-  customerId       String
+  customerId       String    @unique
   licenseNumber    String
   licenseExpiry    DateTime
   licenseIssued    DateTime

@@ -61,6 +61,26 @@ const getData = async (req: Request, res: Response) => {
     return;
   }
 };
+const formsGetData = async (req: Request, res: Response) => {
+  try {
+    const countries = await prisma.country.findMany();
+    const states = await prisma.state.findMany();
+    const villages = await prisma.village.findMany();
+    const licenseClasses = await prisma.licenseClass.findMany();
+    const messengerApps = await prisma.messengerApp.findMany();
+
+    res.status(201).json({
+      countries,
+      states,
+      villages,
+      licenseClasses,
+      messengerApps,
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+    return;
+  }
+};
 
 const addVehicleMake = async (req: any, res: any) => {
   const { make } = req.body;
@@ -190,6 +210,7 @@ const addVehicleFeature = async (req: any, res: any) => {
 
 export default {
   getData,
+  formsGetData,
   addVehicleMake,
   addVehicleType,
   addVehicleModel,

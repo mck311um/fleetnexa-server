@@ -13,6 +13,7 @@ router.use(
   })
 );
 router.get("/", controller.getData);
+router.get("/", controller.formsGetData);
 
 router.post("/vehicle-make", auth, controller.addVehicleMake);
 router.post("/vehicle-model", auth, controller.addVehicleModel);

@@ -17,6 +17,8 @@ const getCustomers = async (req: Request, res: Response) => {
         bookings: true,
         invoices: true,
         vehicleDamages: true,
+        license: true,
+        apps: true,
       },
     });
 
@@ -39,6 +41,8 @@ const getCustomerById = async (req: Request, res: Response) => {
         bookings: true,
         invoices: true,
         vehicleDamages: true,
+        license: true,
+        apps: true,
       },
     });
 
@@ -72,6 +76,19 @@ const addCustomer = async (req: Request, res: Response) => {
         updatedBy: userId,
         profileImage: customer.profileImage,
         tenantId: tenantId!,
+        status: customer.status,
+      },
+    });
+
+    await prisma.driverLicense.create({
+      data: {
+        classId: customer.license.classId,
+        countryId: customer.license.countryId,
+        customerId: customer.id,
+        licenseNumber: customer.license.licenseNumber,
+        licenseIssued: customer.license.licenseIssued,
+        licenseExpiry: customer.license.licenseExpiry,
+        image: customer.license.image,
       },
     });
 
@@ -94,6 +111,19 @@ const addCustomer = async (req: Request, res: Response) => {
       },
     });
 
+    if (customer.apps && customer.apps.length > 0) {
+      await prisma.customerMessengerApp.createMany({
+        data: customer.apps.map((app: any) => ({
+          id: app.id,
+          customerId: customer.id,
+          appId: app.appId,
+          account: app.account,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })),
+      });
+    }
+
     const customers = await prisma.customer.findMany({
       where: {
         tenantId: tenantId,
@@ -104,6 +134,8 @@ const addCustomer = async (req: Request, res: Response) => {
         bookings: true,
         invoices: true,
         vehicleDamages: true,
+        license: true,
+        apps: true,
       },
     });
 
@@ -119,6 +151,8 @@ const updateCustomer = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
+    console.log(customer.status);
+
     await prisma.customer.update({
       where: { id: customer.id },
       data: {
@@ -154,6 +188,23 @@ const updateCustomer = async (req: Request, res: Response) => {
       },
     });
 
+    if (customer.apps && customer.apps.length > 0) {
+      await prisma.customerMessengerApp.deleteMany({
+        where: { customerId: customer.id },
+      });
+
+      await prisma.customerMessengerApp.createMany({
+        data: customer.apps.map((app: any) => ({
+          id: app.id,
+          customerId: customer.id,
+          appId: app.appId,
+          account: app.account,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })),
+      });
+    }
+
     const customers = await prisma.customer.findMany({
       where: {
         tenantId: tenantId,
@@ -162,6 +213,10 @@ const updateCustomer = async (req: Request, res: Response) => {
         address: true,
         documents: true,
         bookings: true,
+        invoices: true,
+        vehicleDamages: true,
+        license: true,
+        apps: true,
       },
     });
 
@@ -197,6 +252,8 @@ const deleteCustomer = async (req: Request, res: Response) => {
         bookings: true,
         invoices: true,
         vehicleDamages: true,
+        license: true,
+        apps: true,
       },
     });
 

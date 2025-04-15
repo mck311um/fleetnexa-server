@@ -30,6 +30,7 @@ model Tenant {
   invoices            Invoice[]
   payments            Payments[]
   tenantServices      TenantService[]
+  forms               Form[]
 }
 
 model TenantService {
