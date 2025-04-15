@@ -6,12 +6,12 @@ import { allowedOrigins } from "../config/cors";
 
 const router = express.Router();
 
-router.use(
-  cors({
-    credentials: true,
-    origin: allowedOrigins,
-  })
-);
+// router.use(
+//   cors({
+//     credentials: true,
+//     origin: allowedOrigins,
+//   })
+// );
 
 router.get("/locations", auth, controller.getTenantLocations);
 router.get("/services", auth, controller.getTenantServices);

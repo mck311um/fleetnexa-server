@@ -203,3 +203,11 @@ model MessengerApp {
 
   customerApps CustomerMessengerApp[]
 }
+
+model Equipment {
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  equipment     String
+  description   String
+
+  tenantEquipments TenantEquipment[]
+}

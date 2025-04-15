@@ -119,3 +119,20 @@ model TenantLocationAddress {
 
   TenantLocation TenantLocation[]
 }
+
+model TenantInsurance {
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  name             String
+  description      String
+  pricePolicy      PricePolicy
+  price            Float
+}
+
+model TenantEquipment {
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  equipmentId      String
+  pricePolicy      PricePolicy
+  price            Float
+
+  equipment        Equipment   @relation(fields: [equipmentId], references: [id])
+}

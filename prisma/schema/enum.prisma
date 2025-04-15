@@ -22,3 +22,14 @@ enum DamageLocation {
   INTERIOR
   EXTERIOR
 }
+
+enum ExtraType {
+  INSURANCE
+  EQUIPMENT
+}
+
+enum PricePolicy {
+  FIXED_AMOUNT
+  PERCENTAGE
+  DAILY_PRICE
+}
