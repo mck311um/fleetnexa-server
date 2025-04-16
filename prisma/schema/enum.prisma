@@ -32,4 +32,5 @@ enum PricePolicy {
   FIXED_AMOUNT
   PERCENTAGE
   DAILY_PRICE
+  FLAT_RATE
 }
