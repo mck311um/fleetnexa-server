@@ -15,7 +15,21 @@ const getTenantById = async (req: Request, res: Response) => {
         invoiceSequence: true,
         paymentMethods: true,
         customers: true,
-        tenantServices: true,
+        services: {
+          where: { isDeleted: false },
+          include: {
+            service: true,
+          },
+        },
+        insurance: {
+          where: { isDeleted: false },
+        },
+        equipment: {
+          where: { isDeleted: false },
+          include: {
+            equipment: true,
+          },
+        },
         tenantLocations: {
           where: { isDeleted: false },
           include: {
@@ -329,7 +343,7 @@ const deleteTenantLocation = async (req: Request, res: Response) => {
 // #endregion
 
 // #region Tenant Services
-const getTenantServices = async (req: Request, res: Response) => {
+const getServices = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   try {
     const tenantServices = await prisma.tenantService.findMany({
@@ -345,17 +359,18 @@ const getTenantServices = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching tenant services" });
   }
 };
-const createTenantService = async (req: Request, res: Response) => {
+const addService = async (req: Request, res: Response) => {
   const { service } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
   try {
-    const tenantService = await prisma.tenantService.create({
+    await prisma.tenantService.create({
       data: {
         id: service.id,
         serviceId: service.serviceId,
-        tenantId: tenantId ?? "",
-        amount: service.amount,
+        tenantId: tenantId!,
+        pricePolicy: service.pricePolicy,
+        price: service.price,
         isActive: service.isActive ?? true,
         isDeleted: false,
         createdAt: new Date(),
@@ -374,16 +389,17 @@ const createTenantService = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error Adding Service" });
   }
 };
-const updateTenantService = async (req: Request, res: Response) => {
+const updateService = async (req: Request, res: Response) => {
   const { service } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
   try {
-    const tenantService = await prisma.tenantService.update({
+    await prisma.tenantService.update({
       where: { id: service.id },
       data: {
-        amount: service.amount,
+        price: service.price,
+        pricePolicy: service.pricePolicy,
         isActive: service.isActive ?? true,
         updatedAt: new Date(),
         updatedBy: userId,
@@ -400,7 +416,7 @@ const updateTenantService = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error Updating Service" });
   }
 };
-const deleteTenantService = async (req: Request, res: Response) => {
+const deleteService = async (req: Request, res: Response) => {
   const { id } = req.params;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -424,7 +440,224 @@ const deleteTenantService = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error deleting tenant service" });
   }
 };
+// #endregion
 
+// #region Tenant Equipment
+const getEquipment = async (req: Request, res: Response) => {
+  const tenantId = req.user?.tenantId;
+
+  try {
+    const tenantEquipments = await prisma.tenantEquipment.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        equipment: true,
+      },
+    });
+
+    res.status(200).json(tenantEquipments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching tenant equipments" });
+  }
+};
+const addEquipment = async (req: Request, res: Response) => {
+  const { equipment } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.tenantEquipment.create({
+      data: {
+        id: equipment.id,
+        equipmentId: equipment.equipmentId,
+        tenantId: tenantId!,
+        pricePolicy: equipment.pricePolicy,
+        isActive: equipment.isActive ?? true,
+        price: equipment.price,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const tenantEquipments = await prisma.tenantEquipment.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        equipment: true,
+      },
+    });
+
+    res.status(201).json({ ...tenantEquipments });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding equipment" });
+  }
+};
+const updateEquipment = async (req: Request, res: Response) => {
+  const { equipment } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    const existingEquipment = await prisma.tenantEquipment.findUnique({
+      where: { id: equipment.id },
+    });
+
+    if (!existingEquipment) {
+      return res.status(404).json({ message: "Equipment not found" });
+    }
+
+    await prisma.tenantEquipment.update({
+      where: { id: equipment.id },
+      data: {
+        pricePolicy: equipment.pricePolicy,
+        isActive: equipment.isActive ?? true,
+        price: equipment.price,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const tenantEquipments = await prisma.tenantEquipment.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        equipment: true,
+      },
+    });
+
+    res.status(200).json({ ...tenantEquipments });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating equipment" });
+  }
+};
+const deleteEquipment = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.tenantEquipment.update({
+      where: { id },
+      data: {
+        isDeleted: true,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const tenantEquipments = await prisma.tenantEquipment.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        equipment: true,
+      },
+    });
+
+    res.status(200).json({ ...tenantEquipments });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting tenant equipment" });
+  }
+};
+// #endregion
+
+// #region Tenant Insurance
+const getInsurance = async (req: Request, res: Response) => {
+  const tenantId = req.user?.tenantId;
+
+  try {
+    const tenantInsurances = await prisma.tenantInsurance.findMany({
+      where: { tenantId, isDeleted: false },
+    });
+
+    res.status(200).json(tenantInsurances);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching tenant insurances" });
+  }
+};
+const addInsurance = async (req: Request, res: Response) => {
+  const { insurance } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.tenantInsurance.create({
+      data: {
+        id: insurance.id,
+        insurance: insurance.insurance,
+        description: insurance.description,
+        tenantId: tenantId!,
+        pricePolicy: insurance.pricePolicy,
+        isActive: insurance.isActive ?? true,
+        price: insurance.price,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const tenantInsurances = await prisma.tenantInsurance.findMany({
+      where: { tenantId, isDeleted: false },
+    });
+
+    res.status(201).json({ ...tenantInsurances });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding insurance" });
+  }
+};
+const updateInsurance = async (req: Request, res: Response) => {
+  const { insurance } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.tenantInsurance.update({
+      where: { id: insurance.id },
+      data: {
+        pricePolicy: insurance.pricePolicy,
+        isActive: insurance.isActive ?? true,
+        price: insurance.price,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const tenantInsurances = await prisma.tenantInsurance.findMany({
+      where: { tenantId, isDeleted: false },
+    });
+
+    res.status(200).json({ ...tenantInsurances });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating insurance" });
+  }
+};
+const deleteInsurance = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.tenantInsurance.update({
+      where: { id },
+      data: {
+        isDeleted: true,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const tenantInsurances = await prisma.tenantInsurance.findMany({
+      where: { tenantId, isDeleted: false },
+    });
+
+    res.status(200).json({ ...tenantInsurances });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting tenant insurance" });
+  }
+};
 // #endregion
 
 export default {
@@ -436,8 +669,16 @@ export default {
   createTenantLocation,
   updateTenantLocation,
   deleteTenantLocation,
-  getTenantServices,
-  createTenantService,
-  updateTenantService,
-  deleteTenantService,
+  getServices,
+  addService,
+  updateService,
+  deleteService,
+  getInsurance,
+  addEquipment,
+  updateEquipment,
+  deleteEquipment,
+  getEquipment,
+  addInsurance,
+  updateInsurance,
+  deleteInsurance,
 };
