@@ -119,12 +119,11 @@ model VehicleDamage {
   severity              Severity         @default(MINOR)
   location              DamageLocation   @default(EXTERIOR)
   estimatedRepairCost   Float?
-  damagePhotos          String[]
+  images                String[]
   partId                String
   vehicleId             String
   repairedAt            DateTime?
   customerId            String?
-  images                String[]
 
   isActive              Boolean   @default(false)
   isDeleted             Boolean   @default(false)

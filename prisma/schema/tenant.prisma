@@ -33,6 +33,8 @@ model Tenant {
   forms               Form[]
   equipment           TenantEquipment[]
   insurance           TenantInsurance[]
+
+
 }
 
 
