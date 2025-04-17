@@ -24,7 +24,12 @@ const getVehicles = async (req: Request, res: Response) => {
         wheelDrive: true,
         fuelType: true,
         features: true,
-        damages: true,
+        damages: {
+          where: { isDeleted: false },
+          include: {
+            customer: true,
+          },
+        },
         location: {
           include: {
             address: true,
@@ -58,7 +63,12 @@ const getVehicleById = async (req: Request, res: Response) => {
         wheelDrive: true,
         fuelType: true,
         features: true,
-        damages: true,
+        damages: {
+          where: { isDeleted: false },
+          include: {
+            customer: true,
+          },
+        },
         location: {
           include: {
             address: true,
@@ -380,6 +390,14 @@ const deleteVehicleDamage = async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
   try {
+    const vehicleDamage = await prisma.vehicleDamage.findUnique({
+      where: { id },
+    });
+
+    const vehicle = await prisma.vehicle.findUnique({
+      where: { id: vehicleDamage?.vehicleId },
+    });
+
     await prisma.vehicleDamage.update({
       where: { id },
       data: {
@@ -389,7 +407,11 @@ const deleteVehicleDamage = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json({ message: "Vehicle Damage deleted" });
+    const vehicleDamages = await prisma.vehicleDamage.findMany({
+      where: { vehicleId: vehicle?.id, isDeleted: false },
+    });
+
+    res.status(200).json({ ...vehicleDamages });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error Deleting Vehicle Damage" });
