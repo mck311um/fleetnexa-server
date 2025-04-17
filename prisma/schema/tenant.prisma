@@ -29,7 +29,7 @@ model Tenant {
   bookings            Booking[]
   invoices            Invoice[]
   payments            Payments[]
-  tenantServices      TenantService[]
+  services            TenantService[]
   forms               Form[]
   equipment           TenantEquipment[]
   insurance           TenantInsurance[]

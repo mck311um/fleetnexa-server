@@ -15,7 +15,21 @@ const getTenantById = async (req: Request, res: Response) => {
         invoiceSequence: true,
         paymentMethods: true,
         customers: true,
-        tenantServices: true,
+        services: {
+          where: { isDeleted: false },
+          include: {
+            service: true,
+          },
+        },
+        insurance: {
+          where: { isDeleted: false },
+        },
+        equipment: {
+          where: { isDeleted: false },
+          include: {
+            equipment: true,
+          },
+        },
         tenantLocations: {
           where: { isDeleted: false },
           include: {
