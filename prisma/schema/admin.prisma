@@ -2,6 +2,7 @@ model Service {
   id            String          @id @default(dbgenerated("gen_random_uuid()"))
   service       String
   description   String
+  icon          String?
 
   TenantService TenantService[]
 }
@@ -208,6 +209,7 @@ model Equipment {
   id            String    @id @default(dbgenerated("gen_random_uuid()"))
   equipment     String
   description   String
+  icon          String?
 
   tenantEquipments TenantEquipment[]
 }

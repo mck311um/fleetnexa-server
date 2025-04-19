@@ -170,7 +170,7 @@ model TenantSubscription {
   planId              String?
   status              SubscriptionStatus @default(TRIAL)
   startDate           DateTime?
-  endDaodte             DateTime?
+  endDate             DateTime?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime? @updatedAt
 
