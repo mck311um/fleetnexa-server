@@ -211,3 +211,15 @@ model Equipment {
 
   tenantEquipments TenantEquipment[]
 }
+
+model SubscriptionPlan {
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  plan          String
+  description   String
+  priceXCD      Float
+  priceUSD      Float
+  priceId       String
+  features      String[]
+
+  TenantSubscription TenantSubscription[]
+}

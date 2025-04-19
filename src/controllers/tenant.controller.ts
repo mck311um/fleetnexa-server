@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import paddle from "../config/paddle";
 
 const prisma = new PrismaClient();
 
@@ -15,6 +16,7 @@ const getTenantById = async (req: Request, res: Response) => {
         invoiceSequence: true,
         paymentMethods: true,
         customers: true,
+        subscription: true,
         services: {
           where: { isDeleted: false },
           include: {

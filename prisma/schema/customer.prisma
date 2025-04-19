@@ -14,7 +14,7 @@ model Customer {
   address           CustomerAddress?
 
   documents         CustomerDocument[]
-  vehicleDamages    VehicleDamage[]
+  damages           VehicleDamage[]
   bookings          Booking[]
   invoices          Invoice[]
   apps              CustomerMessengerApp[]

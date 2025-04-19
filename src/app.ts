@@ -1,6 +1,8 @@
 import express, { Application } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import { allowedOrigins } from "./config/cors";
+import cors from "cors";
 
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
@@ -12,8 +14,7 @@ import customerRoutes from "./routes/customer.routes";
 import emailRoutes from "./routes/email.routes";
 import formRoutes from "./routes/form.routes";
 import twillioRoutes from "./routes/twillio.routes";
-import { allowedOrigins } from "./config/cors";
-import cors from "cors";
+import paddleRoutes from "./routes/paddle.routes";
 
 dotenv.config();
 
@@ -49,5 +50,6 @@ app.use("/api/customer", customerRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/form", formRoutes);
 app.use("/api/comms", twillioRoutes);
+app.use("/api/paddle", paddleRoutes);
 
 export default app;

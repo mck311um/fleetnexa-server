@@ -15,7 +15,9 @@ model Tenant {
   address             Address?
   islandWideDelivery  Boolean               @default(true)
   storefrontEnabled   Boolean               @default(true)
+  subscriptionId      String?
 
+  subscription        TenantSubscription? 
   currency            Currency?             @relation(fields: [currencyId], references: [id])
   invoiceSequence     InvoiceSequence?      @relation(fields: [invoiceSequenceId], references: [id])
 
@@ -33,6 +35,7 @@ model Tenant {
   forms               Form[]
   equipment           TenantEquipment[]
   insurance           TenantInsurance[]
+
 
 
 }
@@ -158,4 +161,19 @@ model TenantService {
 
   service               Service   @relation(fields: [serviceId], references: [id])
   tenant                Tenant    @relation(fields: [tenantId], references: [id])
+}
+
+model TenantSubscription {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId            String    @unique
+  paddleCustomerId    String    @unique
+  planId              String?
+  status              SubscriptionStatus @default(TRIAL)
+  startDate           DateTime?
+  endDaodte             DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime? @updatedAt
+
+  plan                SubscriptionPlan? @relation(fields: [planId], references: [id])
+  tenant              Tenant @relation(fields: [tenantId], references: [id])
 }

@@ -34,3 +34,11 @@ enum PricePolicy {
   DAILY_PRICE
   FLAT_RATE
 }
+
+enum SubscriptionStatus {
+  PENDING
+  TRIAL
+  ACTIVE
+  SUSPENDED
+  CANCELED
+}
