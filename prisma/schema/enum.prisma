@@ -8,6 +8,7 @@ enum Severity {
 enum Agent {
   MANUAL
   RENTNEXA
+  PARTNER
 }
 
 enum CustomerStatus {

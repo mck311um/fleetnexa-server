@@ -15,6 +15,7 @@ import emailRoutes from "./routes/email.routes";
 import formRoutes from "./routes/form.routes";
 import twillioRoutes from "./routes/twillio.routes";
 import paddleRoutes from "./routes/paddle.routes";
+import bookingRoutes from "./routes/booking.routes";
 
 dotenv.config();
 
@@ -51,5 +52,6 @@ app.use("/api/email", emailRoutes);
 app.use("/api/form", formRoutes);
 app.use("/api/comms", twillioRoutes);
 app.use("/api/paddle", paddleRoutes);
+app.use("/api/booking", bookingRoutes);
 
 export default app;
