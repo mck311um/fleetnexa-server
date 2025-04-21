@@ -19,6 +19,7 @@ const getVehicles = async (req: Request, res: Response) => {
           },
         },
         vehicleStatus: true,
+        bookings: true,
         vehicleGroup: true,
         transmission: true,
         wheelDrive: true,
@@ -61,6 +62,31 @@ const getVehicleById = async (req: Request, res: Response) => {
         vehicleGroup: true,
         transmission: true,
         wheelDrive: true,
+        bookings: {
+          include: {
+            pickup: true,
+            return: true,
+            customer: {
+              include: {
+                address: {
+                  include: {
+                    village: true,
+                    state: true,
+                    country: true,
+                  },
+                },
+              },
+            },
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                username: true,
+              },
+            },
+          },
+        },
         fuelType: true,
         features: true,
         damages: {

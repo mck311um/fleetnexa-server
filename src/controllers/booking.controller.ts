@@ -126,7 +126,7 @@ const handleBooking = async (req: Request, res: Response) => {
         };
 
         upsertedValues = await tx.values.upsert({
-          where: { bookingId: booking.id },
+          where: { id: booking.values.id },
           create: {
             id: booking.values.id,
             bookingId: booking.id,
