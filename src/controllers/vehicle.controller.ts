@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { connect } from "http2";
-
+import { vehicleService } from "../service/vehicle.service";
 const prisma = new PrismaClient();
 
 // #region Vehicle
@@ -9,36 +8,7 @@ const getVehicles = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    const vehicles = await prisma.vehicle.findMany({
-      where: { tenantId, isDeleted: false },
-      include: {
-        make: true,
-        model: {
-          include: {
-            type: true,
-          },
-        },
-        vehicleStatus: true,
-        bookings: true,
-        vehicleGroup: true,
-        transmission: true,
-        wheelDrive: true,
-        fuelType: true,
-        features: true,
-        damages: {
-          where: { isDeleted: false },
-          include: {
-            customer: true,
-          },
-        },
-        location: {
-          include: {
-            address: true,
-          },
-        },
-      },
-    });
-
+    const vehicles = await vehicleService.getVehicles(tenantId!);
     res.status(200).json(vehicles);
   } catch (error) {
     console.error(error);
@@ -49,59 +19,10 @@ const getVehicleById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const vehicle = await prisma.vehicle.findUnique({
-      where: { id },
-      include: {
-        make: true,
-        model: {
-          include: {
-            type: true,
-          },
-        },
-        vehicleStatus: true,
-        vehicleGroup: true,
-        transmission: true,
-        wheelDrive: true,
-        bookings: {
-          include: {
-            pickup: true,
-            return: true,
-            customer: {
-              include: {
-                address: {
-                  include: {
-                    village: true,
-                    state: true,
-                    country: true,
-                  },
-                },
-              },
-            },
-            user: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                username: true,
-              },
-            },
-          },
-        },
-        fuelType: true,
-        features: true,
-        damages: {
-          where: { isDeleted: false },
-          include: {
-            customer: true,
-          },
-        },
-        location: {
-          include: {
-            address: true,
-          },
-        },
-      },
-    });
+    const vehicle = await vehicleService.getVehicleById(
+      id,
+      req.user?.tenantId!
+    );
 
     if (!vehicle) {
       return res.status(404).json({ message: "Vehicle not found" });
@@ -163,30 +84,7 @@ const addVehicle = async (req: Request, res: Response) => {
       },
     });
 
-    const vehicles = await prisma.vehicle.findMany({
-      where: { tenantId, isDeleted: false },
-      include: {
-        make: true,
-        model: {
-          include: {
-            type: true,
-          },
-        },
-        vehicleStatus: true,
-        vehicleGroup: true,
-        transmission: true,
-        wheelDrive: true,
-        fuelType: true,
-        features: true,
-        damages: true,
-        location: {
-          include: {
-            address: true,
-          },
-        },
-      },
-    });
-
+    const vehicles = vehicleService.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
     console.error(error);
@@ -234,30 +132,7 @@ const updateVehicle = async (req: Request, res: Response) => {
       },
     });
 
-    const vehicles = await prisma.vehicle.findMany({
-      where: { tenantId, isDeleted: false },
-      include: {
-        make: true,
-        model: {
-          include: {
-            type: true,
-          },
-        },
-        vehicleStatus: true,
-        vehicleGroup: true,
-        transmission: true,
-        wheelDrive: true,
-        fuelType: true,
-        features: true,
-        damages: true,
-        location: {
-          include: {
-            address: true,
-          },
-        },
-      },
-    });
-
+    const vehicles = vehicleService.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
     console.error(error);
@@ -279,31 +154,8 @@ const deleteVehicle = async (req: Request, res: Response) => {
       },
     });
 
-    const vehicles = await prisma.vehicle.findMany({
-      where: { tenantId, isDeleted: false },
-      include: {
-        make: true,
-        model: {
-          include: {
-            type: true,
-          },
-        },
-        vehicleStatus: true,
-        vehicleGroup: true,
-        transmission: true,
-        wheelDrive: true,
-        fuelType: true,
-        features: true,
-        damages: true,
-        location: {
-          include: {
-            address: true,
-          },
-        },
-      },
-    });
-
-    res.status(200).json(vehicles);
+    const vehicles = vehicleService.getVehicles(tenantId!);
+    res.status(201).json(vehicles);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error Deleting Vehicle" });
