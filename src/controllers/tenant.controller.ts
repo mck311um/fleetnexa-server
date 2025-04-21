@@ -11,7 +11,13 @@ const getTenantById = async (req: Request, res: Response) => {
     const tenant = await prisma.tenant.findUnique({
       where: { id },
       include: {
-        address: true,
+        address: {
+          include: {
+            village: true,
+            state: true,
+            country: true,
+          },
+        },
         currency: true,
         invoiceSequence: true,
         paymentMethods: true,
@@ -159,6 +165,7 @@ const setupTenant = async (req: Request, res: Response) => {
         tenantName: data.tenantName,
         financialYearStart: data.financialYearStart,
         setupCompleted: true,
+        securityDeposit: data.securityDeposit,
         paymentMethods: {
           set: data.paymentMethods.map((method: any) => ({ id: method.id })),
         },
@@ -168,13 +175,47 @@ const setupTenant = async (req: Request, res: Response) => {
     const tenant = await prisma.tenant.findUnique({
       where: { id: tenantId },
       include: {
-        address: true,
+        address: {
+          include: {
+            village: true,
+            state: true,
+            country: true,
+          },
+        },
         currency: true,
         invoiceSequence: true,
         paymentMethods: true,
+        customers: true,
+        subscription: true,
+        services: {
+          where: { isDeleted: false },
+          include: {
+            service: true,
+          },
+        },
+        insurance: {
+          where: { isDeleted: false },
+        },
+        equipment: {
+          where: { isDeleted: false },
+          include: {
+            equipment: true,
+          },
+        },
+        tenantLocations: {
+          where: { isDeleted: false },
+          include: {
+            vehicles: true,
+            address: true,
+            _count: {
+              select: { vehicles: true },
+            },
+          },
+        },
         vehicleGroups: {
           include: {
             discounts: true,
+            maintenanceServices: true,
           },
         },
       },

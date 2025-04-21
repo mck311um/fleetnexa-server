@@ -16,6 +16,7 @@ model Tenant {
   islandWideDelivery  Boolean               @default(true)
   storefrontEnabled   Boolean               @default(true)
   subscriptionId      String?
+  securityDeposit     Float                @default(0)
 
   subscription        TenantSubscription? 
   currency            Currency?             @relation(fields: [currencyId], references: [id])

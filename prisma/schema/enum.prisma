@@ -43,3 +43,14 @@ enum SubscriptionStatus {
   SUSPENDED
   CANCELED
 }
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  COMPLETED
+  CANCELED
+  EXPIRED
+  NO_SHOW
+  REFUNDED
+}

@@ -16,7 +16,35 @@ const getBookings = async (req: Request, res: Response) => {
       include: {
         pickup: true,
         return: true,
-        vehicle: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        vehicle: {
+          include: {
+            make: true,
+            model: {
+              include: {
+                type: true,
+              },
+            },
+            vehicleStatus: true,
+            vehicleGroup: true,
+            transmission: true,
+            wheelDrive: true,
+            fuelType: true,
+            features: true,
+            damages: {
+              where: { isDeleted: false },
+              include: {
+                customer: true,
+              },
+            },
+          },
+        },
         vehicleGroup: true,
         customer: true,
         values: {
@@ -50,7 +78,7 @@ const handleBooking = async (req: Request, res: Response) => {
   }
 
   try {
-    const result = await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       const bookingData = {
         startDate: booking.startDate,
         endDate: booking.endDate,
@@ -139,26 +167,55 @@ const handleBooking = async (req: Request, res: Response) => {
           await Promise.all(extrasPromises);
         }
       }
-
-      const completeBooking = await tx.booking.findUnique({
-        where: { id: upsertedBooking.id },
-        include: {
-          values: {
-            include: {
-              extras: true,
-            },
-          },
-          vehicle: true,
-          customer: true,
-          pickup: true,
-          return: true,
-        },
-      });
-
-      return completeBooking;
     });
 
-    return res.status(200).json(result);
+    const bookings = await prisma.booking.findMany({
+      where: { tenantId: tenantId! },
+      include: {
+        values: {
+          include: {
+            extras: true,
+          },
+        },
+        vehicle: {
+          include: {
+            make: true,
+            model: {
+              include: {
+                type: true,
+              },
+            },
+            vehicleStatus: true,
+            vehicleGroup: true,
+            transmission: true,
+            wheelDrive: true,
+            fuelType: true,
+            features: true,
+            damages: {
+              where: { isDeleted: false },
+              include: {
+                customer: true,
+              },
+            },
+          },
+        },
+        customer: {
+          include: {
+            address: {
+              include: {
+                village: true,
+                state: true,
+                country: true,
+              },
+            },
+          },
+        },
+        pickup: true,
+        return: true,
+      },
+    });
+
+    return res.status(200).json(bookings);
   } catch (error) {
     console.error("Error handling booking:", error);
     return res.status(500).json({
