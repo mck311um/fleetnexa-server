@@ -62,7 +62,7 @@ model Vehicle {
   numberOfSeats         Int
   numberOfDoors         Int
   vin                   String
-  makeId                String
+  brandId               String
   modelId               String
   tenantId              String?
   locationId            String?
@@ -81,7 +81,7 @@ model Vehicle {
   rentalActivity        RentalActivity[]
 
   fuelType              FuelType?         @relation(fields: [fuelTypeId], references: [id])
-  make                  VehicleMake?      @relation(fields: [makeId], references: [id])
+  brand                 VehicleBrand?      @relation(fields: [brandId], references: [id])
   model                 VehicleModel?     @relation(fields: [modelId], references: [id])
   transmission          Transmission?     @relation(fields: [transmissionId], references: [id])
   vehicleGroup          VehicleGroup?     @relation(fields: [vehicleGroupId], references: [id])

@@ -37,10 +37,10 @@ class BookingService {
       },
       vehicle: {
         include: {
-          make: true,
+          brand: true,
           model: {
             include: {
-              type: true,
+              bodyType: true,
             },
           },
           vehicleStatus: true,

@@ -150,51 +150,7 @@ const handleBooking = async (req: Request, res: Response) => {
       }
     });
 
-    const bookings = await prisma.booking.findMany({
-      where: { tenantId: tenantId! },
-      include: {
-        values: {
-          include: {
-            extras: true,
-          },
-        },
-        vehicle: {
-          include: {
-            make: true,
-            model: {
-              include: {
-                type: true,
-              },
-            },
-            vehicleStatus: true,
-            vehicleGroup: true,
-            transmission: true,
-            wheelDrive: true,
-            fuelType: true,
-            features: true,
-            damages: {
-              where: { isDeleted: false },
-              include: {
-                customer: true,
-              },
-            },
-          },
-        },
-        customer: {
-          include: {
-            address: {
-              include: {
-                village: true,
-                state: true,
-                country: true,
-              },
-            },
-          },
-        },
-        pickup: true,
-        return: true,
-      },
-    });
+    const bookings = await bookingService.getBookings(tenantId);
 
     return res.status(200).json(bookings);
   } catch (error) {
@@ -252,15 +208,13 @@ const confirmBooking = async (req: Request, res: Response) => {
     });
 
     const invoiceNumber = await generateInvoiceNumber(tenantId!);
-    const { url: invoiceUrl } = await generator.createInvoice(
+    await generator.createInvoice(
       {
         ...invoiceData,
         invoiceNumber,
       },
       invoiceNumber
     );
-
-    console.log("Invoice URL:", invoiceUrl);
 
     return res.status(200);
   } catch (error) {

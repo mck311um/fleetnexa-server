@@ -15,12 +15,12 @@ model ChargeType {
   VehicleGroup VehicleGroup[]
 }
 
-model VehicleMake {
+model VehicleBrand {
   id            String         @id @default(dbgenerated("gen_random_uuid()"))
   make          String
 
-  Vehicle       Vehicle[]
-  VehicleModels VehicleModel[]
+  vehicle       Vehicle[]
+  models        VehicleModel[]
 }
 
 model VehicleModel {
@@ -29,17 +29,17 @@ model VehicleModel {
   makeId    String
   typeId    String?
 
-  Vehicle   Vehicle[]
+  vehicles  Vehicle[]
 
-  make      VehicleMake  @relation(fields: [makeId], references: [id])
-  type      VehicleType? @relation(fields: [typeId], references: [id])
+  make      VehicleBrand  @relation(fields: [makeId], references: [id])
+  bodyType  VehicleBodyType? @relation(fields: [typeId], references: [id])
 }
 
-model VehicleType {
+model VehicleBodyType {
   id           String         @id @default(dbgenerated("gen_random_uuid()"))
-  type         String
+  bodyType     String
 
-  VehicleModel VehicleModel[]
+  models       VehicleModel[]
 }
 
 model VehicleStatus {

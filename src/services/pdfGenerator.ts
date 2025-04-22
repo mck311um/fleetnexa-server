@@ -13,13 +13,6 @@ const pdfMonkeyApi = axios.create({
   timeout: 15000,
 });
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const getDocumentStatus = async (id: string) => {
-  const res = await pdfMonkeyApi.get(`/documents/${id}`);
-  return res.data.document;
-};
-
 const createInvoice = async (
   invoiceData: InvoiceData,
   invoiceNumber: string
@@ -43,25 +36,6 @@ const createInvoice = async (
     if (!documentId) {
       throw new Error("Document ID not found in response");
     }
-
-    for (let i = 0; i < 10; i++) {
-      await sleep(2000);
-      const documentStatus = await getDocumentStatus(documentId);
-
-      if (documentStatus.status === "success") {
-        return documentStatus.download_url;
-      }
-
-      if (documentStatus.status === "failed") {
-        throw new Error("PDF generation failed");
-      }
-
-      console.log(
-        `Generation attempt ${i + 1}: Status is ${documentStatus.status}`
-      );
-    }
-
-    throw new Error("PDF generation timed out after 20 seconds");
   } catch (error) {
     console.error("Error creating invoice:", error);
     throw new Error("Failed to create invoice");

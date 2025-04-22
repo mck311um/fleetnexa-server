@@ -20,8 +20,8 @@ const getData = async (req: Request, res: Response) => {
     const villages = await prisma.village.findMany();
     const invoiceSequences = await prisma.invoiceSequence.findMany();
     const vehicleModels = await prisma.vehicleModel.findMany();
-    const vehicleMakes = await prisma.vehicleMake.findMany();
-    const vehicleTypes = await prisma.vehicleType.findMany();
+    const vehicleBrands = await prisma.vehicleBrand.findMany();
+    const vehicleBodyTypes = await prisma.vehicleBodyType.findMany();
     const maintenanceServices = await prisma.maintenanceService.findMany();
     const documentTypes = await prisma.documentType.findMany();
     const presetLocations = await prisma.presetLocation.findMany();
@@ -48,8 +48,8 @@ const getData = async (req: Request, res: Response) => {
       villages,
       invoiceSequences,
       vehicleModels,
-      vehicleMakes,
-      vehicleTypes,
+      vehicleBrands,
+      vehicleBodyTypes,
       maintenanceServices,
       documentTypes,
       presetLocations,
@@ -90,7 +90,7 @@ const addVehicleMake = async (req: any, res: any) => {
   const { make } = req.body;
 
   try {
-    const existingMake = await prisma.vehicleMake.findFirst({
+    const existingMake = await prisma.vehicleBrand.findFirst({
       where: {
         make: {
           equals: make.toLowerCase(),
@@ -103,13 +103,13 @@ const addVehicleMake = async (req: any, res: any) => {
       return res.status(409).json({ message: "Vehicle make already exists" });
     }
 
-    await prisma.vehicleMake.create({
+    await prisma.vehicleBrand.create({
       data: {
         make,
       },
     });
 
-    const vehicleMakes = await prisma.vehicleMake.findMany();
+    const vehicleMakes = await prisma.vehicleBrand.findMany();
 
     res.status(201).json({ ...vehicleMakes });
   } catch (error: any) {
@@ -119,13 +119,13 @@ const addVehicleMake = async (req: any, res: any) => {
 };
 
 const addVehicleType = async (req: any, res: any) => {
-  const { type } = req.body;
+  const { bodyType } = req.body;
 
   try {
-    const existingType = await prisma.vehicleType.findFirst({
+    const existingType = await prisma.vehicleBodyType.findFirst({
       where: {
-        type: {
-          equals: type.toLowerCase(),
+        bodyType: {
+          equals: bodyType.toLowerCase(),
           mode: "insensitive",
         },
       },
@@ -135,13 +135,13 @@ const addVehicleType = async (req: any, res: any) => {
       return res.status(409).json({ message: "Vehicle type already exists" });
     }
 
-    await prisma.vehicleType.create({
+    await prisma.vehicleBodyType.create({
       data: {
-        type,
+        bodyType,
       },
     });
 
-    const vehicleTypes = await prisma.vehicleType.findMany();
+    const vehicleTypes = await prisma.vehicleBodyType.findMany();
 
     res.status(201).json({ ...vehicleTypes });
   } catch (error: any) {
@@ -154,7 +154,7 @@ const addVehicleModel = async (req: any, res: any) => {
   const { makeId, model, typeId } = req.body;
 
   try {
-    const vehicleMake = await prisma.vehicleMake.findUnique({
+    const vehicleMake = await prisma.vehicleBrand.findUnique({
       where: { id: makeId },
     });
 
@@ -165,7 +165,7 @@ const addVehicleModel = async (req: any, res: any) => {
     await prisma.vehicleModel.create({
       data: {
         make: { connect: { id: makeId } },
-        type: { connect: { id: typeId } },
+        bodyType: { connect: { id: typeId } },
         model: model.toUpperCase(),
       },
     });

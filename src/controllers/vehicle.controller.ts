@@ -62,7 +62,7 @@ const addVehicle = async (req: Request, res: Response) => {
         insurance: vehicle.insurance,
         insuranceExpiry: vehicle.insuranceExpiry,
         licensePlate: vehicle.licensePlate,
-        make: { connect: { id: vehicle.makeId } },
+        brand: { connect: { id: vehicle.brandId } },
         model: { connect: { id: vehicle.modelId } },
         numberOfSeats: vehicle.numberOfSeats,
         numberOfDoors: vehicle.numberOfDoors,
@@ -112,7 +112,7 @@ const updateVehicle = async (req: Request, res: Response) => {
         insurance: vehicle.insurance,
         insuranceExpiry: vehicle.insuranceExpiry,
         licensePlate: vehicle.licensePlate,
-        make: { connect: { id: vehicle.makeId } },
+        brand: { connect: { id: vehicle.brandId } },
         model: { connect: { id: vehicle.modelId } },
         numberOfSeats: vehicle.numberOfSeats,
         numberOfDoors: vehicle.numberOfDoors,
@@ -310,7 +310,7 @@ const getVehicleGroups = async (req: Request, res: Response) => {
         vehicles: {
           include: {
             bookings: true,
-            make: true,
+            brand: true,
             model: true,
           },
         },

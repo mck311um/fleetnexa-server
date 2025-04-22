@@ -26,10 +26,10 @@ class VehicleService {
 
   private getVehicleIncludeOptions(): Prisma.VehicleInclude {
     return {
-      make: true,
+      brand: true,
       model: {
         include: {
-          type: true,
+          bodyType: true,
         },
       },
       vehicleStatus: true,
