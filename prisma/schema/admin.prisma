@@ -2,6 +2,7 @@ model Service {
   id            String          @id @default(dbgenerated("gen_random_uuid()"))
   service       String
   description   String
+  icon          String?
 
   TenantService TenantService[]
 }
@@ -180,7 +181,6 @@ model Addition {
   updatedAt         DateTime? @updatedAt
   tenantId          String
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
-  Booking           Booking[]
 }
 
 model LicenseClass {
@@ -208,6 +208,19 @@ model Equipment {
   id            String    @id @default(dbgenerated("gen_random_uuid()"))
   equipment     String
   description   String
+  icon          String?
 
   tenantEquipments TenantEquipment[]
+}
+
+model SubscriptionPlan {
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  plan          String
+  description   String
+  priceXCD      Float
+  priceUSD      Float
+  priceId       String
+  features      String[]
+
+  TenantSubscription TenantSubscription[]
 }

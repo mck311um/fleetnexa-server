@@ -30,6 +30,7 @@ const getData = async (req: Request, res: Response) => {
     const licenseClasses = await prisma.licenseClass.findMany();
     const messengerApps = await prisma.messengerApp.findMany();
     const equipments = await prisma.equipment.findMany();
+    const subscriptionPlans = await prisma.subscriptionPlan.findMany();
 
     res.status(201).json({
       vehicleParts,
@@ -57,6 +58,7 @@ const getData = async (req: Request, res: Response) => {
       licenseClasses,
       messengerApps,
       equipments,
+      subscriptionPlans,
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

@@ -3,9 +3,7 @@ model Booking {
   startDate         DateTime
   endDate           DateTime
   pickupLocationId  String
-  pickup            String
   returnLocationId  String
-  return            String
   vehicleId         String
   customerId        String
   agent             Agent
@@ -14,20 +12,23 @@ model Booking {
   updatedAt         DateTime? @updatedAt
   vehicleGroupId    String
   tenantId          String
-  status            String    @default("pending")
+  status            BookingStatus @default(PENDING)
   createdBy         String?
   updatedBy         String?
   notes             String?
-  additions         Addition[]
-  invoice           Invoice[]
+
+  values            Values?
+  invoice           Invoice?
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
-  pickupLocation    TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])
-  returnLocation    TenantLocation @relation("ReturnLocation", fields: [returnLocationId], references: [id])
+  pickup            TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])
+  return            TenantLocation @relation("ReturnLocation", fields: [returnLocationId], references: [id])
   vehicle           Vehicle   @relation(fields: [vehicleId], references: [id])
   vehicleGroup      VehicleGroup   @relation(fields: [vehicleGroupId], references: [id])
   customer          Customer   @relation(fields: [customerId], references: [id])
 
+
+  user             User?     @relation(fields: [createdBy], references: [id])
 }
 
 model Payments {
@@ -50,7 +51,7 @@ model Invoice {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   invoiceNumber     String
   amount            Float
-  bookingId         String
+  bookingId         String @unique
   tenantId          String
   customerId        String
   status            String    @default("pending")
@@ -64,4 +65,40 @@ model Invoice {
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   booking           Booking   @relation(fields: [bookingId], references: [id])
   customer          Customer   @relation(fields: [customerId], references: [id])
+}
+
+model Values {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  numberOfDays      Int
+  basePrice         Float
+  totalCost         Float
+  discount          Float
+  deliveryFee       Float
+  collectionFee     Float
+  deposit           Float
+  totalExtras       Float
+  subTotal          Float
+  netTotal          Float
+  bookingId         String  @unique
+  discountMin       Int
+  discountMax       Int
+  discountAmount    Float
+  discountPolicy    String
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+
+  booking          Booking   @relation(fields: [bookingId], references: [id])
+
+  extras           BookingExtras[]
+} 
+
+model BookingExtras {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  extraId           String
+  amount            Float
+  valuesId          String
+
+  values            Values   @relation(fields: [valuesId], references: [id])
+  
 }

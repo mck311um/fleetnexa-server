@@ -11,8 +11,6 @@ model VehicleGroup {
   maximumBooking        Int             @default(10)
   minimumAge            Int             @default(18)
   minimumBooking        Int             @default(1)
-  securityDeposit       Int             @default(0)
-  securityDepositPolicy String          @default("percent")
   price                 Float
   chargeTypeId          String?
   timeBetweenRentals    Int             @default(0)
@@ -119,12 +117,11 @@ model VehicleDamage {
   severity              Severity         @default(MINOR)
   location              DamageLocation   @default(EXTERIOR)
   estimatedRepairCost   Float?
-  damagePhotos          String[]
+  images                String[]
   partId                String
   vehicleId             String
   repairedAt            DateTime?
   customerId            String?
-  images                String[]
 
   isActive              Boolean   @default(false)
   isDeleted             Boolean   @default(false)

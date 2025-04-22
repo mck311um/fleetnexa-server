@@ -19,15 +19,95 @@ const getVehicles = async (req: Request, res: Response) => {
           },
         },
         vehicleStatus: true,
+        bookings: true,
         vehicleGroup: true,
         transmission: true,
         wheelDrive: true,
         fuelType: true,
         features: true,
+        damages: {
+          where: { isDeleted: false },
+          include: {
+            customer: true,
+          },
+        },
+        location: {
+          include: {
+            address: true,
+          },
+        },
       },
     });
 
     res.status(200).json(vehicles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+const getVehicleById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const vehicle = await prisma.vehicle.findUnique({
+      where: { id },
+      include: {
+        make: true,
+        model: {
+          include: {
+            type: true,
+          },
+        },
+        vehicleStatus: true,
+        vehicleGroup: true,
+        transmission: true,
+        wheelDrive: true,
+        bookings: {
+          include: {
+            pickup: true,
+            return: true,
+            customer: {
+              include: {
+                address: {
+                  include: {
+                    village: true,
+                    state: true,
+                    country: true,
+                  },
+                },
+              },
+            },
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                username: true,
+              },
+            },
+          },
+        },
+        fuelType: true,
+        features: true,
+        damages: {
+          where: { isDeleted: false },
+          include: {
+            customer: true,
+          },
+        },
+        location: {
+          include: {
+            address: true,
+          },
+        },
+      },
+    });
+
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle not found" });
+    }
+
+    res.status(200).json(vehicle);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -98,6 +178,12 @@ const addVehicle = async (req: Request, res: Response) => {
         wheelDrive: true,
         fuelType: true,
         features: true,
+        damages: true,
+        location: {
+          include: {
+            address: true,
+          },
+        },
       },
     });
 
@@ -163,6 +249,12 @@ const updateVehicle = async (req: Request, res: Response) => {
         wheelDrive: true,
         fuelType: true,
         features: true,
+        damages: true,
+        location: {
+          include: {
+            address: true,
+          },
+        },
       },
     });
 
@@ -175,6 +267,7 @@ const updateVehicle = async (req: Request, res: Response) => {
 const deleteVehicle = async (req: Request, res: Response) => {
   const { id } = req.params;
   const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
 
   try {
     await prisma.vehicle.update({
@@ -186,7 +279,31 @@ const deleteVehicle = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json({ message: "Vehicle deleted" });
+    const vehicles = await prisma.vehicle.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        make: true,
+        model: {
+          include: {
+            type: true,
+          },
+        },
+        vehicleStatus: true,
+        vehicleGroup: true,
+        transmission: true,
+        wheelDrive: true,
+        fuelType: true,
+        features: true,
+        damages: true,
+        location: {
+          include: {
+            address: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(vehicles);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error Deleting Vehicle" });
@@ -195,11 +312,30 @@ const deleteVehicle = async (req: Request, res: Response) => {
 // #endregion
 
 // #region VehicleDamages
+const getVehicleDamages = async (req: Request, res: Response) => {
+  const { vehicleId } = req.params;
+
+  try {
+    const vehicleDamages = await prisma.vehicleDamage.findMany({
+      where: { vehicleId, isDeleted: false },
+      include: {
+        customer: true,
+      },
+    });
+
+    res.status(200).json(vehicleDamages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error Fetching Vehicle Damages" });
+  }
+};
 const addVehicleDamage = async (req: Request, res: Response) => {
   const { damage } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
   try {
+    console.log("damage", damage);
+
     await prisma.vehicleDamage.create({
       data: {
         id: damage.id,
@@ -211,7 +347,13 @@ const addVehicleDamage = async (req: Request, res: Response) => {
         createdAt: new Date(),
         updatedAt: new Date(),
         updatedBy: userId,
-        customerId: damage.customerId,
+        customerId:
+          damage.customerId &&
+          (await prisma.customer.findUnique({
+            where: { id: damage.customerId },
+          }))
+            ? damage.customerId
+            : null,
         location: damage.location,
         repairedAt: damage.repairedAt,
         severity: damage.severity,
@@ -229,134 +371,79 @@ const addVehicleDamage = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error Adding Vehicle Damage" });
   }
 };
-const updateVehicleDamage = async (req: Request, res: Response) => {};
-// #endregion
-
-const upsertVehicle = async (req: Request, res: Response) => {
-  const { vehicle } = req.body;
+const updateVehicleDamage = async (req: Request, res: Response) => {
+  const { damage } = req.body;
   const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
+  console.log("damage", damage);
 
   try {
-    await prisma.vehicle.upsert({
-      where: { id: vehicle.id },
-      update: {
-        color: vehicle.color,
-        engineVolume: vehicle.engineVolume,
-        featuredImage: vehicle.featuredImage,
-        features: {
-          connect: vehicle.features.map((feature: any) => ({ id: feature.id })),
-        },
-        fuelLevel: parseInt(vehicle.fuelLevel),
-        fuelType: { connect: { id: vehicle.fuelTypeId } },
-        images: vehicle.images,
-        insurance: vehicle.insurance,
-        insuranceExpiry: vehicle.insuranceExpiry,
-        licensePlate: vehicle.licensePlate,
-        make: { connect: { id: vehicle.makeId } },
-        model: { connect: { id: vehicle.modelId } },
-        numberOfSeats: vehicle.numberOfSeats,
-        numberOfDoors: vehicle.numberOfDoors,
-        odometer: vehicle.odometer,
-        registrationExpiry: vehicle.registrationExpiry,
-        registrationNumber: vehicle.registrationNumber,
-        tankVolume: vehicle.tankVolume,
-        transmission: { connect: { id: vehicle.transmissionId } },
-        vehicleGroup: { connect: { id: vehicle.vehicleGroupId } },
-        vehicleStatus: { connect: { id: vehicle.vehicleStatusId } },
-        vin: vehicle.vin,
-        year: vehicle.year,
-        wheelDrive: { connect: { id: vehicle.wheelDriveId } },
-        tenant: { connect: { id: tenantId } },
-      },
-      create: {
-        id: vehicle.id,
-        color: vehicle.color,
-        engineVolume: vehicle.engineVolume,
-        featuredImage: vehicle.featuredImage,
-        features: {
-          connect: vehicle.features.map((feature: any) => ({ id: feature.id })),
-        },
-        fuelLevel: parseInt(vehicle.fuelLevel),
-        images: vehicle.images,
-        insurance: vehicle.insurance,
-        insuranceExpiry: vehicle.insuranceExpiry,
-        licensePlate: vehicle.licensePlate,
-        make: { connect: { id: vehicle.makeId } },
-        model: { connect: { id: vehicle.modelId } },
-        numberOfSeats: vehicle.numberOfSeats,
-        numberOfDoors: vehicle.numberOfDoors,
-        odometer: vehicle.odometer,
-        registrationExpiry: vehicle.registrationExpiry,
-        registrationNumber: vehicle.registrationNumber,
-        tankVolume: vehicle.tankVolume,
-        vin: vehicle.vin,
-        year: vehicle.year,
-        transmission: { connect: { id: vehicle.transmissionId } },
-        vehicleGroup: { connect: { id: vehicle.vehicleGroupId } },
-        vehicleStatus: { connect: { id: vehicle.vehicleStatusId } },
-        createdAt: new Date(),
+    await prisma.vehicleDamage.update({
+      where: { id: damage.id },
+      data: {
+        vehicleId: damage.vehicleId,
+        description: damage.description,
+        images: damage.images,
+        isRepaired: damage.isRepaired,
+        partId: damage.partId,
         updatedAt: new Date(),
         updatedBy: userId,
-        wheelDrive: { connect: { id: vehicle.wheelDriveId } },
-        fuelType: { connect: { id: vehicle.fuelTypeId } },
-        tenant: { connect: { id: tenantId } },
+        customerId:
+          damage.customerId &&
+          (await prisma.customer.findUnique({
+            where: { id: damage.customerId },
+          }))
+            ? damage.customerId
+            : null,
+        location: damage.location,
+        repairedAt: damage.repairedAt,
+        severity: damage.severity,
+        title: damage.title,
       },
     });
 
-    if (vehicle.damages && vehicle.damages.length > 0) {
-      for (const damage of vehicle.damages) {
-        await prisma.vehicleDamage.upsert({
-          where: { id: damage.id },
-          update: {
-            vehicleId: vehicle.id,
-            description: damage.description,
-            customerId: damage.customerId,
-            images: damage.image,
-            isRepaired: damage.isRepaired,
-            partId: damage.partId,
-            location: damage.location,
-            repairedAt: damage.repairedAt,
-            severity: damage.severity,
-            title: damage.title,
-            updatedAt: new Date(),
-            updatedBy: userId,
-          },
-          create: {
-            id: damage.id,
-            vehicleId: vehicle.id,
-            description: damage.description,
-            images: damage.image,
-            isRepaired: false,
-            partId: damage.partId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            updatedBy: userId,
-            customerId: damage.customerId,
-            location: damage.location,
-            repairedAt: damage.repairedAt,
-            severity: damage.severity,
-            title: damage.title,
-          },
-        });
-      }
-    }
-
-    const vehicleGroups = await prisma.vehicleGroup.findMany({
-      where: { tenantId, isDeleted: false },
-      include: {
-        discounts: true,
-        maintenanceServices: true,
-        vehicles: true,
-      },
+    const vehicleDamages = await prisma.vehicleDamage.findMany({
+      where: { vehicleId: damage.vehicleId, isDeleted: false },
     });
 
-    res.status(201).json({ ...vehicleGroups });
-  } catch (error: any) {
+    res.status(200).json({ ...vehicleDamages });
+  } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Error Updating Vehicle Damage" });
   }
 };
+const deleteVehicleDamage = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const userId = req.user?.id;
+
+  try {
+    const vehicleDamage = await prisma.vehicleDamage.findUnique({
+      where: { id },
+    });
+
+    const vehicle = await prisma.vehicle.findUnique({
+      where: { id: vehicleDamage?.vehicleId },
+    });
+
+    await prisma.vehicleDamage.update({
+      where: { id },
+      data: {
+        isDeleted: true,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const vehicleDamages = await prisma.vehicleDamage.findMany({
+      where: { vehicleId: vehicle?.id, isDeleted: false },
+    });
+
+    res.status(200).json({ ...vehicleDamages });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error Deleting Vehicle Damage" });
+  }
+};
+// #endregion
 
 // #region Vehicle Group
 const getVehicleGroups = async (req: Request, res: Response) => {
@@ -403,8 +490,6 @@ const upsertVehicleGroup = async (req: Request, res: Response) => {
         maximumBooking: vehicleGroup.maximumBooking,
         minimumAge: vehicleGroup.minimumAge,
         drivingExperience: vehicleGroup.drivingExperience,
-        securityDeposit: vehicleGroup.securityDeposit,
-        securityDepositPolicy: vehicleGroup.securityDepositPolicy,
         cancellationAmount: vehicleGroup.cancellationAmount,
         cancellationPolicy: vehicleGroup.cancellationPolicy,
         lateFee: vehicleGroup.lateFee,
@@ -430,8 +515,6 @@ const upsertVehicleGroup = async (req: Request, res: Response) => {
         maximumBooking: vehicleGroup.maximumBooking,
         minimumAge: vehicleGroup.minimumAge,
         drivingExperience: vehicleGroup.drivingExperience,
-        securityDeposit: vehicleGroup.securityDeposit,
-        securityDepositPolicy: vehicleGroup.securityDepositPolicy,
         cancellationAmount: vehicleGroup.cancellationAmount,
         cancellationPolicy: vehicleGroup.cancellationPolicy,
         lateFee: vehicleGroup.lateFee,
@@ -520,6 +603,7 @@ const upsertVehicleGroup = async (req: Request, res: Response) => {
 };
 // #endregion
 
+// #region Vehicle Group Discounts
 const addVehicleGroupDiscount = async (req: Request, res: Response) => {
   const { discount } = req.body;
   const userId = req.user?.id;
@@ -597,6 +681,7 @@ const deleteVehicleGroupDiscount = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+// #endregion
 
 const addVehicleGroupMaintenance = async (req: Request, res: Response) => {
   const { body } = req.body;
@@ -644,9 +729,13 @@ export default {
   updateVehicleGroupDiscount,
   deleteVehicleGroupDiscount,
   addVehicleGroupMaintenance,
-  upsertVehicle,
   getVehicles,
+  getVehicleById,
   addVehicle,
   updateVehicle,
   deleteVehicle,
+  getVehicleDamages,
+  addVehicleDamage,
+  updateVehicleDamage,
+  deleteVehicleDamage,
 };

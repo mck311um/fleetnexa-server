@@ -8,6 +8,7 @@ enum Severity {
 enum Agent {
   MANUAL
   RENTNEXA
+  PARTNER
 }
 
 enum CustomerStatus {
@@ -33,4 +34,23 @@ enum PricePolicy {
   PERCENTAGE
   DAILY_PRICE
   FLAT_RATE
+}
+
+enum SubscriptionStatus {
+  PENDING
+  TRIAL
+  ACTIVE
+  SUSPENDED
+  CANCELED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  COMPLETED
+  CANCELED
+  EXPIRED
+  NO_SHOW
+  REFUNDED
 }
