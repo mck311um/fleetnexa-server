@@ -18,6 +18,8 @@ model Customer {
   bookings          Booking[]
   invoices          Invoice[]
   apps              CustomerMessengerApp[]
+  rentalActivity    RentalActivity[]
+
 
 
   isActive          Boolean   @default(false)
@@ -27,6 +29,7 @@ model Customer {
   updatedBy         String?
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
+
 
 
 }

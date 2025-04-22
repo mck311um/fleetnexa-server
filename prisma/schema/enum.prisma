@@ -54,3 +54,10 @@ enum BookingStatus {
   NO_SHOW
   REFUNDED
 }
+
+enum RentalAction {
+  BOOKED
+  CANCELED
+  RETURNED
+  EXTENDED
+}
