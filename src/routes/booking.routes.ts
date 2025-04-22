@@ -9,5 +9,6 @@ const router = express.Router();
 router.get("/", auth, controller.getBookings);
 
 router.post("/", auth, controller.handleBooking);
+router.post("/confirm", auth, controller.confirmBooking);
 
 export default router;

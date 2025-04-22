@@ -1,0 +1,16 @@
+model RentalActivity {
+    id                String    @id @default(dbgenerated("gen_random_uuid()"))
+    customerId        String
+    bookingId         String
+    action            RentalAction
+    vehicleId         String
+    createdAt         DateTime  @default(now())
+    createdBy         String?
+    tenantId          String
+
+    customer          Customer   @relation(fields: [customerId], references: [id])
+    vehicle           Vehicle    @relation(fields: [vehicleId], references: [id])
+    booking           Booking   @relation(fields: [bookingId], references: [id])
+    user              User?     @relation(fields: [createdBy], references: [id])
+    tenant            Tenant    @relation(fields: [tenantId], references: [id])
+}

@@ -16,6 +16,7 @@ model Booking {
   createdBy         String?
   updatedBy         String?
   notes             String?
+  isDeleted         Boolean  @default(false)
 
   values            Values?
   invoice           Invoice?
@@ -29,6 +30,8 @@ model Booking {
 
 
   user             User?     @relation(fields: [createdBy], references: [id])
+
+  rentalActivity RentalActivity[]
 }
 
 model Payments {

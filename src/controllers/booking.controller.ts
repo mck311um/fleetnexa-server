@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { bookingService } from "../service/booking.service";
+import { tenantService } from "../service/tenant.service";
+import generator from "../services/pdfGenerator";
+import { InvoiceData } from "../types/pdf";
 
 const prisma = new PrismaClient();
 
@@ -10,54 +14,31 @@ const getBookings = async (req: Request, res: Response) => {
     if (!tenantId) {
       return res.status(400).json({ error: "Tenant ID is required" });
     }
-
-    const bookings = await prisma.booking.findMany({
-      where: { tenantId },
-      include: {
-        pickup: true,
-        return: true,
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        vehicle: {
-          include: {
-            make: true,
-            model: {
-              include: {
-                type: true,
-              },
-            },
-            vehicleStatus: true,
-            vehicleGroup: true,
-            transmission: true,
-            wheelDrive: true,
-            fuelType: true,
-            features: true,
-            damages: {
-              where: { isDeleted: false },
-              include: {
-                customer: true,
-              },
-            },
-          },
-        },
-        vehicleGroup: true,
-        customer: true,
-        values: {
-          include: {
-            extras: true,
-          },
-        },
-      },
-    });
-
+    const bookings = await bookingService.getBookings(tenantId);
     return res.status(200).json(bookings);
   } catch (error) {
     console.error("Error fetching bookings:", error);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : undefined,
+    });
+  }
+};
+const getBookingById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const tenantId = req.user?.tenantId;
+  const userId = req.user?.id;
+  try {
+    if (!tenantId) {
+      return res.status(400).json({ error: "Tenant ID is required" });
+    }
+    const booking = await bookingService.getBookingById(id, tenantId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+    return res.status(200).json(booking);
+  } catch (error) {
+    console.error("Error fetching booking:", error);
     return res.status(500).json({
       error: "Internal server error",
       details: error instanceof Error ? error.message : undefined,
@@ -224,7 +205,114 @@ const handleBooking = async (req: Request, res: Response) => {
     });
   }
 };
+const confirmBooking = async (req: Request, res: Response) => {
+  const { booking, invoiceData } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: "CONFIRMED",
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+
+      const vehicleStatus = await tx.vehicleStatus.findFirst({
+        where: {
+          status: "Reserved",
+        },
+      });
+
+      await tx.vehicle.update({
+        where: { id: booking.vehicleId },
+        data: {
+          vehicleStatusId: vehicleStatus?.id,
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+
+      const tenant = await tenantService.getTenantById(tenantId!);
+
+      await tx.rentalActivity.create({
+        data: {
+          bookingId: booking.id,
+          action: "BOOKED",
+          createdAt: new Date(),
+          createdBy: userId,
+          customerId: booking.customerId,
+          vehicleId: booking.vehicleId,
+          tenantId: tenantId!,
+        },
+      });
+    });
+
+    const invoiceNumber = await generateInvoiceNumber(tenantId!);
+    const { url: invoiceUrl } = await generator.createInvoice(
+      {
+        ...invoiceData,
+        invoiceNumber,
+      },
+      invoiceNumber
+    );
+
+    console.log("Invoice URL:", invoiceUrl);
+
+    return res.status(200);
+  } catch (error) {
+    console.error("Error confirming booking:", error);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : undefined,
+    });
+  }
+};
+
+const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
+  const tenant = await prisma.tenant.findUnique({
+    where: { id: tenantId },
+    include: { invoiceSequence: true },
+  });
+
+  if (!tenant?.invoiceSequence) {
+    throw new Error("Tenant has no invoice sequence configured");
+  }
+
+  const lastInvoice = await prisma.invoice.findFirst({
+    where: { tenantId },
+    orderBy: { createdAt: "desc" },
+    select: { invoiceNumber: true },
+  });
+
+  const lastNumber = lastInvoice?.invoiceNumber
+    ? parseInt(lastInvoice.invoiceNumber.match(/\d+$/)?.[0] || "0", 10)
+    : 0;
+  const nextNumber = lastNumber + 1;
+
+  const now = new Date();
+  const year = now.getFullYear().toString();
+  const month = (now.getMonth() + 1).toString().padStart(2, "0");
+  const day = now.getDate().toString().padStart(2, "0");
+
+  let prefix = tenant.invoiceSequence.prefix;
+  prefix = prefix
+    .replace(/{year}/g, year)
+    .replace(/{month}/g, month)
+    .replace(/{day}/g, day)
+    .replace(/{tenantId}/g, tenantId.substring(0, 4));
+
+  const sequenceNumber = nextNumber.toString().padStart(3, "0");
+
+  return `${prefix}${sequenceNumber}`;
+};
+
 export default {
-  handleBooking,
   getBookings,
+  getBookingById,
+  handleBooking,
+  confirmBooking,
 };

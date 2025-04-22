@@ -31,7 +31,7 @@ model VehicleGroup {
   updatedAt             DateTime? @updatedAt
   updatedBy             String?
 
-  Booking               Booking[]
+  bookings              Booking[]
   vehicles              Vehicle[]
   discounts             VehicleDiscount[]
   maintenanceServices   VehicleGroupMaintenanceService[]
@@ -78,6 +78,7 @@ model Vehicle {
   damages               VehicleDamage[]
   features              VehicleFeature[] @relation("VehicleToVehicleFeature")
   bookings              Booking[]
+  rentalActivity        RentalActivity[]
 
   fuelType              FuelType?         @relation(fields: [fuelTypeId], references: [id])
   make                  VehicleMake?      @relation(fields: [makeId], references: [id])
@@ -88,6 +89,9 @@ model Vehicle {
   wheelDrive            WheelDrive?      @relation(fields: [wheelDriveId], references: [id])
   tenant                Tenant?          @relation(fields: [tenantId], references: [id])
   location              TenantLocation?   @relation(fields: [locationId], references: [id])
+
+
+
 }
 
 model VehicleDiscount {
