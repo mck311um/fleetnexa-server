@@ -17,7 +17,7 @@ model ChargeType {
 
 model VehicleBrand {
   id            String         @id @default(dbgenerated("gen_random_uuid()"))
-  make          String
+  brand         String
 
   vehicle       Vehicle[]
   models        VehicleModel[]

@@ -87,13 +87,13 @@ const formsGetData = async (req: Request, res: Response) => {
 };
 
 const addVehicleMake = async (req: any, res: any) => {
-  const { make } = req.body;
+  const { brand } = req.body;
 
   try {
     const existingMake = await prisma.vehicleBrand.findFirst({
       where: {
-        make: {
-          equals: make.toLowerCase(),
+        brand: {
+          equals: brand.toLowerCase(),
           mode: "insensitive",
         },
       },
@@ -105,7 +105,7 @@ const addVehicleMake = async (req: any, res: any) => {
 
     await prisma.vehicleBrand.create({
       data: {
-        make,
+        brand,
       },
     });
 
