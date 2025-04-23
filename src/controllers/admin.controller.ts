@@ -151,11 +151,11 @@ const addVehicleType = async (req: any, res: any) => {
 };
 
 const addVehicleModel = async (req: any, res: any) => {
-  const { makeId, model, typeId } = req.body;
+  const { brandId, model, bodyTypeId } = req.body;
 
   try {
     const vehicleMake = await prisma.vehicleBrand.findUnique({
-      where: { id: makeId },
+      where: { id: brandId },
     });
 
     if (!vehicleMake) {
@@ -164,9 +164,9 @@ const addVehicleModel = async (req: any, res: any) => {
 
     await prisma.vehicleModel.create({
       data: {
-        make: { connect: { id: makeId } },
-        bodyType: { connect: { id: typeId } },
-        model: model.toUpperCase(),
+        brand: { connect: { id: brandId } },
+        bodyType: { connect: { id: bodyTypeId } },
+        model: model,
       },
     });
 

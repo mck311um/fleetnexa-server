@@ -37,6 +37,17 @@ const getVehicleById = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+const getVehiclesByGroup = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const tenantId = req.user?.tenantId;
+  try {
+    const vehicles = await vehicleService.getVehicleByGroupId(id, tenantId!);
+    res.status(200).json(vehicles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 const addVehicle = async (req: Request, res: Response) => {
   const { vehicle } = req.body;
   const userId = req.user?.id;
@@ -87,7 +98,7 @@ const addVehicle = async (req: Request, res: Response) => {
       },
     });
 
-    const vehicles = vehicleService.getVehicles(tenantId!);
+    const vehicles = await vehicleService.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
     console.error(error);
@@ -708,6 +719,7 @@ export default {
   addVehicleGroupMaintenance,
   getVehicles,
   getVehicleById,
+  getVehiclesByGroup,
   addVehicle,
   updateVehicle,
   deleteVehicle,

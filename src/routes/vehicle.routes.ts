@@ -8,7 +8,8 @@ const router = express.Router();
 
 router.get("/", auth, controller.getVehicles);
 router.get("/groups", auth, controller.getVehicleGroups);
-router.get("/groups/:id", auth, controller.getVehicleById);
+router.get("/groups/:id/vehicles", auth, controller.getVehiclesByGroup);
+router.get("/groups/:id", auth, controller.getVehicleGroupById);
 router.get("/damages/:id", auth, controller.getVehicleDamages);
 router.get("/:id", auth, controller.getVehicleById);
 

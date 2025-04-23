@@ -26,12 +26,12 @@ model VehicleBrand {
 model VehicleModel {
   id        String       @id @default(dbgenerated("gen_random_uuid()"))
   model     String
-  makeId    String
+  brandId   String
   typeId    String?
 
   vehicles  Vehicle[]
 
-  make      VehicleBrand  @relation(fields: [makeId], references: [id])
+  brand      VehicleBrand  @relation(fields: [brandId], references: [id])
   bodyType  VehicleBodyType? @relation(fields: [typeId], references: [id])
 }
 

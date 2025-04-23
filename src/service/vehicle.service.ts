@@ -24,6 +24,22 @@ class VehicleService {
     });
   }
 
+  async getVehicleByGroupId(
+    groupId: string,
+    tenantId: string,
+    additionalWhere?: Prisma.VehicleWhereInput
+  ) {
+    return prisma.vehicle.findMany({
+      where: {
+        tenantId,
+        vehicleGroupId: groupId,
+        isDeleted: false,
+        ...additionalWhere,
+      },
+      include: this.getVehicleIncludeOptions(),
+    });
+  }
+
   private getVehicleIncludeOptions(): Prisma.VehicleInclude {
     return {
       brand: true,
