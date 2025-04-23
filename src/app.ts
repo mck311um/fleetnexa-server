@@ -17,6 +17,8 @@ import twillioRoutes from "./routes/twillio.routes";
 import paddleRoutes from "./routes/paddle.routes";
 import bookingRoutes from "./routes/booking.routes";
 
+import "./cron/maintenance.cron";
+
 dotenv.config();
 
 const app: Application = express();

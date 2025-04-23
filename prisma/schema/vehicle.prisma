@@ -74,11 +74,12 @@ model Vehicle {
   createdBy             String?
   updatedBy             String?
   
-
   damages               VehicleDamage[]
   features              VehicleFeature[] @relation("VehicleToVehicleFeature")
   bookings              Booking[]
   rentalActivity        RentalActivity[]
+  serviceLog            VehicleServiceLog[]
+  serviceSchedule       VehicleServiceSchedule[]
 
   fuelType              FuelType?         @relation(fields: [fuelTypeId], references: [id])
   brand                 VehicleBrand?      @relation(fields: [brandId], references: [id])
@@ -89,9 +90,6 @@ model Vehicle {
   wheelDrive            WheelDrive?      @relation(fields: [wheelDriveId], references: [id])
   tenant                Tenant?          @relation(fields: [tenantId], references: [id])
   location              TenantLocation?   @relation(fields: [locationId], references: [id])
-
-
-
 }
 
 model VehicleDiscount {
@@ -136,6 +134,8 @@ model VehicleDamage {
 
   vehicle               Vehicle @relation(fields: [vehicleId], references: [id])
   customer              Customer? @relation(fields: [customerId], references: [id])
+
+  serviceLogs           VehicleServiceLog[]
 }
 
 model VehiclePart {
@@ -154,16 +154,54 @@ model FuelPolicy {
 }
 
 model VehicleGroupMaintenanceService {
-  id               String    @id @default(dbgenerated("gen_random_uuid()"))
-  vehicleGroupId   String
-  serviceId        String
-  period           Int
-  enabled          Boolean
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime? @updatedAt
-  updatedBy        String?
+  id                 String    @id @default(dbgenerated("gen_random_uuid()"))
+  vehicleGroupId     String
+  serviceId          String
+  period             Int
+  enabled            Boolean
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime? @updatedAt
+  updatedBy          String?
   
-  vehicleGroup     VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
+  vehicleGroup       VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
   maintenanceService MaintenanceService @relation(fields: [serviceId], references: [id])
+  serviceScheduled   VehicleServiceSchedule[]
+}
 
+model VehicleServiceLog {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  vehicleId           String
+  serviceId           String
+  servicedAt          DateTime
+  notes               String?
+  contactId           String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime? @updatedAt
+  updatedBy           String?
+  scheduledServiceId  String?
+  damageId            String?
+  cost                Float?
+  documents           String[]
+  
+  vehicle             Vehicle @relation(fields: [vehicleId], references: [id])
+  maintenanceService  MaintenanceService @relation(fields: [serviceId], references: [id])
+  contact             TenantContact? @relation(fields: [contactId], references: [id])
+  scheduledService    VehicleServiceSchedule? @relation("ScheduleToLogs", fields: [scheduledServiceId], references: [id])
+  damage              VehicleDamage? @relation(fields: [damageId], references: [id])
+}
+
+model VehicleServiceSchedule {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  vehicleId           String
+  serviceId           String
+  scheduledDate       DateTime
+  isCompleted         Boolean   @default(false)
+  isManual            Boolean   @default(false)
+  groupMaintenanceId  String?
+
+
+  vehicle             Vehicle @relation(fields: [vehicleId], references: [id])
+  maintenanceService  MaintenanceService @relation(fields: [serviceId], references: [id])
+  serviceLogs         VehicleServiceLog[] @relation("ScheduleToLogs")
+  groupMaintenance    VehicleGroupMaintenanceService? @relation(fields: [groupMaintenanceId], references: [id])
 }

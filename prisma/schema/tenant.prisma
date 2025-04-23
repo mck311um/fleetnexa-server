@@ -37,10 +37,7 @@ model Tenant {
   equipment           TenantEquipment[]
   insurance           TenantInsurance[]
   rentalActivity      RentalActivity[]
-
-
-
-
+  contacts            TenantContact[]
 }
 
 
@@ -179,4 +176,22 @@ model TenantSubscription {
 
   plan                SubscriptionPlan? @relation(fields: [planId], references: [id])
   tenant              Tenant @relation(fields: [tenantId], references: [id])
+}
+
+model TenantContact {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  name                String
+  email               String
+  phone               String
+  tenantId            String
+  contactTypeId       String
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime? @updatedAt
+
+  serviceLog          VehicleServiceLog[]
+
+
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  contactType         ContactType @relation(fields: [contactTypeId], references: [id])
+
 }
