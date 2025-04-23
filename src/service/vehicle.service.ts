@@ -139,6 +139,7 @@ class VehicleGroupService {
       fuelPolicy: true,
       bookings: true,
       vehicles: {
+        where: { isDeleted: false },
         include: {
           bookings: true,
           brand: true,
@@ -146,7 +147,12 @@ class VehicleGroupService {
         },
       },
       _count: {
-        select: { vehicles: true, bookings: true },
+        select: {
+          vehicles: {
+            where: { isDeleted: false },
+          },
+          bookings: true,
+        },
       },
     };
   }

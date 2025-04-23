@@ -168,7 +168,7 @@ const deleteVehicle = async (req: Request, res: Response) => {
       },
     });
 
-    const vehicles = vehicleService.getVehicles(tenantId!);
+    const vehicles = await vehicleService.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
     console.error(error);
