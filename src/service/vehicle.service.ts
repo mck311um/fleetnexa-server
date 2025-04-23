@@ -49,7 +49,18 @@ class VehicleService {
         },
       },
       vehicleStatus: true,
-      vehicleGroup: true,
+      vehicleGroup: {
+        include: {
+          discounts: true,
+          maintenanceServices: {
+            include: {
+              maintenanceService: true,
+            },
+          },
+          chargeType: true,
+          fuelPolicy: true,
+        },
+      },
       transmission: true,
       wheelDrive: true,
       bookings: {
