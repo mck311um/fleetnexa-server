@@ -101,6 +101,19 @@ class VehicleService {
           address: true,
         },
       },
+      serviceLogs: {
+        include: {
+          maintenanceService: true,
+          contact: true,
+          scheduledService: true,
+          damage: true,
+        },
+      },
+      scheduledServices: {
+        include: {
+          maintenanceService: true,
+        },
+      },
     };
   }
 }

@@ -78,8 +78,8 @@ model Vehicle {
   features              VehicleFeature[] @relation("VehicleToVehicleFeature")
   bookings              Booking[]
   rentalActivity        RentalActivity[]
-  serviceLog            VehicleServiceLog[]
-  serviceSchedule       VehicleServiceSchedule[]
+  serviceLogs           VehicleServiceLog[]
+  scheduledServices     VehicleServiceSchedule[]
 
   fuelType              FuelType?         @relation(fields: [fuelTypeId], references: [id])
   brand                 VehicleBrand?      @relation(fields: [brandId], references: [id])
