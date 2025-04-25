@@ -241,6 +241,7 @@ const confirmBooking = async (req: Request, res: Response) => {
         tenantId,
         createdAt: new Date(),
         createdBy: userId,
+        invoiceUrl: s3Key,
       },
     });
 
