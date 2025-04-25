@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { customerService } from "../service/customer.service";
 
 const prisma = new PrismaClient();
 
@@ -7,21 +8,7 @@ const getCustomers = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    const customers = await prisma.customer.findMany({
-      where: {
-        tenantId: tenantId,
-      },
-      include: {
-        address: true,
-        documents: true,
-        bookings: true,
-        invoices: true,
-        damages: true,
-        license: true,
-        apps: true,
-      },
-    });
-
+    const customers = await customerService.getCustomers(tenantId!);
     res.status(200).json(customers);
   } catch (error) {
     console.error("Error fetching customers:", error);
@@ -31,20 +18,10 @@ const getCustomers = async (req: Request, res: Response) => {
 const getCustomerById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const customer = await prisma.customer.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        address: true,
-        documents: true,
-        bookings: true,
-        invoices: true,
-        damages: true,
-        license: true,
-        apps: true,
-      },
-    });
+    const customer = await customerService.getCustomerById(
+      id,
+      req.user?.tenantId!
+    );
 
     if (!customer) {
       return res.status(404).json({ error: "Customer not found" });
@@ -62,87 +39,73 @@ const addCustomer = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    await prisma.customer.create({
-      data: {
-        id: customer.id,
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        gender: customer.gender,
-        dateOfBirth: customer.dateOfBirth,
-        email: customer.email,
-        phone: customer.phone,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        updatedBy: userId,
-        profileImage: customer.profileImage,
-        tenantId: tenantId!,
-        status: customer.status,
-      },
-    });
-
-    console.log(customer.license);
-
-    await prisma.driverLicense.create({
-      data: {
-        id: customer.license.id,
-        classId: customer.license.classId,
-        countryId: customer.license.countryId,
-        customerId: customer.id,
-        licenseNumber: customer.license.licenseNumber,
-        licenseIssued: customer.license.licenseIssued,
-        licenseExpiry: customer.license.licenseExpiry,
-        image: customer.license.image,
-      },
-    });
-
-    await prisma.customerAddress.create({
-      data: {
-        customer: { connect: { id: customer.id } },
-        street: customer.address.street,
-        zipCode: customer.address.zipCode
-          ? customer.address.zipCode.toString()
-          : null,
-        village: customer.address.villageId
-          ? { connect: { id: customer.address.villageId } }
-          : undefined,
-        state: customer.address.stateId
-          ? { connect: { id: customer.address.stateId } }
-          : undefined,
-        country: customer.address.countryId
-          ? { connect: { id: customer.address.countryId } }
-          : undefined,
-      },
-    });
-
-    if (customer.apps && customer.apps.length > 0) {
-      await prisma.customerMessengerApp.createMany({
-        data: customer.apps.map((app: any) => ({
-          id: app.id,
-          customerId: customer.id,
-          appId: app.appId,
-          account: app.account,
+    await prisma.$transaction(async (tx) => {
+      await tx.customer.create({
+        data: {
+          id: customer.id,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          gender: customer.gender,
+          dateOfBirth: customer.dateOfBirth,
+          email: customer.email,
+          phone: customer.phone,
           createdAt: new Date(),
           updatedAt: new Date(),
-        })),
+          updatedBy: userId,
+          profileImage: customer.profileImage,
+          tenantId: tenantId!,
+          status: customer.status,
+        },
       });
-    }
 
-    const customers = await prisma.customer.findMany({
-      where: {
-        tenantId: tenantId,
-      },
-      include: {
-        address: true,
-        documents: true,
-        bookings: true,
-        invoices: true,
-        damages: true,
-        license: true,
-        apps: true,
-      },
+      await tx.driverLicense.create({
+        data: {
+          id: customer.license.id,
+          classId: customer.license.classId,
+          countryId: customer.license.countryId,
+          customerId: customer.id,
+          licenseNumber: customer.license.licenseNumber,
+          licenseIssued: customer.license.licenseIssued,
+          licenseExpiry: customer.license.licenseExpiry,
+          image: customer.license.image,
+        },
+      });
+
+      await tx.customerAddress.create({
+        data: {
+          customer: { connect: { id: customer.id } },
+          street: customer.address.street,
+          zipCode: customer.address.zipCode
+            ? customer.address.zipCode.toString()
+            : null,
+          village: customer.address.villageId
+            ? { connect: { id: customer.address.villageId } }
+            : undefined,
+          state: customer.address.stateId
+            ? { connect: { id: customer.address.stateId } }
+            : undefined,
+          country: customer.address.countryId
+            ? { connect: { id: customer.address.countryId } }
+            : undefined,
+        },
+      });
+
+      if (customer.apps && customer.apps.length > 0) {
+        await tx.customerMessengerApp.createMany({
+          data: customer.apps.map((app: any) => ({
+            id: app.id,
+            customerId: customer.id,
+            appId: app.appId,
+            account: app.account,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })),
+        });
+      }
     });
 
-    res.status(200).json(customers);
+    const customers = await customerService.getCustomers(tenantId!);
+    res.status(201).json(customers);
   } catch (error) {
     console.error("Error inserting customer:", error);
     res.status(500).json({ error: "Failed to add customer" });
@@ -154,99 +117,87 @@ const updateCustomer = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    await prisma.customer.update({
-      where: { id: customer.id },
-      data: {
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        gender: customer.gender,
-        dateOfBirth: customer.dateOfBirth,
-        email: customer.email,
-        phone: customer.phone,
-        updatedBy: userId,
-        updatedAt: new Date(),
-        profileImage: customer.profileImage,
-        status: customer.status,
-      },
-    });
-
-    await prisma.driverLicense.update({
-      where: { customerId: customer.id },
-      data: {
-        classId: customer.license.classId,
-        countryId: customer.license.countryId,
-        licenseNumber: customer.license.licenseNumber,
-        licenseIssued: customer.license.licenseIssued,
-        licenseExpiry: customer.license.licenseExpiry,
-        image: customer.license.image,
-      },
-    });
-
-    await prisma.customerAddress.update({
-      where: { customerId: customer.id },
-      data: {
-        street: customer.address.street,
-        zipCode: customer.address.zipCode
-          ? customer.address.zipCode.toString()
-          : null,
-        village: customer.address.villageId
-          ? { connect: { id: customer.address.villageId } }
-          : undefined,
-        state: customer.address.stateId
-          ? { connect: { id: customer.address.stateId } }
-          : undefined,
-        country: customer.address.countryId
-          ? { connect: { id: customer.address.countryId } }
-          : undefined,
-      },
-    });
-
-    if (customer.apps && customer.apps.length > 0) {
-      await prisma.customerMessengerApp.deleteMany({
-        where: { customerId: customer.id },
-      });
-
-      await prisma.customerMessengerApp.createMany({
-        data: customer.apps.map((app: any) => ({
-          id: app.id,
-          customerId: customer.id,
-          appId: app.appId,
-          account: app.account,
-          createdAt: new Date(),
+    await prisma.$transaction(async (tx) => {
+      await tx.customer.update({
+        where: { id: customer.id },
+        data: {
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          gender: customer.gender,
+          dateOfBirth: customer.dateOfBirth,
+          email: customer.email,
+          phone: customer.phone,
+          updatedBy: userId,
           updatedAt: new Date(),
-        })),
+          profileImage: customer.profileImage,
+          status: customer.status,
+        },
       });
-    }
 
-    const customers = await prisma.customer.findMany({
-      where: {
-        tenantId: tenantId,
-      },
-      include: {
-        address: true,
-        documents: true,
-        bookings: true,
-        invoices: true,
-        damages: true,
-        license: true,
-        apps: true,
-      },
+      await tx.driverLicense.update({
+        where: { customerId: customer.id },
+        data: {
+          classId: customer.license.classId,
+          countryId: customer.license.countryId,
+          licenseNumber: customer.license.licenseNumber,
+          licenseIssued: customer.license.licenseIssued,
+          licenseExpiry: customer.license.licenseExpiry,
+          image: customer.license.image,
+        },
+      });
+
+      await tx.customerAddress.update({
+        where: { customerId: customer.id },
+        data: {
+          street: customer.address.street,
+          zipCode: customer.address.zipCode
+            ? customer.address.zipCode.toString()
+            : null,
+          village: customer.address.villageId
+            ? { connect: { id: customer.address.villageId } }
+            : undefined,
+          state: customer.address.stateId
+            ? { connect: { id: customer.address.stateId } }
+            : undefined,
+          country: customer.address.countryId
+            ? { connect: { id: customer.address.countryId } }
+            : undefined,
+        },
+      });
+
+      if (customer.apps && customer.apps.length > 0) {
+        await tx.customerMessengerApp.deleteMany({
+          where: { customerId: customer.id },
+        });
+
+        await tx.customerMessengerApp.createMany({
+          data: customer.apps.map((app: any) => ({
+            id: app.id,
+            customerId: customer.id,
+            appId: app.appId,
+            account: app.account,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })),
+        });
+      }
     });
 
-    res.status(200).json(customers);
+    const customers = await customerService.getCustomers(tenantId!);
+    res.status(201).json(customers);
   } catch (error) {
     console.error("Error updating customer:", error);
     res.status(500).json({ error: "Failed to update customer" });
   }
 };
 const deleteCustomer = async (req: Request, res: Response) => {
-  const { customerId } = req.params;
+  const { id } = req.params;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
   try {
     await prisma.customer.update({
-      where: { id: customerId },
+      where: { id },
       data: {
         isDeleted: true,
         updatedBy: userId,
@@ -254,26 +205,11 @@ const deleteCustomer = async (req: Request, res: Response) => {
       },
     });
 
-    const customers = await prisma.customer.findMany({
-      where: {
-        tenantId: tenantId,
-        isDeleted: false,
-      },
-      include: {
-        address: true,
-        documents: true,
-        bookings: true,
-        invoices: true,
-        damages: true,
-        license: true,
-        apps: true,
-      },
-    });
-
-    res.status(200).json(customers);
+    const customers = await customerService.getCustomers(tenantId!);
+    res.status(201).json(customers);
   } catch (error) {
     console.error("Error deleting customer:", error);
-    res.status(500).json({ error: "Failed to delete customer" });
+    res.status(500).json({ message: "Failed to delete customer" });
   }
 };
 
