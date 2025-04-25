@@ -66,6 +66,15 @@ export const runWeeklyStatCron = async () => {
           to,
           from
         ),
+        saveStat(
+          tenant.id,
+          week,
+          year,
+          "AVERAGE_BOOKING",
+          await calcAverageBookingDuration(tenant.id, from, to),
+          to,
+          from
+        ),
       ]);
     }
   }
@@ -81,7 +90,8 @@ const saveStat = async (
     | "TOTAL_REVENUE"
     | "NEW_BOOKINGS"
     | "RENTED_VEHICLES"
-    | "TOTAL_CUSTOMERS",
+    | "TOTAL_CUSTOMERS"
+    | "AVERAGE_BOOKING",
   value: number,
   from: Date,
   to: Date
@@ -165,6 +175,37 @@ const calcNewCustomers = async (
       createdAt: { gte: from, lte: to },
     },
   });
+};
+
+const calcAverageBookingDuration = async (
+  tenantId: string,
+  from: Date,
+  to: Date
+): Promise<number> => {
+  const bookings = await prisma.booking.findMany({
+    where: {
+      tenantId,
+      startDate: { gte: from },
+      endDate: { lte: to },
+      status: "COMPLETED",
+    },
+    select: {
+      startDate: true,
+      endDate: true,
+    },
+  });
+
+  if (bookings.length === 0) return 0;
+
+  const totalDays = bookings.reduce((acc, booking) => {
+    const diff = Math.ceil(
+      (booking.endDate.getTime() - booking.startDate.getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+    return acc + diff;
+  }, 0);
+
+  return totalDays / bookings.length;
 };
 
 cron.schedule("0 * * * *", async () => {
