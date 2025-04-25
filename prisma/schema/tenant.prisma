@@ -38,6 +38,7 @@ model Tenant {
   insurance           TenantInsurance[]
   rentalActivity      RentalActivity[]
   contacts            TenantContact[]
+  weeklyStats TenantWeeklyStats[]
 }
 
 

@@ -61,3 +61,12 @@ enum RentalAction {
   RETURNED
   EXTENDED
 }
+
+
+enum StatItem {
+  TOTAL_REVENUE
+  NEW_BOOKINGS
+  RENTED_VEHICLES
+  TOTAL_CUSTOMERS
+}
+

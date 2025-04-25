@@ -18,6 +18,7 @@ import paddleRoutes from "./routes/paddle.routes";
 import bookingRoutes from "./routes/booking.routes";
 
 import "./cron/maintenance.cron";
+import "./cron/stat.cron";
 
 dotenv.config();
 

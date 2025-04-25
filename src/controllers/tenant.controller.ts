@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import paddle from "../config/paddle";
+import { tenantService } from "../service/tenant.service";
 
 const prisma = new PrismaClient();
 
@@ -8,55 +9,7 @@ const getTenantById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const tenant = await prisma.tenant.findUnique({
-      where: { id },
-      include: {
-        address: {
-          include: {
-            village: true,
-            state: true,
-            country: true,
-          },
-        },
-        currency: true,
-        invoiceSequence: true,
-        paymentMethods: true,
-        customers: true,
-        subscription: true,
-        services: {
-          where: { isDeleted: false },
-          include: {
-            service: true,
-          },
-        },
-        insurance: {
-          where: { isDeleted: false },
-        },
-        equipment: {
-          where: { isDeleted: false },
-          include: {
-            equipment: true,
-          },
-        },
-        tenantLocations: {
-          where: { isDeleted: false },
-          include: {
-            vehicles: true,
-            address: true,
-            _count: {
-              select: { vehicles: true },
-            },
-          },
-        },
-        vehicleGroups: {
-          include: {
-            discounts: true,
-            maintenanceServices: true,
-          },
-        },
-      },
-    });
-
+    const tenant = await tenantService.getTenantById(id);
     if (!tenant) {
       return res.status(404).json({ message: "Tenant not found" });
     }

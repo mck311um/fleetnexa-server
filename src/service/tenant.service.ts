@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import { getISOWeek, getYear, subWeeks } from "date-fns";
 
 const prisma = new PrismaClient();
 
@@ -61,8 +62,28 @@ class TenantService {
           maintenanceServices: true,
         },
       },
+      weeklyStats: {
+        where: {
+          OR: getWeekFilters(),
+        },
+      },
     };
   }
 }
 
 export const tenantService = new TenantService();
+
+const getWeekFilters = () => {
+  const now = new Date();
+  const currentWeek = getISOWeek(now);
+  const currentYear = getYear(now);
+
+  const lastWeekDate = subWeeks(now, 1);
+  const previousWeek = getISOWeek(lastWeekDate);
+  const previousYear = getYear(lastWeekDate);
+
+  return [
+    { week: currentWeek, year: currentYear },
+    { week: previousWeek, year: previousYear },
+  ];
+};
