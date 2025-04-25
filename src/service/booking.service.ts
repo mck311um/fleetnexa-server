@@ -58,7 +58,18 @@ class BookingService {
         },
       },
       vehicleGroup: true,
-      customer: true,
+      customer: {
+        include: {
+          license: true,
+          address: {
+            include: {
+              village: true,
+              state: true,
+              country: true,
+            },
+          },
+        },
+      },
       values: {
         include: {
           extras: true,

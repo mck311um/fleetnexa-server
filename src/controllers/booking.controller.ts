@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { bookingService } from "../service/booking.service";
 import { tenantService } from "../service/tenant.service";
 import generator from "../services/pdfGenerator";
+import errorUtil from "../utils/error.util";
 import { InvoiceData } from "../types/pdf";
 
 const prisma = new PrismaClient();
@@ -161,71 +162,96 @@ const handleBooking = async (req: Request, res: Response) => {
     });
   }
 };
+
 const confirmBooking = async (req: Request, res: Response) => {
   const { booking, invoiceData } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
+  if (!tenantId) {
+    return res.status(400).json({ error: "Tenant ID is required" });
+  }
+
   try {
-    await prisma.$transaction(async (tx) => {
-      await tx.booking.update({
-        where: { id: booking.id },
-        data: {
-          status: "CONFIRMED",
-          updatedAt: new Date(),
-          updatedBy: userId,
-        },
-      });
+    // First generate the invoice number (quick database operation)
+    const invoiceNumber = await generateInvoiceNumber(tenantId);
 
-      const vehicleStatus = await tx.vehicleStatus.findFirst({
-        where: {
-          status: "Reserved",
-        },
-      });
+    // Then run the transaction with increased timeout
+    await prisma.$transaction(
+      async (tx) => {
+        // Update booking status
+        await tx.booking.update({
+          where: { id: booking.id },
+          data: {
+            status: "CONFIRMED",
+            updatedAt: new Date(),
+            updatedBy: userId,
+          },
+        });
 
-      await tx.vehicle.update({
-        where: { id: booking.vehicleId },
-        data: {
-          vehicleStatusId: vehicleStatus?.id,
-          updatedAt: new Date(),
-          updatedBy: userId,
-        },
-      });
+        // Update vehicle status
+        const vehicleStatus = await tx.vehicleStatus.findFirst({
+          where: { status: "Reserved" },
+        });
 
-      const tenant = await tenantService.getTenantById(tenantId!);
+        await tx.vehicle.update({
+          where: { id: booking.vehicleId },
+          data: {
+            vehicleStatusId: vehicleStatus?.id,
+            updatedAt: new Date(),
+            updatedBy: userId,
+          },
+        });
 
-      await tx.rentalActivity.create({
-        data: {
-          bookingId: booking.id,
-          action: "BOOKED",
-          createdAt: new Date(),
-          createdBy: userId,
-          customerId: booking.customerId,
-          vehicleId: booking.vehicleId,
-          tenantId: tenantId!,
-        },
-      });
-    });
+        await tx.rentalActivity.create({
+          data: {
+            bookingId: booking.id,
+            action: "BOOKED",
+            createdAt: new Date(),
+            createdBy: userId,
+            customerId: booking.customerId,
+            vehicleId: booking.vehicleId,
+            tenantId,
+          },
+        });
+      },
+      {
+        maxWait: 20000,
+        timeout: 15000,
+      }
+    );
 
-    const invoiceNumber = await generateInvoiceNumber(tenantId!);
-    await generator.createInvoice(
+    const tenant = await tenantService.getTenantById(tenantId);
+
+    const { s3Key } = await generator.createInvoice(
       {
         ...invoiceData,
         invoiceNumber,
       },
-      invoiceNumber
+      invoiceNumber,
+      tenant?.tenantCode!
     );
 
-    return res.status(200);
-  } catch (error) {
-    console.error("Error confirming booking:", error);
-    return res.status(500).json({
-      error: "Internal server error",
-      details: error instanceof Error ? error.message : undefined,
+    await prisma.invoice.create({
+      data: {
+        invoiceNumber,
+        amount: booking.values?.netTotal,
+        customerId: booking.customerId,
+        bookingId: booking.id,
+        tenantId,
+        createdAt: new Date(),
+        createdBy: userId,
+      },
     });
+
+    const bookings = await bookingService.getBookings(tenantId);
+    return res.status(201).json({
+      bookings,
+    });
+  } catch (error) {
+    return errorUtil.handleError(res, error, "confirming booking");
   }
 };
-
 const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
   const tenant = await prisma.tenant.findUnique({
     where: { id: tenantId },

@@ -47,7 +47,6 @@ model Payments {
   updatedBy         String?
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
-  invoice           Invoice   @relation(fields: [invoiceId], references: [id])
 }
 
 model Invoice {
@@ -58,7 +57,7 @@ model Invoice {
   tenantId          String
   customerId        String
   status            String    @default("pending")
-  payments          Payments[]
+  invoiceUrl        String?
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt

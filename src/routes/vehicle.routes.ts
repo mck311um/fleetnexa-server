@@ -19,7 +19,7 @@ router.post("/group", auth, controller.addVehicleGroup);
 router.post("/damage", auth, controller.addVehicleDamage);
 router.post("/maintenance", auth, controller.addVehicleGroupMaintenance);
 
-router.put("/vehicle", auth, controller.updateVehicle);
+router.put("/", auth, controller.updateVehicle);
 router.put("/discount", auth, controller.updateVehicleGroupDiscount);
 router.put("/damage", auth, controller.updateVehicleDamage);
 router.put("/group", auth, controller.updateVehicleGroup);
