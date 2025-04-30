@@ -47,6 +47,7 @@ enum SubscriptionStatus {
 enum BookingStatus {
   PENDING
   CONFIRMED
+  RESERVED
   ACTIVE
   COMPLETED
   CANCELED

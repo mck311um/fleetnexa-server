@@ -80,7 +80,7 @@ const handleBooking = async (req: Request, res: Response) => {
         notes: booking.notes,
       };
 
-      const upsertedBooking = await tx.booking.upsert({
+      await tx.booking.upsert({
         where: { id: booking.id },
         create: { id: booking.id, ...bookingData },
         update: bookingData,
@@ -173,31 +173,14 @@ const confirmBooking = async (req: Request, res: Response) => {
   }
 
   try {
-    // First generate the invoice number (quick database operation)
     const invoiceNumber = await generateInvoiceNumber(tenantId);
 
-    // Then run the transaction with increased timeout
     await prisma.$transaction(
       async (tx) => {
-        // Update booking status
         await tx.booking.update({
           where: { id: booking.id },
           data: {
             status: "CONFIRMED",
-            updatedAt: new Date(),
-            updatedBy: userId,
-          },
-        });
-
-        // Update vehicle status
-        const vehicleStatus = await tx.vehicleStatus.findFirst({
-          where: { status: "Reserved" },
-        });
-
-        await tx.vehicle.update({
-          where: { id: booking.vehicleId },
-          data: {
-            vehicleStatusId: vehicleStatus?.id,
             updatedAt: new Date(),
             updatedBy: userId,
           },

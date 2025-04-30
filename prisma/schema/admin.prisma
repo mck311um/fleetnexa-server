@@ -234,3 +234,10 @@ model ContactType {
 
   tenantContacts TenantContact[]
 }
+
+model PaymentType {
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  type          String
+  description   String
+
+}
