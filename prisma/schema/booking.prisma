@@ -20,6 +20,8 @@ model Booking {
 
   values            Values?
   invoice           Invoice?
+  rentalActivity    RentalActivity[]
+  payments          BookingPayments[]
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   pickup            TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])
@@ -31,22 +33,27 @@ model Booking {
 
   user             User?     @relation(fields: [createdBy], references: [id])
 
-  rentalActivity RentalActivity[]
 }
 
-model Payments {
+model BookingPayments {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   amount            Float
   paymentMethodId   String
-  invoiceId         String
+  paymentTypeId     String
+  tenantId          String
+  bookingId         String
+  notes             String?
+  isRefunded        Boolean  @default(false)
+  isDeleted         Boolean  @default(false)
+
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt
-  tenantId          String
-  status            String    @default("pending")
-  createdBy         String?
   updatedBy         String?
 
+  paymentType       PaymentType @relation(fields: [paymentTypeId], references: [id])
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  booking           Booking   @relation(fields: [bookingId], references: [id])
+  
 }
 
 model Invoice {
