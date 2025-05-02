@@ -28,6 +28,7 @@ class BookingService {
     return {
       pickup: true,
       return: true,
+      invoice: true,
       user: {
         select: {
           id: true,
@@ -37,10 +38,10 @@ class BookingService {
       },
       vehicle: {
         include: {
-          make: true,
+          brand: true,
           model: {
             include: {
-              type: true,
+              bodyType: true,
             },
           },
           vehicleStatus: true,
@@ -58,7 +59,18 @@ class BookingService {
         },
       },
       vehicleGroup: true,
-      customer: true,
+      customer: {
+        include: {
+          license: true,
+          address: {
+            include: {
+              village: true,
+              state: true,
+              country: true,
+            },
+          },
+        },
+      },
       values: {
         include: {
           extras: true,

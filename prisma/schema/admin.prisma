@@ -15,31 +15,31 @@ model ChargeType {
   VehicleGroup VehicleGroup[]
 }
 
-model VehicleMake {
+model VehicleBrand {
   id            String         @id @default(dbgenerated("gen_random_uuid()"))
-  make          String
+  brand         String
 
-  Vehicle       Vehicle[]
-  VehicleModels VehicleModel[]
+  vehicle       Vehicle[]
+  models        VehicleModel[]
 }
 
 model VehicleModel {
   id        String       @id @default(dbgenerated("gen_random_uuid()"))
   model     String
-  makeId    String
+  brandId   String
   typeId    String?
 
-  Vehicle   Vehicle[]
+  vehicles  Vehicle[]
 
-  make      VehicleMake  @relation(fields: [makeId], references: [id])
-  type      VehicleType? @relation(fields: [typeId], references: [id])
+  brand      VehicleBrand  @relation(fields: [brandId], references: [id])
+  bodyType  VehicleBodyType? @relation(fields: [typeId], references: [id])
 }
 
-model VehicleType {
+model VehicleBodyType {
   id           String         @id @default(dbgenerated("gen_random_uuid()"))
-  type         String
+  bodyType     String
 
-  VehicleModel VehicleModel[]
+  models       VehicleModel[]
 }
 
 model VehicleStatus {
@@ -137,11 +137,14 @@ model Village {
 }
 
 model MaintenanceService {
-  id          String    @id @default(dbgenerated("gen_random_uuid()"))
-  service     String
-  description String
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  service       String
+  description   String
 
-  services VehicleGroupMaintenanceService[]
+  services      VehicleGroupMaintenanceService[]
+  serviceLog    VehicleServiceLog[]
+
+  VehicleServiceSchedule VehicleServiceSchedule[]
 }
 
 model DocumentType {
@@ -223,4 +226,20 @@ model SubscriptionPlan {
   features      String[]
 
   TenantSubscription TenantSubscription[]
+}
+
+model ContactType {
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  type          String
+
+  tenantContacts TenantContact[]
+}
+
+model PaymentType {
+  id            String    @id @default(dbgenerated("gen_random_uuid()"))
+  type          String
+  description   String
+
+
+  bookingPayments BookingPayments[]
 }

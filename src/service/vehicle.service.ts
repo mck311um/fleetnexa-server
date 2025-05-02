@@ -24,16 +24,43 @@ class VehicleService {
     });
   }
 
+  async getVehicleByGroupId(
+    groupId: string,
+    tenantId: string,
+    additionalWhere?: Prisma.VehicleWhereInput
+  ) {
+    return prisma.vehicle.findMany({
+      where: {
+        tenantId,
+        vehicleGroupId: groupId,
+        isDeleted: false,
+        ...additionalWhere,
+      },
+      include: this.getVehicleIncludeOptions(),
+    });
+  }
+
   private getVehicleIncludeOptions(): Prisma.VehicleInclude {
     return {
-      make: true,
+      brand: true,
       model: {
         include: {
-          type: true,
+          bodyType: true,
         },
       },
       vehicleStatus: true,
-      vehicleGroup: true,
+      vehicleGroup: {
+        include: {
+          discounts: true,
+          maintenanceServices: {
+            include: {
+              maintenanceService: true,
+            },
+          },
+          chargeType: true,
+          fuelPolicy: true,
+        },
+      },
       transmission: true,
       wheelDrive: true,
       bookings: {
@@ -74,8 +101,75 @@ class VehicleService {
           address: true,
         },
       },
+      serviceLogs: {
+        include: {
+          maintenanceService: true,
+          contact: true,
+          scheduledService: true,
+          damage: true,
+        },
+      },
+      scheduledServices: {
+        include: {
+          maintenanceService: true,
+        },
+      },
+    };
+  }
+}
+
+class VehicleGroupService {
+  async getVehicleGroups(
+    tenantId: string,
+    additionalWhere?: Prisma.VehicleGroupWhereInput
+  ) {
+    return prisma.vehicleGroup.findMany({
+      where: {
+        tenantId,
+        isDeleted: false,
+        ...additionalWhere,
+      },
+      include: this.getVehicleGroupIncludeOptions(),
+    });
+  }
+
+  async getVehicleGroupById(id: string, tenantId: string) {
+    return prisma.vehicleGroup.findUnique({
+      where: { id, tenantId, isDeleted: false },
+      include: this.getVehicleGroupIncludeOptions(),
+    });
+  }
+
+  private getVehicleGroupIncludeOptions(): Prisma.VehicleGroupInclude {
+    return {
+      discounts: true,
+      maintenanceServices: {
+        include: {
+          maintenanceService: true,
+        },
+      },
+      chargeType: true,
+      fuelPolicy: true,
+      bookings: true,
+      vehicles: {
+        where: { isDeleted: false },
+        include: {
+          bookings: true,
+          brand: true,
+          model: true,
+        },
+      },
+      _count: {
+        select: {
+          vehicles: {
+            where: { isDeleted: false },
+          },
+          bookings: true,
+        },
+      },
     };
   }
 }
 
 export const vehicleService = new VehicleService();
+export const vehicleGroupService = new VehicleGroupService();

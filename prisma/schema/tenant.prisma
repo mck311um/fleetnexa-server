@@ -31,16 +31,14 @@ model Tenant {
   additions           Addition[]
   bookings            Booking[]
   invoices            Invoice[]
-  payments            Payments[]
+  payments            BookingPayments[]
   services            TenantService[]
   forms               Form[]
   equipment           TenantEquipment[]
   insurance           TenantInsurance[]
   rentalActivity      RentalActivity[]
-
-
-
-
+  contacts            TenantContact[]
+  weeklyStats TenantWeeklyStats[]
 }
 
 
@@ -179,4 +177,22 @@ model TenantSubscription {
 
   plan                SubscriptionPlan? @relation(fields: [planId], references: [id])
   tenant              Tenant @relation(fields: [tenantId], references: [id])
+}
+
+model TenantContact {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  name                String
+  email               String
+  phone               String
+  tenantId            String
+  contactTypeId       String
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime? @updatedAt
+
+  serviceLog          VehicleServiceLog[]
+
+
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  contactType         ContactType @relation(fields: [contactTypeId], references: [id])
+
 }

@@ -47,6 +47,7 @@ enum SubscriptionStatus {
 enum BookingStatus {
   PENDING
   CONFIRMED
+  RESERVED
   ACTIVE
   COMPLETED
   CANCELED
@@ -61,3 +62,14 @@ enum RentalAction {
   RETURNED
   EXTENDED
 }
+
+
+enum StatItem {
+  TOTAL_REVENUE
+  NEW_BOOKINGS
+  RENTED_VEHICLES
+  AVAILABLE_VEHICLES
+  TOTAL_CUSTOMERS
+  AVERAGE_BOOKING
+}
+

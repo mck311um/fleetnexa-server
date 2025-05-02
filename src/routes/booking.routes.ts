@@ -7,6 +7,7 @@ import { allowedOrigins } from "../config/cors";
 const router = express.Router();
 
 router.get("/", auth, controller.getBookings);
+router.get("/:id", auth, controller.getBookingById);
 
 router.post("/", auth, controller.handleBooking);
 router.post("/confirm", auth, controller.confirmBooking);
