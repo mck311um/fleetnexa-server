@@ -20,10 +20,13 @@ CREATE TYPE "PricePolicy" AS ENUM ('FIXED_AMOUNT', 'PERCENTAGE', 'DAILY_PRICE', 
 CREATE TYPE "SubscriptionStatus" AS ENUM ('PENDING', 'TRIAL', 'ACTIVE', 'SUSPENDED', 'CANCELED');
 
 -- CreateEnum
-CREATE TYPE "BookingStatus" AS ENUM ('PENDING', 'CONFIRMED', 'ACTIVE', 'COMPLETED', 'CANCELED', 'EXPIRED', 'NO_SHOW', 'REFUNDED');
+CREATE TYPE "BookingStatus" AS ENUM ('PENDING', 'CONFIRMED', 'RESERVED', 'ACTIVE', 'COMPLETED', 'CANCELED', 'EXPIRED', 'NO_SHOW', 'REFUNDED');
 
 -- CreateEnum
 CREATE TYPE "RentalAction" AS ENUM ('BOOKED', 'CANCELED', 'RETURNED', 'EXTENDED');
+
+-- CreateEnum
+CREATE TYPE "StatItem" AS ENUM ('TOTAL_REVENUE', 'NEW_BOOKINGS', 'RENTED_VEHICLES', 'AVAILABLE_VEHICLES', 'TOTAL_CUSTOMERS', 'AVERAGE_BOOKING');
 
 -- CreateEnum
 CREATE TYPE "FormType" AS ENUM ('customer_info', 'driver_registration', 'vehicle_inspection');
@@ -48,29 +51,29 @@ CREATE TABLE "ChargeType" (
 );
 
 -- CreateTable
-CREATE TABLE "VehicleMake" (
+CREATE TABLE "VehicleBrand" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
-    "make" TEXT NOT NULL,
+    "brand" TEXT NOT NULL,
 
-    CONSTRAINT "VehicleMake_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "VehicleBrand_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "VehicleModel" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "model" TEXT NOT NULL,
-    "makeId" TEXT NOT NULL,
+    "brandId" TEXT NOT NULL,
     "typeId" TEXT,
 
     CONSTRAINT "VehicleModel_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "VehicleType" (
+CREATE TABLE "VehicleBodyType" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
-    "type" TEXT NOT NULL,
+    "bodyType" TEXT NOT NULL,
 
-    CONSTRAINT "VehicleType_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "VehicleBodyType_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -255,6 +258,23 @@ CREATE TABLE "SubscriptionPlan" (
 );
 
 -- CreateTable
+CREATE TABLE "ContactType" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "type" TEXT NOT NULL,
+
+    CONSTRAINT "ContactType_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PaymentType" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "type" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+
+    CONSTRAINT "PaymentType_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Booking" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "startDate" TIMESTAMP(3) NOT NULL,
@@ -279,19 +299,21 @@ CREATE TABLE "Booking" (
 );
 
 -- CreateTable
-CREATE TABLE "Payments" (
+CREATE TABLE "BookingPayments" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "amount" DOUBLE PRECISION NOT NULL,
     "paymentMethodId" TEXT NOT NULL,
-    "invoiceId" TEXT NOT NULL,
+    "paymentTypeId" TEXT NOT NULL,
+    "tenantId" TEXT NOT NULL,
+    "bookingId" TEXT NOT NULL,
+    "notes" TEXT,
+    "isRefunded" BOOLEAN NOT NULL DEFAULT false,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
-    "tenantId" TEXT NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'pending',
-    "createdBy" TEXT,
     "updatedBy" TEXT,
 
-    CONSTRAINT "Payments_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "BookingPayments_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -303,6 +325,7 @@ CREATE TABLE "Invoice" (
     "tenantId" TEXT NOT NULL,
     "customerId" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'pending',
+    "invoiceUrl" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
     "createdBy" TEXT,
@@ -464,6 +487,22 @@ CREATE TABLE "RentalActivity" (
 );
 
 -- CreateTable
+CREATE TABLE "TenantWeeklyStats" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "tenantId" TEXT NOT NULL,
+    "week" INTEGER NOT NULL,
+    "year" INTEGER NOT NULL,
+    "stat" "StatItem" NOT NULL,
+    "value" DOUBLE PRECISION NOT NULL,
+    "startDate" TIMESTAMP(3) NOT NULL,
+    "endDate" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "TenantWeeklyStats_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Tenant" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "tenantCode" TEXT NOT NULL,
@@ -610,6 +649,20 @@ CREATE TABLE "TenantSubscription" (
 );
 
 -- CreateTable
+CREATE TABLE "TenantContact" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "tenantId" TEXT NOT NULL,
+    "contactTypeId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
+
+    CONSTRAINT "TenantContact_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "password" TEXT NOT NULL,
@@ -681,7 +734,7 @@ CREATE TABLE "Vehicle" (
     "numberOfSeats" INTEGER NOT NULL,
     "numberOfDoors" INTEGER NOT NULL,
     "vin" TEXT NOT NULL,
-    "makeId" TEXT NOT NULL,
+    "brandId" TEXT NOT NULL,
     "modelId" TEXT NOT NULL,
     "tenantId" TEXT,
     "locationId" TEXT,
@@ -771,6 +824,38 @@ CREATE TABLE "VehicleGroupMaintenanceService" (
 );
 
 -- CreateTable
+CREATE TABLE "VehicleServiceLog" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "vehicleId" TEXT NOT NULL,
+    "serviceId" TEXT NOT NULL,
+    "servicedAt" TIMESTAMP(3) NOT NULL,
+    "notes" TEXT,
+    "contactId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
+    "updatedBy" TEXT,
+    "scheduledServiceId" TEXT,
+    "damageId" TEXT,
+    "cost" DOUBLE PRECISION,
+    "documents" TEXT[],
+
+    CONSTRAINT "VehicleServiceLog_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "VehicleServiceSchedule" (
+    "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+    "vehicleId" TEXT NOT NULL,
+    "serviceId" TEXT NOT NULL,
+    "scheduledDate" TIMESTAMP(3) NOT NULL,
+    "isCompleted" BOOLEAN NOT NULL DEFAULT false,
+    "isManual" BOOLEAN NOT NULL DEFAULT false,
+    "groupMaintenanceId" TEXT,
+
+    CONSTRAINT "VehicleServiceSchedule_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_PaymentMethodToTenant" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL,
@@ -808,6 +893,9 @@ CREATE UNIQUE INDEX "DriverLicense_customerId_key" ON "DriverLicense"("customerI
 CREATE UNIQUE INDEX "FormResponse_formId_key" ON "FormResponse"("formId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "TenantWeeklyStats_tenantId_week_year_stat_key" ON "TenantWeeklyStats"("tenantId", "week", "year", "stat");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Tenant_tenantCode_key" ON "Tenant"("tenantCode");
 
 -- CreateIndex
@@ -838,10 +926,10 @@ CREATE INDEX "_PaymentMethodToTenant_B_index" ON "_PaymentMethodToTenant"("B");
 CREATE INDEX "_VehicleToVehicleFeature_B_index" ON "_VehicleToVehicleFeature"("B");
 
 -- AddForeignKey
-ALTER TABLE "VehicleModel" ADD CONSTRAINT "VehicleModel_makeId_fkey" FOREIGN KEY ("makeId") REFERENCES "VehicleMake"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "VehicleModel" ADD CONSTRAINT "VehicleModel_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "VehicleBrand"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "VehicleModel" ADD CONSTRAINT "VehicleModel_typeId_fkey" FOREIGN KEY ("typeId") REFERENCES "VehicleType"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "VehicleModel" ADD CONSTRAINT "VehicleModel_typeId_fkey" FOREIGN KEY ("typeId") REFERENCES "VehicleBodyType"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "State" ADD CONSTRAINT "State_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "Country"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -886,10 +974,13 @@ ALTER TABLE "Booking" ADD CONSTRAINT "Booking_customerId_fkey" FOREIGN KEY ("cus
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Payments" ADD CONSTRAINT "Payments_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "BookingPayments" ADD CONSTRAINT "BookingPayments_paymentTypeId_fkey" FOREIGN KEY ("paymentTypeId") REFERENCES "PaymentType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Payments" ADD CONSTRAINT "Payments_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "Invoice"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "BookingPayments" ADD CONSTRAINT "BookingPayments_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BookingPayments" ADD CONSTRAINT "BookingPayments_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "Booking"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -964,6 +1055,9 @@ ALTER TABLE "RentalActivity" ADD CONSTRAINT "RentalActivity_createdBy_fkey" FORE
 ALTER TABLE "RentalActivity" ADD CONSTRAINT "RentalActivity_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "TenantWeeklyStats" ADD CONSTRAINT "TenantWeeklyStats_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Tenant" ADD CONSTRAINT "Tenant_currencyId_fkey" FOREIGN KEY ("currencyId") REFERENCES "Currency"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -1021,6 +1115,12 @@ ALTER TABLE "TenantSubscription" ADD CONSTRAINT "TenantSubscription_planId_fkey"
 ALTER TABLE "TenantSubscription" ADD CONSTRAINT "TenantSubscription_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "TenantContact" ADD CONSTRAINT "TenantContact_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TenantContact" ADD CONSTRAINT "TenantContact_contactTypeId_fkey" FOREIGN KEY ("contactTypeId") REFERENCES "ContactType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -1036,7 +1136,7 @@ ALTER TABLE "VehicleGroup" ADD CONSTRAINT "VehicleGroup_tenantId_fkey" FOREIGN K
 ALTER TABLE "Vehicle" ADD CONSTRAINT "Vehicle_fuelTypeId_fkey" FOREIGN KEY ("fuelTypeId") REFERENCES "FuelType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Vehicle" ADD CONSTRAINT "Vehicle_makeId_fkey" FOREIGN KEY ("makeId") REFERENCES "VehicleMake"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Vehicle" ADD CONSTRAINT "Vehicle_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "VehicleBrand"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Vehicle" ADD CONSTRAINT "Vehicle_modelId_fkey" FOREIGN KEY ("modelId") REFERENCES "VehicleModel"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -1073,6 +1173,30 @@ ALTER TABLE "VehicleGroupMaintenanceService" ADD CONSTRAINT "VehicleGroupMainten
 
 -- AddForeignKey
 ALTER TABLE "VehicleGroupMaintenanceService" ADD CONSTRAINT "VehicleGroupMaintenanceService_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "MaintenanceService"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VehicleServiceLog" ADD CONSTRAINT "VehicleServiceLog_vehicleId_fkey" FOREIGN KEY ("vehicleId") REFERENCES "Vehicle"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VehicleServiceLog" ADD CONSTRAINT "VehicleServiceLog_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "MaintenanceService"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VehicleServiceLog" ADD CONSTRAINT "VehicleServiceLog_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "TenantContact"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VehicleServiceLog" ADD CONSTRAINT "VehicleServiceLog_scheduledServiceId_fkey" FOREIGN KEY ("scheduledServiceId") REFERENCES "VehicleServiceSchedule"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VehicleServiceLog" ADD CONSTRAINT "VehicleServiceLog_damageId_fkey" FOREIGN KEY ("damageId") REFERENCES "VehicleDamage"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VehicleServiceSchedule" ADD CONSTRAINT "VehicleServiceSchedule_vehicleId_fkey" FOREIGN KEY ("vehicleId") REFERENCES "Vehicle"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VehicleServiceSchedule" ADD CONSTRAINT "VehicleServiceSchedule_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "MaintenanceService"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VehicleServiceSchedule" ADD CONSTRAINT "VehicleServiceSchedule_groupMaintenanceId_fkey" FOREIGN KEY ("groupMaintenanceId") REFERENCES "VehicleGroupMaintenanceService"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_PaymentMethodToTenant" ADD CONSTRAINT "_PaymentMethodToTenant_A_fkey" FOREIGN KEY ("A") REFERENCES "PaymentMethod"("id") ON DELETE CASCADE ON UPDATE CASCADE;
