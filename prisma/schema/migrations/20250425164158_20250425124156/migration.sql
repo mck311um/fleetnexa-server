@@ -1,2 +1,0 @@
--- AlterEnum
-ALTER TYPE "StatItem" ADD VALUE 'AVAILABLE_VEHICLES';
