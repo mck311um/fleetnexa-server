@@ -68,14 +68,9 @@ const uploadFile = async (req: Request, res: Response) => {
 
       await s3Client.send(command);
 
-      const getCommand = new GetObjectCommand({
-        Bucket: process.env.AWS_BUCKET_NAME || "fleetnexa",
-        Key: key,
-      });
-
-      const url = await getSignedUrl(s3Client, getCommand, {
-        expiresIn: 3600,
-      });
+      const bucket = process.env.AWS_BUCKET_NAME || "fleetnexa";
+      const region = process.env.AWS_REGION || "us-east-1";
+      const url = `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
 
       res.status(201).json({
         message: "File uploaded successfully",
