@@ -50,6 +50,7 @@ enum BookingStatus {
   RESERVED
   ACTIVE
   COMPLETED
+  DECLINED  
   CANCELED
   EXPIRED
   NO_SHOW

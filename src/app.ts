@@ -16,6 +16,7 @@ import formRoutes from "./routes/form.routes";
 import twillioRoutes from "./routes/twillio.routes";
 import paddleRoutes from "./routes/paddle.routes";
 import bookingRoutes from "./routes/booking.routes";
+import financeRoutes from "./routes/finance.routes";
 
 import "./cron/maintenance.cron";
 import "./cron/stat.cron";
@@ -56,5 +57,6 @@ app.use("/api/form", formRoutes);
 app.use("/api/comms", twillioRoutes);
 app.use("/api/paddle", paddleRoutes);
 app.use("/api/booking", bookingRoutes);
+app.use("/api/finance", financeRoutes);
 
 export default app;

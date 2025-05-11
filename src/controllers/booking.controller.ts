@@ -229,13 +229,36 @@ const confirmBooking = async (req: Request, res: Response) => {
     });
 
     const bookings = await bookingService.getBookings(tenantId);
-    return res.status(201).json({
-      bookings,
-    });
+    return res.status(201).json(bookings);
   } catch (error) {
     return errorUtil.handleError(res, error, "confirming booking");
   }
 };
+const declineBooking = async (req: Request, res: Response) => {
+  const { booking } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: "DECLINED",
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+    });
+
+    const bookings = await bookingService.getBookings(tenantId!);
+
+    return res.status(200).json(bookings);
+  } catch (error) {
+    return errorUtil.handleError(res, error, "declining booking");
+  }
+};
+
 const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
   const tenant = await prisma.tenant.findUnique({
     where: { id: tenantId },
@@ -279,4 +302,5 @@ export default {
   getBookingById,
   handleBooking,
   confirmBooking,
+  declineBooking,
 };

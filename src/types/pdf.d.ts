@@ -20,7 +20,6 @@ export interface InvoiceData {
   invoiceNumber: string;
   issuedDate: string;
   dueDate: string;
-  numberOfDays: number;
   basePrice: number;
   make: string;
   model: string;
@@ -37,4 +36,7 @@ export interface InvoiceData {
   deposit: number;
   total: number;
   invoiceNotes: string;
+  numberOfUnits: number;
+  unitPlural: string;
+  unit: string;
 }

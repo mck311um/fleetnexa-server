@@ -71,6 +71,12 @@ class BookingService {
           },
         },
       },
+      payments: {
+        include: {
+          paymentMethod: true,
+          paymentType: true,
+        },
+      },
       values: {
         include: {
           extras: true,
