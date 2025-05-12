@@ -258,6 +258,74 @@ const declineBooking = async (req: Request, res: Response) => {
     return errorUtil.handleError(res, error, "declining booking");
   }
 };
+const cancelBooking = async (req: Request, res: Response) => {
+  const { booking } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: "CANCELED",
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+    });
+
+    const bookings = await bookingService.getBookings(tenantId!);
+
+    return res.status(200).json(bookings);
+  } catch (error) {
+    return errorUtil.handleError(res, error, "cancelling booking");
+  }
+};
+
+const startBooking = async (req: Request, res: Response) => {
+  const { booking } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: "ACTIVE",
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+
+      const rentedStatus = await tx.vehicleStatus.findFirst({
+        where: { status: "Rented" },
+        select: { id: true },
+      });
+
+      if (!rentedStatus) {
+        throw new Error('Vehicle status "RENTED" not found');
+      }
+
+      await tx.vehicle.update({
+        where: { id: booking.vehicleId },
+        data: {
+          vehicleStatusId: rentedStatus.id,
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+    });
+
+    const updatedBooking = await bookingService.getBookingById(
+      booking.id,
+      tenantId!
+    );
+
+    return res.status(200).json(updatedBooking);
+  } catch (error) {
+    return errorUtil.handleError(res, error, "starting booking");
+  }
+};
 
 const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
   const tenant = await prisma.tenant.findUnique({
@@ -303,4 +371,6 @@ export default {
   handleBooking,
   confirmBooking,
   declineBooking,
+  cancelBooking,
+  startBooking,
 };

@@ -12,5 +12,7 @@ router.get("/:id", auth, controller.getBookingById);
 router.post("/", auth, controller.handleBooking);
 router.post("/confirm", auth, controller.confirmBooking);
 router.post("/decline", auth, controller.declineBooking);
+router.post("/cancel", auth, controller.cancelBooking);
+router.post("/start", auth, controller.startBooking);
 
 export default router;

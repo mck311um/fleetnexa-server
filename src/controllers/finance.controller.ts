@@ -58,24 +58,6 @@ const addBookingPayment = async (req: Request, res: Response) => {
             updatedBy: userId,
           },
         });
-
-        const reservedStatus = await tx.vehicleStatus.findFirst({
-          where: { status: "Reserved" },
-          select: { id: true },
-        });
-
-        if (!reservedStatus) {
-          throw new Error('Vehicle status "RESERVED" not found');
-        }
-
-        await tx.vehicle.update({
-          where: { id: booking!.vehicleId },
-          data: {
-            vehicleStatusId: reservedStatus.id,
-            updatedAt: new Date(),
-            updatedBy: userId,
-          },
-        });
       }
 
       const updatedBooking = await bookingService.getBookingById(
