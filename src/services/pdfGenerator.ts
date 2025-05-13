@@ -68,9 +68,9 @@ const createDocument = async ({
     );
 
     const s3Key = `Tenants/${tenantCode}/${folder}/${documentNumber}.pdf`;
-    await uploadToS3(pdfBuffer, s3Key);
+    const publicUrl = await uploadToS3(pdfBuffer, s3Key);
 
-    return { s3Key, documentId };
+    return { s3Key, documentId, publicUrl };
   } catch (error) {
     console.error(`Error creating ${documentType}:`, error);
     throw new Error(`Failed to create ${documentType}`);
@@ -112,32 +112,36 @@ const uploadToS3 = async (pdfBuffer: Buffer, s3Key: string) => {
     ContentType: "application/pdf",
   };
   await s3Client.send(new PutObjectCommand(uploadParams));
+
+  return `https://${awsBucketName}.s3.amazonaws.com/${s3Key}`;
 };
 
-const createInvoice = (
+const createInvoice = async (
   invoiceData: InvoiceData,
   invoiceNumber: string,
   tenantCode: string
 ) => {
-  return createDocument({
+  const { s3Key, documentId, publicUrl } = await createDocument({
     data: invoiceData,
     documentType: "invoice",
     documentNumber: invoiceNumber,
     tenantCode,
   });
+  return { s3Key, documentId, publicUrl };
 };
 
-const createAgreement = (
+const createAgreement = async (
   agreementData: AgreementData,
   agreementNumber: string,
   tenantCode: string
 ) => {
-  return createDocument({
+  const { s3Key, documentId, publicUrl } = await createDocument({
     data: agreementData,
     documentType: "agreement",
     documentNumber: agreementNumber,
     tenantCode,
   });
+  return { s3Key, documentId, publicUrl };
 };
 
 export default {

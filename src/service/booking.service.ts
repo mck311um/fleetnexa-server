@@ -29,6 +29,7 @@ class BookingService {
       pickup: true,
       return: true,
       invoice: true,
+      bookingAgreement: true,
       user: {
         select: {
           id: true,

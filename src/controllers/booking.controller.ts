@@ -329,7 +329,7 @@ const generateInvoice = async (req: Request, res: Response) => {
     const booking = await bookingService.getBookingById(bookingId, tenantId!);
     const tenant = await tenantService.getTenantById(tenantId!);
 
-    const { s3Key } = await generator.createInvoice(
+    const { publicUrl } = await generator.createInvoice(
       {
         ...invoiceData,
         invoiceNumber,
@@ -348,19 +348,19 @@ const generateInvoice = async (req: Request, res: Response) => {
         tenantId: tenantId!,
         createdAt: new Date(),
         createdBy: userId,
-        invoiceUrl: s3Key,
+        invoiceUrl: publicUrl,
       },
       update: {
         amount: booking?.values?.netTotal || 0,
         customerId: booking?.customerId || "",
         tenantId: tenantId!,
-        invoiceUrl: s3Key,
+        invoiceUrl: publicUrl,
         updatedAt: new Date(),
         updatedBy: userId,
       },
     });
 
-    return res.status(201).json(s3Key);
+    return res.status(201).json(publicUrl);
   } catch (error) {
     console.error("Error generating invoice number:", error);
     throw new Error("Error generating invoice number");
@@ -388,7 +388,7 @@ const generateBookingAgreement = async (req: Request, res: Response) => {
     const booking = await bookingService.getBookingById(bookingId, tenantId!);
     const tenant = await tenantService.getTenantById(tenantId!);
 
-    const { s3Key } = await generator.createAgreement(
+    const { publicUrl } = await generator.createAgreement(
       {
         ...agreementData,
         agreementNumber,
@@ -406,18 +406,18 @@ const generateBookingAgreement = async (req: Request, res: Response) => {
         tenantId: tenantId!,
         createdAt: new Date(),
         createdBy: userId,
-        agreementUrl: s3Key,
+        agreementUrl: publicUrl,
       },
       update: {
         customerId: booking?.customerId || "",
         tenantId: tenantId!,
-        agreementUrl: s3Key,
+        agreementUrl: publicUrl,
         updatedAt: new Date(),
         updatedBy: userId,
       },
     });
 
-    return res.status(201).json(s3Key);
+    return res.status(201).json(publicUrl);
   } catch (error) {
     console.error("Error generating booking agreement number:", error);
     throw new Error("Error generating booking agreement number");
