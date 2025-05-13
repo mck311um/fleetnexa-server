@@ -20,6 +20,8 @@ model Booking {
 
   values            Values?
   invoice           Invoice?
+  bookingAgreement  BookingAgreement?
+
   rentalActivity    RentalActivity[]
   payments          BookingPayments[]
 
@@ -32,6 +34,7 @@ model Booking {
 
 
   user             User?     @relation(fields: [createdBy], references: [id])
+
 
 }
 
@@ -77,6 +80,26 @@ model Invoice {
   booking           Booking   @relation(fields: [bookingId], references: [id])
   customer          Customer   @relation(fields: [customerId], references: [id])
 }
+
+
+model BookingAgreement {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  agreementNumber   String
+  bookingId         String    @unique
+  tenantId          String
+  customerId        String
+  agreementUrl      String?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  createdBy         String?
+  updatedBy         String?
+
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  booking           Booking   @relation(fields: [bookingId], references: [id])
+  customer          Customer   @relation(fields: [customerId], references: [id])
+}
+
 
 model Values {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))

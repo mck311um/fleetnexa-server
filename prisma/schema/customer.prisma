@@ -17,6 +17,7 @@ model Customer {
   damages           VehicleDamage[]
   bookings          Booking[]
   invoices          Invoice[]
+  agreements        BookingAgreement[]
   apps              CustomerMessengerApp[]
   rentalActivity    RentalActivity[]
 
@@ -29,9 +30,6 @@ model Customer {
   updatedBy         String?
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
-
-
-
 }
 
 model CustomerMessengerApp {

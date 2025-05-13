@@ -164,7 +164,7 @@ const handleBooking = async (req: Request, res: Response) => {
 };
 
 const confirmBooking = async (req: Request, res: Response) => {
-  const { booking, invoiceData } = req.body;
+  const { booking } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
@@ -173,8 +173,6 @@ const confirmBooking = async (req: Request, res: Response) => {
   }
 
   try {
-    const invoiceNumber = await generateInvoiceNumber(tenantId);
-
     await prisma.$transaction(
       async (tx) => {
         await tx.booking.update({
@@ -203,30 +201,6 @@ const confirmBooking = async (req: Request, res: Response) => {
         timeout: 15000,
       }
     );
-
-    const tenant = await tenantService.getTenantById(tenantId);
-
-    const { s3Key } = await generator.createInvoice(
-      {
-        ...invoiceData,
-        invoiceNumber,
-      },
-      invoiceNumber,
-      tenant?.tenantCode!
-    );
-
-    await prisma.invoice.create({
-      data: {
-        invoiceNumber,
-        amount: booking.values?.netTotal,
-        customerId: booking.customerId,
-        bookingId: booking.id,
-        tenantId,
-        createdAt: new Date(),
-        createdBy: userId,
-        invoiceUrl: s3Key,
-      },
-    });
 
     const bookings = await bookingService.getBookings(tenantId);
     return res.status(201).json(bookings);
@@ -281,7 +255,6 @@ const cancelBooking = async (req: Request, res: Response) => {
     return errorUtil.handleError(res, error, "cancelling booking");
   }
 };
-
 const startBooking = async (req: Request, res: Response) => {
   const { booking } = req.body;
   const userId = req.user?.id;
@@ -327,6 +300,123 @@ const startBooking = async (req: Request, res: Response) => {
   }
 };
 
+const generateInvoice = async (req: Request, res: Response) => {
+  const { invoiceData } = req.body;
+  const { bookingId } = req.params;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    let invoiceNumber;
+
+    const invoice = await prisma.invoice.findUnique({
+      where: { bookingId },
+    });
+
+    if (invoice) {
+      invoiceNumber = invoice.invoiceNumber;
+    } else {
+      invoiceNumber = await generateInvoiceNumber(tenantId!);
+    }
+
+    const booking = await bookingService.getBookingById(bookingId, tenantId!);
+    const tenant = await tenantService.getTenantById(tenantId!);
+
+    const { s3Key } = await generator.createInvoice(
+      {
+        ...invoiceData,
+        invoiceNumber,
+      },
+      invoiceNumber,
+      tenant?.tenantCode!
+    );
+
+    await prisma.invoice.upsert({
+      where: { bookingId },
+      create: {
+        invoiceNumber,
+        amount: booking?.values?.netTotal || 0,
+        customerId: booking?.customerId || "",
+        bookingId: booking?.id || "",
+        tenantId: tenantId!,
+        createdAt: new Date(),
+        createdBy: userId,
+        invoiceUrl: s3Key,
+      },
+      update: {
+        amount: booking?.values?.netTotal || 0,
+        customerId: booking?.customerId || "",
+        tenantId: tenantId!,
+        invoiceUrl: s3Key,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    return res.status(201).json(s3Key);
+  } catch (error) {
+    console.error("Error generating invoice number:", error);
+    throw new Error("Error generating invoice number");
+  }
+};
+const generateBookingAgreement = async (req: Request, res: Response) => {
+  const { agreementData } = req.body;
+  const { bookingId } = req.params;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    let agreementNumber;
+
+    const agreement = await prisma.bookingAgreement.findUnique({
+      where: { bookingId },
+    });
+
+    if (agreement) {
+      agreementNumber = agreement.agreementNumber;
+    } else {
+      agreementNumber = await generateBookingAgreementNumber(tenantId!);
+    }
+
+    const booking = await bookingService.getBookingById(bookingId, tenantId!);
+    const tenant = await tenantService.getTenantById(tenantId!);
+
+    const { s3Key } = await generator.createAgreement(
+      {
+        ...agreementData,
+        agreementNumber,
+      },
+      agreementNumber,
+      tenant?.tenantCode!
+    );
+
+    await prisma.bookingAgreement.upsert({
+      where: { bookingId },
+      create: {
+        agreementNumber,
+        customerId: booking?.customerId || "",
+        bookingId: booking?.id || "",
+        tenantId: tenantId!,
+        createdAt: new Date(),
+        createdBy: userId,
+        agreementUrl: s3Key,
+      },
+      update: {
+        customerId: booking?.customerId || "",
+        tenantId: tenantId!,
+        agreementUrl: s3Key,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    return res.status(201).json(s3Key);
+  } catch (error) {
+    console.error("Error generating booking agreement number:", error);
+    throw new Error("Error generating booking agreement number");
+  }
+};
+
 const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
   const tenant = await prisma.tenant.findUnique({
     where: { id: tenantId },
@@ -365,6 +455,30 @@ const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
   return `${prefix}${sequenceNumber}`;
 };
 
+const generateBookingAgreementNumber = async (
+  tenantId: string
+): Promise<string> => {
+  const lastAgreement = await prisma.bookingAgreement.findFirst({
+    where: { tenantId },
+    orderBy: { agreementNumber: "desc" },
+    select: { agreementNumber: true },
+  });
+
+  const currentYear = new Date().getFullYear().toString();
+  let sequenceNumber = 1;
+
+  if (lastAgreement?.agreementNumber) {
+    const match = lastAgreement.agreementNumber.match(/BA-\d{4}-(\d{4})/);
+    if (match && match[1]) {
+      sequenceNumber = parseInt(match[1], 10) + 1;
+    }
+  }
+
+  const formattedSequence = sequenceNumber.toString().padStart(4, "0");
+
+  return `BA-${currentYear}-${formattedSequence}`;
+};
+
 export default {
   getBookings,
   getBookingById,
@@ -373,4 +487,6 @@ export default {
   declineBooking,
   cancelBooking,
   startBooking,
+  generateInvoice,
+  generateBookingAgreement,
 };

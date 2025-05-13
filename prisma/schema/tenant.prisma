@@ -39,6 +39,7 @@ model Tenant {
   rentalActivity      RentalActivity[]
   contacts            TenantContact[]
   weeklyStats         TenantWeeklyStats[]
+  bookingAgreements   BookingAgreement[]
 }
 
 

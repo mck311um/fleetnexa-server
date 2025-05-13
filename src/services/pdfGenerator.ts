@@ -1,9 +1,10 @@
 import axios from "axios";
-import { InvoiceData } from "../types/pdf";
+import { AgreementData, InvoiceData } from "../types/pdf";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 const apiKey = process.env.PDFMONKEY_API_KEY!;
-const templateId = process.env.PDFMONKEY_TEMPLATE_ID!;
+const invoiceId = process.env.PDFMONKEY_INVOICE_ID!;
+const agreementId = process.env.PDFMONKEY_AGREEMENT_ID!;
 const awsBucketName = process.env.AWS_BUCKET_NAME!;
 
 const s3Client = new S3Client({
@@ -23,19 +24,32 @@ const pdfMonkeyApi = axios.create({
   timeout: 15000,
 });
 
-const createInvoice = async (
-  invoiceData: InvoiceData,
-  invoiceNumber: string,
-  tenantCode: string
-) => {
+type DocumentType = "invoice" | "agreement";
+
+interface CreateDocumentParams {
+  data: InvoiceData | AgreementData;
+  documentType: DocumentType;
+  documentNumber: string;
+  tenantCode: string;
+}
+
+const createDocument = async ({
+  data,
+  documentType,
+  documentNumber,
+  tenantCode,
+}: CreateDocumentParams) => {
+  const templateId = documentType === "invoice" ? invoiceId : agreementId;
+  const folder = documentType === "invoice" ? "Invoices" : "BookingAgreements";
+
   try {
     const res = await pdfMonkeyApi.post("/documents", {
       document: {
         document_template_id: templateId,
-        payload: invoiceData,
+        payload: data,
         status: "pending",
         meta: {
-          _filename: `${invoiceNumber}.pdf`,
+          _filename: `${documentNumber}.pdf`,
         },
       },
     });
@@ -47,59 +61,86 @@ const createInvoice = async (
       throw new Error("Document ID not found in response");
     }
 
-    let documentDetails;
-    let attempts = 0;
-    const maxAttempts = 10;
+    const documentDetails = await waitForDocumentGeneration(documentId);
 
-    while (attempts < maxAttempts) {
-      attempts++;
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+    const pdfBuffer = await downloadPdf(
+      documentDetails.data.document.download_url
+    );
 
-      documentDetails = await pdfMonkeyApi.get(`/documents/${documentId}`);
+    const s3Key = `Tenants/${tenantCode}/${folder}/${documentNumber}.pdf`;
+    await uploadToS3(pdfBuffer, s3Key);
 
-      if (documentDetails.data.document.status === "success") {
-        break;
-      }
-
-      if (documentDetails.data.document.status === "failed") {
-        throw new Error("PDF generation failed");
-      }
-    }
-
-    if (
-      !documentDetails ||
-      documentDetails.data.document.status !== "success"
-    ) {
-      throw new Error("PDF generation timed out");
-    }
-
-    const downloadUrl = documentDetails.data.document.download_url;
-    const pdfResponse = await axios.get(downloadUrl, {
-      responseType: "arraybuffer",
-    });
-
-    const pdfBuffer = Buffer.from(pdfResponse.data, "binary");
-    const s3Key = `Tenants/${tenantCode}/Invoices/${invoiceNumber}.pdf`;
-
-    const uploadParams = {
-      Bucket: awsBucketName,
-      Key: s3Key,
-      Body: pdfBuffer,
-      ContentType: "application/pdf",
-    };
-
-    await s3Client.send(new PutObjectCommand(uploadParams));
-
-    return {
-      s3Key,
-      documentId,
-    };
+    return { s3Key, documentId };
   } catch (error) {
-    console.error("Error creating invoice:", error);
-    throw new Error("Failed to create invoice");
+    console.error(`Error creating ${documentType}:`, error);
+    throw new Error(`Failed to create ${documentType}`);
   }
+};
+
+const waitForDocumentGeneration = async (
+  documentId: string,
+  maxAttempts = 10
+) => {
+  let attempts = 0;
+
+  while (attempts < maxAttempts) {
+    attempts++;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const documentDetails = await pdfMonkeyApi.get(`/documents/${documentId}`);
+    const status = documentDetails.data.document.status;
+
+    if (status === "success") return documentDetails;
+    if (status === "failed") throw new Error("PDF generation failed");
+  }
+
+  throw new Error("PDF generation timed out");
+};
+
+const downloadPdf = async (downloadUrl: string) => {
+  const pdfResponse = await axios.get(downloadUrl, {
+    responseType: "arraybuffer",
+  });
+  return Buffer.from(pdfResponse.data, "binary");
+};
+
+const uploadToS3 = async (pdfBuffer: Buffer, s3Key: string) => {
+  const uploadParams = {
+    Bucket: awsBucketName,
+    Key: s3Key,
+    Body: pdfBuffer,
+    ContentType: "application/pdf",
+  };
+  await s3Client.send(new PutObjectCommand(uploadParams));
+};
+
+const createInvoice = (
+  invoiceData: InvoiceData,
+  invoiceNumber: string,
+  tenantCode: string
+) => {
+  return createDocument({
+    data: invoiceData,
+    documentType: "invoice",
+    documentNumber: invoiceNumber,
+    tenantCode,
+  });
+};
+
+const createAgreement = (
+  agreementData: AgreementData,
+  agreementNumber: string,
+  tenantCode: string
+) => {
+  return createDocument({
+    data: agreementData,
+    documentType: "agreement",
+    documentNumber: agreementNumber,
+    tenantCode,
+  });
 };
 
 export default {
   createInvoice,
+  createAgreement,
 };
