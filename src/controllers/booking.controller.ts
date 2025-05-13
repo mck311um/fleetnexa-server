@@ -202,8 +202,11 @@ const confirmBooking = async (req: Request, res: Response) => {
       }
     );
 
-    const bookings = await bookingService.getBookings(tenantId);
-    return res.status(201).json(bookings);
+    const updatedBooking = await bookingService.getBookingById(
+      booking.id,
+      tenantId!
+    );
+    return res.status(201).json(updatedBooking);
   } catch (error) {
     return errorUtil.handleError(res, error, "confirming booking");
   }
@@ -225,9 +228,11 @@ const declineBooking = async (req: Request, res: Response) => {
       });
     });
 
-    const bookings = await bookingService.getBookings(tenantId!);
-
-    return res.status(200).json(bookings);
+    const updatedBooking = await bookingService.getBookingById(
+      booking.id,
+      tenantId!
+    );
+    return res.status(200).json(updatedBooking);
   } catch (error) {
     return errorUtil.handleError(res, error, "declining booking");
   }
@@ -248,9 +253,11 @@ const cancelBooking = async (req: Request, res: Response) => {
       });
     });
 
-    const bookings = await bookingService.getBookings(tenantId!);
-
-    return res.status(200).json(bookings);
+    const updatedBooking = await bookingService.getBookingById(
+      booking.id,
+      tenantId!
+    );
+    return res.status(200).json(updatedBooking);
   } catch (error) {
     return errorUtil.handleError(res, error, "cancelling booking");
   }
@@ -416,7 +423,6 @@ const generateBookingAgreement = async (req: Request, res: Response) => {
     throw new Error("Error generating booking agreement number");
   }
 };
-
 const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
   const tenant = await prisma.tenant.findUnique({
     where: { id: tenantId },
@@ -454,7 +460,6 @@ const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
 
   return `${prefix}${sequenceNumber}`;
 };
-
 const generateBookingAgreementNumber = async (
   tenantId: string
 ): Promise<string> => {
