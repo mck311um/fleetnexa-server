@@ -1,5 +1,6 @@
 model Booking {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  bookingNumber     String?
   startDate         DateTime
   endDate           DateTime
   pickupLocationId  String
@@ -34,7 +35,6 @@ model Booking {
 
 
   user             User?     @relation(fields: [createdBy], references: [id])
-
 
 }
 

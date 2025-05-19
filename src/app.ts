@@ -27,7 +27,6 @@ const app: Application = express();
 // Middlewares
 app.use(helmet());
 app.use(express.json());
-app.use(errorHandler);
 
 app.use(
   cors({
@@ -53,8 +52,10 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/vehicle", vehicleRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/email", emailRoutes);
-app.use("/api/comms", twillioRoutes);
+app.use("/api/whatsapp", twillioRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/finance", financeRoutes);
+
+app.use(errorHandler);
 
 export default app;

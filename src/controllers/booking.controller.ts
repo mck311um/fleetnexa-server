@@ -4,6 +4,7 @@ import { tenantService } from "../repository/tenant.repository";
 import generator from "../services/pdfGenerator.service";
 import logUtil from "../config/logger.config";
 import prisma from "../config/prisma.config";
+import numberGenerator from "../services/numberGenerator.service";
 
 const getBookings = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -58,6 +59,13 @@ const handleBooking = async (req: Request, res: Response) => {
 
   try {
     await prisma.$transaction(async (tx) => {
+      if (!booking.bookingNumber) {
+        const bookingNumber = await numberGenerator.generateBookingNumber(
+          tenantId!
+        );
+        booking.bookingNumber = bookingNumber;
+      }
+
       const bookingData = {
         startDate: booking.startDate,
         endDate: booking.endDate,
@@ -75,6 +83,7 @@ const handleBooking = async (req: Request, res: Response) => {
         tenantId,
         status: booking.status,
         notes: booking.notes,
+        bookingNumber: booking.bookingNumber,
       };
 
       await tx.booking.upsert({
@@ -320,7 +329,7 @@ const generateInvoice = async (req: Request, res: Response) => {
     if (invoice) {
       invoiceNumber = invoice.invoiceNumber;
     } else {
-      invoiceNumber = await generateInvoiceNumber(tenantId!);
+      invoiceNumber = await numberGenerator.generateInvoiceNumber(tenantId!);
     }
 
     const booking = await bookingRepo.getBookingById(bookingId, tenantId!);
@@ -379,7 +388,9 @@ const generateBookingAgreement = async (req: Request, res: Response) => {
     if (agreement) {
       agreementNumber = agreement.agreementNumber;
     } else {
-      agreementNumber = await generateBookingAgreementNumber(tenantId!);
+      agreementNumber = await numberGenerator.generateBookingAgreementNumber(
+        tenantId!
+      );
     }
 
     const booking = await bookingRepo.getBookingById(bookingId, tenantId!);
@@ -419,66 +430,6 @@ const generateBookingAgreement = async (req: Request, res: Response) => {
     console.error("Error generating booking agreement number:", error);
     throw new Error("Error generating booking agreement number");
   }
-};
-const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
-  const tenant = await prisma.tenant.findUnique({
-    where: { id: tenantId },
-    include: { invoiceSequence: true },
-  });
-
-  if (!tenant?.invoiceSequence) {
-    throw new Error("Tenant has no invoice sequence configured");
-  }
-
-  const lastInvoice = await prisma.invoice.findFirst({
-    where: { tenantId },
-    orderBy: { createdAt: "desc" },
-    select: { invoiceNumber: true },
-  });
-
-  const lastNumber = lastInvoice?.invoiceNumber
-    ? parseInt(lastInvoice.invoiceNumber.match(/\d+$/)?.[0] || "0", 10)
-    : 0;
-  const nextNumber = lastNumber + 1;
-
-  const now = new Date();
-  const year = now.getFullYear().toString();
-  const month = (now.getMonth() + 1).toString().padStart(2, "0");
-  const day = now.getDate().toString().padStart(2, "0");
-
-  let prefix = tenant.invoiceSequence.prefix;
-  prefix = prefix
-    .replace(/{year}/g, year)
-    .replace(/{month}/g, month)
-    .replace(/{day}/g, day)
-    .replace(/{tenantId}/g, tenantId.substring(0, 4));
-
-  const sequenceNumber = nextNumber.toString().padStart(3, "0");
-
-  return `${prefix}${sequenceNumber}`;
-};
-const generateBookingAgreementNumber = async (
-  tenantId: string
-): Promise<string> => {
-  const lastAgreement = await prisma.bookingAgreement.findFirst({
-    where: { tenantId },
-    orderBy: { agreementNumber: "desc" },
-    select: { agreementNumber: true },
-  });
-
-  const currentYear = new Date().getFullYear().toString();
-  let sequenceNumber = 1;
-
-  if (lastAgreement?.agreementNumber) {
-    const match = lastAgreement.agreementNumber.match(/BA-\d{4}-(\d{4})/);
-    if (match && match[1]) {
-      sequenceNumber = parseInt(match[1], 10) + 1;
-    }
-  }
-
-  const formattedSequence = sequenceNumber.toString().padStart(4, "0");
-
-  return `BA-${currentYear}-${formattedSequence}`;
 };
 
 export default {
