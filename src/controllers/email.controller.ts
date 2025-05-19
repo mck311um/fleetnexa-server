@@ -1,8 +1,8 @@
 import e, { Request, Response } from "express";
 import { Resend } from "resend";
-import errorUtil from "../utils/error.util";
+import logUtil from "../config/logger.config";
 import { PrismaClient } from "@prisma/client";
-import { tenantService } from "../service/tenant.service";
+import { tenantService } from "../repository/tenant.repository";
 
 const prisma = new PrismaClient();
 
@@ -131,7 +131,7 @@ const sendDocuments = async (req: Request, res: Response) => {
       documentsSent: body.documents.map((doc) => doc.documentType),
     });
   } catch (error) {
-    errorUtil.handleError(res, error, "sending document");
+    logUtil.handleError(res, error, "sending document");
   }
 };
 

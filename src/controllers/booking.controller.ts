@@ -1,12 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { bookingService } from "../service/booking.service";
-import { tenantService } from "../service/tenant.service";
-import generator from "../services/pdfGenerator";
-import errorUtil from "../utils/error.util";
-import { InvoiceData } from "../types/pdf";
-
-const prisma = new PrismaClient();
+import { bookingRepo } from "../repository/booking.repository";
+import { tenantService } from "../repository/tenant.repository";
+import generator from "../services/pdfGenerator.service";
+import logUtil from "../config/logger.config";
+import prisma from "../config/prisma.config";
 
 const getBookings = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -15,7 +12,7 @@ const getBookings = async (req: Request, res: Response) => {
     if (!tenantId) {
       return res.status(400).json({ error: "Tenant ID is required" });
     }
-    const bookings = await bookingService.getBookings(tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
     return res.status(200).json(bookings);
   } catch (error) {
     console.error("Error fetching bookings:", error);
@@ -33,7 +30,7 @@ const getBookingById = async (req: Request, res: Response) => {
     if (!tenantId) {
       return res.status(400).json({ error: "Tenant ID is required" });
     }
-    const booking = await bookingService.getBookingById(id, tenantId);
+    const booking = await bookingRepo.getBookingById(id, tenantId);
     if (!booking) {
       return res.status(404).json({ error: "Booking not found" });
     }
@@ -151,7 +148,7 @@ const handleBooking = async (req: Request, res: Response) => {
       }
     });
 
-    const bookings = await bookingService.getBookings(tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     return res.status(200).json(bookings);
   } catch (error) {
@@ -202,13 +199,13 @@ const confirmBooking = async (req: Request, res: Response) => {
       }
     );
 
-    const updatedBooking = await bookingService.getBookingById(
+    const updatedBooking = await bookingRepo.getBookingById(
       booking.id,
       tenantId!
     );
     return res.status(201).json(updatedBooking);
   } catch (error) {
-    return errorUtil.handleError(res, error, "confirming booking");
+    return logUtil.handleError(res, error, "confirming booking");
   }
 };
 const declineBooking = async (req: Request, res: Response) => {
@@ -228,13 +225,13 @@ const declineBooking = async (req: Request, res: Response) => {
       });
     });
 
-    const updatedBooking = await bookingService.getBookingById(
+    const updatedBooking = await bookingRepo.getBookingById(
       booking.id,
       tenantId!
     );
     return res.status(200).json(updatedBooking);
   } catch (error) {
-    return errorUtil.handleError(res, error, "declining booking");
+    return logUtil.handleError(res, error, "declining booking");
   }
 };
 const cancelBooking = async (req: Request, res: Response) => {
@@ -253,13 +250,13 @@ const cancelBooking = async (req: Request, res: Response) => {
       });
     });
 
-    const updatedBooking = await bookingService.getBookingById(
+    const updatedBooking = await bookingRepo.getBookingById(
       booking.id,
       tenantId!
     );
     return res.status(200).json(updatedBooking);
   } catch (error) {
-    return errorUtil.handleError(res, error, "cancelling booking");
+    return logUtil.handleError(res, error, "cancelling booking");
   }
 };
 const startBooking = async (req: Request, res: Response) => {
@@ -296,14 +293,14 @@ const startBooking = async (req: Request, res: Response) => {
       });
     });
 
-    const updatedBooking = await bookingService.getBookingById(
+    const updatedBooking = await bookingRepo.getBookingById(
       booking.id,
       tenantId!
     );
 
     return res.status(200).json(updatedBooking);
   } catch (error) {
-    return errorUtil.handleError(res, error, "starting booking");
+    return logUtil.handleError(res, error, "starting booking");
   }
 };
 
@@ -326,7 +323,7 @@ const generateInvoice = async (req: Request, res: Response) => {
       invoiceNumber = await generateInvoiceNumber(tenantId!);
     }
 
-    const booking = await bookingService.getBookingById(bookingId, tenantId!);
+    const booking = await bookingRepo.getBookingById(bookingId, tenantId!);
     const tenant = await tenantService.getTenantById(tenantId!);
 
     const { publicUrl } = await generator.createInvoice(
@@ -385,7 +382,7 @@ const generateBookingAgreement = async (req: Request, res: Response) => {
       agreementNumber = await generateBookingAgreementNumber(tenantId!);
     }
 
-    const booking = await bookingService.getBookingById(bookingId, tenantId!);
+    const booking = await bookingRepo.getBookingById(bookingId, tenantId!);
     const tenant = await tenantService.getTenantById(tenantId!);
 
     const { publicUrl } = await generator.createAgreement(

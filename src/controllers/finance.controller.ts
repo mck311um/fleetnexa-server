@@ -1,9 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { bookingService } from "../service/booking.service";
-import { vehicleService } from "../service/vehicle.service";
-import errorUtil from "../utils/error.util";
-import { create } from "domain";
+import { bookingRepo } from "../repository/booking.repository";
+import logUtil from "../config/logger.config";
 
 const prisma = new PrismaClient();
 
@@ -36,7 +34,7 @@ const addBookingPayment = async (req: Request, res: Response) => {
         updatedBy: userId,
       };
 
-      const booking = await bookingService.getBookingById(
+      const booking = await bookingRepo.getBookingById(
         payment.bookingId,
         tenantId
       );
@@ -60,7 +58,7 @@ const addBookingPayment = async (req: Request, res: Response) => {
         });
       }
 
-      const updatedBooking = await bookingService.getBookingById(
+      const updatedBooking = await bookingRepo.getBookingById(
         payment.bookingId,
         tenantId
       );
@@ -68,7 +66,7 @@ const addBookingPayment = async (req: Request, res: Response) => {
       return res.status(201).json(updatedBooking);
     });
   } catch (error) {
-    return errorUtil.handleError(res, error, "adding booking payment");
+    return logUtil.handleError(res, error, "adding booking payment");
   }
 };
 

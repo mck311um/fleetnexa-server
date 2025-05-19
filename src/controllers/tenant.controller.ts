@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import paddle from "../config/paddle";
-import { tenantService } from "../service/tenant.service";
-
-const prisma = new PrismaClient();
+import { tenantService } from "../repository/tenant.repository";
+import prisma from "../config/prisma.config";
 
 const getTenantById = async (req: Request, res: Response) => {
   const { id } = req.params;

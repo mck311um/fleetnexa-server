@@ -29,7 +29,8 @@
     "node-cron": "^3.0.3",
     "resend": "^4.2.0",
     "twilio": "^5.5.2",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

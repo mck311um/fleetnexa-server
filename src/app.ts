@@ -12,14 +12,13 @@ import adminRoutes from "./routes/admin.routes";
 import vehicleRoutes from "./routes/vehicle.routes";
 import customerRoutes from "./routes/customer.routes";
 import emailRoutes from "./routes/email.routes";
-import formRoutes from "./routes/form.routes";
 import twillioRoutes from "./routes/twillio.routes";
-import paddleRoutes from "./routes/paddle.routes";
 import bookingRoutes from "./routes/booking.routes";
 import financeRoutes from "./routes/finance.routes";
 
 import "./cron/maintenance.cron";
 import "./cron/stat.cron";
+import errorHandler from "./middleware/error.middleware";
 
 dotenv.config();
 
@@ -28,6 +27,7 @@ const app: Application = express();
 // Middlewares
 app.use(helmet());
 app.use(express.json());
+app.use(errorHandler);
 
 app.use(
   cors({
@@ -53,9 +53,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/vehicle", vehicleRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/email", emailRoutes);
-app.use("/api/form", formRoutes);
 app.use("/api/comms", twillioRoutes);
-app.use("/api/paddle", paddleRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/finance", financeRoutes);
 

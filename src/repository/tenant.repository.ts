@@ -1,15 +1,8 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { getISOWeek, getYear, subWeeks } from "date-fns";
+import prisma from "../config/prisma.config";
 
-const prisma = new PrismaClient();
-
-type TenantWithRelations = Prisma.TenantGetPayload<{
-  include: ReturnType<TenantService["getTenantIncludeOptions"]>;
-}>;
-
-type AddressWithRelations = NonNullable<TenantWithRelations["address"]>;
-
-class TenantService {
+class TenantRepository {
   async getTenantById(tenantId: string) {
     return prisma.tenant.findUnique({
       where: { id: tenantId },
@@ -71,7 +64,7 @@ class TenantService {
   }
 }
 
-export const tenantService = new TenantService();
+export const tenantService = new TenantRepository();
 
 const getWeekFilters = () => {
   const now = new Date();

@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
-const prisma = new PrismaClient();
+import prisma from "../config/prisma.config";
 
 const register = async (req: Request, res: Response) => {
   const { username, password, firstName, lastName, tenantId } = req.body;

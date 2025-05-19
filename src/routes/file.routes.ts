@@ -1,17 +1,10 @@
 import express from "express";
 import controller from "../controllers/file.controller";
-import { auth } from "../middleware/auth";
+import { auth } from "../middleware/auth.middleware";
 import cors from "cors";
 import { allowedOrigins } from "../config/cors";
 
 const router = express.Router();
-
-// router.use(
-//   cors({
-//     credentials: true,
-//     origin: allowedOrigins,
-//   })
-// );
 
 router.post("/upload", auth, controller.uploadFile);
 

@@ -1,8 +1,6 @@
 import express from "express";
-import cors from "cors";
 import controller from "../controllers/booking.controller";
-import { auth } from "../middleware/auth";
-import { allowedOrigins } from "../config/cors";
+import { auth } from "../middleware/auth.middleware";
 
 const router = express.Router();
 

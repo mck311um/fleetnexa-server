@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../config/prisma.config";
 import { Request, Response } from "express";
-
-const prisma = new PrismaClient();
+import logUtil from "../config/logger.config";
 
 const getData = async (req: Request, res: Response) => {
   try {
@@ -34,7 +33,7 @@ const getData = async (req: Request, res: Response) => {
     const contactTypes = await prisma.contactType.findMany();
     const paymentTypes = await prisma.paymentType.findMany();
 
-    res.status(201).json({
+    res.status(200).json({
       vehicleParts,
       currencies,
       fuelTypes,
@@ -65,28 +64,7 @@ const getData = async (req: Request, res: Response) => {
       paymentTypes,
     });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
-    return;
-  }
-};
-const formsGetData = async (req: Request, res: Response) => {
-  try {
-    const countries = await prisma.country.findMany();
-    const states = await prisma.state.findMany();
-    const villages = await prisma.village.findMany();
-    const licenseClasses = await prisma.licenseClass.findMany();
-    const messengerApps = await prisma.messengerApp.findMany();
-
-    res.status(201).json({
-      countries,
-      states,
-      villages,
-      licenseClasses,
-      messengerApps,
-    });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-    return;
+    logUtil.handleError(res, error, "fetching data");
   }
 };
 
@@ -117,8 +95,7 @@ const addVehicleMake = async (req: any, res: any) => {
 
     res.status(201).json({ ...vehicleMakes });
   } catch (error: any) {
-    console.error(error.message);
-    res.status(400).json({ message: error.message });
+    logUtil.handleError(res, error, "adding vehicle make");
   }
 };
 
@@ -149,8 +126,7 @@ const addVehicleType = async (req: any, res: any) => {
 
     res.status(201).json({ ...vehicleTypes });
   } catch (error: any) {
-    console.error(error.message);
-    res.status(400).json({ message: error.message });
+    logUtil.handleError(res, error, "adding vehicle type");
   }
 };
 
@@ -178,8 +154,7 @@ const addVehicleModel = async (req: any, res: any) => {
 
     res.status(201).json({ ...vehicleModels });
   } catch (error: any) {
-    console.error(error.message);
-    res.status(400).json({ message: error.message });
+    logUtil.handleError(res, error, "adding vehicle model");
   }
 };
 
@@ -211,14 +186,12 @@ const addVehicleFeature = async (req: any, res: any) => {
 
     res.status(201).json({ ...vehicleFeatures });
   } catch (error: any) {
-    console.error(error.message);
-    res.status(400).json({ message: error.message });
+    logUtil.handleError(res, error, "adding vehicle feature");
   }
 };
 
 export default {
   getData,
-  formsGetData,
   addVehicleMake,
   addVehicleType,
   addVehicleModel,

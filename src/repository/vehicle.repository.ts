@@ -1,8 +1,7 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import prisma from "../config/prisma.config";
 
-const prisma = new PrismaClient();
-
-class VehicleService {
+class VehicleRepository {
   async getVehicles(
     tenantId: string,
     additionalWhere?: Prisma.VehicleWhereInput
@@ -118,7 +117,7 @@ class VehicleService {
   }
 }
 
-class VehicleGroupService {
+class VehicleGroupRepository {
   async getVehicleGroups(
     tenantId: string,
     additionalWhere?: Prisma.VehicleGroupWhereInput
@@ -171,5 +170,5 @@ class VehicleGroupService {
   }
 }
 
-export const vehicleService = new VehicleService();
-export const vehicleGroupService = new VehicleGroupService();
+export const vehicleRepo = new VehicleRepository();
+export const vehicleGroupRepo = new VehicleGroupRepository();
