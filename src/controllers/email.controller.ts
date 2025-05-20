@@ -8,7 +8,7 @@ import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
 import { bookingDocumentsEmail } from "../templates/bookingEmail.template";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+const resend = new Resend(process.env.RESEND_API_KEY || "");
 
 interface Document {
   documentUrl: string;
