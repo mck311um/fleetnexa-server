@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { bookingRepo } from "../repository/booking.repository";
 import { tenantService } from "../repository/tenant.repository";
 import generator from "../services/pdfGenerator.service";
@@ -312,6 +312,50 @@ const startBooking = async (req: Request, res: Response) => {
     return logUtil.handleError(res, error, "starting booking");
   }
 };
+const endBooking = async (req: Request, res: Response, next: NextFunction) => {
+  const { booking } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: "COMPLETED",
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+
+      const rentedStatus = await tx.vehicleStatus.findFirst({
+        where: { status: "Pending Inspection" },
+        select: { id: true },
+      });
+
+      if (!rentedStatus) {
+        throw new Error('Vehicle status "Pending Inspection" not found');
+      }
+
+      await tx.vehicle.update({
+        where: { id: booking.vehicleId },
+        data: {
+          vehicleStatusId: rentedStatus.id,
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+    });
+
+    const updatedBooking = await bookingRepo.getBookingById(
+      booking.id,
+      tenantId!
+    );
+
+    return res.status(200).json(updatedBooking);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const generateInvoice = async (req: Request, res: Response) => {
   const { invoiceData } = req.body;
@@ -440,6 +484,7 @@ export default {
   declineBooking,
   cancelBooking,
   startBooking,
+  endBooking,
   generateInvoice,
   generateBookingAgreement,
 };

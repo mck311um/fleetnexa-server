@@ -15,5 +15,6 @@ router.post("/confirm", auth, controller.confirmBooking);
 router.post("/decline", auth, controller.declineBooking);
 router.post("/cancel", auth, controller.cancelBooking);
 router.post("/start", auth, controller.startBooking);
+router.post("/end", auth, controller.endBooking);
 
 export default router;
