@@ -141,10 +141,8 @@ model MaintenanceService {
   service       String
   description   String
 
-  services      VehicleGroupMaintenanceService[]
-  serviceLog    VehicleServiceLog[]
-
-  VehicleServiceSchedule VehicleServiceSchedule[]
+  serviceLog      VehicleServiceLog[]
+  serviceSchedule VehicleServiceSchedule[]
 }
 
 model DocumentType {

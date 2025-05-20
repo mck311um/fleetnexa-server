@@ -213,12 +213,6 @@ const setupTenant = async (req: Request, res: Response) => {
             },
           },
         },
-        vehicleGroups: {
-          include: {
-            discounts: true,
-            maintenanceServices: true,
-          },
-        },
       },
     });
 

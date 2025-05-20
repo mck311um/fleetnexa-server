@@ -19,7 +19,6 @@ model VehicleGroup {
   drivingExperience     Int             @default(1)
   refundAmount          Int             @default(100)
   refundPolicy          String          @default("percent")
-  maintenanceEnabled    Boolean         @default(false)
 
   chargeType            ChargeType?     @relation(fields: [chargeTypeId], references: [id])
   fuelPolicy            FuelPolicy?     @relation(fields: [fuelPolicyId], references: [id])
@@ -34,7 +33,6 @@ model VehicleGroup {
   bookings              Booking[]
   vehicles              Vehicle[]
   discounts             VehicleDiscount[]
-  maintenanceServices   VehicleGroupMaintenanceService[]
 
   
 }
@@ -153,21 +151,6 @@ model FuelPolicy {
   VehicleGroup VehicleGroup[]
 }
 
-model VehicleGroupMaintenanceService {
-  id                 String    @id @default(dbgenerated("gen_random_uuid()"))
-  vehicleGroupId     String
-  serviceId          String
-  period             Int
-  enabled            Boolean
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime? @updatedAt
-  updatedBy          String?
-  
-  vehicleGroup       VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
-  maintenanceService MaintenanceService @relation(fields: [serviceId], references: [id])
-  serviceScheduled   VehicleServiceSchedule[]
-}
-
 model VehicleServiceLog {
   id                  String    @id @default(dbgenerated("gen_random_uuid()"))
   vehicleId           String
@@ -196,12 +179,9 @@ model VehicleServiceSchedule {
   serviceId           String
   scheduledDate       DateTime
   isCompleted         Boolean   @default(false)
-  isManual            Boolean   @default(false)
-  groupMaintenanceId  String?
 
 
   vehicle             Vehicle @relation(fields: [vehicleId], references: [id])
   maintenanceService  MaintenanceService @relation(fields: [serviceId], references: [id])
   serviceLogs         VehicleServiceLog[] @relation("ScheduleToLogs")
-  groupMaintenance    VehicleGroupMaintenanceService? @relation(fields: [groupMaintenanceId], references: [id])
 }

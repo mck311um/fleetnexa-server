@@ -52,7 +52,6 @@ class TenantRepository {
       vehicleGroups: {
         include: {
           discounts: true,
-          maintenanceServices: true,
         },
       },
       weeklyStats: {

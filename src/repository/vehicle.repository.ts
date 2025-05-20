@@ -51,11 +51,7 @@ class VehicleRepository {
       vehicleGroup: {
         include: {
           discounts: true,
-          maintenanceServices: {
-            include: {
-              maintenanceService: true,
-            },
-          },
+
           chargeType: true,
           fuelPolicy: true,
         },
@@ -142,11 +138,6 @@ class VehicleGroupRepository {
   private getVehicleGroupIncludeOptions(): Prisma.VehicleGroupInclude {
     return {
       discounts: true,
-      maintenanceServices: {
-        include: {
-          maintenanceService: true,
-        },
-      },
       chargeType: true,
       fuelPolicy: true,
       bookings: true,
