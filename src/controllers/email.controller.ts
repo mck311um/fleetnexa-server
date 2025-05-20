@@ -8,8 +8,6 @@ import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
 import { bookingDocumentsEmail } from "../templates/bookingEmail.template";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "");
-
 interface Document {
   documentUrl: string;
   documentType: string;
@@ -30,6 +28,7 @@ const sendDocuments = async (
   res: Response,
   next: NextFunction
 ) => {
+  const resend = new Resend(process.env.RESEND_API_KEY || "");
   const { body } = req.body as { body: SendDocumentBody };
   const tenantId = req.user?.tenantId;
   const userId = req.user?.id;
