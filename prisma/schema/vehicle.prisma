@@ -52,7 +52,7 @@ model Vehicle {
   wheelDriveId          String
   fuelLevel             Int
   odometer              Int
-  tankVolume            Int
+  steering              String @default("left")
   featuredImage         String
   images                String[]
   insurance             String

@@ -1,18 +1,14 @@
 import express from "express";
 import controller from "../controllers/twillio.controller";
-import { auth } from "../middleware/auth";
-import cors from "cors";
-import { allowedOrigins } from "../config/cors";
+import { auth } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-// router.use(
-//   cors({
-//     credentials: true,
-//     origin: allowedOrigins,
-//   })
-// );
-
-router.post("/whatsapp/notification", controller.sendWhatsAppNotification);
+router.post(
+  "/whatsapp/notification",
+  auth,
+  controller.sendWhatsAppNotification
+);
+router.post("/send-documents", auth, controller.sendDocuments);
 
 export default router;

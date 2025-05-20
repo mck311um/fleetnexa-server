@@ -9,6 +9,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
+import logUtil from "../config/logger.config";
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION || "us-east-1",
@@ -85,8 +86,7 @@ const uploadFile = async (req: Request, res: Response) => {
       });
     });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
-    console.error(error);
+    logUtil.handleError(res, error, "uploading file");
   }
 };
 
@@ -107,8 +107,7 @@ const getFileUrl = async (req: Request, res: Response) => {
 
     res.json({ url });
   } catch (error: any) {
-    console.error("Error getting file URL:", error);
-    res.status(500).json({ message: error.message });
+    logUtil.handleError(res, error, "getting file URL");
   }
 };
 
@@ -129,8 +128,7 @@ const deleteFile = async (req: Request, res: Response) => {
 
     res.json({ message: "File deleted successfully" });
   } catch (error: any) {
-    console.error("Error deleting file:", error);
-    res.status(500).json({ message: error.message });
+    logUtil.handleError(res, error, "deleting file");
   }
 };
 

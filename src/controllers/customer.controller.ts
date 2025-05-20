@@ -1,24 +1,23 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { customerService } from "../service/customer.service";
-
-const prisma = new PrismaClient();
+import { customerRepo } from "../repository/customer.repository";
+import prisma from "../config/prisma.config";
+import logUtil from "../config/logger.config";
 
 const getCustomers = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    const customers = await customerService.getCustomers(tenantId!);
+    const customers = await customerRepo.getCustomers(tenantId!);
     res.status(200).json(customers);
   } catch (error) {
-    console.error("Error fetching customers:", error);
-    res.status(500).json({ error: "Failed to fetch customers" });
+    logUtil.handleError(res, error, "fetching customers");
   }
 };
 const getCustomerById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const customer = await customerService.getCustomerById(
+    const customer = await customerRepo.getCustomerById(
       id,
       req.user?.tenantId!
     );
@@ -29,8 +28,7 @@ const getCustomerById = async (req: Request, res: Response) => {
 
     res.status(200).json(customer);
   } catch (error) {
-    console.error("Error fetching customer:", error);
-    res.status(500).json({ error: "Failed to fetch customer" });
+    logUtil.handleError(res, error, "getting customer by ID");
   }
 };
 const addCustomer = async (req: Request, res: Response) => {
@@ -104,11 +102,10 @@ const addCustomer = async (req: Request, res: Response) => {
       }
     });
 
-    const customers = await customerService.getCustomers(tenantId!);
+    const customers = await customerRepo.getCustomers(tenantId!);
     res.status(201).json(customers);
   } catch (error) {
-    console.error("Error inserting customer:", error);
-    res.status(500).json({ error: "Failed to add customer" });
+    logUtil.handleError(res, error, "adding customer");
   }
 };
 const updateCustomer = async (req: Request, res: Response) => {
@@ -183,11 +180,10 @@ const updateCustomer = async (req: Request, res: Response) => {
       }
     });
 
-    const customers = await customerService.getCustomers(tenantId!);
+    const customers = await customerRepo.getCustomers(tenantId!);
     res.status(201).json(customers);
   } catch (error) {
-    console.error("Error updating customer:", error);
-    res.status(500).json({ error: "Failed to update customer" });
+    logUtil.handleError(res, error, "updating customer");
   }
 };
 const deleteCustomer = async (req: Request, res: Response) => {
@@ -205,11 +201,10 @@ const deleteCustomer = async (req: Request, res: Response) => {
       },
     });
 
-    const customers = await customerService.getCustomers(tenantId!);
+    const customers = await customerRepo.getCustomers(tenantId!);
     res.status(201).json(customers);
   } catch (error) {
-    console.error("Error deleting customer:", error);
-    res.status(500).json({ message: "Failed to delete customer" });
+    logUtil.handleError(res, error, "deleting customer");
   }
 };
 
@@ -245,8 +240,7 @@ const addCustomerDocument = async (req: Request, res: Response) => {
 
     res.status(201).json(documents);
   } catch (error) {
-    console.error("Error inserting customer document:", error);
-    res.status(500).json({ error: "Failed to add customer document" });
+    logUtil.handleError(res, error, "adding customer document");
   }
 };
 

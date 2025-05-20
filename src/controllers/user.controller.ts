@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../config/prisma.config";
+import logUtil from "../config/logger.config";
 
 const getCurrentUser = async (req: Request, res: Response) => {
   try {
@@ -46,8 +45,7 @@ const getCurrentUser = async (req: Request, res: Response) => {
 
     res.json(userData);
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    logUtil.handleError(res, error, "fetching current user");
   }
 };
 

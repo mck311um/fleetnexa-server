@@ -1,15 +1,13 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import paddle from "../config/paddle";
-import { tenantService } from "../service/tenant.service";
-
-const prisma = new PrismaClient();
+import { tenantService } from "../repository/tenant.repository";
+import prisma from "../config/prisma.config";
 
 const getTenantById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
     const tenant = await tenantService.getTenantById(id);
+
     if (!tenant) {
       return res.status(404).json({ message: "Tenant not found" });
     }
@@ -20,6 +18,56 @@ const getTenantById = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+const getTenantExtras = async (req: Request, res: Response) => {
+  const tenantId = req.user?.tenantId;
+  try {
+    const [tenantServices, tenantEquipments, tenantInsurances] =
+      await Promise.all([
+        prisma.tenantService.findMany({
+          where: { tenantId: tenantId, isDeleted: false },
+          include: { service: true },
+        }),
+        prisma.tenantEquipment.findMany({
+          where: { tenantId: tenantId, isDeleted: false },
+          include: { equipment: true },
+        }),
+        prisma.tenantInsurance.findMany({
+          where: { tenantId: tenantId, isDeleted: false },
+        }),
+      ]);
+
+    const combined: any[] = [
+      ...tenantServices.map((item) => ({
+        ...item,
+        type: "Service",
+        name: item.service.service,
+        icon: item.service.icon,
+        description: item.service.description,
+      })),
+      ...tenantInsurances.map((item) => ({
+        ...item,
+        type: "Insurance",
+        name: item.insurance,
+        icon: "FaShieldAlt",
+        description: item.description,
+      })),
+      ...tenantEquipments.map((item) => ({
+        ...item,
+        type: "Equipment",
+        name: item.equipment.equipment,
+        icon: item.equipment.icon,
+        description: item.equipment.description,
+      })),
+    ];
+
+    res.status(200).json(combined);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching tenant extras" });
+  }
+};
+
 const createTenant = async (req: Request, res: Response) => {
   const { tenantCode, tenantName, email, number, logo } = req.body;
 
@@ -658,6 +706,7 @@ const deleteInsurance = async (req: Request, res: Response) => {
 
 export default {
   getTenantById,
+  getTenantExtras,
   createTenant,
   updateTenant,
   setupTenant,

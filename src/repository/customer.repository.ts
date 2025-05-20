@@ -1,8 +1,7 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import prisma from "../config/prisma.config";
 
-const prisma = new PrismaClient();
-
-class CustomerService {
+class CustomerRepository {
   async getCustomers(
     tenantId: string,
     additionalWhere?: Prisma.CustomerWhereInput
@@ -87,4 +86,4 @@ class CustomerService {
   }
 }
 
-export const customerService = new CustomerService();
+export const customerRepo = new CustomerRepository();

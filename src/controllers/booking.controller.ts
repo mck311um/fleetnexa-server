@@ -1,12 +1,10 @@
-import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
-import { bookingService } from "../service/booking.service";
-import { tenantService } from "../service/tenant.service";
-import generator from "../services/pdfGenerator";
-import errorUtil from "../utils/error.util";
-import { InvoiceData } from "../types/pdf";
-
-const prisma = new PrismaClient();
+import { NextFunction, Request, Response } from "express";
+import { bookingRepo } from "../repository/booking.repository";
+import { tenantService } from "../repository/tenant.repository";
+import generator from "../services/pdfGenerator.service";
+import logUtil from "../config/logger.config";
+import prisma from "../config/prisma.config";
+import numberGenerator from "../services/numberGenerator.service";
 
 const getBookings = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -15,7 +13,7 @@ const getBookings = async (req: Request, res: Response) => {
     if (!tenantId) {
       return res.status(400).json({ error: "Tenant ID is required" });
     }
-    const bookings = await bookingService.getBookings(tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
     return res.status(200).json(bookings);
   } catch (error) {
     console.error("Error fetching bookings:", error);
@@ -33,7 +31,7 @@ const getBookingById = async (req: Request, res: Response) => {
     if (!tenantId) {
       return res.status(400).json({ error: "Tenant ID is required" });
     }
-    const booking = await bookingService.getBookingById(id, tenantId);
+    const booking = await bookingRepo.getBookingById(id, tenantId);
     if (!booking) {
       return res.status(404).json({ error: "Booking not found" });
     }
@@ -61,6 +59,13 @@ const handleBooking = async (req: Request, res: Response) => {
 
   try {
     await prisma.$transaction(async (tx) => {
+      if (!booking.bookingNumber) {
+        const bookingNumber = await numberGenerator.generateBookingNumber(
+          tenantId!
+        );
+        booking.bookingNumber = bookingNumber;
+      }
+
       const bookingData = {
         startDate: booking.startDate,
         endDate: booking.endDate,
@@ -78,6 +83,7 @@ const handleBooking = async (req: Request, res: Response) => {
         tenantId,
         status: booking.status,
         notes: booking.notes,
+        bookingNumber: booking.bookingNumber,
       };
 
       await tx.booking.upsert({
@@ -151,7 +157,7 @@ const handleBooking = async (req: Request, res: Response) => {
       }
     });
 
-    const bookings = await bookingService.getBookings(tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     return res.status(200).json(bookings);
   } catch (error) {
@@ -164,7 +170,7 @@ const handleBooking = async (req: Request, res: Response) => {
 };
 
 const confirmBooking = async (req: Request, res: Response) => {
-  const { booking, invoiceData } = req.body;
+  const { booking } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
@@ -173,8 +179,6 @@ const confirmBooking = async (req: Request, res: Response) => {
   }
 
   try {
-    const invoiceNumber = await generateInvoiceNumber(tenantId);
-
     await prisma.$transaction(
       async (tx) => {
         await tx.booking.update({
@@ -204,9 +208,178 @@ const confirmBooking = async (req: Request, res: Response) => {
       }
     );
 
-    const tenant = await tenantService.getTenantById(tenantId);
+    const updatedBooking = await bookingRepo.getBookingById(
+      booking.id,
+      tenantId!
+    );
+    return res.status(201).json(updatedBooking);
+  } catch (error) {
+    return logUtil.handleError(res, error, "confirming booking");
+  }
+};
+const declineBooking = async (req: Request, res: Response) => {
+  const { booking } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
 
-    const { s3Key } = await generator.createInvoice(
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: "DECLINED",
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+    });
+
+    const updatedBooking = await bookingRepo.getBookingById(
+      booking.id,
+      tenantId!
+    );
+    return res.status(200).json(updatedBooking);
+  } catch (error) {
+    return logUtil.handleError(res, error, "declining booking");
+  }
+};
+const cancelBooking = async (req: Request, res: Response) => {
+  const { booking } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: "CANCELED",
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+    });
+
+    const updatedBooking = await bookingRepo.getBookingById(
+      booking.id,
+      tenantId!
+    );
+    return res.status(200).json(updatedBooking);
+  } catch (error) {
+    return logUtil.handleError(res, error, "cancelling booking");
+  }
+};
+const startBooking = async (req: Request, res: Response) => {
+  const { booking } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: "ACTIVE",
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+
+      const rentedStatus = await tx.vehicleStatus.findFirst({
+        where: { status: "Rented" },
+        select: { id: true },
+      });
+
+      if (!rentedStatus) {
+        throw new Error('Vehicle status "RENTED" not found');
+      }
+
+      await tx.vehicle.update({
+        where: { id: booking.vehicleId },
+        data: {
+          vehicleStatusId: rentedStatus.id,
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+    });
+
+    const updatedBooking = await bookingRepo.getBookingById(
+      booking.id,
+      tenantId!
+    );
+
+    return res.status(200).json(updatedBooking);
+  } catch (error) {
+    return logUtil.handleError(res, error, "starting booking");
+  }
+};
+const endBooking = async (req: Request, res: Response, next: NextFunction) => {
+  const { booking } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: "COMPLETED",
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+
+      const rentedStatus = await tx.vehicleStatus.findFirst({
+        where: { status: "Pending Inspection" },
+        select: { id: true },
+      });
+
+      if (!rentedStatus) {
+        throw new Error('Vehicle status "Pending Inspection" not found');
+      }
+
+      await tx.vehicle.update({
+        where: { id: booking.vehicleId },
+        data: {
+          vehicleStatusId: rentedStatus.id,
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+    });
+
+    const updatedBooking = await bookingRepo.getBookingById(
+      booking.id,
+      tenantId!
+    );
+
+    return res.status(200).json(updatedBooking);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const generateInvoice = async (req: Request, res: Response) => {
+  const { invoiceData } = req.body;
+  const { bookingId } = req.params;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    let invoiceNumber;
+
+    const invoice = await prisma.invoice.findUnique({
+      where: { bookingId },
+    });
+
+    if (invoice) {
+      invoiceNumber = invoice.invoiceNumber;
+    } else {
+      invoiceNumber = await numberGenerator.generateInvoiceNumber(tenantId!);
+    }
+
+    const booking = await bookingRepo.getBookingById(bookingId, tenantId!);
+    const tenant = await tenantService.getTenantById(tenantId!);
+
+    const { publicUrl } = await generator.createInvoice(
       {
         ...invoiceData,
         invoiceNumber,
@@ -215,63 +388,92 @@ const confirmBooking = async (req: Request, res: Response) => {
       tenant?.tenantCode!
     );
 
-    await prisma.invoice.create({
-      data: {
+    await prisma.invoice.upsert({
+      where: { bookingId },
+      create: {
         invoiceNumber,
-        amount: booking.values?.netTotal,
-        customerId: booking.customerId,
-        bookingId: booking.id,
-        tenantId,
+        amount: booking?.values?.netTotal || 0,
+        customerId: booking?.customerId || "",
+        bookingId: booking?.id || "",
+        tenantId: tenantId!,
         createdAt: new Date(),
         createdBy: userId,
-        invoiceUrl: s3Key,
+        invoiceUrl: publicUrl,
+      },
+      update: {
+        amount: booking?.values?.netTotal || 0,
+        customerId: booking?.customerId || "",
+        tenantId: tenantId!,
+        invoiceUrl: publicUrl,
+        updatedAt: new Date(),
+        updatedBy: userId,
       },
     });
 
-    const bookings = await bookingService.getBookings(tenantId);
-    return res.status(201).json({
-      bookings,
-    });
+    return res.status(201).json(publicUrl);
   } catch (error) {
-    return errorUtil.handleError(res, error, "confirming booking");
+    console.error("Error generating invoice number:", error);
+    throw new Error("Error generating invoice number");
   }
 };
-const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
-  const tenant = await prisma.tenant.findUnique({
-    where: { id: tenantId },
-    include: { invoiceSequence: true },
-  });
+const generateBookingAgreement = async (req: Request, res: Response) => {
+  const { agreementData } = req.body;
+  const { bookingId } = req.params;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
 
-  if (!tenant?.invoiceSequence) {
-    throw new Error("Tenant has no invoice sequence configured");
+  try {
+    let agreementNumber;
+
+    const agreement = await prisma.bookingAgreement.findUnique({
+      where: { bookingId },
+    });
+
+    if (agreement) {
+      agreementNumber = agreement.agreementNumber;
+    } else {
+      agreementNumber = await numberGenerator.generateBookingAgreementNumber(
+        tenantId!
+      );
+    }
+
+    const booking = await bookingRepo.getBookingById(bookingId, tenantId!);
+    const tenant = await tenantService.getTenantById(tenantId!);
+
+    const { publicUrl } = await generator.createAgreement(
+      {
+        ...agreementData,
+        agreementNumber,
+      },
+      agreementNumber,
+      tenant?.tenantCode!
+    );
+
+    await prisma.bookingAgreement.upsert({
+      where: { bookingId },
+      create: {
+        agreementNumber,
+        customerId: booking?.customerId || "",
+        bookingId: booking?.id || "",
+        tenantId: tenantId!,
+        createdAt: new Date(),
+        createdBy: userId,
+        agreementUrl: publicUrl,
+      },
+      update: {
+        customerId: booking?.customerId || "",
+        tenantId: tenantId!,
+        agreementUrl: publicUrl,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    return res.status(201).json(publicUrl);
+  } catch (error) {
+    console.error("Error generating booking agreement number:", error);
+    throw new Error("Error generating booking agreement number");
   }
-
-  const lastInvoice = await prisma.invoice.findFirst({
-    where: { tenantId },
-    orderBy: { createdAt: "desc" },
-    select: { invoiceNumber: true },
-  });
-
-  const lastNumber = lastInvoice?.invoiceNumber
-    ? parseInt(lastInvoice.invoiceNumber.match(/\d+$/)?.[0] || "0", 10)
-    : 0;
-  const nextNumber = lastNumber + 1;
-
-  const now = new Date();
-  const year = now.getFullYear().toString();
-  const month = (now.getMonth() + 1).toString().padStart(2, "0");
-  const day = now.getDate().toString().padStart(2, "0");
-
-  let prefix = tenant.invoiceSequence.prefix;
-  prefix = prefix
-    .replace(/{year}/g, year)
-    .replace(/{month}/g, month)
-    .replace(/{day}/g, day)
-    .replace(/{tenantId}/g, tenantId.substring(0, 4));
-
-  const sequenceNumber = nextNumber.toString().padStart(3, "0");
-
-  return `${prefix}${sequenceNumber}`;
 };
 
 export default {
@@ -279,4 +481,10 @@ export default {
   getBookingById,
   handleBooking,
   confirmBooking,
+  declineBooking,
+  cancelBooking,
+  startBooking,
+  endBooking,
+  generateInvoice,
+  generateBookingAgreement,
 };

@@ -1,17 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import {
-  vehicleGroupService,
-  vehicleService,
-} from "../service/vehicle.service";
-const prisma = new PrismaClient();
+  vehicleRepo,
+  vehicleGroupRepo,
+} from "../repository/vehicle.repository";
+import prisma from "../config/prisma.config";
 
 // #region Vehicle
 const getVehicles = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    const vehicles = await vehicleService.getVehicles(tenantId!);
+    const vehicles = await vehicleRepo.getVehicles(tenantId!);
     res.status(200).json(vehicles);
   } catch (error) {
     console.error(error);
@@ -22,10 +22,7 @@ const getVehicleById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const vehicle = await vehicleService.getVehicleById(
-      id,
-      req.user?.tenantId!
-    );
+    const vehicle = await vehicleRepo.getVehicleById(id, req.user?.tenantId!);
 
     if (!vehicle) {
       return res.status(404).json({ message: "Vehicle not found" });
@@ -41,7 +38,7 @@ const getVehiclesByGroup = async (req: Request, res: Response) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
   try {
-    const vehicles = await vehicleService.getVehicleByGroupId(id, tenantId!);
+    const vehicles = await vehicleRepo.getVehicleByGroupId(id, tenantId!);
     res.status(200).json(vehicles);
   } catch (error) {
     console.error(error);
@@ -78,12 +75,12 @@ const addVehicle = async (req: Request, res: Response) => {
         licensePlate: vehicle.licensePlate,
         brand: { connect: { id: vehicle.brandId } },
         model: { connect: { id: vehicle.modelId } },
-        numberOfSeats: vehicle.numberOfSeats,
-        numberOfDoors: vehicle.numberOfDoors,
+        numberOfSeats: parseInt(vehicle.numberOfSeats),
+        numberOfDoors: parseInt(vehicle.numberOfDoors),
         odometer: vehicle.odometer,
         registrationExpiry: vehicle.registrationExpiry,
         registrationNumber: vehicle.registrationNumber,
-        tankVolume: vehicle.tankVolume,
+        steering: vehicle.steering,
         vin: vehicle.vin,
         year: vehicle.year,
         transmission: { connect: { id: vehicle.transmissionId } },
@@ -98,7 +95,7 @@ const addVehicle = async (req: Request, res: Response) => {
       },
     });
 
-    const vehicles = await vehicleService.getVehicles(tenantId!);
+    const vehicles = await vehicleRepo.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
     console.error(error);
@@ -128,12 +125,12 @@ const updateVehicle = async (req: Request, res: Response) => {
         licensePlate: vehicle.licensePlate,
         brand: { connect: { id: vehicle.brandId } },
         model: { connect: { id: vehicle.modelId } },
-        numberOfSeats: vehicle.numberOfSeats,
-        numberOfDoors: vehicle.numberOfDoors,
+        numberOfSeats: parseInt(vehicle.numberOfSeats),
+        numberOfDoors: parseInt(vehicle.numberOfDoors),
         odometer: vehicle.odometer,
         registrationExpiry: vehicle.registrationExpiry,
         registrationNumber: vehicle.registrationNumber,
-        tankVolume: vehicle.tankVolume,
+        steering: vehicle.steering,
         transmission: { connect: { id: vehicle.transmissionId } },
         vehicleGroup: { connect: { id: vehicle.vehicleGroupId } },
         vehicleStatus: { connect: { id: vehicle.vehicleStatusId } },
@@ -146,7 +143,7 @@ const updateVehicle = async (req: Request, res: Response) => {
       },
     });
 
-    const vehicles = await vehicleService.getVehicles(tenantId!);
+    const vehicles = await vehicleRepo.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
     console.error(error);
@@ -168,7 +165,7 @@ const deleteVehicle = async (req: Request, res: Response) => {
       },
     });
 
-    const vehicles = await vehicleService.getVehicles(tenantId!);
+    const vehicles = await vehicleRepo.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
     console.error(error);
@@ -315,7 +312,7 @@ const deleteVehicleDamage = async (req: Request, res: Response) => {
 const getVehicleGroups = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   try {
-    const vehicleGroups = await vehicleGroupService.getVehicleGroups(tenantId!);
+    const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
     res.status(200).json(vehicleGroups);
   } catch (error: any) {
     console.error(error);
@@ -327,7 +324,7 @@ const getVehicleGroupById = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    const vehicleGroup = await vehicleGroupService.getVehicleGroupById(
+    const vehicleGroup = await vehicleGroupRepo.getVehicleGroupById(
       id,
       tenantId!
     );
@@ -432,7 +429,7 @@ const addVehicleGroup = async (req: Request, res: Response) => {
       }
     });
 
-    const vehicleGroups = await vehicleGroupService.getVehicleGroups(tenantId!);
+    const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
     res.status(201).json(vehicleGroups);
   } catch (error: any) {
     console.error(error);
@@ -556,7 +553,7 @@ const updateVehicleGroup = async (req: Request, res: Response) => {
       }
     });
 
-    const vehicleGroups = await vehicleGroupService.getVehicleGroups(tenantId!);
+    const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
     res.status(201).json(vehicleGroups);
   } catch (error) {
     console.error(error);
@@ -578,7 +575,7 @@ const deleteVehicleGroup = async (req: Request, res: Response) => {
       },
     });
 
-    const vehicleGroups = await vehicleGroupService.getVehicleGroups(tenantId!);
+    const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
     res.status(201).json(vehicleGroups);
   } catch (error) {
     console.error(error);

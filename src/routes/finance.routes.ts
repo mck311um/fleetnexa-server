@@ -1,9 +1,9 @@
 import express from "express";
-import userController from "../controllers/user.controller";
+import controller from "../controllers/finance.controller";
 import { auth } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-router.get("/me", auth, userController.getCurrentUser);
+router.post("/booking/payment", auth, controller.addBookingPayment);
 
 export default router;

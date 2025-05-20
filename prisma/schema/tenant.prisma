@@ -38,7 +38,8 @@ model Tenant {
   insurance           TenantInsurance[]
   rentalActivity      RentalActivity[]
   contacts            TenantContact[]
-  weeklyStats TenantWeeklyStats[]
+  weeklyStats         TenantWeeklyStats[]
+  bookingAgreements   BookingAgreement[]
 }
 
 
@@ -49,7 +50,8 @@ model PaymentMethod {
   createdAt           DateTime              @default(now())
   updatedAt           DateTime?             @updatedAt
 
-  Tenant Tenant[]
+  Tenant              Tenant[]
+  payments            BookingPayments[]
 }
 
 model Address {

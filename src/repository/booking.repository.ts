@@ -1,8 +1,7 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import prisma from "../config/prisma.config";
 
-const prisma = new PrismaClient();
-
-class BookingService {
+class BookingRepository {
   async getBookings(
     tenantId: string,
     additionalWhere?: Prisma.BookingWhereInput
@@ -29,6 +28,7 @@ class BookingService {
       pickup: true,
       return: true,
       invoice: true,
+      bookingAgreement: true,
       user: {
         select: {
           id: true,
@@ -71,6 +71,12 @@ class BookingService {
           },
         },
       },
+      payments: {
+        include: {
+          paymentMethod: true,
+          paymentType: true,
+        },
+      },
       values: {
         include: {
           extras: true,
@@ -80,4 +86,4 @@ class BookingService {
   }
 }
 
-export const bookingService = new BookingService();
+export const bookingRepo = new BookingRepository();

@@ -2,6 +2,7 @@ export interface RentalService {
   label: string;
   description: string;
   amount: number;
+  rate?: number;
 }
 
 export interface InvoiceData {
@@ -20,7 +21,6 @@ export interface InvoiceData {
   invoiceNumber: string;
   issuedDate: string;
   dueDate: string;
-  numberOfDays: number;
   basePrice: number;
   make: string;
   model: string;
@@ -37,4 +37,54 @@ export interface InvoiceData {
   deposit: number;
   total: number;
   invoiceNotes: string;
+  numberOfUnits: number;
+  unitPlural: string;
+  unit: string;
+}
+
+export interface AgreementData {
+  tenantName: string;
+  street: string;
+  village: string;
+  parish: string;
+  country: string;
+  email: string;
+  phone: string;
+  agreementNumber: string;
+  agreementDate: string;
+  make: string;
+  model: string;
+  plate: string;
+  bodyType: string;
+  transmission: string;
+  color: string;
+  year: number;
+  fuelPercent: string;
+  mileage: string;
+  fuel: string;
+  drive: string;
+  featuredImage: string;
+  pickupDate: string;
+  pickupLocation: string;
+  pickupTime: string;
+  returnDate: string;
+  returnLocation: string;
+  returnTime: string;
+  lastName: string;
+  firstName: string;
+  dateOfBirth: string;
+  license: string;
+  issuedDate: string;
+  expiryDate: string;
+  city: string;
+  address: string;
+  numberOfUnits: number;
+  unit: string;
+  unitPlural: string;
+  basePrice: number;
+  rentalAmount: number;
+  services: RentalService[];
+  extrasTotal: string;
+  securityDeposit: string;
+  total: string;
 }
