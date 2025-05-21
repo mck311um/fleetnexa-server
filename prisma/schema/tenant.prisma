@@ -40,6 +40,8 @@ model Tenant {
   contacts            TenantContact[]
   weeklyStats         TenantWeeklyStats[]
   bookingAgreements   BookingAgreement[]
+  monthlyStats        TenantMonthlyStats[]
+  monthlyBookingStats TenantMonthlyBookingStats[]
 }
 
 

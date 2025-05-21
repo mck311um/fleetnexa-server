@@ -59,6 +59,8 @@ class TenantRepository {
           OR: getWeekFilters(),
         },
       },
+      monthlyStats: true,
+      monthlyBookingStats: true,
     };
   }
 }

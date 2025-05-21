@@ -14,3 +14,38 @@ model TenantWeeklyStats {
     
     @@unique([tenantId, week, year, stat])
 }
+
+model TenantMonthlyStats {
+    id           String          @id @default(dbgenerated("gen_random_uuid()"))
+    tenantId     String
+    month        Int
+    year         Int
+    stat         StatItem
+    value        Float
+    startDate    DateTime
+    endDate      DateTime
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+
+    tenant       Tenant         @relation(fields: [tenantId], references: [id])
+    
+    @@unique([tenantId, month, year, stat])
+}
+
+model TenantMonthlyBookingStats {
+    id           String          @id @default(dbgenerated("gen_random_uuid()"))
+    tenantId     String
+    month        Int
+    year         Int
+    stat         StatItem
+    status       BookingStatus
+    value        Float
+    startDate    DateTime
+    endDate      DateTime
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+
+    tenant       Tenant         @relation(fields: [tenantId], references: [id])
+    
+    @@unique([tenantId,status, month, year, stat])
+}
