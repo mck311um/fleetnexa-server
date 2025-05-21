@@ -92,6 +92,22 @@ const getTenantRentalActivity = async (
     next(error);
   }
 };
+const getTenantReminders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  try {
+    const reminders = await prisma.tenantReminders.findMany({
+      where: { tenantId: tenantId },
+    });
+
+    res.status(200).json(reminders);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const createTenant = async (req: Request, res: Response) => {
   const { tenantCode, tenantName, email, number, logo } = req.body;
@@ -705,4 +721,5 @@ export default {
   updateInsurance,
   deleteInsurance,
   getTenantRentalActivity,
+  getTenantReminders,
 };
