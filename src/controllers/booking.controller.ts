@@ -257,6 +257,18 @@ const cancelBooking = async (req: Request, res: Response) => {
           updatedBy: userId,
         },
       });
+
+      await tx.rentalActivity.create({
+        data: {
+          bookingId: booking.id,
+          action: "CANCELED",
+          createdAt: new Date(),
+          createdBy: userId,
+          customerId: booking.customerId,
+          vehicleId: booking.vehicleId,
+          tenantId: tenantId!,
+        },
+      });
     });
 
     const updatedBooking = await bookingRepo.getBookingById(
@@ -298,6 +310,18 @@ const startBooking = async (req: Request, res: Response) => {
           vehicleStatusId: rentedStatus.id,
           updatedAt: new Date(),
           updatedBy: userId,
+        },
+      });
+
+      await tx.rentalActivity.create({
+        data: {
+          bookingId: booking.id,
+          action: "PICKED_UP",
+          createdAt: new Date(),
+          createdBy: userId,
+          customerId: booking.customerId,
+          vehicleId: booking.vehicleId,
+          tenantId: tenantId!,
         },
       });
     });
@@ -342,6 +366,18 @@ const endBooking = async (req: Request, res: Response, next: NextFunction) => {
           vehicleStatusId: rentedStatus.id,
           updatedAt: new Date(),
           updatedBy: userId,
+        },
+      });
+
+      await tx.rentalActivity.create({
+        data: {
+          bookingId: booking.id,
+          action: "RETURNED",
+          createdAt: new Date(),
+          createdBy: userId,
+          customerId: booking.customerId,
+          vehicleId: booking.vehicleId,
+          tenantId: tenantId!,
         },
       });
     });

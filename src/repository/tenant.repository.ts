@@ -61,6 +61,17 @@ class TenantRepository {
       },
       monthlyStats: true,
       monthlyBookingStats: true,
+      rentalActivity: {
+        include: {
+          vehicle: {
+            select: {
+              brand: true,
+              model: true,
+            },
+          },
+          customer: true,
+        },
+      },
     };
   }
 }

@@ -9,6 +9,7 @@ router.get("/services", auth, controller.getServices);
 router.get("/equipment", auth, controller.getEquipment);
 router.get("/insurance", auth, controller.getInsurance);
 router.get("/extras", auth, controller.getTenantExtras);
+router.get("/activity", auth, controller.getTenantRentalActivity);
 router.get("/:id", auth, controller.getTenantById);
 
 router.post("/", controller.createTenant);

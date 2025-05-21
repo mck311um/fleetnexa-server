@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { tenantService } from "../repository/tenant.repository";
 import prisma from "../config/prisma.config";
 
@@ -65,6 +65,31 @@ const getTenantExtras = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching tenant extras" });
+  }
+};
+const getTenantRentalActivity = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  try {
+    const rentalActivity = await prisma.rentalActivity.findMany({
+      where: { tenantId: tenantId },
+      include: {
+        vehicle: {
+          select: {
+            brand: true,
+            model: true,
+          },
+        },
+        customer: true,
+      },
+    });
+
+    res.status(200).json(rentalActivity);
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -173,48 +198,7 @@ const setupTenant = async (req: Request, res: Response) => {
       },
     });
 
-    const tenant = await prisma.tenant.findUnique({
-      where: { id: tenantId },
-      include: {
-        address: {
-          include: {
-            village: true,
-            state: true,
-            country: true,
-          },
-        },
-        currency: true,
-        invoiceSequence: true,
-        paymentMethods: true,
-        customers: true,
-        subscription: true,
-        services: {
-          where: { isDeleted: false },
-          include: {
-            service: true,
-          },
-        },
-        insurance: {
-          where: { isDeleted: false },
-        },
-        equipment: {
-          where: { isDeleted: false },
-          include: {
-            equipment: true,
-          },
-        },
-        tenantLocations: {
-          where: { isDeleted: false },
-          include: {
-            vehicles: true,
-            address: true,
-            _count: {
-              select: { vehicles: true },
-            },
-          },
-        },
-      },
-    });
+    const tenant = await tenantService.getTenantById(data.id);
 
     res.status(201).json(tenant);
   } catch (error: any) {
@@ -720,4 +704,5 @@ export default {
   addInsurance,
   updateInsurance,
   deleteInsurance,
+  getTenantRentalActivity,
 };
