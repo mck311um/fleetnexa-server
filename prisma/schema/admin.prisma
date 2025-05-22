@@ -239,5 +239,5 @@ model PaymentType {
   description   String
 
 
-  bookingPayments BookingPayments[]
+  payments      Payments[]
 }

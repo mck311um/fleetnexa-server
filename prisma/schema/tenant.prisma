@@ -29,9 +29,9 @@ model Tenant {
   vehicles            Vehicle[]
   tenantLocations     TenantLocation[]
   additions           Addition[]
-  bookings            Booking[]
+  rentals             Rental[]
   invoices            Invoice[]
-  payments            BookingPayments[]
+  payments            Payments[]
   services            TenantService[]
   forms               Form[]
   equipment           TenantEquipment[]
@@ -39,11 +39,10 @@ model Tenant {
   rentalActivity      RentalActivity[]
   contacts            TenantContact[]
   weeklyStats         TenantWeeklyStats[]
-  bookingAgreements   BookingAgreement[]
+  agreements          RentalAgreement[]
   monthlyStats        TenantMonthlyStats[]
-  monthlyBookingStats TenantMonthlyBookingStats[]
-
-  TenantReminders TenantReminders[]
+  monthlyRentalStats  TenantMonthlyRentalStats[]
+  reminders           TenantReminders[]
 }
 
 
@@ -55,7 +54,7 @@ model PaymentMethod {
   updatedAt           DateTime?             @updatedAt
 
   Tenant              Tenant[]
-  payments            BookingPayments[]
+  payments            Payments[]
 }
 
 model Address {
@@ -94,8 +93,8 @@ model TenantLocation {
   updatedAt         DateTime? @updatedAt
   updatedBy         String?
 
-  BookingPickup     Booking[] @relation("PickupLocation")
-  BookingReturn     Booking[] @relation("ReturnLocation")
+  RentalPickup     Rental[] @relation("PickupLocation")
+  RentalReturn     Rental[] @relation("ReturnLocation")
   vehicles          Vehicle[]
 
   locationType      LocationType @relation(fields: [locationTypeId], references: [id])

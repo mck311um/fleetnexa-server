@@ -58,7 +58,7 @@ class VehicleRepository {
       },
       transmission: true,
       wheelDrive: true,
-      bookings: {
+      rentals: {
         include: {
           pickup: true,
           return: true,
@@ -140,11 +140,11 @@ class VehicleGroupRepository {
       discounts: true,
       chargeType: true,
       fuelPolicy: true,
-      bookings: true,
+      rentals: true,
       vehicles: {
         where: { isDeleted: false },
         include: {
-          bookings: true,
+          rentals: true,
           brand: true,
           model: true,
         },
@@ -154,7 +154,7 @@ class VehicleGroupRepository {
           vehicles: {
             where: { isDeleted: false },
           },
-          bookings: true,
+          rentals: true,
         },
       },
     };

@@ -8,9 +8,9 @@ model VehicleGroup {
   fuelPolicyId          String?
   lateFee               Int             @default(0)
   lateFeePolicy         String          @default("percent")
-  maximumBooking        Int             @default(10)
+  maximumRental        Int             @default(10)
   minimumAge            Int             @default(18)
-  minimumBooking        Int             @default(1)
+  minimumRental        Int             @default(1)
   price                 Float
   chargeTypeId          String?
   timeBetweenRentals    Int             @default(0)
@@ -30,7 +30,7 @@ model VehicleGroup {
   updatedAt             DateTime?       @updatedAt
   updatedBy             String?
 
-  bookings              Booking[]
+  rentals              Rental[]
   vehicles              Vehicle[]
   discounts             VehicleDiscount[]
 
@@ -74,7 +74,7 @@ model Vehicle {
   
   damages               VehicleDamage[]
   features              VehicleFeature[] @relation("VehicleToVehicleFeature")
-  bookings              Booking[]
+  rentals               Rental[]
   rentalActivity        RentalActivity[]
   serviceLogs           VehicleServiceLog[]
   scheduledServices     VehicleServiceSchedule[]
@@ -104,8 +104,7 @@ model VehicleDiscount {
   updatedAt             DateTime? @updatedAt
   createdBy             String?
   updatedBy             String?
-
-  vehicleGroup   VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
+  group                 VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
   
 }
 
@@ -147,8 +146,7 @@ model FuelPolicy {
   id           String         @id @default(dbgenerated("gen_random_uuid()"))
   policy       String
   code         String
-
-  VehicleGroup VehicleGroup[]
+  group        VehicleGroup[]
 }
 
 model VehicleServiceLog {

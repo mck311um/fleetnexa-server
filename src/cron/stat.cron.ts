@@ -47,8 +47,8 @@ export const runWeeklyStatCron = async () => {
           tenant.id,
           week,
           year,
-          "NEW_BOOKINGS",
-          await calcNewBookings(tenant.id, from, to),
+          "NEW_RENTALS",
+          await calcNewRentals(tenant.id, from, to),
           to,
           from
         ),
@@ -74,8 +74,8 @@ export const runWeeklyStatCron = async () => {
           tenant.id,
           week,
           year,
-          "AVERAGE_BOOKING",
-          await calcAverageBookingDuration(tenant.id, from, to),
+          "AVERAGE_RENTAL",
+          await calcAverageRentalDuration(tenant.id, from, to),
           to,
           from
         ),
@@ -119,12 +119,12 @@ export const runMonthlyStatCron = async () => {
           tenant.id,
           month,
           year,
-          "MONTHLY_BOOKINGS",
-          await calcMonthlyBookings(tenant.id, from, to),
+          "MONTHLY_RENTALS",
+          await calcMonthlyRentals(tenant.id, from, to),
           to,
           from
         ),
-        calcMonthlyBookingStatus(tenant.id, from, to),
+        calcMonthlyRentalStatus(tenant.id, from, to),
       ]);
     }
   }
@@ -137,10 +137,10 @@ const saveStat = async (
   year: number,
   stat:
     | "TOTAL_REVENUE"
-    | "NEW_BOOKINGS"
+    | "NEW_RENTALS"
     | "RENTED_VEHICLES"
     | "TOTAL_CUSTOMERS"
-    | "AVERAGE_BOOKING",
+    | "AVERAGE_RENTAL",
   value: number,
   from: Date,
   to: Date
@@ -174,7 +174,7 @@ const calcTotalRevenue = async (
 ): Promise<number> => {
   const result = await prisma.values.aggregate({
     where: {
-      booking: {
+      rental: {
         tenantId,
         createdAt: { gte: from, lte: to },
         status: "COMPLETED",
@@ -186,12 +186,12 @@ const calcTotalRevenue = async (
   return result._sum.netTotal ?? 0;
 };
 
-const calcNewBookings = async (
+const calcNewRentals = async (
   tenantId: string,
   from: Date,
   to: Date
 ): Promise<number> => {
-  return await prisma.booking.count({
+  return await prisma.rental.count({
     where: {
       tenantId,
       createdAt: { gte: from, lte: to },
@@ -204,7 +204,7 @@ const calcRentedVehicles = async (
   from: Date,
   to: Date
 ): Promise<number> => {
-  return await prisma.booking.count({
+  return await prisma.rental.count({
     where: {
       tenantId,
       createdAt: { gte: from, lte: to },
@@ -226,12 +226,12 @@ const calcNewCustomers = async (
   });
 };
 
-const calcAverageBookingDuration = async (
+const calcAverageRentalDuration = async (
   tenantId: string,
   from: Date,
   to: Date
 ): Promise<number> => {
-  const bookings = await prisma.booking.findMany({
+  const rentals = await prisma.rental.findMany({
     where: {
       tenantId,
       startDate: { gte: from },
@@ -244,24 +244,24 @@ const calcAverageBookingDuration = async (
     },
   });
 
-  if (bookings.length === 0) return 0;
+  if (rentals.length === 0) return 0;
 
-  const totalDays = bookings.reduce((acc, booking) => {
+  const totalDays = rentals.reduce((acc, rental) => {
     const diff = Math.ceil(
-      (booking.endDate.getTime() - booking.startDate.getTime()) /
+      (rental.endDate.getTime() - rental.startDate.getTime()) /
         (1000 * 60 * 60 * 24)
     );
     return acc + diff;
   }, 0);
 
-  return totalDays / bookings.length;
+  return totalDays / rentals.length;
 };
 
 const saveMonthlyStat = async (
   tenantId: string,
   month: number,
   year: number,
-  stat: "MONTHLY_EARNINGS" | "MONTHLY_BOOKINGS" | "MONTHLY_BOOKING_STATUS",
+  stat: "MONTHLY_EARNINGS" | "MONTHLY_RENTALS" | "MONTHLY_RENTAL_STATUS",
   value: number,
   from: Date,
   to: Date
@@ -295,7 +295,7 @@ const calcMonthlyEarnings = async (
 ): Promise<number> => {
   const result = await prisma.values.aggregate({
     where: {
-      booking: {
+      rental: {
         tenantId,
         startDate: { gte: from, lte: to },
         status: "COMPLETED",
@@ -307,12 +307,12 @@ const calcMonthlyEarnings = async (
   return result._sum.netTotal ?? 0;
 };
 
-const calcMonthlyBookings = async (
+const calcMonthlyRentals = async (
   tenantId: string,
   from: Date,
   to: Date
 ): Promise<number> => {
-  return await prisma.booking.count({
+  return await prisma.rental.count({
     where: {
       tenantId,
       startDate: { gte: from, lte: to },
@@ -321,7 +321,7 @@ const calcMonthlyBookings = async (
   });
 };
 
-const calcMonthlyBookingStatus = async (
+const calcMonthlyRentalStatus = async (
   tenantId: string,
   from: Date,
   to: Date
@@ -336,7 +336,7 @@ const calcMonthlyBookingStatus = async (
   ] as const;
 
   for (const status of statuses) {
-    const count = await prisma.booking.count({
+    const count = await prisma.rental.count({
       where: {
         tenantId,
         createdAt: { gte: from, lte: to },
@@ -344,11 +344,11 @@ const calcMonthlyBookingStatus = async (
       },
     });
 
-    await saveMonthlyBookingStatus(
+    await saveMonthlyRentalStatus(
       tenantId,
       getMonth(from) + 1,
       getYear(from),
-      "MONTHLY_BOOKING_STATUS",
+      "MONTHLY_RENTAL_STATUS",
       status,
       count,
       from,
@@ -357,11 +357,11 @@ const calcMonthlyBookingStatus = async (
   }
 };
 
-const saveMonthlyBookingStatus = async (
+const saveMonthlyRentalStatus = async (
   tenantId: string,
   month: number,
   year: number,
-  stat: "MONTHLY_BOOKING_STATUS",
+  stat: "MONTHLY_RENTAL_STATUS",
   status:
     | "ACTIVE"
     | "COMPLETED"
@@ -373,7 +373,7 @@ const saveMonthlyBookingStatus = async (
   from: Date,
   to: Date
 ) => {
-  await prisma.tenantMonthlyBookingStats.upsert({
+  await prisma.tenantMonthlyRentalStats.upsert({
     where: {
       tenantId_status_month_year_stat: {
         tenantId,

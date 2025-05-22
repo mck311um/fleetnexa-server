@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
-import { bookingRepo } from "../repository/booking.repository";
+import { rentalRepo } from "../repository/rental.repository";
 import logUtil from "../config/logger.config";
 
 const prisma = new PrismaClient();
 
-const addBookingPayment = async (
+const addRentalPayment = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -24,13 +24,13 @@ const addBookingPayment = async (
 
   try {
     await prisma.$transaction(async (tx) => {
-      const bookingPaymentData = {
+      const rentalPaymentData = {
         id: payment.id,
         amount: payment.amount,
         paymentDate: payment.paymentDate,
         notes: payment.notes,
         tenantId: tenantId,
-        bookingId: payment.bookingId,
+        rentalId: payment.rentalId,
         paymentTypeId: payment.paymentTypeId,
         paymentMethodId: payment.paymentMethodId,
         createdAt: new Date(),
@@ -38,17 +38,17 @@ const addBookingPayment = async (
         updatedBy: userId,
       };
 
-      const existingPayments = await tx.bookingPayments.findMany({
-        where: { bookingId: payment.bookingId },
+      const existingPayments = await tx.rentalPayments.findMany({
+        where: { rentalId: payment.rentalId },
       });
 
-      await tx.bookingPayments.create({
-        data: bookingPaymentData,
+      await tx.rentalPayments.create({
+        data: rentalPaymentData,
       });
 
       if (existingPayments.length === 0) {
-        await tx.booking.update({
-          where: { id: payment.bookingId },
+        await tx.rental.update({
+          where: { id: payment.rentalId },
           data: {
             status: "RESERVED",
             updatedAt: new Date(),
@@ -57,12 +57,12 @@ const addBookingPayment = async (
         });
       }
 
-      const updatedBooking = await bookingRepo.getBookingById(
-        payment.bookingId,
+      const updatedRental = await rentalRepo.getRentalById(
+        payment.rentalId,
         tenantId
       );
 
-      return res.status(201).json(updatedBooking);
+      return res.status(201).json(updatedRental);
     });
   } catch (error) {
     next(error);
@@ -70,5 +70,5 @@ const addBookingPayment = async (
 };
 
 export default {
-  addBookingPayment,
+  addRentalPayment,
 };

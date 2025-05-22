@@ -40,7 +40,7 @@ const createDocument = async ({
   tenantCode,
 }: CreateDocumentParams) => {
   const templateId = documentType === "invoice" ? invoiceId : agreementId;
-  const folder = documentType === "invoice" ? "Invoices" : "BookingAgreements";
+  const folder = documentType === "invoice" ? "Invoices" : "Agreements";
 
   try {
     const res = await pdfMonkeyApi.post("/documents", {

@@ -32,13 +32,13 @@ model TenantMonthlyStats {
     @@unique([tenantId, month, year, stat])
 }
 
-model TenantMonthlyBookingStats {
+model TenantMonthlyRentalStats {
     id           String          @id @default(dbgenerated("gen_random_uuid()"))
     tenantId     String
     month        Int
     year         Int
     stat         StatItem
-    status       BookingStatus
+    status       RentalStatus
     value        Float
     startDate    DateTime
     endDate      DateTime

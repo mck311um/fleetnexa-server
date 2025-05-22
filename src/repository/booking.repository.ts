@@ -1,34 +1,34 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../config/prisma.config";
 
-class BookingRepository {
-  async getBookings(
+class RentalRepository {
+  async getRentals(
     tenantId: string,
-    additionalWhere?: Prisma.BookingWhereInput
+    additionalWhere?: Prisma.RentalWhereInput
   ) {
-    return prisma.booking.findMany({
+    return prisma.rental.findMany({
       where: {
         tenantId,
         isDeleted: false,
         ...additionalWhere,
       },
-      include: this.getBookingIncludeOptions(),
+      include: this.getRentalIncludeOptions(),
     });
   }
 
-  async getBookingById(id: string, tenantId: string) {
-    return prisma.booking.findUnique({
+  async getRentalById(id: string, tenantId: string) {
+    return prisma.rental.findUnique({
       where: { id, tenantId, isDeleted: false },
-      include: this.getBookingIncludeOptions(),
+      include: this.getRentalIncludeOptions(),
     });
   }
 
-  private getBookingIncludeOptions(): Prisma.BookingInclude {
+  private getRentalIncludeOptions(): Prisma.RentalInclude {
     return {
       pickup: true,
       return: true,
       invoice: true,
-      bookingAgreement: true,
+      rentalAgreement: true,
       user: {
         select: {
           id: true,
@@ -86,4 +86,4 @@ class BookingRepository {
   }
 }
 
-export const bookingRepo = new BookingRepository();
+export const rentalRepo = new RentalRepository();

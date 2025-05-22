@@ -60,7 +60,7 @@ class TenantRepository {
         },
       },
       monthlyStats: true,
-      monthlyBookingStats: true,
+      monthlyRentalStats: true,
       rentalActivity: {
         include: {
           vehicle: {

@@ -1,5 +1,5 @@
 const twilio = require("twilio");
-import { bookingRepo } from "../repository/booking.repository";
+import { rentalRepo } from "../repository/rental.repository";
 import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
 import { Request, Response, NextFunction } from "express";
@@ -16,7 +16,7 @@ interface Document {
 
 interface WhatsAppNotificationBody {
   to: string;
-  bookingId: string;
+  rentalId: string;
   documents?: Document[];
   message?: string;
 }
@@ -50,24 +50,24 @@ const sendDocuments = async (
   const tenantId = req.user?.tenantId;
 
   try {
-    if (!body.to || !body.bookingId) {
+    if (!body.to || !body.rentalId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const booking = await bookingRepo.getBookingById(body.bookingId, tenantId!);
+    const rental = await rentalRepo.getRentalById(body.rentalId, tenantId!);
     const vehicle = await vehicleRepo.getVehicleById(
-      booking?.vehicleId!,
+      rental?.vehicleId!,
       tenantId!
     );
     const tenant = await prisma.tenant.findUnique({
       where: { id: tenantId },
     });
 
-    const pickupTime = booking?.startDate
-      ? new Date(booking.startDate).toLocaleString()
+    const pickupTime = rental?.startDate
+      ? new Date(rental.startDate).toLocaleString()
       : "N/A";
-    const returnTime = booking?.endDate
-      ? new Date(booking.endDate).toLocaleString()
+    const returnTime = rental?.endDate
+      ? new Date(rental.endDate).toLocaleString()
       : "N/A";
 
     const vehicleDescription = `${vehicle?.year} ${vehicle?.brand?.brand} ${vehicle?.model?.model}`;
@@ -80,13 +80,13 @@ const sendDocuments = async (
       : "";
 
     const whatsappBody = `
-${body.message || "Your booking details:"}
+${body.message || "Your rental details:"}
 
 *Vehicle:* ${vehicleDescription}
 *Color:* ${vehicle?.color}
 *Pickup:* ${pickupTime}
 *Return:* ${returnTime}
-*Location:* ${booking?.pickup.location}
+*Location:* ${rental?.pickup.location}
 
 Thank you for choosing ${tenant?.tenantName}!
     `.trim();

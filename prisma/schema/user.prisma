@@ -11,6 +11,6 @@ model User {
   updatedAt     DateTime?       @updatedAt
   tenant        Tenant          @relation(fields: [tenantId], references: [id])
 
-  bookings       Booking[]
+  rentals       Rental[]
   rentalActivity RentalActivity[]
 }
