@@ -15,9 +15,9 @@ model Customer {
 
   documents         CustomerDocument[]
   damages           VehicleDamage[]
-  bookings          Booking[]
+  rentals           Rental[]
   invoices          Invoice[]
-  agreements        BookingAgreement[]
+  agreements        RentalAgreement[]
   apps              CustomerMessengerApp[]
   rentalActivity    RentalActivity[]
 

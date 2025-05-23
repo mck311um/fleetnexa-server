@@ -38,20 +38,20 @@ const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
   return `${prefix}${sequenceNumber}`;
 };
 
-const generateBookingAgreementNumber = async (
+const generateRentalAgreementNumber = async (
   tenantId: string
 ): Promise<string> => {
-  const lastAgreement = await prisma.bookingAgreement.findFirst({
+  const lastAgreement = await prisma.rentalAgreement.findFirst({
     where: { tenantId },
-    orderBy: { agreementNumber: "desc" },
-    select: { agreementNumber: true },
+    orderBy: { number: "desc" },
+    select: { number: true },
   });
 
   const currentYear = new Date().getFullYear().toString();
   let sequenceNumber = 1;
 
-  if (lastAgreement?.agreementNumber) {
-    const match = lastAgreement.agreementNumber.match(/BA-\d{4}-(\d{4})/);
+  if (lastAgreement?.number) {
+    const match = lastAgreement.number.match(/BA-\d{4}-(\d{4})/);
     if (match && match[1]) {
       sequenceNumber = parseInt(match[1], 10) + 1;
     }
@@ -62,18 +62,18 @@ const generateBookingAgreementNumber = async (
   return `BA-${currentYear}-${formattedSequence}`;
 };
 
-const generateBookingNumber = async (tenantId: string): Promise<string> => {
-  const lastBooking = await prisma.booking.findFirst({
+const generateRentalNumber = async (tenantId: string): Promise<string> => {
+  const lastRental = await prisma.rental.findFirst({
     where: { tenantId },
     orderBy: { createdAt: "desc" },
-    select: { bookingNumber: true },
+    select: { rentalNumber: true },
   });
 
-  if (!lastBooking || !lastBooking.bookingNumber) {
+  if (!lastRental || !lastRental.rentalNumber) {
     return "000001";
   }
 
-  const lastNumber = parseInt(lastBooking.bookingNumber, 10);
+  const lastNumber = parseInt(lastRental.rentalNumber, 10);
   const nextNumber = lastNumber + 1;
 
   return nextNumber.toString().padStart(6, "0");
@@ -81,6 +81,6 @@ const generateBookingNumber = async (tenantId: string): Promise<string> => {
 
 export default {
   generateInvoiceNumber,
-  generateBookingAgreementNumber,
-  generateBookingNumber,
+  generateRentalAgreementNumber,
+  generateRentalNumber,
 };

@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   vehicleRepo,
   vehicleGroupRepo,
@@ -339,7 +339,11 @@ const getVehicleGroupById = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
-const addVehicleGroup = async (req: Request, res: Response) => {
+const addVehicleGroup = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { group } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -352,8 +356,8 @@ const addVehicleGroup = async (req: Request, res: Response) => {
           group: group.group,
           description: group.description,
           price: group.price,
-          minimumBooking: group.minimumBooking,
-          maximumBooking: group.maximumBooking,
+          minimumRental: group.minimumRental,
+          maximumRental: group.maximumRental,
           minimumAge: group.minimumAge,
           drivingExperience: group.drivingExperience,
           cancellationAmount: group.cancellationAmount,
@@ -368,7 +372,6 @@ const addVehicleGroup = async (req: Request, res: Response) => {
           chargeTypeId: group.chargeTypeId,
           fuelPolicyId: group.fuelPolicyId,
           timeBetweenRentals: group.timeBetweenRentals,
-          maintenanceEnabled: group.maintenanceEnabled,
           createdAt: new Date(),
           updatedAt: new Date(),
           updatedBy: userId,
@@ -402,46 +405,19 @@ const addVehicleGroup = async (req: Request, res: Response) => {
           });
         }
       }
-
-      if (group.maintenanceServices && group.maintenanceServices.length > 0) {
-        for (const maintenanceService of group.maintenanceServices) {
-          await tx.vehicleGroupMaintenanceService.upsert({
-            where: { id: maintenanceService.id },
-            update: {
-              vehicleGroupId: group.id,
-              serviceId: maintenanceService.serviceId,
-              period: maintenanceService.period,
-              enabled: maintenanceService.enabled,
-              updatedAt: new Date(),
-              updatedBy: userId,
-            },
-            create: {
-              vehicleGroupId: group.id,
-              serviceId: maintenanceService.serviceId,
-              period: maintenanceService.period,
-              enabled: maintenanceService.enabled,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              updatedBy: userId,
-            },
-          });
-        }
-      }
     });
 
     const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
     res.status(201).json(vehicleGroups);
   } catch (error: any) {
-    console.error(error);
-    const errorMessage =
-      error instanceof Error ? error.message : "An unknown error occurred";
-    res.status(500).json({
-      message: "Failed to create vehicle group",
-      error: errorMessage,
-    });
+    next(error);
   }
 };
-const updateVehicleGroup = async (req: Request, res: Response) => {
+const updateVehicleGroup = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { group } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -454,8 +430,8 @@ const updateVehicleGroup = async (req: Request, res: Response) => {
           group: group.group,
           description: group.description,
           price: group.price,
-          minimumBooking: group.minimumBooking,
-          maximumBooking: group.maximumBooking,
+          minimumRental: group.minimumRental,
+          maximumRental: group.maximumRental,
           minimumAge: group.minimumAge,
           drivingExperience: group.drivingExperience,
           cancellationAmount: group.cancellationAmount,
@@ -469,7 +445,6 @@ const updateVehicleGroup = async (req: Request, res: Response) => {
           chargeTypeId: group.chargeTypeId,
           fuelPolicyId: group.fuelPolicyId,
           timeBetweenRentals: group.timeBetweenRentals,
-          maintenanceEnabled: group.maintenanceEnabled,
           updatedAt: new Date(),
           updatedBy: userId,
         },
@@ -514,53 +489,18 @@ const updateVehicleGroup = async (req: Request, res: Response) => {
           )
         );
       }
-
-      if (group.maintenanceServices) {
-        const newServiceIds = group.maintenanceServices
-          .map((service: any) => service.id)
-          .filter(Boolean);
-
-        await tx.vehicleGroupMaintenanceService.deleteMany({
-          where: {
-            vehicleGroupId: group.id,
-            NOT: { id: { in: newServiceIds } },
-          },
-        });
-        await Promise.all(
-          group.maintenanceServices.map((service: any) =>
-            tx.vehicleGroupMaintenanceService.upsert({
-              where: { id: service.id || "" },
-              update: {
-                serviceId: service.serviceId,
-                period: service.period,
-                enabled: service.enabled,
-                updatedAt: new Date(),
-                updatedBy: userId,
-              },
-              create: {
-                id: service.id || undefined,
-                vehicleGroupId: group.id,
-                serviceId: service.serviceId,
-                period: service.period,
-                enabled: service.enabled,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                updatedBy: userId,
-              },
-            })
-          )
-        );
-      }
     });
-
     const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
     res.status(201).json(vehicleGroups);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error Updating Vehicle Group" });
+    next(error);
   }
 };
-const deleteVehicleGroup = async (req: Request, res: Response) => {
+const deleteVehicleGroup = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -578,8 +518,7 @@ const deleteVehicleGroup = async (req: Request, res: Response) => {
     const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
     res.status(201).json(vehicleGroups);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error Deleting Vehicle Group" });
+    next(error);
   }
 };
 
@@ -665,45 +604,6 @@ const deleteVehicleGroupDiscount = async (req: Request, res: Response) => {
 };
 // #endregion
 
-const addVehicleGroupMaintenance = async (req: Request, res: Response) => {
-  const { body } = req.body;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    await prisma.vehicleGroupMaintenanceService.upsert({
-      where: { id: body.id },
-      update: {
-        vehicleGroupId: body.vehicleGroupId,
-        serviceId: body.serviceId,
-        period: body.period,
-        enabled: body.enabled,
-        updatedAt: new Date(),
-        updatedBy: userId,
-      },
-      create: {
-        vehicleGroupId: body.vehicleGroupId,
-        serviceId: body.serviceId,
-        period: body.period,
-        enabled: body.enabled,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        updatedBy: userId,
-      },
-    });
-
-    const vehicleGroupMaintenance =
-      await prisma.vehicleGroupMaintenanceService.findMany({
-        where: { vehicleGroupId: body.vehicleGroupId },
-      });
-
-    res.status(201).json({ ...vehicleGroupMaintenance });
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 export default {
   getVehicleGroups,
   getVehicleGroupById,
@@ -713,7 +613,6 @@ export default {
   addVehicleGroupDiscount,
   updateVehicleGroupDiscount,
   deleteVehicleGroupDiscount,
-  addVehicleGroupMaintenance,
   getVehicles,
   getVehicleById,
   getVehiclesByGroup,

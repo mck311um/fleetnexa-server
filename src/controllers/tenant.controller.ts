@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
-import { tenantService } from "../repository/tenant.repository";
+import { NextFunction, Request, Response } from "express";
+import { tenantRepo } from "../repository/tenant.repository";
 import prisma from "../config/prisma.config";
 
 const getTenantById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const tenant = await tenantService.getTenantById(id);
+    const tenant = await tenantRepo.getTenantById(id);
 
     if (!tenant) {
       return res.status(404).json({ message: "Tenant not found" });
@@ -65,6 +65,47 @@ const getTenantExtras = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching tenant extras" });
+  }
+};
+const getTenantRentalActivity = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  try {
+    const rentalActivity = await prisma.rentalActivity.findMany({
+      where: { tenantId: tenantId },
+      include: {
+        vehicle: {
+          select: {
+            brand: true,
+            model: true,
+          },
+        },
+        customer: true,
+      },
+    });
+
+    res.status(200).json(rentalActivity);
+  } catch (error) {
+    next(error);
+  }
+};
+const getTenantReminders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  try {
+    const reminders = await prisma.tenantReminders.findMany({
+      where: { tenantId: tenantId },
+    });
+
+    res.status(200).json(reminders);
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -173,54 +214,7 @@ const setupTenant = async (req: Request, res: Response) => {
       },
     });
 
-    const tenant = await prisma.tenant.findUnique({
-      where: { id: tenantId },
-      include: {
-        address: {
-          include: {
-            village: true,
-            state: true,
-            country: true,
-          },
-        },
-        currency: true,
-        invoiceSequence: true,
-        paymentMethods: true,
-        customers: true,
-        subscription: true,
-        services: {
-          where: { isDeleted: false },
-          include: {
-            service: true,
-          },
-        },
-        insurance: {
-          where: { isDeleted: false },
-        },
-        equipment: {
-          where: { isDeleted: false },
-          include: {
-            equipment: true,
-          },
-        },
-        tenantLocations: {
-          where: { isDeleted: false },
-          include: {
-            vehicles: true,
-            address: true,
-            _count: {
-              select: { vehicles: true },
-            },
-          },
-        },
-        vehicleGroups: {
-          include: {
-            discounts: true,
-            maintenanceServices: true,
-          },
-        },
-      },
-    });
+    const tenant = await tenantRepo.getTenantById(data.id);
 
     res.status(201).json(tenant);
   } catch (error: any) {
@@ -726,4 +720,6 @@ export default {
   addInsurance,
   updateInsurance,
   deleteInsurance,
+  getTenantRentalActivity,
+  getTenantReminders,
 };

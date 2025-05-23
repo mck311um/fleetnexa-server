@@ -16,6 +16,15 @@ class VehicleRepository {
     });
   }
 
+  async getAllVehicles() {
+    return prisma.vehicle.findMany({
+      where: {
+        isDeleted: false,
+      },
+      include: this.getVehicleIncludeOptions(),
+    });
+  }
+
   async getVehicleById(id: string, tenantId: string) {
     return prisma.vehicle.findUnique({
       where: { id, tenantId, isDeleted: false },
@@ -51,18 +60,14 @@ class VehicleRepository {
       vehicleGroup: {
         include: {
           discounts: true,
-          maintenanceServices: {
-            include: {
-              maintenanceService: true,
-            },
-          },
+
           chargeType: true,
           fuelPolicy: true,
         },
       },
       transmission: true,
       wheelDrive: true,
-      bookings: {
+      rentals: {
         include: {
           pickup: true,
           return: true,
@@ -142,18 +147,13 @@ class VehicleGroupRepository {
   private getVehicleGroupIncludeOptions(): Prisma.VehicleGroupInclude {
     return {
       discounts: true,
-      maintenanceServices: {
-        include: {
-          maintenanceService: true,
-        },
-      },
       chargeType: true,
       fuelPolicy: true,
-      bookings: true,
+      rentals: true,
       vehicles: {
         where: { isDeleted: false },
         include: {
-          bookings: true,
+          rentals: true,
           brand: true,
           model: true,
         },
@@ -163,7 +163,7 @@ class VehicleGroupRepository {
           vehicles: {
             where: { isDeleted: false },
           },
-          bookings: true,
+          rentals: true,
         },
       },
     };

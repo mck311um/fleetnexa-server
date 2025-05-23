@@ -1,6 +1,6 @@
-model Booking {
+model Rental {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  bookingNumber     String?
+  rentalNumber     String?
   startDate         DateTime
   endDate           DateTime
   pickupLocationId  String
@@ -13,7 +13,7 @@ model Booking {
   updatedAt         DateTime? @updatedAt
   vehicleGroupId    String
   tenantId          String
-  status            BookingStatus @default(PENDING)
+  status            RentalStatus @default(PENDING)
   createdBy         String?
   updatedBy         String?
   notes             String?
@@ -21,10 +21,10 @@ model Booking {
 
   values            Values?
   invoice           Invoice?
-  bookingAgreement  BookingAgreement?
+  agreement         RentalAgreement?
 
   rentalActivity    RentalActivity[]
-  payments          BookingPayments[]
+  payments          Payments[]
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   pickup            TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])
@@ -38,34 +38,12 @@ model Booking {
 
 }
 
-model BookingPayments {
-  id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  amount            Float
-  paymentMethodId   String
-  paymentTypeId     String
-  tenantId          String
-  bookingId         String
-  notes             String?
-  isRefunded        Boolean  @default(false)
-  isDeleted         Boolean  @default(false)
-  paymentDate       DateTime
-
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime? @updatedAt
-  updatedBy         String?
-
-  paymentType      PaymentType @relation(fields: [paymentTypeId], references: [id])
-  paymentMethod    PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-  tenant            Tenant    @relation(fields: [tenantId], references: [id])
-  booking           Booking   @relation(fields: [bookingId], references: [id])
-  
-}
 
 model Invoice {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   invoiceNumber     String
   amount            Float
-  bookingId         String @unique
+  rentalId          String @unique
   tenantId          String
   customerId        String
   status            String    @default("pending")
@@ -77,15 +55,15 @@ model Invoice {
   updatedBy         String?
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
-  booking           Booking   @relation(fields: [bookingId], references: [id])
+  rental            Rental   @relation(fields: [rentalId], references: [id])
   customer          Customer   @relation(fields: [customerId], references: [id])
 }
 
 
-model BookingAgreement {
+model RentalAgreement {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  agreementNumber   String
-  bookingId         String    @unique
+  number            String
+  rentalId          String    @unique
   tenantId          String
   customerId        String
   agreementUrl      String?
@@ -96,7 +74,7 @@ model BookingAgreement {
   updatedBy         String?
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
-  booking           Booking   @relation(fields: [bookingId], references: [id])
+  rental            Rental   @relation(fields: [rentalId], references: [id])
   customer          Customer   @relation(fields: [customerId], references: [id])
 }
 
@@ -113,7 +91,7 @@ model Values {
   totalExtras       Float
   subTotal          Float
   netTotal          Float
-  bookingId         String  @unique
+  rentalId          String  @unique
   discountMin       Int
   discountMax       Int
   discountAmount    Float
@@ -122,12 +100,11 @@ model Values {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt
 
-  booking          Booking   @relation(fields: [bookingId], references: [id])
-
-  extras           BookingExtras[]
+  rental            Rental   @relation(fields: [rentalId], references: [id])
+  extras            RentalExtra[]
 } 
 
-model BookingExtras {
+model RentalExtra{
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   extraId           String
   amount            Float

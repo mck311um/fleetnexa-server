@@ -100,13 +100,14 @@ model Country {
   code              String    @unique
   country           String
 
-  addresses         Address[]
-  states            State[]
-  customerAddresses CustomerAddress[]
-  presetLocations   PresetLocation[]
-  tenantLocations   TenantLocationAddress[]
-  licenseClasses    LicenseClass[]
-  driverLicenses    DriverLicense[]
+  addresses           Address[]
+  states              State[]
+  customerAddresses   CustomerAddress[]
+  presetLocations     PresetLocation[]
+  tenantLocations     TenantLocationAddress[]
+  licenseClasses      LicenseClass[]
+  driverLicenses      DriverLicense[]
+  caribbeanCountries  CaribbeanCountry[]
 }
 
 model State {
@@ -141,10 +142,8 @@ model MaintenanceService {
   service       String
   description   String
 
-  services      VehicleGroupMaintenanceService[]
-  serviceLog    VehicleServiceLog[]
-
-  VehicleServiceSchedule VehicleServiceSchedule[]
+  serviceLog      VehicleServiceLog[]
+  serviceSchedule VehicleServiceSchedule[]
 }
 
 model DocumentType {
@@ -241,5 +240,5 @@ model PaymentType {
   description   String
 
 
-  bookingPayments BookingPayments[]
+  payments      Payments[]
 }

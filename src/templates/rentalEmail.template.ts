@@ -9,21 +9,21 @@ interface SendDocumentBody {
   recipientEmail: string;
   senderName: string;
   senderEmail?: string;
-  bookingId: string;
+  rentalId: string;
   message?: string;
 }
 
-export const bookingDocumentsEmail = ({
+export const rentalDocumentsEmail = ({
   message,
   vehicleDescription,
-  booking,
+  rental,
   documents,
   user,
   tenant,
 }: {
   message?: string;
   vehicleDescription: string;
-  booking: any;
+  rental: any;
   documents: Document[];
   user: { firstName: string; lastName: string };
   tenant: {
@@ -114,24 +114,24 @@ export const bookingDocumentsEmail = ({
   
       <div class="section">
         <p>Good Day,</p>
-        <p>${message || "Please find your booking documents attached for your recent vehicle reservation."}</p>
+        <p>${message || "Please find your rental documents attached for your recent vehicle reservation."}</p>
       </div>
   
       <div class="section">
-        <div class="section-title">Booking Details</div>
+        <div class="section-title">Rental Details</div>
         <ul class="details-list">
           <li><strong>Vehicle Description:</strong> ${vehicleDescription}</li>
           <li><strong>Pickup Date and Time:</strong> ${
-            booking?.startDate
-              ? `${new Date(booking.startDate).toLocaleDateString()} ${new Date(booking.startDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+            rental?.startDate
+              ? `${new Date(rental.startDate).toLocaleDateString()} ${new Date(rental.startDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
               : "N/A"
           }</li>
           <li><strong>Return Date and Time:</strong> ${
-            booking?.endDate
-              ? `${new Date(booking.endDate).toLocaleDateString()} ${new Date(booking.endDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+            rental?.endDate
+              ? `${new Date(rental.endDate).toLocaleDateString()} ${new Date(rental.endDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
               : "N/A"
           }</li>
-          <li><strong>Pickup Location:</strong> ${booking?.pickup?.location || "N/A"}</li>
+          <li><strong>Pickup Location:</strong> ${rental?.pickup?.location || "N/A"}</li>
         </ul>
       </div>
   

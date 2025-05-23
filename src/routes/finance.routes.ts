@@ -4,6 +4,6 @@ import { auth } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-router.post("/booking/payment", auth, controller.addBookingPayment);
+router.post("/rental/payment", auth, controller.addRentalPayment);
 
 export default router;

@@ -99,7 +99,7 @@ const getFileUrl = async (req: Request, res: Response) => {
     }
 
     const command = new GetObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME || "fleetnexa-files",
+      Bucket: process.env.AWS_BUCKET_NAME || "fleetnexa",
       Key: key as string,
     });
 

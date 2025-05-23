@@ -2,11 +2,11 @@ import e, { NextFunction, Request, Response } from "express";
 import { Resend } from "resend";
 import logUtil from "../config/logger.config";
 import { PrismaClient } from "@prisma/client";
-import { tenantService } from "../repository/tenant.repository";
-import { bookingRepo } from "../repository/booking.repository";
+import { tenantRepo } from "../repository/tenant.repository";
+import { rentalRepo } from "../repository/rental.repository";
 import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
-import { bookingDocumentsEmail } from "../templates/bookingEmail.template";
+import { rentalDocumentsEmail } from "../templates/rentalEmail.template";
 
 interface Document {
   documentUrl: string;
@@ -19,7 +19,7 @@ interface SendDocumentBody {
   recipientEmail: string;
   senderName: string;
   senderEmail?: string;
-  bookingId: string;
+  rentalId: string;
   message?: string;
 }
 
@@ -38,7 +38,7 @@ const sendDocuments = async (
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const tenant = await tenantService.getTenantById(tenantId!);
+    const tenant = await tenantRepo.getTenantById(tenantId!);
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -46,9 +46,9 @@ const sendDocuments = async (
         lastName: true,
       },
     });
-    const booking = await bookingRepo.getBookingById(body.bookingId, tenantId!);
+    const rental = await rentalRepo.getRentalById(body.rentalId, tenantId!);
     const vehicle = await vehicleRepo.getVehicleById(
-      booking?.vehicleId!,
+      rental?.vehicleId!,
       tenantId!
     );
 
@@ -61,7 +61,7 @@ const sendDocuments = async (
 
         const fileBuffer = await response.arrayBuffer();
         const filename =
-          doc.filename || `${doc.documentType}_${booking?.bookingNumber}.pdf`;
+          doc.filename || `${doc.documentType}_${rental?.rentalNumber}.pdf`;
 
         return {
           filename,
@@ -74,18 +74,18 @@ const sendDocuments = async (
 
     const subject =
       body.documents.length > 1
-        ? `Documents for Vehicle Booking`
-        : `${body.documents[0].documentType} for Vehicle Booking`;
+        ? `Documents for Vehicle Rental`
+        : `${body.documents[0].documentType} for Vehicle Rental`;
 
     const documentList = body.documents
       .map((doc) => `- ${doc.documentType}`)
       .join("\n");
 
     const localSenderName = body.senderName.replace(/\s+/g, "").toLowerCase();
-    const emailHtml = bookingDocumentsEmail({
+    const emailHtml = rentalDocumentsEmail({
       message: body.message,
       vehicleDescription,
-      booking,
+      rental,
       documents: body.documents,
       user: {
         firstName: user?.firstName || "",

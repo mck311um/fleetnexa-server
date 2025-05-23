@@ -37,7 +37,7 @@ class CustomerRepository {
           document: true,
         },
       },
-      bookings: {
+      rentals: {
         include: {
           pickup: true,
           return: true,

@@ -52,7 +52,6 @@ class TenantRepository {
       vehicleGroups: {
         include: {
           discounts: true,
-          maintenanceServices: true,
         },
       },
       weeklyStats: {
@@ -60,11 +59,24 @@ class TenantRepository {
           OR: getWeekFilters(),
         },
       },
+      monthlyStats: true,
+      monthlyRentalStats: true,
+      rentalActivity: {
+        include: {
+          vehicle: {
+            select: {
+              brand: true,
+              model: true,
+            },
+          },
+          customer: true,
+        },
+      },
     };
   }
 }
 
-export const tenantService = new TenantRepository();
+export const tenantRepo = new TenantRepository();
 
 const getWeekFilters = () => {
   const now = new Date();

@@ -13,12 +13,13 @@ import vehicleRoutes from "./routes/vehicle.routes";
 import customerRoutes from "./routes/customer.routes";
 import emailRoutes from "./routes/email.routes";
 import twillioRoutes from "./routes/twillio.routes";
-import bookingRoutes from "./routes/booking.routes";
 import financeRoutes from "./routes/finance.routes";
 
 import "./cron/maintenance.cron";
 import "./cron/stat.cron";
 import errorHandler from "./middleware/error.middleware";
+import rentalRoutes from "./routes/rental.routes";
+import rentnexaRoutes from "./routes/rentnexa.routes";
 
 dotenv.config();
 
@@ -53,8 +54,9 @@ app.use("/api/vehicle", vehicleRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/whatsapp", twillioRoutes);
-app.use("/api/booking", bookingRoutes);
+app.use("/api/rental", rentalRoutes);
 app.use("/api/finance", financeRoutes);
+app.use("/api/rentnexa", rentnexaRoutes);
 
 app.use(errorHandler);
 
