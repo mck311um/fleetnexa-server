@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { rentalRepo } from "../repository/rental.repository";
-import { tenantService } from "../repository/tenant.repository";
+import { tenantRepo } from "../repository/tenant.repository";
 import generator from "../services/pdfGenerator.service";
 import logUtil from "../config/logger.config";
 import prisma from "../config/prisma.config";
 import numberGenerator from "../services/numberGenerator.service";
+import { rentalRepo } from "../repository/rental.repository";
 
 const getRentals = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -124,7 +124,7 @@ const handleRental = async (req: Request, res: Response) => {
         });
 
         if (rental.values.extras?.length) {
-          await tx.rentalExtras.deleteMany({
+          await tx.rentalExtra.deleteMany({
             where: {
               valuesId: upsertedValues.id,
               id: {
@@ -136,7 +136,7 @@ const handleRental = async (req: Request, res: Response) => {
           });
 
           const extrasPromises = rental.values.extras.map((extra: any) =>
-            tx.rentalExtras.upsert({
+            tx.rentalExtra.upsert({
               where: { id: extra.id },
               create: {
                 id: extra.id,
@@ -398,7 +398,7 @@ const generateInvoice = async (req: Request, res: Response) => {
     }
 
     const rental = await rentalRepo.getRentalById(rentalId, tenantId!);
-    const tenant = await tenantService.getTenantById(tenantId!);
+    const tenant = await tenantRepo.getTenantById(tenantId!);
 
     const { publicUrl } = await generator.createInvoice(
       {
@@ -451,7 +451,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
     });
 
     if (agreement) {
-      agreementNumber = agreement.agreementNumber;
+      agreementNumber = agreement.number;
     } else {
       agreementNumber = await numberGenerator.generateRentalAgreementNumber(
         tenantId!
@@ -459,7 +459,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
     }
 
     const rental = await rentalRepo.getRentalById(rentalId, tenantId!);
-    const tenant = await tenantService.getTenantById(tenantId!);
+    const tenant = await tenantRepo.getTenantById(tenantId!);
 
     const { publicUrl } = await generator.createAgreement(
       {
@@ -473,7 +473,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
     await prisma.rentalAgreement.upsert({
       where: { rentalId },
       create: {
-        agreementNumber,
+        number: agreementNumber,
         customerId: rental?.customerId || "",
         rentalId: rental?.id || "",
         tenantId: tenantId!,

@@ -8,8 +8,8 @@ router.get("/", auth, controller.getRentals);
 router.get("/:id", auth, controller.getRentalById);
 
 router.post("/", auth, controller.handleRental);
-router.post("/invoice/:bookingId", auth, controller.generateInvoice);
-router.post("/agreement/:bookingId", auth, controller.generateRentalAgreement);
+router.post("/invoice/:rentalId", auth, controller.generateInvoice);
+router.post("/agreement/:rentalId", auth, controller.generateRentalAgreement);
 router.post("/decline", auth, controller.declineRental);
 router.post("/confirm", auth, controller.confirmRental);
 router.post("/decline", auth, controller.declineRental);

@@ -28,7 +28,7 @@ class RentalRepository {
       pickup: true,
       return: true,
       invoice: true,
-      rentalAgreement: true,
+      agreement: true,
       user: {
         select: {
           id: true,

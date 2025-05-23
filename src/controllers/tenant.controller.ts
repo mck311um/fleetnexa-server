@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { tenantService } from "../repository/tenant.repository";
+import { tenantRepo } from "../repository/tenant.repository";
 import prisma from "../config/prisma.config";
 
 const getTenantById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const tenant = await tenantService.getTenantById(id);
+    const tenant = await tenantRepo.getTenantById(id);
 
     if (!tenant) {
       return res.status(404).json({ message: "Tenant not found" });
@@ -214,7 +214,7 @@ const setupTenant = async (req: Request, res: Response) => {
       },
     });
 
-    const tenant = await tenantService.getTenantById(data.id);
+    const tenant = await tenantRepo.getTenantById(data.id);
 
     res.status(201).json(tenant);
   } catch (error: any) {

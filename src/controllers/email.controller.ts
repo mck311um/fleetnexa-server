@@ -2,7 +2,7 @@ import e, { NextFunction, Request, Response } from "express";
 import { Resend } from "resend";
 import logUtil from "../config/logger.config";
 import { PrismaClient } from "@prisma/client";
-import { tenantService } from "../repository/tenant.repository";
+import { tenantRepo } from "../repository/tenant.repository";
 import { rentalRepo } from "../repository/rental.repository";
 import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
@@ -38,7 +38,7 @@ const sendDocuments = async (
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const tenant = await tenantService.getTenantById(tenantId!);
+    const tenant = await tenantRepo.getTenantById(tenantId!);
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {

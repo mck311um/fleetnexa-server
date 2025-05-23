@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { NextFunction, Request, Response } from "express";
 import { rentalRepo } from "../repository/rental.repository";
+import { NextFunction, Request, Response } from "express";
 import logUtil from "../config/logger.config";
 
 const prisma = new PrismaClient();
@@ -38,11 +38,11 @@ const addRentalPayment = async (
         updatedBy: userId,
       };
 
-      const existingPayments = await tx.rentalPayments.findMany({
+      const existingPayments = await tx.payments.findMany({
         where: { rentalId: payment.rentalId },
       });
 
-      await tx.rentalPayments.create({
+      await tx.payments.create({
         data: rentalPaymentData,
       });
 

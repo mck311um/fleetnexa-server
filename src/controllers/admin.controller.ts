@@ -93,7 +93,7 @@ const addVehicleMake = async (req: any, res: any) => {
 
     const vehicleMakes = await prisma.vehicleBrand.findMany();
 
-    res.status(201).json({ ...vehicleMakes });
+    res.status(201).json(vehicleMakes);
   } catch (error: any) {
     logUtil.handleError(res, error, "adding vehicle make");
   }

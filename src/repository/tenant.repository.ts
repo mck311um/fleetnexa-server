@@ -76,7 +76,7 @@ class TenantRepository {
   }
 }
 
-export const tenantService = new TenantRepository();
+export const tenantRepo = new TenantRepository();
 
 const getWeekFilters = () => {
   const now = new Date();

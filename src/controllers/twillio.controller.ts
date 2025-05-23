@@ -1,8 +1,8 @@
 const twilio = require("twilio");
-import { rentalRepo } from "../repository/rental.repository";
 import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
 import { Request, Response, NextFunction } from "express";
+import { rentalRepo } from "../repository/rental.repository";
 
 const accountSid = process.env.TWILLIO_ACCOUNT_SID || "";
 const authToken = process.env.TWILLIO_AUTH_TOKEN || "";

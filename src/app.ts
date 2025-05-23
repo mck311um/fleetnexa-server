@@ -19,6 +19,7 @@ import "./cron/maintenance.cron";
 import "./cron/stat.cron";
 import errorHandler from "./middleware/error.middleware";
 import rentalRoutes from "./routes/rental.routes";
+import rentnexaRoutes from "./routes/rentnexa.routes";
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ app.use("/api/email", emailRoutes);
 app.use("/api/whatsapp", twillioRoutes);
 app.use("/api/rental", rentalRoutes);
 app.use("/api/finance", financeRoutes);
+app.use("/api/rentnexa", rentnexaRoutes);
 
 app.use(errorHandler);
 

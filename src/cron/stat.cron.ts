@@ -176,7 +176,7 @@ const calcTotalRevenue = async (
     where: {
       rental: {
         tenantId,
-        createdAt: { gte: from, lte: to },
+        startDate: { gte: from, lte: to },
         status: "COMPLETED",
       },
     },

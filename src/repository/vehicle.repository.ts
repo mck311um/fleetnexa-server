@@ -16,6 +16,15 @@ class VehicleRepository {
     });
   }
 
+  async getAllVehicles() {
+    return prisma.vehicle.findMany({
+      where: {
+        isDeleted: false,
+      },
+      include: this.getVehicleIncludeOptions(),
+    });
+  }
+
   async getVehicleById(id: string, tenantId: string) {
     return prisma.vehicle.findUnique({
       where: { id, tenantId, isDeleted: false },
