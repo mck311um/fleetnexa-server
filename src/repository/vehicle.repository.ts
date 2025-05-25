@@ -100,11 +100,7 @@ class VehicleRepository {
           customer: true,
         },
       },
-      location: {
-        include: {
-          address: true,
-        },
-      },
+      location: {},
       serviceLogs: {
         include: {
           maintenanceService: true,

@@ -104,7 +104,6 @@ model Country {
   states              State[]
   customerAddresses   CustomerAddress[]
   presetLocations     PresetLocation[]
-  tenantLocations     TenantLocationAddress[]
   licenseClasses      LicenseClass[]
   driverLicenses      DriverLicense[]
   caribbeanCountries  CaribbeanCountry[]
@@ -119,7 +118,6 @@ model State {
   addresses             Address[]
   customerAddresses     CustomerAddress[]
   presetLocations       PresetLocation[]
-  tenantLocations       TenantLocationAddress[]
 
   country               Country   @relation(fields: [countryId], references: [id])
 }
@@ -132,7 +130,6 @@ model Village {
   addresses               Address[]
   customerAddresses       CustomerAddress[]
   presetLocations         PresetLocation[]
-  tenantLocations         TenantLocationAddress[]
 
   state     State     @relation(fields: [stateId], references: [id])
 }
@@ -166,13 +163,6 @@ model PresetLocation {
   village           Village?   @relation(fields: [villageId], references: [id])
 }
 
-model LocationType {
-  id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  type              String
-  isPermanent       Boolean  @default(true)
-
-  tenantLocations TenantLocation[]
-}
 
 model Addition {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))

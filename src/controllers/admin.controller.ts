@@ -24,7 +24,6 @@ const getData = async (req: Request, res: Response) => {
     const maintenanceServices = await prisma.maintenanceService.findMany();
     const documentTypes = await prisma.documentType.findMany();
     const presetLocations = await prisma.presetLocation.findMany();
-    const locationTypes = await prisma.locationType.findMany();
     const services = await prisma.service.findMany();
     const licenseClasses = await prisma.licenseClass.findMany();
     const messengerApps = await prisma.messengerApp.findMany();
@@ -54,7 +53,6 @@ const getData = async (req: Request, res: Response) => {
       maintenanceServices,
       documentTypes,
       presetLocations,
-      locationTypes,
       services,
       licenseClasses,
       messengerApps,

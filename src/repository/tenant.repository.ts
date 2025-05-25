@@ -43,7 +43,6 @@ class TenantRepository {
         where: { isDeleted: false },
         include: {
           vehicles: true,
-          address: true,
           _count: {
             select: { vehicles: true },
           },
