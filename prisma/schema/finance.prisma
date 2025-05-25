@@ -19,4 +19,24 @@ model Payments {
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   rental            Rental   @relation(fields: [rentalId], references: [id])
   
+
+  transactions Transactions[]
+}
+
+model Transactions {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  amount            Float
+  type              TransactionType
+  tenantId          String
+  transactionDate   DateTime  @default(now())
+  customerId        String?
+  isDeleted         Boolean  @default(false)
+  createdBy         String?
+  createdAt         DateTime  @default(now())
+  paymentId         String?
+
+  customer         Customer? @relation(fields: [customerId], references: [id])
+  tenant           Tenant   @relation(fields: [tenantId], references: [id])
+  payment          Payments? @relation(fields: [paymentId], references: [id])
+  user             User?    @relation(fields: [createdBy], references: [id])
 }

@@ -43,6 +43,7 @@ model Tenant {
   monthlyStats        TenantMonthlyStats[]
   monthlyRentalStats  TenantMonthlyRentalStats[]
   reminders           TenantReminders[]
+  transactions        Transactions[]
 }
 
 

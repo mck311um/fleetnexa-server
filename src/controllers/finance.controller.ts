@@ -1,9 +1,42 @@
-import { PrismaClient } from "@prisma/client";
 import { rentalRepo } from "../repository/rental.repository";
 import { NextFunction, Request, Response } from "express";
-import logUtil from "../config/logger.config";
+import prisma from "../config/prisma.config";
+import { UUID } from "crypto";
 
-const prisma = new PrismaClient();
+const getTransactions = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  try {
+    const transactions = await prisma.transactions.findMany({
+      where: {
+        tenantId: tenantId,
+      },
+      include: {
+        customer: true,
+        payment: {
+          include: {
+            paymentMethod: true,
+            paymentType: true,
+          },
+        },
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return res.status(201).json(transactions);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const addRentalPayment = async (
   req: Request,
@@ -57,13 +90,26 @@ const addRentalPayment = async (
         });
       }
 
-      const updatedRental = await rentalRepo.getRentalById(
-        payment.rentalId,
-        tenantId
-      );
-
-      return res.status(201).json(updatedRental);
+      await tx.transactions.create({
+        data: {
+          amount: payment.amount,
+          type: "RENTAL",
+          transactionDate: payment.paymentDate,
+          customerId: payment.customerId,
+          createdBy: userId,
+          createdAt: new Date(),
+          paymentId: payment.id,
+          tenantId: tenantId,
+        },
+      });
     });
+
+    const updatedRental = await rentalRepo.getRentalById(
+      payment.rentalId,
+      tenantId
+    );
+
+    return res.status(201).json(updatedRental);
   } catch (error) {
     next(error);
   }
@@ -71,4 +117,5 @@ const addRentalPayment = async (
 
 export default {
   addRentalPayment,
+  getTransactions,
 };

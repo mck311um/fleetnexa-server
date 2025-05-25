@@ -78,3 +78,7 @@ enum StatItem {
   MONTHLY_RENTAL_STATUS
 }
 
+enum TransactionType {
+  RENTAL
+  REFUND
+}
