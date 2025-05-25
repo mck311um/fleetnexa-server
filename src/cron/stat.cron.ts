@@ -194,7 +194,7 @@ const calcNewRentals = async (
   return await prisma.rental.count({
     where: {
       tenantId,
-      createdAt: { gte: from, lte: to },
+      startDate: { gte: from, lte: to },
     },
   });
 };

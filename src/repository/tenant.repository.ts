@@ -55,7 +55,7 @@ class TenantRepository {
       },
       weeklyStats: {
         where: {
-          OR: getWeekFilters(),
+          OR: getFilters(),
         },
       },
       monthlyStats: true,
@@ -77,17 +77,17 @@ class TenantRepository {
 
 export const tenantRepo = new TenantRepository();
 
-const getWeekFilters = () => {
+const getFilters = () => {
   const now = new Date();
   const currentWeek = getISOWeek(now);
   const currentYear = getYear(now);
 
-  const lastWeekDate = subWeeks(now, 1);
-  const previousWeek = getISOWeek(lastWeekDate);
-  const previousYear = getYear(lastWeekDate);
-
   return [
-    { week: currentWeek, year: currentYear },
-    { week: previousWeek, year: previousYear },
+    {
+      year: currentYear,
+      week: {
+        lte: currentWeek,
+      },
+    },
   ];
 };
