@@ -71,6 +71,7 @@ class VehicleRepository {
         include: {
           pickup: true,
           return: true,
+          values: true,
           customer: {
             include: {
               address: {

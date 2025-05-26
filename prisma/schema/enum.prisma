@@ -52,7 +52,6 @@ enum RentalStatus {
   COMPLETED
   DECLINED  
   CANCELED
-  EXPIRED
   NO_SHOW
   REFUNDED
 }

@@ -79,13 +79,7 @@ model WheelDrive {
   vehicles  Vehicle[]
 }
 
-model Currency {
-  id        String    @id @default(dbgenerated("gen_random_uuid()"))
-  code      String
-  currency  String?
 
-  tenants   Tenant[]
-}
 
 model InvoiceSequence {
   id                  String    @id @default(dbgenerated("gen_random_uuid()"))
