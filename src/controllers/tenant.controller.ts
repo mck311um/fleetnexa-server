@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { tenantRepo } from "../repository/tenant.repository";
 import prisma from "../config/prisma.config";
 import crypto from "crypto";
+import loggerConfig from "../config/logger.config";
 
 const getTenantById = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -19,7 +20,6 @@ const getTenantById = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 const getTenantExtras = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   try {
@@ -293,7 +293,7 @@ const getTenantLocations = async (req: Request, res: Response) => {
 
   try {
     const tenantLocations = await prisma.tenantLocation.findMany({
-      where: { tenantId },
+      where: { tenantId, isDeleted: false },
       include: {
         vehicles: true,
         _count: {
@@ -321,6 +321,7 @@ const createTenantLocation = async (req: Request, res: Response) => {
         tenantId: tenantId ?? "",
         pickupEnabled: location.pickupEnabled ?? false,
         returnEnabled: location.returnEnabled ?? false,
+        storefrontEnabled: location.storefrontEnabled ?? false,
         deliveryFee: location.deliveryFee ?? 0,
         collectionFee: location.collectionFee ?? 0,
         minimumRentalPeriod: location.minimumRentalPeriod ?? 0,
@@ -345,6 +346,7 @@ const updateTenantLocation = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
+    loggerConfig.logger.info(location.storefrontEnabled);
     await prisma.tenantLocation.update({
       where: { id: location.id },
       data: {
@@ -352,6 +354,7 @@ const updateTenantLocation = async (req: Request, res: Response) => {
         tenantId: tenantId ?? "",
         pickupEnabled: location.pickupEnabled ?? false,
         returnEnabled: location.returnEnabled ?? false,
+        storefrontEnabled: location.storefrontEnabled,
         deliveryFee: location.deliveryFee ?? 0,
         collectionFee: location.collectionFee ?? 0,
         minimumRentalPeriod: location.minimumRentalPeriod ?? 0,
@@ -399,7 +402,7 @@ const deleteTenantLocation = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json({ ...tenantLocations });
+    res.status(200).json(tenantLocations);
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: "Error deleting tenant location" });
@@ -499,7 +502,7 @@ const deleteService = async (req: Request, res: Response) => {
       where: { tenantId, isDeleted: false },
     });
 
-    res.status(200).json({ ...tenantServices });
+    res.status(200).json(tenantServices);
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: "Error deleting tenant service" });

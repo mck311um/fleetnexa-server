@@ -81,16 +81,17 @@ model TenantLocation {
   location            String
   pickupEnabled       Boolean
   returnEnabled       Boolean
+  storefrontEnabled   Boolean   @default(false)
   deliveryFee         Float
   collectionFee       Float
   tenantId            String
-  minimumRentalPeriod Int      @default(1)
-  isDeleted           Boolean  @default(false)
+  minimumRentalPeriod Int       @default(1)
+  isDeleted           Boolean   @default(false)
   updatedBy           String?
   updatedAt           DateTime? @updatedAt
 
-  RentalPickup        Rental[] @relation("PickupLocation")
-  RentalReturn        Rental[] @relation("ReturnLocation")
+  RentalPickup        Rental[]  @relation("PickupLocation")
+  RentalReturn        Rental[]  @relation("ReturnLocation")
   vehicles            Vehicle[]
   tenant              Tenant    @relation(fields: [tenantId], references: [id])
 }
