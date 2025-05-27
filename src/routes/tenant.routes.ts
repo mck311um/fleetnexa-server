@@ -16,6 +16,7 @@ router.get("/:id", auth, controller.getTenantById);
 router.post("/", controller.createTenant);
 router.post("/setup", auth, controller.setupTenant);
 router.post("/location", auth, controller.createTenantLocation);
+router.post("/location/initialize", auth, controller.initializeTenantLocations);
 router.post("/service", auth, controller.addService);
 router.post("/equipment", auth, controller.addEquipment);
 router.post("/insurance", auth, controller.addInsurance);

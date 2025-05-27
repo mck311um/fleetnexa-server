@@ -71,6 +71,7 @@ class VehicleRepository {
         include: {
           pickup: true,
           return: true,
+          values: true,
           customer: {
             include: {
               address: {
@@ -100,11 +101,7 @@ class VehicleRepository {
           customer: true,
         },
       },
-      location: {
-        include: {
-          address: true,
-        },
-      },
+      location: {},
       serviceLogs: {
         include: {
           maintenanceService: true,

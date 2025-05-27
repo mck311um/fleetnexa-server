@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { tenantRepo } from "../repository/tenant.repository";
 import prisma from "../config/prisma.config";
+import crypto from "crypto";
+import loggerConfig from "../config/logger.config";
 
 const getTenantById = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -18,7 +20,6 @@ const getTenantById = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 const getTenantExtras = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   try {
@@ -113,26 +114,30 @@ const createTenant = async (req: Request, res: Response) => {
   const { tenantCode, tenantName, email, number, logo } = req.body;
 
   try {
-    const existingTenant = await prisma.tenant.findFirst({
-      where: {
-        OR: [{ tenantCode }, { email }],
-      },
-    });
+    const tenant = await prisma.$transaction(async (tx) => {
+      const existingTenant = await tx.tenant.findFirst({
+        where: {
+          OR: [{ tenantCode }, { email }],
+        },
+      });
 
-    if (existingTenant) {
-      return res
-        .status(400)
-        .json({ message: "Tenant with this code or email already exists" });
-    }
+      if (existingTenant) {
+        return res
+          .status(400)
+          .json({ message: "Tenant with this code or email already exists" });
+      }
 
-    const tenant = await prisma.tenant.create({
-      data: {
-        tenantCode,
-        tenantName,
-        email,
-        number,
-        logo,
-      },
+      const newTenant = await tx.tenant.create({
+        data: {
+          tenantCode,
+          tenantName,
+          email,
+          number,
+          logo,
+        },
+      });
+
+      return newTenant;
     });
 
     res.status(201).json(tenant);
@@ -224,6 +229,65 @@ const setupTenant = async (req: Request, res: Response) => {
 };
 
 // #region Tenant Location
+const initializeTenantLocations = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { country } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const presetLocations = await tx.presetLocation.findMany({
+        where: { countryId: country },
+      });
+
+      await tx.tenantLocation.create({
+        data: {
+          id: crypto.randomUUID(),
+          location: "Main Office",
+          tenantId: tenantId!,
+          pickupEnabled: true,
+          returnEnabled: true,
+          deliveryFee: 0,
+          collectionFee: 0,
+          minimumRentalPeriod: 1,
+          updatedAt: new Date(),
+          updatedBy: userId,
+          isDeleted: false,
+        },
+      });
+
+      for (const location of presetLocations) {
+        await tx.tenantLocation.create({
+          data: {
+            id: crypto.randomUUID(),
+            location: location.location,
+            tenantId: tenantId!,
+            pickupEnabled: true,
+            returnEnabled: true,
+            deliveryFee: 0,
+            collectionFee: 0,
+            minimumRentalPeriod: 1,
+            updatedAt: new Date(),
+            updatedBy: userId,
+            isDeleted: false,
+          },
+        });
+      }
+    });
+
+    const tenantLocations = await prisma.tenantLocation.findMany({
+      where: { tenantId: tenantId },
+    });
+
+    res.status(201).json(tenantLocations);
+  } catch (error) {
+    next(error);
+  }
+};
 const getTenantLocations = async (req: Request, res: Response) => {
   const { tenantId } = req.params;
 
@@ -232,7 +296,6 @@ const getTenantLocations = async (req: Request, res: Response) => {
       where: { tenantId, isDeleted: false },
       include: {
         vehicles: true,
-        address: true,
         _count: {
           select: { vehicles: true },
         },
@@ -251,44 +314,24 @@ const createTenantLocation = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    if (location.address) {
-      await prisma.tenantLocationAddress.create({
-        data: {
-          id: location.address.id,
-          street: location.address.street,
-          villageId: location.address.villageId,
-          stateId: location.address.stateId,
-          countryId: location.address.countryId,
-        },
-      });
-    }
-
     await prisma.tenantLocation.create({
       data: {
         id: location.id,
         location: location.location,
-        addressId: location.address.id,
         tenantId: tenantId ?? "",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        updatedBy: userId,
         pickupEnabled: location.pickupEnabled ?? false,
         returnEnabled: location.returnEnabled ?? false,
+        storefrontEnabled: location.storefrontEnabled ?? false,
         deliveryFee: location.deliveryFee ?? 0,
         collectionFee: location.collectionFee ?? 0,
-        locationTypeId: location.locationTypeId ?? "",
-        isActive: location.isActive ?? true,
+        minimumRentalPeriod: location.minimumRentalPeriod ?? 0,
+        updatedAt: new Date(),
+        updatedBy: userId,
       },
     });
 
     const tenantLocations = await prisma.tenantLocation.findMany({
-      where: { tenantId: tenantId, isDeleted: false },
-      include: {
-        address: true,
-        _count: {
-          select: { vehicles: true },
-        },
-      },
+      where: { tenantId: tenantId },
     });
 
     res.status(201).json({ ...tenantLocations });
@@ -303,45 +346,33 @@ const updateTenantLocation = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
-    if (location.address) {
-      await prisma.tenantLocationAddress.update({
-        where: { id: location.address.id },
-        data: {
-          street: location.address.street,
-          villageId: location.address.villageId,
-          stateId: location.address.stateId,
-          countryId: location.address.countryId,
-        },
-      });
-    }
-
+    loggerConfig.logger.info(location.storefrontEnabled);
     await prisma.tenantLocation.update({
       where: { id: location.id },
       data: {
         location: location.location,
-        addressId: location.address.id,
         tenantId: tenantId ?? "",
-        updatedAt: new Date(),
-        updatedBy: userId,
         pickupEnabled: location.pickupEnabled ?? false,
         returnEnabled: location.returnEnabled ?? false,
+        storefrontEnabled: location.storefrontEnabled,
         deliveryFee: location.deliveryFee ?? 0,
         collectionFee: location.collectionFee ?? 0,
-        isActive: location.isActive ?? true,
+        minimumRentalPeriod: location.minimumRentalPeriod ?? 0,
+        updatedAt: new Date(),
+        updatedBy: userId,
       },
     });
 
     const tenantLocations = await prisma.tenantLocation.findMany({
-      where: { tenantId: tenantId, isDeleted: false },
+      where: { tenantId: tenantId },
       include: {
-        address: true,
         _count: {
           select: { vehicles: true },
         },
       },
     });
 
-    res.status(201).json({ ...tenantLocations });
+    res.status(201).json(tenantLocations);
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: "Error Updating Location" });
@@ -365,14 +396,13 @@ const deleteTenantLocation = async (req: Request, res: Response) => {
     const tenantLocations = await prisma.tenantLocation.findMany({
       where: { tenantId: tenantId, isDeleted: false },
       include: {
-        address: true,
         _count: {
           select: { vehicles: true },
         },
       },
     });
 
-    res.status(200).json({ ...tenantLocations });
+    res.status(200).json(tenantLocations);
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: "Error deleting tenant location" });
@@ -472,7 +502,7 @@ const deleteService = async (req: Request, res: Response) => {
       where: { tenantId, isDeleted: false },
     });
 
-    res.status(200).json({ ...tenantServices });
+    res.status(200).json(tenantServices);
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: "Error deleting tenant service" });
@@ -705,6 +735,7 @@ export default {
   updateTenant,
   setupTenant,
   getTenantLocations,
+  initializeTenantLocations,
   createTenantLocation,
   updateTenantLocation,
   deleteTenantLocation,

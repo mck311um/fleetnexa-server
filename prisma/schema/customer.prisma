@@ -20,6 +20,7 @@ model Customer {
   agreements        RentalAgreement[]
   apps              CustomerMessengerApp[]
   rentalActivity    RentalActivity[]
+  transactions      Transactions[]
 
 
 
@@ -30,6 +31,7 @@ model Customer {
   updatedBy         String?
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
+
 }
 
 model CustomerMessengerApp {
@@ -81,7 +83,7 @@ model CustomerDocument {
 
 model DriverLicense {
   id               String    @id @default(dbgenerated("gen_random_uuid()"))
-  classId          String
+  classId          String?
   countryId        String
   customerId       String    @unique
   licenseNumber    String
@@ -89,7 +91,7 @@ model DriverLicense {
   licenseIssued    DateTime
   image            String?
 
-  class            LicenseClass @relation(fields: [classId], references: [id])
+  class            LicenseClass? @relation(fields: [classId], references: [id])
   country          Country @relation(fields: [countryId], references: [id])
   customer         Customer @relation(fields: [customerId], references: [id])
 }

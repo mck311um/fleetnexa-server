@@ -52,7 +52,6 @@ enum RentalStatus {
   COMPLETED
   DECLINED  
   CANCELED
-  EXPIRED
   NO_SHOW
   REFUNDED
 }
@@ -78,3 +77,7 @@ enum StatItem {
   MONTHLY_RENTAL_STATUS
 }
 
+enum TransactionType {
+  RENTAL
+  REFUND
+}

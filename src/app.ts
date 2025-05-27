@@ -17,6 +17,7 @@ import financeRoutes from "./routes/finance.routes";
 
 import "./cron/maintenance.cron";
 import "./cron/stat.cron";
+import "./cron/exchangeRate.cron";
 import errorHandler from "./middleware/error.middleware";
 import rentalRoutes from "./routes/rental.routes";
 import rentnexaRoutes from "./routes/rentnexa.routes";

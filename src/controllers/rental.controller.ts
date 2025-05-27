@@ -157,9 +157,10 @@ const handleRental = async (req: Request, res: Response) => {
       }
     });
 
+    const updatedRental = await rentalRepo.getRentalById(rental.id, tenantId!);
     const rentals = await rentalRepo.getRentals(tenantId);
 
-    return res.status(200).json(rentals);
+    return res.status(200).json({ rentals, updatedRental });
   } catch (error) {
     console.error("Error handling rental:", error);
     return res.status(500).json({
@@ -208,8 +209,9 @@ const confirmRental = async (req: Request, res: Response) => {
       }
     );
 
+    const rentals = await rentalRepo.getRentals(tenantId);
     const updatedRental = await rentalRepo.getRentalById(rental.id, tenantId!);
-    return res.status(201).json(updatedRental);
+    return res.status(201).json({ updatedRental, rentals });
   } catch (error) {
     return logUtil.handleError(res, error, "confirming rental");
   }

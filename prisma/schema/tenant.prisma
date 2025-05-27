@@ -43,6 +43,7 @@ model Tenant {
   monthlyStats        TenantMonthlyStats[]
   monthlyRentalStats  TenantMonthlyRentalStats[]
   reminders           TenantReminders[]
+  transactions        Transactions[]
 }
 
 
@@ -76,47 +77,25 @@ model Address {
 }
 
 model TenantLocation {
-  id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  location          String
-  addressId         String
-  phone             String?
-  pickupEnabled     Boolean
-  returnEnabled     Boolean
-  deliveryFee       Float
-  collectionFee     Float
-  tenantId          String
-  locationTypeId    String
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  location            String
+  pickupEnabled       Boolean
+  returnEnabled       Boolean
+  storefrontEnabled   Boolean   @default(false)
+  deliveryFee         Float
+  collectionFee       Float
+  tenantId            String
+  minimumRentalPeriod Int       @default(1)
+  isDeleted           Boolean   @default(false)
+  updatedBy           String?
+  updatedAt           DateTime? @updatedAt
 
-  isActive          Boolean
-  isDeleted         Boolean   @default(false)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime? @updatedAt
-  updatedBy         String?
-
-  RentalPickup     Rental[] @relation("PickupLocation")
-  RentalReturn     Rental[] @relation("ReturnLocation")
-  vehicles          Vehicle[]
-
-  locationType      LocationType @relation(fields: [locationTypeId], references: [id])
-  address           TenantLocationAddress @relation(fields: [addressId], references: [id])
-  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  RentalPickup        Rental[]  @relation("PickupLocation")
+  RentalReturn        Rental[]  @relation("ReturnLocation")
+  vehicles            Vehicle[]
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
 }
 
-model TenantLocationAddress {
-  id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  street            String?
-  countryId         String?
-  stateId           String?
-  villageId         String?
-  country           Country?   @relation(fields: [countryId], references: [id])
-  state             State?     @relation(fields: [stateId], references: [id])
-  village           Village?   @relation(fields: [villageId], references: [id])
-
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime? @updatedAt
-
-  TenantLocation TenantLocation[]
-}
 
 model TenantInsurance {
   id               String    @id @default(dbgenerated("gen_random_uuid()"))

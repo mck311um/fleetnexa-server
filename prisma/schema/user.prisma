@@ -1,16 +1,17 @@
 model User {
-  id            String          @id @default(dbgenerated("gen_random_uuid()"))
-  password      String
-  firstName      String
-  lastName      String
-  username      String          @unique
-  tenantId      String
-  color         String          @default("#343434")
-  theme         String          @default("light")
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime?       @updatedAt
-  tenant        Tenant          @relation(fields: [tenantId], references: [id])
+  id              String          @id @default(dbgenerated("gen_random_uuid()"))
+  password        String
+  firstName        String
+  lastName        String
+  username        String          @unique
+  tenantId        String
+  color           String          @default("#343434")
+  theme           String          @default("light")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime?       @updatedAt
+  tenant          Tenant          @relation(fields: [tenantId], references: [id])
 
-  rentals       Rental[]
-  rentalActivity RentalActivity[]
+  rentals         Rental[]
+  rentalActivity  RentalActivity[]
+  transactions    Transactions[]
 }

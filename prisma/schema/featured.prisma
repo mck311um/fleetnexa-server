@@ -2,6 +2,7 @@ model CaribbeanCountry {
   id            String    @id @default(dbgenerated("gen_random_uuid()"))
   countryId     String
   image         String
+  isActive      Boolean   @default(false)
 
   country       Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
 

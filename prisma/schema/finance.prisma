@@ -19,4 +19,50 @@ model Payments {
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   rental            Rental   @relation(fields: [rentalId], references: [id])
   
+
+  transactions Transactions[]
+}
+
+model Transactions {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  amount            Float
+  type              TransactionType
+  tenantId          String
+  transactionDate   DateTime  @default(now())
+  customerId        String?
+  isDeleted         Boolean  @default(false)
+  createdBy         String?
+  createdAt         DateTime  @default(now())
+  paymentId         String?
+
+  customer         Customer? @relation(fields: [customerId], references: [id])
+  tenant           Tenant   @relation(fields: [tenantId], references: [id])
+  payment          Payments? @relation(fields: [paymentId], references: [id])
+  user             User?    @relation(fields: [createdBy], references: [id])
+}
+
+model Currency {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  code      String    @unique
+  currency  String?
+  symbol    String?
+
+  tenants   Tenant[]
+
+  bases ExchangeRate[] @relation("BaseCurrency")
+  targets ExchangeRate[] @relation("TargetCurrency")
+}
+
+model ExchangeRate {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  base      String
+  target    String
+  rate      Float
+  updatedAt DateTime? @updatedAt
+  createdAt DateTime  @default(now())
+
+  baseCurrency   Currency @relation("BaseCurrency", fields: [base], references: [code])
+  targetCurrency Currency @relation("TargetCurrency", fields: [target], references: [code])
+
+  @@unique([base, target])
 }
