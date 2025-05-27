@@ -82,8 +82,6 @@ export const runWeeklyStatCron = async () => {
       ]);
     }
   }
-
-  console.log("✅ Weekly stats saved for all tenants");
 };
 
 export const runMonthlyStatCron = async () => {
@@ -128,8 +126,6 @@ export const runMonthlyStatCron = async () => {
       ]);
     }
   }
-
-  console.log("✅ Monthly stats saved for all tenants");
 };
 const saveStat = async (
   tenantId: string,
