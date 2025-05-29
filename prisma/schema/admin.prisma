@@ -12,7 +12,6 @@ model ChargeType {
   chargeType   String
   unit         String
 
-  VehicleGroup VehicleGroup[]
 
   Vehicle Vehicle[]
 }

@@ -45,7 +45,6 @@ class RentalRepository {
             },
           },
           vehicleStatus: true,
-          vehicleGroup: true,
           transmission: true,
           wheelDrive: true,
           fuelType: true,

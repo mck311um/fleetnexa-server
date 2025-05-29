@@ -101,15 +101,15 @@ const getFeaturedData = async (
               bodyType: true,
             },
           },
-          vehicleGroup: {
-            select: {
-              price: true,
-              chargeType: true,
-              minimumRental: true,
-              maximumRental: true,
-              drivingExperience: true,
-            },
-          },
+          // vehicleGroup: {
+          //   select: {
+          //     price: true,
+          //     chargeType: true,
+          //     minimumRental: true,
+          //     maximumRental: true,
+          //     drivingExperience: true,
+          //   },
+          // },
           tenant: {
             select: {
               id: true,
@@ -203,17 +203,17 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
             bodyType: true,
           },
         },
-        vehicleGroup: {
-          select: {
-            price: true,
-            chargeType: true,
-            minimumRental: true,
-            maximumRental: true,
-            drivingExperience: true,
-            minimumAge: true,
-            fuelPolicy: true,
-          },
-        },
+        // vehicleGroup: {
+        //   select: {
+        //     price: true,
+        //     chargeType: true,
+        //     minimumRental: true,
+        //     maximumRental: true,
+        //     drivingExperience: true,
+        //     minimumAge: true,
+        //     fuelPolicy: true,
+        //   },
+        // },
         tenant: {
           select: {
             id: true,

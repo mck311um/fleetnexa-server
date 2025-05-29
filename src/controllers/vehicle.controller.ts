@@ -1,9 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
-import {
-  vehicleRepo,
-  vehicleGroupRepo,
-} from "../repository/vehicle.repository";
+import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
 
 // #region Vehicle
@@ -84,7 +81,6 @@ const addVehicle = async (req: Request, res: Response) => {
         vin: vehicle.vin,
         year: vehicle.year,
         transmission: { connect: { id: vehicle.transmissionId } },
-        vehicleGroup: { connect: { id: vehicle.vehicleGroupId } },
         vehicleStatus: { connect: { id: vehicle.vehicleStatusId } },
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -92,6 +88,22 @@ const addVehicle = async (req: Request, res: Response) => {
         wheelDrive: { connect: { id: vehicle.wheelDriveId } },
         fuelType: { connect: { id: vehicle.fuelTypeId } },
         tenant: { connect: { id: tenantId } },
+        isDeleted: false,
+        price: vehicle.price,
+        timeBetweenRentals: vehicle.timeBetweenRentals,
+        minimumAge: vehicle.minimumAge,
+        minimumRental: vehicle.minimumRental,
+        fuelPolicy: { connect: { id: vehicle.fuelPolicyId } },
+        chargeType: { connect: { id: vehicle.chargeTypeId } },
+        location: { connect: { id: vehicle.locationId } },
+        drivingExperience: vehicle.drivingExperience,
+        cancellationAmount: vehicle.cancellationAmount,
+        cancellationPolicy: vehicle.cancellationPolicy,
+        lateFee: vehicle.lateFee,
+        maxHours: vehicle.maxHours,
+        refundAmount: vehicle.refundAmount,
+        additionalDriverFee: vehicle.additionalDriverFee,
+        securityDeposit: vehicle.securityDeposit,
       },
     });
 
@@ -132,7 +144,6 @@ const updateVehicle = async (req: Request, res: Response) => {
         registrationNumber: vehicle.registrationNumber,
         steering: vehicle.steering,
         transmission: { connect: { id: vehicle.transmissionId } },
-        vehicleGroup: { connect: { id: vehicle.vehicleGroupId } },
         vehicleStatus: { connect: { id: vehicle.vehicleStatusId } },
         vin: vehicle.vin,
         year: vehicle.year,
@@ -140,6 +151,22 @@ const updateVehicle = async (req: Request, res: Response) => {
         tenant: { connect: { id: tenantId } },
         updatedAt: new Date(),
         updatedBy: userId,
+        isDeleted: false,
+        price: vehicle.price,
+        timeBetweenRentals: vehicle.timeBetweenRentals,
+        minimumAge: vehicle.minimumAge,
+        minimumRental: vehicle.minimumRental,
+        fuelPolicy: { connect: { id: vehicle.fuelPolicyId } },
+        chargeType: { connect: { id: vehicle.chargeTypeId } },
+        location: { connect: { id: vehicle.locationId } },
+        drivingExperience: vehicle.drivingExperience,
+        cancellationAmount: vehicle.cancellationAmount,
+        cancellationPolicy: vehicle.cancellationPolicy,
+        lateFee: vehicle.lateFee,
+        maxHours: vehicle.maxHours,
+        refundAmount: vehicle.refundAmount,
+        additionalDriverFee: vehicle.additionalDriverFee,
+        securityDeposit: vehicle.securityDeposit,
       },
     });
 
@@ -308,222 +335,6 @@ const deleteVehicleDamage = async (req: Request, res: Response) => {
 };
 // #endregion
 
-// #region Vehicle Group
-const getVehicleGroups = async (req: Request, res: Response) => {
-  const tenantId = req.user?.tenantId;
-  try {
-    const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
-    res.status(200).json(vehicleGroups);
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
-  }
-};
-const getVehicleGroupById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    const vehicleGroup = await vehicleGroupRepo.getVehicleGroupById(
-      id,
-      tenantId!
-    );
-
-    if (!vehicleGroup) {
-      return res.status(404).json({ message: "Vehicle group not found" });
-    }
-
-    res.status(200).json(vehicleGroup);
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
-  }
-};
-const addVehicleGroup = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { group } = req.body;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    await prisma.$transaction(async (tx) => {
-      await tx.vehicleGroup.create({
-        data: {
-          id: group.id,
-          group: group.group,
-          description: group.description,
-          price: group.price,
-          minimumRental: group.minimumRental,
-          maximumRental: group.maximumRental,
-          minimumAge: group.minimumAge,
-          drivingExperience: group.drivingExperience,
-          cancellationAmount: group.cancellationAmount,
-          cancellationPolicy: group.cancellationPolicy,
-          lateFee: group.lateFee,
-          lateFeePolicy: group.lateFeePolicy,
-          refundAmount: group.refundAmount,
-          refundPolicy: group.refundPolicy,
-          damageAmount: group.damageAmount,
-          damagePolicy: group.damagePolicy,
-          tenantId: group.tenantId,
-          chargeTypeId: group.chargeTypeId,
-          fuelPolicyId: group.fuelPolicyId,
-          timeBetweenRentals: group.timeBetweenRentals,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          updatedBy: userId,
-        },
-      });
-
-      if (group.discounts && group.discounts.length > 0) {
-        for (const discount of group.discounts) {
-          await tx.vehicleDiscount.upsert({
-            where: { id: discount.id },
-            update: {
-              periodMin: discount.periodMin,
-              periodMax: discount.periodMax,
-              amount: discount.amount,
-              discountPolicy: discount.discountPolicy,
-              vehicleGroupId: group.id,
-              updatedBy: userId,
-              updatedAt: new Date(),
-            },
-            create: {
-              id: discount.id,
-              vehicleGroupId: group.id,
-              periodMin: discount.periodMin,
-              periodMax: discount.periodMax,
-              amount: discount.amount,
-              discountPolicy: discount.discountPolicy,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              updatedBy: userId,
-            },
-          });
-        }
-      }
-    });
-
-    const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
-    res.status(201).json(vehicleGroups);
-  } catch (error: any) {
-    next(error);
-  }
-};
-const updateVehicleGroup = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { group } = req.body;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    await prisma.$transaction(async (tx) => {
-      await tx.vehicleGroup.update({
-        where: { id: group.id },
-        data: {
-          group: group.group,
-          description: group.description,
-          price: group.price,
-          minimumRental: group.minimumRental,
-          maximumRental: group.maximumRental,
-          minimumAge: group.minimumAge,
-          drivingExperience: group.drivingExperience,
-          cancellationAmount: group.cancellationAmount,
-          cancellationPolicy: group.cancellationPolicy,
-          lateFee: group.lateFee,
-          lateFeePolicy: group.lateFeePolicy,
-          refundAmount: group.refundAmount,
-          refundPolicy: group.refundPolicy,
-          damageAmount: group.damageAmount,
-          damagePolicy: group.damagePolicy,
-          chargeTypeId: group.chargeTypeId,
-          fuelPolicyId: group.fuelPolicyId,
-          timeBetweenRentals: group.timeBetweenRentals,
-          updatedAt: new Date(),
-          updatedBy: userId,
-        },
-      });
-
-      if (group.discounts) {
-        const newDiscountIds = group.discounts
-          .map((discount: any) => discount.id)
-          .filter(Boolean);
-
-        await tx.vehicleDiscount.deleteMany({
-          where: {
-            vehicleGroupId: group.id,
-            NOT: { id: { in: newDiscountIds } },
-          },
-        });
-
-        await Promise.all(
-          group.discounts.map((discount: any) =>
-            tx.vehicleDiscount.upsert({
-              where: { id: discount.id || "" },
-              update: {
-                periodMin: discount.periodMin,
-                periodMax: discount.periodMax,
-                amount: discount.amount,
-                discountPolicy: discount.discountPolicy,
-                updatedAt: new Date(),
-                updatedBy: userId,
-              },
-              create: {
-                id: discount.id || undefined,
-                vehicleGroupId: group.id,
-                periodMin: discount.periodMin,
-                periodMax: discount.periodMax,
-                amount: discount.amount,
-                discountPolicy: discount.discountPolicy,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                updatedBy: userId,
-              },
-            })
-          )
-        );
-      }
-    });
-    const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
-    res.status(201).json(vehicleGroups);
-  } catch (error) {
-    next(error);
-  }
-};
-const deleteVehicleGroup = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { id } = req.params;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    await prisma.vehicleGroup.update({
-      where: { id },
-      data: {
-        isDeleted: true,
-        updatedAt: new Date(),
-        updatedBy: userId,
-      },
-    });
-
-    const vehicleGroups = await vehicleGroupRepo.getVehicleGroups(tenantId!);
-    res.status(201).json(vehicleGroups);
-  } catch (error) {
-    next(error);
-  }
-};
-
-// #endregion
-
 // #region Vehicle Group Discounts
 const addVehicleGroupDiscount = async (req: Request, res: Response) => {
   const { discount } = req.body;
@@ -605,11 +416,6 @@ const deleteVehicleGroupDiscount = async (req: Request, res: Response) => {
 // #endregion
 
 export default {
-  getVehicleGroups,
-  getVehicleGroupById,
-  addVehicleGroup,
-  updateVehicleGroup,
-  deleteVehicleGroup,
   addVehicleGroupDiscount,
   updateVehicleGroupDiscount,
   deleteVehicleGroupDiscount,

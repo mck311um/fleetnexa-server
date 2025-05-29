@@ -71,11 +71,11 @@ const addRentalPayment = async (
         updatedBy: userId,
       };
 
-      const existingPayments = await tx.payments.findMany({
+      const existingPayments = await tx.payment.findMany({
         where: { rentalId: payment.rentalId },
       });
 
-      await tx.payments.create({
+      await tx.payment.create({
         data: rentalPaymentData,
       });
 

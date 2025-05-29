@@ -1,40 +1,39 @@
-model VehicleGroup {
-  id                    String          @id @default(dbgenerated("gen_random_uuid()"))
-  group                 String
-  description           String
-  tenantId              String
-  cancellationAmount    Int             @default(0)
-  cancellationPolicy    String          @default("percent")
-  fuelPolicyId          String?
-  lateFee               Int             @default(0)
-  lateFeePolicy         String          @default("percent")
-  maximumRental         Int             @default(10)
-  minimumAge            Int             @default(18)
-  minimumRental         Int             @default(1)
-  price                 Float
-  chargeTypeId          String?
-  timeBetweenRentals    Int             @default(0)
-  damageAmount          Int             @default(0)
-  damagePolicy          String          @default("percent")
-  drivingExperience     Int             @default(1)
-  refundAmount          Int             @default(100)
-  refundPolicy          String          @default("percent")
+// model VehicleGroup {
+//   id                    String          @id @default(dbgenerated("gen_random_uuid()"))
+//   group                 String
+//   description           String
+//   tenantId              String
+//   cancellationAmount    Int             @default(0)
+//   cancellationPolicy    String          @default("percent")
+//   fuelPolicyId          String?
+//   lateFee               Int             @default(0)
+//   lateFeePolicy         String          @default("percent")
+//   maximumRental         Int             @default(10)
+//   minimumAge            Int             @default(18)
+//   minimumRental         Int             @default(1)
+//   price                 Float
+//   chargeTypeId          String?
+//   timeBetweenRentals    Int             @default(0)
+//   damageAmount          Int             @default(0)
+//   damagePolicy          String          @default("percent")
+//   drivingExperience     Int             @default(1)
+//   refundAmount          Int             @default(100)
+//   refundPolicy          String          @default("percent")
 
-  chargeType            ChargeType?     @relation(fields: [chargeTypeId], references: [id])
-  fuelPolicy            FuelPolicy?     @relation(fields: [fuelPolicyId], references: [id])
-  tenant                Tenant          @relation(fields: [tenantId], references: [id])
+//   chargeType            ChargeType?     @relation(fields: [chargeTypeId], references: [id])
+//   fuelPolicy            FuelPolicy?     @relation(fields: [fuelPolicyId], references: [id])
+//   tenant                Tenant          @relation(fields: [tenantId], references: [id])
 
-  isActive              Boolean         @default(false)
-  isDeleted             Boolean         @default(false)
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime?       @updatedAt
-  updatedBy             String?
+//   isActive              Boolean         @default(false)
+//   isDeleted             Boolean         @default(false)
+//   createdAt             DateTime        @default(now())
+//   updatedAt             DateTime?       @updatedAt
+//   updatedBy             String?
 
-  rentals               Rental[]
-  discounts             VehicleDiscount[]
+//   discounts             VehicleDiscount[]
 
   
-}
+// }
 
 model Vehicle {
   id                    String   @id @default(dbgenerated("gen_random_uuid()"))
@@ -66,7 +65,6 @@ model Vehicle {
   price                 Float     
   chargeTypeId          String?
   timeBetweenRentals    Int
-  maximumRental         Int
   minimumAge            Int
   minimumRental         Int
   fuelPolicyId          String?
@@ -74,11 +72,10 @@ model Vehicle {
   cancellationAmount    Int       @default(0)
   cancellationPolicy    String    @default("percent")
   lateFee               Int       @default(0)
-  lateFeePolicy         String    @default("percent")
-  damageAmount          Int       @default(0)
-  damagePolicy          String    @default("percent")
+  maxHours              Int       @default(0)
   refundAmount          Int       @default(100)
-  refundPolicy          String    @default("percent")
+  additionalDriverFee   Float     @default(0)
+  securityDeposit       Float     @default(0)
 
 
   isActive              Boolean   @default(false)
@@ -121,7 +118,6 @@ model VehicleDiscount {
   updatedAt             DateTime? @updatedAt
   createdBy             String?
   updatedBy             String?
-  group                 VehicleGroup @relation(fields: [vehicleGroupId], references: [id])
   
 }
 
@@ -163,9 +159,8 @@ model FuelPolicy {
   id           String         @id @default(dbgenerated("gen_random_uuid()"))
   policy       String
   code         String
-  group        VehicleGroup[]
 
-  Vehicle Vehicle[]
+  vehicles     Vehicle[]
 }
 
 model VehicleServiceLog {

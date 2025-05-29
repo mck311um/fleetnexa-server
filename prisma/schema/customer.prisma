@@ -21,6 +21,7 @@ model Customer {
   apps              CustomerMessengerApp[]
   rentalActivity    RentalActivity[]
   transactions      Transactions[]
+  drivers           RentalDriver[]
 
 
 
@@ -31,6 +32,7 @@ model Customer {
   updatedBy         String?
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
+
 
 }
 

@@ -24,7 +24,6 @@ model Tenant {
 
   paymentMethods      PaymentMethod[]
   users               User[]
-  vehicleGroups       VehicleGroup[]       
   customers           Customer[]
   vehicles            Vehicle[]
   tenantLocations     TenantLocation[]
