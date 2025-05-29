@@ -48,11 +48,6 @@ class TenantRepository {
           },
         },
       },
-      vehicleGroups: {
-        include: {
-          discounts: true,
-        },
-      },
       weeklyStats: {
         where: {
           OR: getFilters(),

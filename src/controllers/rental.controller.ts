@@ -416,7 +416,7 @@ const generateInvoice = async (req: Request, res: Response) => {
       create: {
         invoiceNumber,
         amount: rental?.values?.netTotal || 0,
-        customerId: rental?.customerId || "",
+        customerId: "",
         rentalId: rental?.id || "",
         tenantId: tenantId!,
         createdAt: new Date(),
@@ -425,7 +425,7 @@ const generateInvoice = async (req: Request, res: Response) => {
       },
       update: {
         amount: rental?.values?.netTotal || 0,
-        customerId: rental?.customerId || "",
+        customerId: "",
         tenantId: tenantId!,
         invoiceUrl: publicUrl,
         updatedAt: new Date(),
@@ -476,7 +476,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
       where: { rentalId },
       create: {
         number: agreementNumber,
-        customerId: rental?.customerId || "",
+        customerId: "",
         rentalId: rental?.id || "",
         tenantId: tenantId!,
         createdAt: new Date(),
@@ -484,7 +484,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
         agreementUrl: publicUrl,
       },
       update: {
-        customerId: rental?.customerId || "",
+        customerId: "",
         tenantId: tenantId!,
         agreementUrl: publicUrl,
         updatedAt: new Date(),

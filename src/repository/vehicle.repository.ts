@@ -65,17 +65,6 @@ class VehicleRepository {
           pickup: true,
           return: true,
           values: true,
-          customer: {
-            include: {
-              address: {
-                include: {
-                  village: true,
-                  state: true,
-                  country: true,
-                },
-              },
-            },
-          },
           user: {
             select: {
               id: true,

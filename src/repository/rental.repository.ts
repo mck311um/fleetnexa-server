@@ -57,19 +57,6 @@ class RentalRepository {
           },
         },
       },
-      vehicleGroup: true,
-      customer: {
-        include: {
-          license: true,
-          address: {
-            include: {
-              village: true,
-              state: true,
-              country: true,
-            },
-          },
-        },
-      },
       payments: {
         include: {
           paymentMethod: true,

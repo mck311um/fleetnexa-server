@@ -6,7 +6,6 @@ model Rental {
   pickupLocationId  String
   returnLocationId  String
   vehicleId         String
-  customerId        String
   agent             Agent
   signature         String?
   createdAt         DateTime  @default(now())
@@ -30,12 +29,8 @@ model Rental {
   pickup            TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])
   return            TenantLocation @relation("ReturnLocation", fields: [returnLocationId], references: [id])
   vehicle           Vehicle   @relation(fields: [vehicleId], references: [id])
-  customer          Customer   @relation(fields: [customerId], references: [id])
-
 
   user             User?     @relation(fields: [createdBy], references: [id])
-
-
 }
 
 model RentalDriver {
