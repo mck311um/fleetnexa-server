@@ -32,14 +32,16 @@ model Rental {
 
   user             User?     @relation(fields: [createdBy], references: [id])
 }
-
 model RentalDriver {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   rentalId          String
   driverId          String
+  primaryDriver     Boolean @default(false)
 
   rental            Rental   @relation(fields: [rentalId], references: [id])
-  driver            Customer   @relation(fields: [driverId], references: [id])
+  driver            Customer   @relation(fields: [driverId], references: [id])  
+
+  @@unique([rentalId, primaryDriver], map: "one_primary_driver_per_booking")
 }
 
 

@@ -91,6 +91,7 @@ model Vehicle {
   rentalActivity        RentalActivity[]
   serviceLogs           VehicleServiceLog[]
   scheduledServices     VehicleServiceSchedule[]
+  discounts             VehicleDiscount[]
 
   chargeType            ChargeType?     @relation(fields: [chargeTypeId], references: [id])
   fuelPolicy            FuelPolicy?     @relation(fields: [fuelPolicyId], references: [id])
@@ -102,6 +103,7 @@ model Vehicle {
   wheelDrive            WheelDrive?     @relation(fields: [wheelDriveId], references: [id])
   tenant                Tenant?         @relation(fields: [tenantId], references: [id])
   location              TenantLocation? @relation(fields: [locationId], references: [id])
+
 }
 
 model VehicleDiscount {
@@ -110,7 +112,7 @@ model VehicleDiscount {
   discountPolicy        String
   periodMax             Int
   periodMin             Int
-  vehicleGroupId        String
+  vehicleId             String
 
   isActive              Boolean   @default(false)
   isDeleted             Boolean   @default(false)
@@ -118,6 +120,8 @@ model VehicleDiscount {
   updatedAt             DateTime? @updatedAt
   createdBy             String?
   updatedBy             String?
+
+  vehicle               Vehicle @relation(fields: [vehicleId], references: [id])
   
 }
 

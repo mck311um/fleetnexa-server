@@ -60,6 +60,7 @@ class VehicleRepository {
       transmission: true,
       wheelDrive: true,
       location: true,
+      discounts: true,
       rentals: {
         include: {
           pickup: true,
