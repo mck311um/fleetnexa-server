@@ -13,6 +13,8 @@ model ChargeType {
   unit         String
 
   VehicleGroup VehicleGroup[]
+
+  Vehicle Vehicle[]
 }
 
 model VehicleBrand {
@@ -199,17 +201,7 @@ model Equipment {
   tenantEquipments TenantEquipment[]
 }
 
-model SubscriptionPlan {
-  id            String    @id @default(dbgenerated("gen_random_uuid()"))
-  plan          String
-  description   String
-  priceXCD      Float
-  priceUSD      Float
-  priceId       String
-  features      String[]
 
-  TenantSubscription TenantSubscription[]
-}
 
 model ContactType {
   id            String    @id @default(dbgenerated("gen_random_uuid()"))
@@ -224,5 +216,5 @@ model PaymentType {
   description   String
 
 
-  payments      Payments[]
+  payments      Payment[]
 }

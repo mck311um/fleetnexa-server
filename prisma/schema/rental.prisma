@@ -24,7 +24,7 @@ model Rental {
   agreement         RentalAgreement?
 
   rentalActivity    RentalActivity[]
-  payments          Payments[]
+  payments          Payment[]
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   pickup            TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])

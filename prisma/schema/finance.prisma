@@ -1,4 +1,4 @@
-model Payments {
+model Payment {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   amount            Float
   paymentMethodId   String
@@ -37,7 +37,7 @@ model Transactions {
 
   customer         Customer? @relation(fields: [customerId], references: [id])
   tenant           Tenant   @relation(fields: [tenantId], references: [id])
-  payment          Payments? @relation(fields: [paymentId], references: [id])
+  payment          Payment? @relation(fields: [paymentId], references: [id])
   user             User?    @relation(fields: [createdBy], references: [id])
 }
 
