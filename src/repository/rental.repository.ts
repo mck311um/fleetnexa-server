@@ -45,7 +45,6 @@ class RentalRepository {
             },
           },
           vehicleStatus: true,
-          vehicleGroup: true,
           transmission: true,
           wheelDrive: true,
           fuelType: true,
@@ -58,15 +57,11 @@ class RentalRepository {
           },
         },
       },
-      vehicleGroup: true,
-      customer: {
+      drivers: {
         include: {
-          license: true,
-          address: {
+          driver: {
             include: {
-              village: true,
-              state: true,
-              country: true,
+              license: true,
             },
           },
         },

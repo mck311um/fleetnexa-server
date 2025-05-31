@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Vehicle" ADD COLUMN     "securityDeposit" DOUBLE PRECISION NOT NULL DEFAULT 0,
+ALTER COLUMN "additionalDriverFee" SET DEFAULT 0,
+ALTER COLUMN "additionalDriverFee" SET DATA TYPE DOUBLE PRECISION;

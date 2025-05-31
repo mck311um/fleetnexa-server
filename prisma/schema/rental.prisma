@@ -6,12 +6,10 @@ model Rental {
   pickupLocationId  String
   returnLocationId  String
   vehicleId         String
-  customerId        String
   agent             Agent
   signature         String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt
-  vehicleGroupId    String
   tenantId          String
   status            RentalStatus @default(PENDING)
   createdBy         String?
@@ -24,18 +22,27 @@ model Rental {
   agreement         RentalAgreement?
 
   rentalActivity    RentalActivity[]
-  payments          Payments[]
+  payments          Payment[]
+  drivers           RentalDriver[]
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   pickup            TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])
   return            TenantLocation @relation("ReturnLocation", fields: [returnLocationId], references: [id])
   vehicle           Vehicle   @relation(fields: [vehicleId], references: [id])
-  vehicleGroup      VehicleGroup   @relation(fields: [vehicleGroupId], references: [id])
-  customer          Customer   @relation(fields: [customerId], references: [id])
-
 
   user             User?     @relation(fields: [createdBy], references: [id])
+}
+model RentalDriver {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  rentalId          String
+  driverId          String
+  primaryDriver     Boolean @default(false)
 
+  rental            Rental   @relation(fields: [rentalId], references: [id])
+  driver            Customer   @relation(fields: [driverId], references: [id])  
+
+  @@unique([rentalId, primaryDriver], map: "one_primary_driver_per_booking")
+  @@unique([rentalId, driverId], name: "rentalId_driverId")
 }
 
 
@@ -96,6 +103,7 @@ model Values {
   discountMax       Int
   discountAmount    Float
   discountPolicy    String
+  additionalDriverFees Float
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt

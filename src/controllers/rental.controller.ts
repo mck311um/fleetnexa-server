@@ -108,6 +108,7 @@ const handleRental = async (req: Request, res: Response) => {
           discountMin: parseFloat(rental.values.discountMin),
           discountMax: parseFloat(rental.values.discountMax),
           discountAmount: parseFloat(rental.values.discountAmount),
+          additionalDriverFees: parseFloat(rental.values.additionalDriverFees),
           discountPolicy: rental.values.discountPolicy,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -117,7 +118,9 @@ const handleRental = async (req: Request, res: Response) => {
           where: { id: rental.values.id },
           create: {
             id: rental.values.id,
-            rentalId: rental.id,
+            rental: {
+              connect: { id: rental.id },
+            },
             ...valuesData,
           },
           update: valuesData,
@@ -153,6 +156,44 @@ const handleRental = async (req: Request, res: Response) => {
           );
 
           await Promise.all(extrasPromises);
+        }
+
+        if (rental.drivers?.length) {
+          await tx.rentalDriver.deleteMany({
+            where: {
+              rentalId: rental.id,
+              id: {
+                notIn: rental.drivers.map((rd: any) => rd.id).filter(Boolean),
+              },
+            },
+          });
+
+          const rentalDriverPromises = rental.drivers.map((rd: any) => {
+            const where = rd.id
+              ? { id: rd.id }
+              : {
+                  rentalId_driverId: {
+                    rentalId: rental.id,
+                    driverId: rd.driverId,
+                  },
+                };
+
+            return tx.rentalDriver.upsert({
+              where,
+              create: {
+                id: rd.id,
+                rentalId: rental.id,
+                driverId: rd.driverId,
+                primaryDriver: rd.primaryDriver,
+              },
+              update: {
+                driverId: rd.driverId,
+                primaryDriver: rd.primaryDriver,
+              },
+            });
+          });
+
+          await Promise.all(rentalDriverPromises);
         }
       }
     });
@@ -191,13 +232,21 @@ const confirmRental = async (req: Request, res: Response) => {
           },
         });
 
+        const primaryDriver = await tx.rentalDriver.findFirst({
+          where: {
+            rentalId: rental.id,
+            primaryDriver: true,
+          },
+          select: { driverId: true },
+        });
+
         await tx.rentalActivity.create({
           data: {
             rentalId: rental.id,
             action: "BOOKED",
             createdAt: new Date(),
             createdBy: userId,
-            customerId: rental.customerId,
+            customerId: primaryDriver?.driverId!,
             vehicleId: rental.vehicleId,
             tenantId,
           },
@@ -411,12 +460,20 @@ const generateInvoice = async (req: Request, res: Response) => {
       tenant?.tenantCode!
     );
 
+    const primaryDriver = await prisma.rentalDriver.findFirst({
+      where: {
+        rentalId: rental?.id,
+        primaryDriver: true,
+      },
+      select: { driverId: true },
+    });
+
     await prisma.invoice.upsert({
       where: { rentalId },
       create: {
         invoiceNumber,
         amount: rental?.values?.netTotal || 0,
-        customerId: rental?.customerId || "",
+        customerId: primaryDriver?.driverId || "",
         rentalId: rental?.id || "",
         tenantId: tenantId!,
         createdAt: new Date(),
@@ -425,7 +482,7 @@ const generateInvoice = async (req: Request, res: Response) => {
       },
       update: {
         amount: rental?.values?.netTotal || 0,
-        customerId: rental?.customerId || "",
+        customerId: primaryDriver?.driverId || "",
         tenantId: tenantId!,
         invoiceUrl: publicUrl,
         updatedAt: new Date(),
@@ -472,11 +529,19 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
       tenant?.tenantCode!
     );
 
+    const primaryDriver = await prisma.rentalDriver.findFirst({
+      where: {
+        rentalId: rental?.id,
+        primaryDriver: true,
+      },
+      select: { driverId: true },
+    });
+
     await prisma.rentalAgreement.upsert({
       where: { rentalId },
       create: {
         number: agreementNumber,
-        customerId: rental?.customerId || "",
+        customerId: primaryDriver?.driverId || "",
         rentalId: rental?.id || "",
         tenantId: tenantId!,
         createdAt: new Date(),
@@ -484,7 +549,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
         agreementUrl: publicUrl,
       },
       update: {
-        customerId: rental?.customerId || "",
+        customerId: primaryDriver?.driverId || "",
         tenantId: tenantId!,
         agreementUrl: publicUrl,
         updatedAt: new Date(),

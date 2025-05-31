@@ -40,7 +40,6 @@ class VehicleRepository {
     return prisma.vehicle.findMany({
       where: {
         tenantId,
-        vehicleGroupId: groupId,
         isDeleted: false,
         ...additionalWhere,
       },
@@ -57,28 +56,21 @@ class VehicleRepository {
         },
       },
       vehicleStatus: true,
-      vehicleGroup: {
-        include: {
-          discounts: true,
-
-          chargeType: true,
-          fuelPolicy: true,
-        },
-      },
+      chargeType: true,
       transmission: true,
       wheelDrive: true,
+      location: true,
+      discounts: true,
       rentals: {
         include: {
           pickup: true,
           return: true,
           values: true,
-          customer: {
+          drivers: {
             include: {
-              address: {
+              driver: {
                 include: {
-                  village: true,
-                  state: true,
-                  country: true,
+                  license: true,
                 },
               },
             },
@@ -101,7 +93,6 @@ class VehicleRepository {
           customer: true,
         },
       },
-      location: {},
       serviceLogs: {
         include: {
           maintenanceService: true,
@@ -119,53 +110,4 @@ class VehicleRepository {
   }
 }
 
-class VehicleGroupRepository {
-  async getVehicleGroups(
-    tenantId: string,
-    additionalWhere?: Prisma.VehicleGroupWhereInput
-  ) {
-    return prisma.vehicleGroup.findMany({
-      where: {
-        tenantId,
-        isDeleted: false,
-        ...additionalWhere,
-      },
-      include: this.getVehicleGroupIncludeOptions(),
-    });
-  }
-
-  async getVehicleGroupById(id: string, tenantId: string) {
-    return prisma.vehicleGroup.findUnique({
-      where: { id, tenantId, isDeleted: false },
-      include: this.getVehicleGroupIncludeOptions(),
-    });
-  }
-
-  private getVehicleGroupIncludeOptions(): Prisma.VehicleGroupInclude {
-    return {
-      discounts: true,
-      chargeType: true,
-      fuelPolicy: true,
-      rentals: true,
-      vehicles: {
-        where: { isDeleted: false },
-        include: {
-          rentals: true,
-          brand: true,
-          model: true,
-        },
-      },
-      _count: {
-        select: {
-          vehicles: {
-            where: { isDeleted: false },
-          },
-          rentals: true,
-        },
-      },
-    };
-  }
-}
-
 export const vehicleRepo = new VehicleRepository();
-export const vehicleGroupRepo = new VehicleGroupRepository();

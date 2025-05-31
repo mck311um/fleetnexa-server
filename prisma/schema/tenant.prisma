@@ -24,14 +24,13 @@ model Tenant {
 
   paymentMethods      PaymentMethod[]
   users               User[]
-  vehicleGroups       VehicleGroup[]       
   customers           Customer[]
   vehicles            Vehicle[]
   tenantLocations     TenantLocation[]
   additions           Addition[]
   rentals             Rental[]
   invoices            Invoice[]
-  payments            Payments[]
+  payments            Payment[]
   services            TenantService[]
   forms               Form[]
   equipment           TenantEquipment[]
@@ -55,7 +54,7 @@ model PaymentMethod {
   updatedAt           DateTime?             @updatedAt
 
   Tenant              Tenant[]
-  payments            Payments[]
+  payments            Payment[]
 }
 
 model Address {
