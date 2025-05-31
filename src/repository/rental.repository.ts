@@ -57,6 +57,15 @@ class RentalRepository {
           },
         },
       },
+      drivers: {
+        include: {
+          driver: {
+            include: {
+              license: true,
+            },
+          },
+        },
+      },
       payments: {
         include: {
           paymentMethod: true,

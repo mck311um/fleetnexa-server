@@ -1,6 +1,7 @@
 import axios from "axios";
 import { AgreementData, InvoiceData } from "../types/pdf";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { PDFDocument } from "pdf-lib";
 
 const apiKey = process.env.PDFMONKEY_API_KEY!;
 const invoiceId = process.env.PDFMONKEY_INVOICE_ID!;
@@ -62,13 +63,37 @@ const createDocument = async ({
     }
 
     const documentDetails = await waitForDocumentGeneration(documentId);
-
     const pdfBuffer = await downloadPdf(
       documentDetails.data.document.download_url
     );
 
     const s3Key = `Tenants/${tenantCode}/${folder}/${documentNumber}.pdf`;
     const publicUrl = await uploadToS3(pdfBuffer, s3Key);
+
+    if (documentType === "agreement") {
+      const additionalPageUrl =
+        "https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/BookingAgreementPage.pdf";
+      const additionalPageBuffer = await downloadPdf(additionalPageUrl);
+
+      const signablePdfBuffer = await replaceLastPage(
+        pdfBuffer,
+        additionalPageBuffer
+      );
+
+      const signableS3Key = `Tenants/${tenantCode}/${folder}/${documentNumber}_signable.pdf`;
+      const signablePublicUrl = await uploadToS3(
+        signablePdfBuffer,
+        signableS3Key
+      );
+
+      return {
+        s3Key,
+        documentId,
+        publicUrl,
+        signableS3Key,
+        signablePublicUrl,
+      };
+    }
 
     return { s3Key, documentId, publicUrl };
   } catch (error) {
@@ -142,6 +167,59 @@ const createAgreement = async (
     tenantCode,
   });
   return { s3Key, documentId, publicUrl };
+};
+
+const replaceLastPage = async (
+  originalPdfBuffer: Buffer,
+  newPageBuffer: Buffer
+) => {
+  try {
+    const originalPdfDoc = await PDFDocument.load(originalPdfBuffer);
+    const newPagePdfDoc = await PDFDocument.load(newPageBuffer);
+
+    const pageIndices = Array.from(
+      { length: originalPdfDoc.getPageCount() - 1 },
+      (_, i) => i
+    );
+    const newPdfDoc = await PDFDocument.create();
+
+    const pages = await newPdfDoc.copyPages(originalPdfDoc, pageIndices);
+    pages.forEach((page) => newPdfDoc.addPage(page));
+
+    const [newLastPage] = await newPdfDoc.copyPages(newPagePdfDoc, [0]);
+    newPdfDoc.addPage(newLastPage);
+
+    const mergedPdfBytes = await newPdfDoc.save();
+    return Buffer.from(mergedPdfBytes);
+  } catch (error) {
+    console.error("Error replacing last PDF page:", error);
+    throw new Error("Failed to replace last page");
+  }
+};
+
+const mergeDocuments = async (
+  mainPdfBuffer: Buffer,
+  additionalPdfBuffer: Buffer
+) => {
+  try {
+    const mainPdfDoc = await PDFDocument.load(mainPdfBuffer);
+    const additionalPdfDoc = await PDFDocument.load(additionalPdfBuffer);
+
+    const additionalPages = await mainPdfDoc.copyPages(
+      additionalPdfDoc,
+      additionalPdfDoc.getPageIndices()
+    );
+
+    additionalPages.forEach((page) => {
+      mainPdfDoc.addPage(page);
+    });
+
+    const mergedPdfBytes = await mainPdfDoc.save();
+    return Buffer.from(mergedPdfBytes);
+  } catch (error) {
+    console.error("Error merging PDFs:", error);
+    throw new Error("Failed to merge PDFs");
+  }
 };
 
 export default {

@@ -14,14 +14,15 @@ import customerRoutes from "./routes/customer.routes";
 import emailRoutes from "./routes/email.routes";
 import twillioRoutes from "./routes/twillio.routes";
 import financeRoutes from "./routes/finance.routes";
+import rentalRoutes from "./routes/rental.routes";
+import rentnexaRoutes from "./routes/rentnexa.routes";
+import zohoRoutes from "./routes/zoho.routes";
 
 import "./cron/maintenance.cron";
 import "./cron/stat.cron";
 import "./cron/exchangeRate.cron";
 import "./cron/plans.cron";
 import errorHandler from "./middleware/error.middleware";
-import rentalRoutes from "./routes/rental.routes";
-import rentnexaRoutes from "./routes/rentnexa.routes";
 
 dotenv.config();
 
@@ -59,6 +60,7 @@ app.use("/api/whatsapp", twillioRoutes);
 app.use("/api/rental", rentalRoutes);
 app.use("/api/finance", financeRoutes);
 app.use("/api/rentnexa", rentnexaRoutes);
+app.use("/api/zoho", zohoRoutes);
 
 app.use(errorHandler);
 

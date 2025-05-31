@@ -1,4 +1,4 @@
-import e, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Resend } from "resend";
 import logUtil from "../config/logger.config";
 import { PrismaClient } from "@prisma/client";

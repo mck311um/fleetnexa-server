@@ -66,6 +66,15 @@ class VehicleRepository {
           pickup: true,
           return: true,
           values: true,
+          drivers: {
+            include: {
+              driver: {
+                include: {
+                  license: true,
+                },
+              },
+            },
+          },
           user: {
             select: {
               id: true,
