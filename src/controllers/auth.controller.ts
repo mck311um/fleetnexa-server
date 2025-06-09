@@ -94,6 +94,7 @@ const login = async (req: Request, res: Response) => {
       tenant: user.tenant?.tenantCode,
       theme: user.theme,
       color: user.color,
+      roleId: user.roleId,
     };
 
     const payload = {

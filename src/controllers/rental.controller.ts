@@ -520,7 +520,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
     const rental = await rentalRepo.getRentalById(rentalId, tenantId!);
     const tenant = await tenantRepo.getTenantById(tenantId!);
 
-    const { publicUrl } = await generator.createAgreement(
+    const { publicUrl, signablePublicUrl } = await generator.createAgreement(
       {
         ...agreementData,
         agreementNumber,
@@ -547,11 +547,13 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
         createdAt: new Date(),
         createdBy: userId,
         agreementUrl: publicUrl,
+        signableUrl: signablePublicUrl,
       },
       update: {
         customerId: primaryDriver?.driverId || "",
         tenantId: tenantId!,
         agreementUrl: publicUrl,
+        signableUrl: signablePublicUrl,
         updatedAt: new Date(),
         updatedBy: userId,
       },

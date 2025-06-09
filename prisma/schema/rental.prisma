@@ -74,6 +74,7 @@ model RentalAgreement {
   tenantId          String
   customerId        String
   agreementUrl      String?
+  signableUrl       String?
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt

@@ -213,6 +213,7 @@ const setupTenant = async (req: Request, res: Response) => {
         financialYearStart: data.financialYearStart,
         setupCompleted: true,
         securityDeposit: data.securityDeposit,
+        description: data.description,
         paymentMethods: {
           set: data.paymentMethods.map((method: any) => ({ id: method.id })),
         },
@@ -728,6 +729,106 @@ const deleteInsurance = async (req: Request, res: Response) => {
 };
 // #endregion
 
+// #region User Roles
+const getTenantRoles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+
+  try {
+    const roles = await prisma.userRole.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(roles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching tenant roles" });
+  }
+};
+const getTenantRolesById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const tenantId = req.user?.tenantId;
+  try {
+    const role = await prisma.userRole.findUnique({
+      where: { id, tenantId },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+    if (!role) {
+      return res.status(404).json({ message: "Role not found" });
+    }
+    res.status(200).json(role);
+  } catch (error) {
+    next(error);
+  }
+};
+const assignPermissionsToRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { roleId, permissions } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    const role = await prisma.userRole.findUnique({
+      where: { id: roleId, tenantId },
+    });
+
+    if (!role) {
+      return res.status(404).json({ message: "Role not found" });
+    }
+
+    await prisma.userRolePermission.deleteMany({
+      where: { roleId: role.id },
+    });
+
+    await prisma.userRolePermission.createMany({
+      data: permissions.map((perm: any) => ({
+        roleId,
+        permissionId: perm.id,
+        assignedBy: userId,
+        assignedAt: new Date(),
+      })),
+    });
+
+    const updatedRoles = await prisma.userRole.findMany({
+      where: { tenantId },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(updatedRoles);
+  } catch (error) {
+    next(error);
+  }
+};
+// #endregion
+
 export default {
   getTenantById,
   getTenantExtras,
@@ -753,4 +854,7 @@ export default {
   deleteInsurance,
   getTenantRentalActivity,
   getTenantReminders,
+  getTenantRoles,
+  getTenantRolesById,
+  assignPermissionsToRole,
 };

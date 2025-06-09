@@ -15,6 +15,16 @@ const getCurrentUser = async (req: Request, res: Response) => {
         createdAt: true,
         theme: true,
         color: true,
+        roleId: true,
+        role: {
+          include: {
+            rolePermission: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        },
         tenant: {
           select: {
             tenantCode: true,

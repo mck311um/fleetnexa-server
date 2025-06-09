@@ -11,6 +11,8 @@ router.get("/insurance", auth, controller.getInsurance);
 router.get("/extras", auth, controller.getTenantExtras);
 router.get("/activity", auth, controller.getTenantRentalActivity);
 router.get("/reminders", auth, controller.getTenantReminders);
+router.get("/roles", auth, controller.getTenantRoles);
+router.get("/roles/:id", auth, controller.getTenantRolesById);
 router.get("/:id", auth, controller.getTenantById);
 
 router.post("/", controller.createTenant);
@@ -25,6 +27,7 @@ router.put("/location", auth, controller.updateTenantLocation);
 router.put("/service", auth, controller.updateService);
 router.put("/equipment", auth, controller.updateEquipment);
 router.put("/insurance", auth, controller.updateInsurance);
+router.put("/roles/permissions", auth, controller.assignPermissionsToRole);
 router.put("/:id", auth, controller.updateTenant);
 
 router.delete("/location/:id", auth, controller.deleteTenantLocation);

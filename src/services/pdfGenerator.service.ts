@@ -160,13 +160,14 @@ const createAgreement = async (
   agreementNumber: string,
   tenantCode: string
 ) => {
-  const { s3Key, documentId, publicUrl } = await createDocument({
-    data: agreementData,
-    documentType: "agreement",
-    documentNumber: agreementNumber,
-    tenantCode,
-  });
-  return { s3Key, documentId, publicUrl };
+  const { s3Key, documentId, publicUrl, signablePublicUrl } =
+    await createDocument({
+      data: agreementData,
+      documentType: "agreement",
+      documentNumber: agreementNumber,
+      tenantCode,
+    });
+  return { s3Key, documentId, publicUrl, signablePublicUrl };
 };
 
 const replaceLastPage = async (
