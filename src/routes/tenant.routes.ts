@@ -22,12 +22,14 @@ router.post("/location/initialize", auth, controller.initializeTenantLocations);
 router.post("/service", auth, controller.addService);
 router.post("/equipment", auth, controller.addEquipment);
 router.post("/insurance", auth, controller.addInsurance);
+router.post("/role", auth, controller.addTenantRole);
 
 router.put("/location", auth, controller.updateTenantLocation);
 router.put("/service", auth, controller.updateService);
 router.put("/equipment", auth, controller.updateEquipment);
 router.put("/insurance", auth, controller.updateInsurance);
 router.put("/roles/permissions", auth, controller.assignPermissionsToRole);
+router.put("/role/:id", auth, controller.updateTenantRole);
 router.put("/:id", auth, controller.updateTenant);
 
 router.delete("/location/:id", auth, controller.deleteTenantLocation);

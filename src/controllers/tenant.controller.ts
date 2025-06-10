@@ -827,6 +827,81 @@ const assignPermissionsToRole = async (
     next(error);
   }
 };
+const addTenantRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { name, description } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.userRole.create({
+      data: {
+        name,
+        description,
+        tenantId: tenantId!,
+        updatedBy: userId,
+        isDeleted: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    const roles = await prisma.userRole.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+    res.status(201).json(roles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error creating tenant role" });
+  }
+};
+const updateTenantRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.userRole.update({
+      where: { id },
+      data: {
+        name,
+        description,
+        updatedBy: userId,
+        isDeleted: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    const roles = await prisma.userRole.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+    res.status(201).json(roles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error creating tenant role" });
+  }
+};
 // #endregion
 
 export default {
@@ -857,4 +932,6 @@ export default {
   getTenantRoles,
   getTenantRolesById,
   assignPermissionsToRole,
+  addTenantRole,
+  updateTenantRole,
 };
