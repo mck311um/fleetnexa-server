@@ -1,22 +1,27 @@
 model User {
-  id              String          @id @default(dbgenerated("gen_random_uuid()"))
-  password        String
-  firstName        String
-  lastName        String
-  username        String          @unique
-  tenantId        String
-  roleId          String?
-  color           String          @default("#343434")
-  theme           String          @default("light")
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime?       @updatedAt
+  id                     String          @id @default(dbgenerated("gen_random_uuid()"))
+  password               String
+  firstName               String
+  lastName               String
+  username               String          @unique
+  tenantId               String
+  roleId                 String?
+  color                  String          @default("#343434")
+  theme                  String          @default("light")
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime?       @updatedAt
+  requiredPasswordChange Boolean         @default(true)
+  lastChanged            DateTime?
+  email                  String?         @unique
 
-  rentals         Rental[]
-  rentalActivity  RentalActivity[]
-  transactions    Transactions[]
+  rentals                Rental[]
+  rentalActivity         RentalActivity[]
+  transactions           Transactions[]
+      
+  role                   UserRole?       @relation(fields: [roleId], references: [id])
+  tenant                 Tenant          @relation(fields: [tenantId], references: [id])
 
-  role            UserRole?       @relation(fields: [roleId], references: [id])
-  tenant          Tenant          @relation(fields: [tenantId], references: [id])
+  @@unique([username, tenantId])
 }
 
 model UserRole {

@@ -41,7 +41,6 @@ model RentalDriver {
   rental            Rental   @relation(fields: [rentalId], references: [id])
   driver            Customer   @relation(fields: [driverId], references: [id])  
 
-  @@unique([rentalId, primaryDriver], map: "one_primary_driver_per_booking")
   @@unique([rentalId, driverId], name: "rentalId_driverId")
 }
 

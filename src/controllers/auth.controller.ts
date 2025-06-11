@@ -30,6 +30,7 @@ const register = async (req: Request, res: Response) => {
         firstName,
         lastName,
         tenantId,
+        lastChanged: new Date(),
       },
     });
 
@@ -70,7 +71,18 @@ const login = async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       where: { username },
-      include: { tenant: true },
+      include: {
+        tenant: true,
+        role: {
+          include: {
+            rolePermission: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -95,6 +107,7 @@ const login = async (req: Request, res: Response) => {
       theme: user.theme,
       color: user.color,
       roleId: user.roleId,
+      role: user.role,
     };
 
     const payload = {

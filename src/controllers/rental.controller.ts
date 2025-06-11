@@ -337,6 +337,14 @@ const startRental = async (req: Request, res: Response) => {
         },
       });
 
+      const primaryDriver = await tx.rentalDriver.findFirst({
+        where: {
+          rentalId: rental.id,
+          primaryDriver: true,
+        },
+        select: { driverId: true },
+      });
+
       const rentedStatus = await tx.vehicleStatus.findFirst({
         where: { status: "Rented" },
         select: { id: true },
@@ -361,7 +369,7 @@ const startRental = async (req: Request, res: Response) => {
           action: "PICKED_UP",
           createdAt: new Date(),
           createdBy: userId,
-          customerId: rental.customerId,
+          customerId: primaryDriver?.driverId!,
           vehicleId: rental.vehicleId,
           tenantId: tenantId!,
         },
@@ -390,6 +398,14 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
         },
       });
 
+      const primaryDriver = await tx.rentalDriver.findFirst({
+        where: {
+          rentalId: rental.id,
+          primaryDriver: true,
+        },
+        select: { driverId: true },
+      });
+
       const rentedStatus = await tx.vehicleStatus.findFirst({
         where: { status: "Pending Inspection" },
         select: { id: true },
@@ -414,7 +430,7 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
           action: "RETURNED",
           createdAt: new Date(),
           createdBy: userId,
-          customerId: rental.customerId,
+          customerId: primaryDriver?.driverId!,
           vehicleId: rental.vehicleId,
           tenantId: tenantId!,
         },
