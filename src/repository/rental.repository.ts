@@ -23,6 +23,26 @@ class RentalRepository {
     });
   }
 
+  async getRentalsByCustomerId(
+    customerId: string,
+    tenantId: string,
+    additionalWhere?: Prisma.RentalWhereInput
+  ) {
+    return prisma.rental.findMany({
+      where: {
+        tenantId,
+        isDeleted: false,
+        drivers: {
+          some: {
+            driverId: customerId,
+          },
+        },
+        ...additionalWhere,
+      },
+      include: this.getRentalIncludeOptions(),
+    });
+  }
+
   private getRentalIncludeOptions(): Prisma.RentalInclude {
     return {
       pickup: true,

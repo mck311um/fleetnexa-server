@@ -72,7 +72,6 @@ const handleRental = async (req: Request, res: Response) => {
         pickupLocationId: rental.pickupLocationId,
         returnLocationId: rental.returnLocationId,
         vehicleId: rental.vehicleId,
-        customerId: rental.customerId,
         agent: rental.agent,
         signature: rental.signature,
         createdAt: new Date(),

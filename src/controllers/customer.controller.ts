@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { customerRepo } from "../repository/customer.repository";
 import prisma from "../config/prisma.config";
 import logUtil from "../config/logger.config";
+import { rentalRepo } from "../repository/rental.repository";
 
 const getCustomers = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -22,11 +23,21 @@ const getCustomerById = async (req: Request, res: Response) => {
       req.user?.tenantId!
     );
 
+    const rentals = await rentalRepo.getRentalsByCustomerId(
+      id,
+      req.user?.tenantId!
+    );
+
     if (!customer) {
       return res.status(404).json({ error: "Customer not found" });
     }
 
-    res.status(200).json(customer);
+    const data = {
+      ...customer,
+      rentals,
+    };
+
+    res.status(200).json(data);
   } catch (error) {
     logUtil.handleError(res, error, "getting customer by ID");
   }
