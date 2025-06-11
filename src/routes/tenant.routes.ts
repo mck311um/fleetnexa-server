@@ -23,6 +23,7 @@ router.post("/service", auth, controller.addService);
 router.post("/equipment", auth, controller.addEquipment);
 router.post("/insurance", auth, controller.addInsurance);
 router.post("/role", auth, controller.addTenantRole);
+router.post("/reminder", auth, controller.addTenantReminder);
 
 router.put("/location", auth, controller.updateTenantLocation);
 router.put("/service", auth, controller.updateService);
@@ -31,6 +32,8 @@ router.put("/insurance", auth, controller.updateInsurance);
 router.put("/roles/permissions", auth, controller.assignPermissionsToRole);
 router.put("/role/:id", auth, controller.updateTenantRole);
 router.put("/:id", auth, controller.updateTenant);
+
+router.patch("/reminder/:id", auth, controller.updateTenantReminder);
 
 router.delete("/location/:id", auth, controller.deleteTenantLocation);
 router.delete("/service/:id", auth, controller.deleteService);

@@ -93,22 +93,6 @@ const getTenantRentalActivity = async (
     next(error);
   }
 };
-const getTenantReminders = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const tenantId = req.user?.tenantId;
-  try {
-    const reminders = await prisma.tenantReminders.findMany({
-      where: { tenantId: tenantId },
-    });
-
-    res.status(200).json(reminders);
-  } catch (error) {
-    next(error);
-  }
-};
 
 const createTenant = async (req: Request, res: Response) => {
   const { tenantCode, tenantName, email, number, logo } = req.body;
@@ -904,6 +888,88 @@ const updateTenantRole = async (
 };
 // #endregion
 
+// #region Tenant Reminders
+const getTenantReminders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  try {
+    const reminders = await prisma.tenantReminders.findMany({
+      where: { tenantId: tenantId },
+    });
+
+    res.status(200).json(reminders);
+  } catch (error) {
+    next(error);
+  }
+};
+const addTenantReminder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { reminder, date } = req.body;
+  const tenantId = req.user?.tenantId;
+  const userId = req.user?.id;
+  try {
+    const newReminder = await prisma.tenantReminders.create({
+      data: {
+        reminder,
+        date: new Date(date),
+        tenantId: tenantId!,
+        updatedBy: userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    const reminders = await prisma.tenantReminders.findMany({
+      where: { tenantId: tenantId },
+      orderBy: { date: "asc" },
+    });
+
+    res.status(201).json(reminders);
+  } catch (error) {
+    next(error);
+  }
+};
+const updateTenantReminder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    const existingReminder = await prisma.tenantReminders.findUnique({
+      where: { id },
+    });
+
+    await prisma.tenantReminders.update({
+      where: { id },
+      data: {
+        completed: !existingReminder?.completed,
+        completedAt: new Date(),
+        updatedBy: userId,
+        updatedAt: new Date(),
+      },
+    });
+
+    const reminders = await prisma.tenantReminders.findMany({
+      where: { tenantId: tenantId },
+      orderBy: { date: "asc" },
+    });
+
+    res.status(200).json(reminders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating tenant reminder" });
+  }
+};
+
 export default {
   getTenantById,
   getTenantExtras,
@@ -934,4 +1000,6 @@ export default {
   assignPermissionsToRole,
   addTenantRole,
   updateTenantRole,
+  addTenantReminder,
+  updateTenantReminder,
 };
