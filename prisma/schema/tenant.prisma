@@ -48,6 +48,8 @@ model Tenant {
   ratings             TenantRatings[]
 
   UserRole UserRole[]
+
+  yearlyStats TenantYearlyStats[]
 }
 
 

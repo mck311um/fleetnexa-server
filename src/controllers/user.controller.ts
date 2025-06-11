@@ -99,7 +99,7 @@ const getTenantUsers = async (
   }
 };
 const createTenantUser = async (req: Request, res: Response) => {
-  const { username, password, firstName, lastName, email } = req.body;
+  const { firstName, lastName, email, roleId } = req.body;
   const tenantId = req.user?.tenantId;
 
   try {
@@ -107,18 +107,30 @@ const createTenantUser = async (req: Request, res: Response) => {
       where: { id: tenantId },
     });
 
-    const existingUser = await prisma.user.findUnique({
-      where: { username },
-    });
+    let username = "";
+    let attempt = 1;
 
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+    while (true) {
+      const prefix = firstName.substring(0, attempt).toLowerCase();
+      username = `${prefix}${lastName}`.toLowerCase();
+
+      const existingUser = await prisma.user.findUnique({
+        where: {
+          username_tenantId: {
+            username,
+            tenantId: tenantId!,
+          },
+        },
+      });
+
+      if (!existingUser) break;
+
+      attempt++;
     }
-
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash("ThisIsAPassword!", salt);
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         username,
         password: hashedPassword,
@@ -126,34 +138,12 @@ const createTenantUser = async (req: Request, res: Response) => {
         lastName,
         tenantId: tenantId!,
         email,
+        requiredPasswordChange: true,
+        roleId,
       },
     });
 
-    const userData = {
-      id: user.id,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      initials: `${user.firstName[0]}${user.lastName[0]}`,
-      fullName: `${user.firstName} ${user.lastName}`,
-      tenantId: user.tenantId,
-      tenant: tenant?.tenantCode,
-      theme: user.theme,
-      color: user.color,
-    };
-
-    const payload = {
-      user: {
-        id: user.id,
-        tenantId: user.tenantId,
-      },
-    };
-
-    const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
-      expiresIn: "7d",
-    });
-
-    res.status(201).json({ userData, token });
+    res.status(201).json({ username: username });
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: error.message });

@@ -15,6 +15,22 @@ model TenantWeeklyStats {
     @@unique([tenantId, week, year, stat])
 }
 
+model TenantYearlyStats {
+    id           String          @id @default(dbgenerated("gen_random_uuid()"))
+    tenantId     String
+    year         Int
+    stat         StatItem
+    value        Float
+    startDate    DateTime
+    endDate      DateTime
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+
+    tenant       Tenant         @relation(fields: [tenantId], references: [id])
+    
+    @@unique([tenantId, year, stat])
+}
+
 model TenantMonthlyStats {
     id           String          @id @default(dbgenerated("gen_random_uuid()"))
     tenantId     String
