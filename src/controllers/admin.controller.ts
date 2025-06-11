@@ -31,6 +31,7 @@ const getData = async (req: Request, res: Response) => {
     const subscriptionPlans = await prisma.subscriptionPlan.findMany();
     const contactTypes = await prisma.contactType.findMany();
     const paymentTypes = await prisma.paymentType.findMany();
+    const permissions = await prisma.appPermission.findMany();
 
     res.status(200).json({
       vehicleParts,
@@ -60,6 +61,7 @@ const getData = async (req: Request, res: Response) => {
       subscriptionPlans,
       contactTypes,
       paymentTypes,
+      permissions,
     });
   } catch (error: any) {
     logUtil.handleError(res, error, "fetching data");

@@ -37,6 +37,37 @@ class CustomerRepository {
           document: true,
         },
       },
+      drivers: {
+        include: {
+          rental: {
+            include: {
+              pickup: true,
+              return: true,
+              vehicle: {
+                include: {
+                  brand: true,
+                  model: {
+                    include: {
+                      bodyType: true,
+                    },
+                  },
+                  vehicleStatus: true,
+                  transmission: true,
+                  wheelDrive: true,
+                  fuelType: true,
+                  features: true,
+                  damages: {
+                    where: { isDeleted: false },
+                    include: {
+                      customer: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
       invoices: true,
       damages: true,
       license: {

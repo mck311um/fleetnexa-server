@@ -93,22 +93,6 @@ const getTenantRentalActivity = async (
     next(error);
   }
 };
-const getTenantReminders = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const tenantId = req.user?.tenantId;
-  try {
-    const reminders = await prisma.tenantReminders.findMany({
-      where: { tenantId: tenantId },
-    });
-
-    res.status(200).json(reminders);
-  } catch (error) {
-    next(error);
-  }
-};
 
 const createTenant = async (req: Request, res: Response) => {
   const { tenantCode, tenantName, email, number, logo } = req.body;
@@ -213,6 +197,7 @@ const setupTenant = async (req: Request, res: Response) => {
         financialYearStart: data.financialYearStart,
         setupCompleted: true,
         securityDeposit: data.securityDeposit,
+        description: data.description,
         paymentMethods: {
           set: data.paymentMethods.map((method: any) => ({ id: method.id })),
         },
@@ -728,6 +713,263 @@ const deleteInsurance = async (req: Request, res: Response) => {
 };
 // #endregion
 
+// #region User Roles
+const getTenantRoles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+
+  try {
+    const roles = await prisma.userRole.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(roles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching tenant roles" });
+  }
+};
+const getTenantRolesById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const tenantId = req.user?.tenantId;
+  try {
+    const role = await prisma.userRole.findUnique({
+      where: { id, tenantId },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+    if (!role) {
+      return res.status(404).json({ message: "Role not found" });
+    }
+    res.status(200).json(role);
+  } catch (error) {
+    next(error);
+  }
+};
+const assignPermissionsToRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { roleId, permissions } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    const role = await prisma.userRole.findUnique({
+      where: { id: roleId, tenantId },
+    });
+
+    if (!role) {
+      return res.status(404).json({ message: "Role not found" });
+    }
+
+    await prisma.userRolePermission.deleteMany({
+      where: { roleId: role.id },
+    });
+
+    await prisma.userRolePermission.createMany({
+      data: permissions.map((perm: any) => ({
+        roleId,
+        permissionId: perm.id,
+        assignedBy: userId,
+        assignedAt: new Date(),
+      })),
+    });
+
+    const updatedRoles = await prisma.userRole.findMany({
+      where: { tenantId },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(updatedRoles);
+  } catch (error) {
+    next(error);
+  }
+};
+const addTenantRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { name, description } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.userRole.create({
+      data: {
+        name,
+        description,
+        tenantId: tenantId!,
+        updatedBy: userId,
+        isDeleted: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    const roles = await prisma.userRole.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+    res.status(201).json(roles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error creating tenant role" });
+  }
+};
+const updateTenantRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.userRole.update({
+      where: { id },
+      data: {
+        name,
+        description,
+        updatedBy: userId,
+        isDeleted: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    const roles = await prisma.userRole.findMany({
+      where: { tenantId, isDeleted: false },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+    res.status(201).json(roles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error creating tenant role" });
+  }
+};
+// #endregion
+
+// #region Tenant Reminders
+const getTenantReminders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  try {
+    const reminders = await prisma.tenantReminders.findMany({
+      where: { tenantId: tenantId },
+    });
+
+    res.status(200).json(reminders);
+  } catch (error) {
+    next(error);
+  }
+};
+const addTenantReminder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { reminder, date } = req.body;
+  const tenantId = req.user?.tenantId;
+  const userId = req.user?.id;
+  try {
+    const newReminder = await prisma.tenantReminders.create({
+      data: {
+        reminder,
+        date: new Date(date),
+        tenantId: tenantId!,
+        updatedBy: userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    const reminders = await prisma.tenantReminders.findMany({
+      where: { tenantId: tenantId },
+      orderBy: { date: "asc" },
+    });
+
+    res.status(201).json(reminders);
+  } catch (error) {
+    next(error);
+  }
+};
+const updateTenantReminder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    const existingReminder = await prisma.tenantReminders.findUnique({
+      where: { id },
+    });
+
+    await prisma.tenantReminders.update({
+      where: { id },
+      data: {
+        completed: !existingReminder?.completed,
+        completedAt: new Date(),
+        updatedBy: userId,
+        updatedAt: new Date(),
+      },
+    });
+
+    const reminders = await prisma.tenantReminders.findMany({
+      where: { tenantId: tenantId },
+      orderBy: { date: "asc" },
+    });
+
+    res.status(200).json(reminders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating tenant reminder" });
+  }
+};
+
 export default {
   getTenantById,
   getTenantExtras,
@@ -753,4 +995,11 @@ export default {
   deleteInsurance,
   getTenantRentalActivity,
   getTenantReminders,
+  getTenantRoles,
+  getTenantRolesById,
+  assignPermissionsToRole,
+  addTenantRole,
+  updateTenantRole,
+  addTenantReminder,
+  updateTenantReminder,
 };

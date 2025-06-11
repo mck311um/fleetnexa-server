@@ -35,6 +35,7 @@ export interface InvoiceData {
   services: RentalService[];
   subTotal: number;
   deposit: number;
+  discount: number;
   total: number;
   invoiceNotes: string;
   numberOfUnits: number;

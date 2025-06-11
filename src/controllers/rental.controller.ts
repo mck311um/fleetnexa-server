@@ -72,7 +72,6 @@ const handleRental = async (req: Request, res: Response) => {
         pickupLocationId: rental.pickupLocationId,
         returnLocationId: rental.returnLocationId,
         vehicleId: rental.vehicleId,
-        customerId: rental.customerId,
         agent: rental.agent,
         signature: rental.signature,
         createdAt: new Date(),
@@ -337,6 +336,14 @@ const startRental = async (req: Request, res: Response) => {
         },
       });
 
+      const primaryDriver = await tx.rentalDriver.findFirst({
+        where: {
+          rentalId: rental.id,
+          primaryDriver: true,
+        },
+        select: { driverId: true },
+      });
+
       const rentedStatus = await tx.vehicleStatus.findFirst({
         where: { status: "Rented" },
         select: { id: true },
@@ -361,7 +368,7 @@ const startRental = async (req: Request, res: Response) => {
           action: "PICKED_UP",
           createdAt: new Date(),
           createdBy: userId,
-          customerId: rental.customerId,
+          customerId: primaryDriver?.driverId!,
           vehicleId: rental.vehicleId,
           tenantId: tenantId!,
         },
@@ -390,6 +397,14 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
         },
       });
 
+      const primaryDriver = await tx.rentalDriver.findFirst({
+        where: {
+          rentalId: rental.id,
+          primaryDriver: true,
+        },
+        select: { driverId: true },
+      });
+
       const rentedStatus = await tx.vehicleStatus.findFirst({
         where: { status: "Pending Inspection" },
         select: { id: true },
@@ -414,7 +429,7 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
           action: "RETURNED",
           createdAt: new Date(),
           createdBy: userId,
-          customerId: rental.customerId,
+          customerId: primaryDriver?.driverId!,
           vehicleId: rental.vehicleId,
           tenantId: tenantId!,
         },
@@ -520,7 +535,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
     const rental = await rentalRepo.getRentalById(rentalId, tenantId!);
     const tenant = await tenantRepo.getTenantById(tenantId!);
 
-    const { publicUrl } = await generator.createAgreement(
+    const { publicUrl, signablePublicUrl } = await generator.createAgreement(
       {
         ...agreementData,
         agreementNumber,
@@ -547,11 +562,13 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
         createdAt: new Date(),
         createdBy: userId,
         agreementUrl: publicUrl,
+        signableUrl: signablePublicUrl,
       },
       update: {
         customerId: primaryDriver?.driverId || "",
         tenantId: tenantId!,
         agreementUrl: publicUrl,
+        signableUrl: signablePublicUrl,
         updatedAt: new Date(),
         updatedBy: userId,
       },

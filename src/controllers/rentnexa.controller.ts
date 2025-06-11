@@ -21,7 +21,31 @@ const getAdminData = async (
     const villages = await prisma.village.findMany();
     const states = await prisma.state.findMany();
     const bodyTypes = await prisma.vehicleBodyType.findMany();
-    const tenants = await prisma.tenant.findMany();
+    const tenants = await prisma.tenant.findMany({
+      where: {
+        storefrontEnabled: true,
+      },
+      select: {
+        id: true,
+        tenantName: true,
+        logo: true,
+        rating: true,
+        description: true,
+        _count: {
+          select: {
+            vehicles: true,
+            ratings: true,
+          },
+        },
+        address: {
+          include: {
+            country: true,
+            state: true,
+            village: true,
+          },
+        },
+      },
+    });
     const currencies = await prisma.currency.findMany();
 
     res.status(200).json({
@@ -96,6 +120,10 @@ const getFeaturedData = async (
           transmission: true,
           features: true,
           fuelType: true,
+          price: true,
+          chargeType: true,
+          minimumRental: true,
+          drivingExperience: true,
           model: {
             include: {
               bodyType: true,
@@ -187,6 +215,12 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
         transmission: true,
         features: true,
         fuelType: true,
+        price: true,
+        chargeType: true,
+        minimumRental: true,
+        drivingExperience: true,
+        minimumAge: true,
+        fuelPolicy: true,
         rentals: {
           where: {
             status: {

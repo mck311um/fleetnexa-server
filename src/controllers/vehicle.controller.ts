@@ -31,6 +31,33 @@ const getVehicleById = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+const updateVehicleStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+  try {
+    await prisma.vehicle.update({
+      where: { id },
+      data: {
+        vehicleStatus: { connect: { id: status } },
+        updatedAt: new Date(),
+        updatedBy: userId,
+      },
+    });
+
+    const vehicle = await vehicleRepo.getVehicleById(id, tenantId!);
+    const vehicles = await vehicleRepo.getVehicles(tenantId!);
+
+    res.status(200).json({ vehicle, vehicles });
+  } catch (error) {
+    next(error);
+  }
+};
 const getVehiclesByGroup = async (req: Request, res: Response) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
@@ -411,86 +438,7 @@ const deleteVehicleDamage = async (req: Request, res: Response) => {
 };
 // #endregion
 
-// #region Vehicle Group Discounts
-const addVehicleGroupDiscount = async (req: Request, res: Response) => {
-  const { discount } = req.body;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  // try {
-  //   await prisma.vehicleDiscount.create({
-  //     data: {
-  //       periodMin: discount.periodMin,
-  //       periodMax: discount.periodMax,
-  //       amount: discount.amount,
-  //       discountPolicy: discount.discountPolicy,
-  //       vehicleGroupId: discount.vehicleGroupId,
-  //       createdAt: new Date(),
-  //       updatedAt: new Date(),
-  //       updatedBy: userId,
-  //       isDeleted: false,
-  //     },
-  //   });
-
-  //   const vehicleDiscounts = await prisma.vehicleDiscount.findMany({
-  //     where: { vehicleGroupId: discount.vehicleGroupId, isDeleted: false },
-  //   });
-
-  //   res.status(201).json({ ...vehicleDiscounts });
-  // } catch (error: any) {
-  //   console.error(error);
-  //   res.status(500).json({ message: error.message });
-  // }
-};
-const updateVehicleGroupDiscount = async (req: Request, res: Response) => {
-  const { discount } = req.body;
-  const userId = req.user?.id;
-
-  // try {
-  //   await prisma.vehicleDiscount.update({
-  //     where: { id: discount.id },
-  //     data: {
-  //       periodMin: discount.periodMin,
-  //       periodMax: discount.periodMax,
-  //       amount: discount.amount,
-  //       discountPolicy: discount.discountPolicy,
-  //       updatedAt: new Date(),
-  //       updatedBy: userId,
-  //     },
-  //   });
-
-  //   res.status(200).json({ ...vehicleDiscounts });
-  // } catch (error: any) {
-  //   console.error(error);
-  //   res.status(500).json({ message: error.message });
-  // }
-};
-const deleteVehicleGroupDiscount = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const userId = req.user?.id;
-
-  // try {
-  //   await prisma.vehicleDiscount.update({
-  //     where: { id },
-  //     data: {
-  //       isDeleted: true,
-  //       updatedAt: new Date(),
-  //       updatedBy: userId,
-  //     },
-  //   });
-
-  //   res.status(200).json({ message: "Discount deleted" });
-  // } catch (error: any) {
-  //   console.error(error);
-  //   res.status(500).json({ message: error.message });
-  // }
-};
-// #endregion
-
 export default {
-  addVehicleGroupDiscount,
-  updateVehicleGroupDiscount,
-  deleteVehicleGroupDiscount,
   getVehicles,
   getVehicleById,
   getVehiclesByGroup,
@@ -501,4 +449,5 @@ export default {
   addVehicleDamage,
   updateVehicleDamage,
   deleteVehicleDamage,
+  updateVehicleStatus,
 };

@@ -10,11 +10,11 @@ router.get("/damages/:id", auth, controller.getVehicleDamages);
 router.get("/:id", auth, controller.getVehicleById);
 
 router.post("/", auth, controller.addVehicle);
-router.post("/discount", auth, controller.addVehicleGroupDiscount);
 router.post("/damage", auth, controller.addVehicleDamage);
 
+router.patch("/:id/status", auth, controller.updateVehicleStatus);
+
 router.put("/", auth, controller.updateVehicle);
-router.put("/discount", auth, controller.updateVehicleGroupDiscount);
 router.put("/damage", auth, controller.updateVehicleDamage);
 
 router.delete("/damage/:id", auth, controller.deleteVehicleDamage);

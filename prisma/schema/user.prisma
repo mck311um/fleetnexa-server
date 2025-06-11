@@ -1,17 +1,66 @@
 model User {
+  id                     String          @id @default(dbgenerated("gen_random_uuid()"))
+  password               String
+  firstName               String
+  lastName               String
+  username               String          @unique
+  tenantId               String
+  roleId                 String?
+  color                  String          @default("#343434")
+  theme                  String          @default("light")
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime?       @updatedAt
+  requiredPasswordChange Boolean         @default(true)
+  lastChanged            DateTime?
+  email                  String?         @unique
+
+  rentals                Rental[]
+  rentalActivity         RentalActivity[]
+  transactions           Transactions[]
+      
+  role                   UserRole?       @relation(fields: [roleId], references: [id])
+  tenant                 Tenant          @relation(fields: [tenantId], references: [id])
+
+  @@unique([username, tenantId])
+}
+
+model UserRole {
   id              String          @id @default(dbgenerated("gen_random_uuid()"))
-  password        String
-  firstName        String
-  lastName        String
-  username        String          @unique
+  name            String          @unique
+  description     String?
   tenantId        String
-  color           String          @default("#343434")
-  theme           String          @default("light")
   createdAt       DateTime        @default(now())
   updatedAt       DateTime?       @updatedAt
-  tenant          Tenant          @relation(fields: [tenantId], references: [id])
+  isDeleted       Boolean         @default(false)
+  updatedBy       String?
 
-  rentals         Rental[]
-  rentalActivity  RentalActivity[]
-  transactions    Transactions[]
+  users           User[]
+  tenant          Tenant          @relation(fields: [tenantId], references: [id])
+  rolePermission  UserRolePermission[]
+
+  @@unique([name, tenantId])
+}
+
+model AppPermission {
+  id              String          @id @default(dbgenerated("gen_random_uuid()"))
+  name            String          @unique
+  category        String
+  description     String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime?       @updatedAt
+
+  rolePermissions UserRolePermission[]
+}
+
+model UserRolePermission {
+  id             String         @id @default(dbgenerated("gen_random_uuid()"))
+  roleId         String
+  permissionId   String
+  assignedBy     String?
+  assignedAt     DateTime       @default(now())
+
+  role           UserRole       @relation(fields: [roleId], references: [id])
+  permission     AppPermission  @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
 }

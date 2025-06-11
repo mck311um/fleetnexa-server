@@ -13,10 +13,12 @@ model Tenant {
   invoiceSequenceId   String?
   invoiceFootNotes    String                @default("")
   address             Address?
-  islandWideDelivery  Boolean               @default(true)
-  storefrontEnabled   Boolean               @default(true)
+  islandWideDelivery  Boolean              @default(true)
+  storefrontEnabled   Boolean              @default(true)
   subscriptionId      String?
   securityDeposit     Float                @default(0)
+  rating              Float                @default(0)
+  description         String?              @default("")
 
   subscription        TenantSubscription? 
   currency            Currency?             @relation(fields: [currencyId], references: [id])
@@ -43,6 +45,11 @@ model Tenant {
   monthlyRentalStats  TenantMonthlyRentalStats[]
   reminders           TenantReminders[]
   transactions        Transactions[]
+  ratings             TenantRatings[]
+
+  UserRole UserRole[]
+
+  yearlyStats TenantYearlyStats[]
 }
 
 
@@ -185,6 +192,7 @@ model TenantReminders {
   reminder            String
   date                DateTime
   tenantId            String
+  userId              String?
   completed           Boolean  @default(false)
   completedAt         DateTime?
   createdAt           DateTime  @default(now())
