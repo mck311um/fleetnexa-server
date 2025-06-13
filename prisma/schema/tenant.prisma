@@ -192,7 +192,6 @@ model TenantReminders {
   reminder            String
   date                DateTime
   tenantId            String
-  userId              String?
   completed           Boolean  @default(false)
   completedAt         DateTime?
   createdAt           DateTime  @default(now())
