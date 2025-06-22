@@ -127,8 +127,6 @@ const addVehicle = async (req: Request, res: Response) => {
           chargeType: { connect: { id: vehicle.chargeTypeId } },
           location: { connect: { id: vehicle.locationId } },
           drivingExperience: vehicle.drivingExperience,
-          cancellationAmount: vehicle.cancellationAmount,
-          cancellationPolicy: vehicle.cancellationPolicy,
           lateFee: vehicle.lateFee,
           maxHours: vehicle.maxHours,
           refundAmount: vehicle.refundAmount,
@@ -164,6 +162,42 @@ const addVehicle = async (req: Request, res: Response) => {
           });
         }
       }
+
+      await tx.vehicleCancellationPolicy.upsert({
+        where: {
+          vehicleId: vehicle.id,
+        },
+        update: {
+          amount: vehicle.cancellationPolicy?.amount || 0,
+          policy: vehicle.cancellationPolicy?.policy || "fixed_amount",
+          minimumDays: vehicle.cancellationPolicy?.minimumDays || 0,
+        },
+        create: {
+          id: vehicle.cancellationPolicy?.id || undefined,
+          vehicle: { connect: { id: vehicle.id } },
+          vehicleId: vehicle.id,
+          amount: vehicle.cancellationPolicy?.amount || 0,
+          policy: vehicle.cancellationPolicy?.policy || "fixed_amount",
+          minimumDays: vehicle.cancellationPolicy?.minimumDays || 0,
+        },
+      });
+
+      await tx.vehicleLatePolicy.upsert({
+        where: {
+          vehicleId: vehicle.id,
+        },
+        update: {
+          amount: vehicle.latePolicy?.amount || 0,
+          maxHours: vehicle.latePolicy?.maxHours || 0,
+        },
+        create: {
+          id: vehicle.latePolicy?.id || undefined,
+          vehicleId: vehicle.id,
+          vehicle: { connect: { id: vehicle.id } },
+          amount: vehicle.latePolicy?.amount || 0,
+          maxHours: vehicle.latePolicy?.maxHours || 0,
+        },
+      });
     });
 
     const vehicles = await vehicleRepo.getVehicles(tenantId!);
@@ -180,6 +214,10 @@ const updateVehicle = async (req: Request, res: Response) => {
 
   try {
     await prisma.$transaction(async (tx) => {
+      const cancellationPolicyId =
+        vehicle.cancellationPolicy?.id || crypto.randomUUID();
+      const latePolicyId = vehicle.latePolicy?.id || crypto.randomUUID();
+
       await tx.vehicle.update({
         where: { id: vehicle.id },
         data: {
@@ -222,8 +260,6 @@ const updateVehicle = async (req: Request, res: Response) => {
           chargeType: { connect: { id: vehicle.chargeTypeId } },
           location: { connect: { id: vehicle.locationId } },
           drivingExperience: vehicle.drivingExperience,
-          cancellationAmount: vehicle.cancellationAmount,
-          cancellationPolicy: vehicle.cancellationPolicy,
           lateFee: vehicle.lateFee,
           maxHours: vehicle.maxHours,
           refundAmount: vehicle.refundAmount,
@@ -271,6 +307,42 @@ const updateVehicle = async (req: Request, res: Response) => {
           )
         );
       }
+
+      await tx.vehicleCancellationPolicy.upsert({
+        where: {
+          vehicleId: vehicle.id,
+        },
+        update: {
+          amount: vehicle.cancellationPolicy?.amount || 0,
+          policy: vehicle.cancellationPolicy?.policy || "fixed_amount",
+          minimumDays: vehicle.cancellationPolicy?.minimumDays || 0,
+        },
+        create: {
+          id: cancellationPolicyId,
+          vehicleId: vehicle.id,
+          vehicle: { connect: { id: vehicle.id } },
+          amount: vehicle.cancellationPolicy?.amount || 0,
+          policy: vehicle.cancellationPolicy?.policy || "fixed_amount",
+          minimumDays: vehicle.cancellationPolicy?.minimumDays || 0,
+        },
+      });
+
+      await tx.vehicleLatePolicy.upsert({
+        where: {
+          vehicleId: vehicle.id,
+        },
+        update: {
+          amount: vehicle.latePolicy?.amount || 0,
+          maxHours: vehicle.latePolicy?.maxHours || 0,
+        },
+        create: {
+          id: latePolicyId,
+          vehicleId: vehicle.id,
+          vehicle: { connect: { id: vehicle.id } },
+          amount: vehicle.latePolicy?.amount || 0,
+          maxHours: vehicle.latePolicy?.maxHours || 0,
+        },
+      });
     });
 
     const vehicles = await vehicleRepo.getVehicles(tenantId!);

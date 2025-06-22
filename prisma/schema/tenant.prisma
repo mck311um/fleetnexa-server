@@ -46,10 +46,9 @@ model Tenant {
   reminders           TenantReminders[]
   transactions        Transactions[]
   ratings             TenantRatings[]
+  userRoles           UserRole[]
+  yearlyStats         TenantYearlyStats[]
 
-  UserRole UserRole[]
-
-  yearlyStats TenantYearlyStats[]
 }
 
 
