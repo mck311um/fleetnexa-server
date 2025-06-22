@@ -131,85 +131,92 @@ const createTenant = async (req: Request, res: Response) => {
   }
 };
 const updateTenant = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { tenantName, email, number, logo, setupCompleted, invoiceFootNotes } =
-    req.body;
+  const body = req.body;
+  const tenantId = req.user?.tenantId;
 
   try {
-    const tenant = await prisma.tenant.update({
-      where: { id },
-      data: {
-        tenantName,
-        email,
-        number,
-        logo,
-        setupCompleted,
-      },
+    await prisma.$transaction(async (tx) => {
+      await prisma.address.upsert({
+        where: { tenantId: tenantId },
+        update: {
+          street: body.address.street,
+          zipCode: body.address.zipCode.toString(),
+          village: { connect: { id: body.address.villageId } },
+          state: { connect: { id: body.address.stateId } },
+          country: { connect: { id: body.address.countryId } },
+        },
+        create: {
+          tenant: { connect: { id: tenantId } },
+          street: body.address.street,
+          zipCode: body.address.zipCode.toString(),
+          village: { connect: { id: body.address.villageId } },
+          state: { connect: { id: body.address.stateId } },
+          country: { connect: { id: body.address.countryId } },
+        },
+      });
+
+      await tx.tenant.update({
+        where: { id: tenantId },
+        data: {
+          currencyId: body.currencyId,
+          email: body.email,
+          invoiceFootNotes: body.invoiceFootNotes,
+          invoiceSequenceId: body.invoiceSequenceId,
+          logo: body.logo,
+          number: body.number,
+          tenantName: body.tenantName,
+          financialYearStart: body.financialYearStart,
+          setupCompleted: true,
+          securityDeposit: body.securityDeposit,
+          description: body.description,
+          paymentMethods: {
+            set: body.paymentMethods.map((method: any) => ({ id: method.id })),
+          },
+        },
+      });
+
+      await tx.cancellationPolicy.upsert({
+        where: {
+          tenantId: tenantId,
+        },
+        update: {
+          amount: parseInt(body.cancellationPolicy?.amount) || 0,
+          policy: body.cancellationPolicy?.policy || "fixed_amount",
+          minimumDays: parseInt(body.cancellationPolicy?.minimumDays) || 0,
+        },
+        create: {
+          tenantId: tenantId!,
+          tenant: { connect: { id: tenantId } },
+          amount: parseInt(body.cancellationPolicy?.amount) || 0,
+          policy: body.cancellationPolicy?.policy || "fixed_amount",
+          minimumDays: parseInt(body.cancellationPolicy?.minimumDays) || 0,
+          bookingMinimumDays:
+            parseInt(body.cancellationPolicy?.bookingMinimumDays) || 0,
+        },
+      });
+
+      await tx.latePolicy.upsert({
+        where: {
+          tenantId: tenantId,
+        },
+        update: {
+          amount: body.latePolicy?.amount || 0,
+          maxHours: body.latePolicy?.maxHours || 0,
+        },
+        create: {
+          tenantId: tenantId!,
+          tenant: { connect: { id: tenantId } },
+          amount: body.latePolicy?.amount || 0,
+          maxHours: body.latePolicy?.maxHours || 0,
+        },
+      });
     });
 
+    const tenant = await tenantRepo.getTenantById(tenantId!);
     res.json(tenant);
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: error.message });
-  }
-};
-const setupTenant = async (req: Request, res: Response) => {
-  const { data } = req.body;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    let addressId: string | null = null;
-
-    if (data.address) {
-      const address = await prisma.address.upsert({
-        where: { tenantId: data.id },
-        update: {
-          street: data.address.street,
-          zipCode: data.address.zipCode.toString(),
-          village: { connect: { id: data.address.villageId } },
-          state: { connect: { id: data.address.stateId } },
-          country: { connect: { id: data.address.countryId } },
-        },
-        create: {
-          tenant: { connect: { id: data.id } },
-          street: data.address.street,
-          zipCode: data.address.zipCode.toString(),
-          village: { connect: { id: data.address.villageId } },
-          state: { connect: { id: data.address.stateId } },
-          country: { connect: { id: data.address.countryId } },
-        },
-      });
-
-      addressId = address.id;
-    }
-
-    await prisma.tenant.update({
-      where: { id: data.id },
-      data: {
-        currencyId: data.currencyId,
-        email: data.email,
-        invoiceFootNotes: data.invoiceFootNotes,
-        invoiceSequenceId: data.invoiceSequenceId,
-        logo: data.logo,
-        number: data.number,
-        tenantName: data.tenantName,
-        financialYearStart: data.financialYearStart,
-        setupCompleted: true,
-        securityDeposit: data.securityDeposit,
-        description: data.description,
-        paymentMethods: {
-          set: data.paymentMethods.map((method: any) => ({ id: method.id })),
-        },
-      },
-    });
-
-    const tenant = await tenantRepo.getTenantById(data.id);
-
-    res.status(201).json(tenant);
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
   }
 };
 
@@ -225,6 +232,8 @@ const initializeTenantLocations = async (
 
   try {
     await prisma.$transaction(async (tx) => {
+      console.log("Initializing tenant locations for country:", country);
+
       const presetLocations = await tx.presetLocation.findMany({
         where: { countryId: country },
       });
@@ -274,7 +283,7 @@ const initializeTenantLocations = async (
   }
 };
 const getTenantLocations = async (req: Request, res: Response) => {
-  const { tenantId } = req.params;
+  const tenantId = req.user?.tenantId;
 
   try {
     const tenantLocations = await prisma.tenantLocation.findMany({
@@ -975,7 +984,6 @@ export default {
   getTenantExtras,
   createTenant,
   updateTenant,
-  setupTenant,
   getTenantLocations,
   initializeTenantLocations,
   createTenantLocation,
