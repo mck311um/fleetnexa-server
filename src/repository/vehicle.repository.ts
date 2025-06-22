@@ -87,8 +87,6 @@ class VehicleRepository {
       },
       fuelType: true,
       features: true,
-      cancellationPolicy: true,
-      latePolicy: true,
       damages: {
         where: { isDeleted: false },
         include: {
