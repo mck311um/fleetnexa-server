@@ -54,6 +54,30 @@ class RentalRepository {
           id: true,
           firstName: true,
           lastName: true,
+          username: true,
+        },
+      },
+      refunds: {
+        include: {
+          customer: true,
+        },
+      },
+      transactions: {
+        include: {
+          customer: true,
+          payment: {
+            include: {
+              paymentMethod: true,
+              paymentType: true,
+            },
+          },
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              username: true,
+            },
+          },
         },
       },
       vehicle: {

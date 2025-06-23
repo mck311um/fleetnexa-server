@@ -19,10 +19,14 @@ model Tenant {
   securityDeposit     Float                @default(0)
   rating              Float                @default(0)
   description         String?              @default("")
-
+  cancellationPolicyId  String?   @unique
+  latePolicyId          String?   @unique
+ 
   subscription        TenantSubscription? 
   currency            Currency?             @relation(fields: [currencyId], references: [id])
   invoiceSequence     InvoiceSequence?      @relation(fields: [invoiceSequenceId], references: [id])
+  cancellationPolicy  CancellationPolicy? @relation(fields: [cancellationPolicyId], references: [id])
+  latePolicy          LatePolicy? @relation(fields: [latePolicyId], references: [id])
 
   paymentMethods      PaymentMethod[]
   users               User[]
@@ -46,10 +50,9 @@ model Tenant {
   reminders           TenantReminders[]
   transactions        Transactions[]
   ratings             TenantRatings[]
-
-  UserRole UserRole[]
-
-  yearlyStats TenantYearlyStats[]
+  userRoles           UserRole[]
+  yearlyStats         TenantYearlyStats[]
+  refunds             Refund[]
 }
 
 
@@ -199,4 +202,23 @@ model TenantReminders {
   updatedBy           String?
 
   tenant              Tenant    @relation(fields: [tenantId], references: [id])
+}
+model CancellationPolicy {
+  id                    String   @id @default(dbgenerated("gen_random_uuid()"))
+  minimumDays           Int
+  bookingMinimumDays    Int  
+  policy                String
+  amount                Decimal  @db.Decimal(10, 2)
+  tenantId              String   @unique
+  updatedBy             String?
+  tenant                Tenant?
+}
+
+model LatePolicy {
+  id                    String   @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId             String    @unique
+  amount                Decimal  @db.Decimal(10, 2)
+  maxHours              Int
+  updatedBy             String?
+  tenant                Tenant?
 }

@@ -56,6 +56,27 @@ class TenantRepository {
       monthlyStats: true,
       monthlyRentalStats: true,
       yearlyStats: true,
+      cancellationPolicy: true,
+      latePolicy: true,
+      transactions: {
+        where: { isDeleted: false },
+        include: {
+          customer: true,
+          payment: {
+            include: {
+              paymentMethod: true,
+              paymentType: true,
+            },
+          },
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              username: true,
+            },
+          },
+        },
+      },
       rentalActivity: {
         include: {
           vehicle: {

@@ -3,7 +3,7 @@ model User {
   password               String
   firstName               String
   lastName               String
-  username               String          @unique
+  username               String          @unique    
   tenantId               String
   roleId                 String?
   color                  String          @default("#343434")
@@ -26,7 +26,7 @@ model User {
 
 model UserRole {
   id              String          @id @default(dbgenerated("gen_random_uuid()"))
-  name            String          @unique
+  name            String          
   description     String?
   tenantId        String
   createdAt       DateTime        @default(now())

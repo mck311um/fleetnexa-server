@@ -58,17 +58,6 @@ const updateVehicleStatus = async (
     next(error);
   }
 };
-const getVehiclesByGroup = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const tenantId = req.user?.tenantId;
-  try {
-    const vehicles = await vehicleRepo.getVehicleByGroupId(id, tenantId!);
-    res.status(200).json(vehicles);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
 const addVehicle = async (req: Request, res: Response) => {
   const { vehicle } = req.body;
   const userId = req.user?.id;
@@ -127,10 +116,6 @@ const addVehicle = async (req: Request, res: Response) => {
           chargeType: { connect: { id: vehicle.chargeTypeId } },
           location: { connect: { id: vehicle.locationId } },
           drivingExperience: vehicle.drivingExperience,
-          cancellationAmount: vehicle.cancellationAmount,
-          cancellationPolicy: vehicle.cancellationPolicy,
-          lateFee: vehicle.lateFee,
-          maxHours: vehicle.maxHours,
           refundAmount: vehicle.refundAmount,
           additionalDriverFee: vehicle.additionalDriverFee,
           securityDeposit: vehicle.securityDeposit,
@@ -222,10 +207,6 @@ const updateVehicle = async (req: Request, res: Response) => {
           chargeType: { connect: { id: vehicle.chargeTypeId } },
           location: { connect: { id: vehicle.locationId } },
           drivingExperience: vehicle.drivingExperience,
-          cancellationAmount: vehicle.cancellationAmount,
-          cancellationPolicy: vehicle.cancellationPolicy,
-          lateFee: vehicle.lateFee,
-          maxHours: vehicle.maxHours,
           refundAmount: vehicle.refundAmount,
           additionalDriverFee: vehicle.additionalDriverFee,
           securityDeposit: vehicle.securityDeposit,
@@ -441,7 +422,6 @@ const deleteVehicleDamage = async (req: Request, res: Response) => {
 export default {
   getVehicles,
   getVehicleById,
-  getVehiclesByGroup,
   addVehicle,
   updateVehicle,
   deleteVehicle,
