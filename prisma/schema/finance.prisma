@@ -6,7 +6,6 @@ model Payment {
   tenantId          String
   rentalId          String
   notes             String?
-  isRefunded        Boolean  @default(false)
   isDeleted         Boolean  @default(false)
   paymentDate       DateTime
 
@@ -20,7 +19,7 @@ model Payment {
   rental            Rental   @relation(fields: [rentalId], references: [id])
   
 
-  transactions Transactions[]
+  transactions      Transactions?
 }
 
 model Transactions {
@@ -30,15 +29,19 @@ model Transactions {
   tenantId          String
   transactionDate   DateTime  @default(now())
   customerId        String?
-  isDeleted         Boolean  @default(false)
+  rentalId          String?
+  isDeleted         Boolean   @default(false)
   createdBy         String?
   createdAt         DateTime  @default(now())
-  paymentId         String?
+  paymentId         String?   @unique
+  details           String?
 
   customer         Customer? @relation(fields: [customerId], references: [id])
   tenant           Tenant   @relation(fields: [tenantId], references: [id])
   payment          Payment? @relation(fields: [paymentId], references: [id])
   user             User?    @relation(fields: [createdBy], references: [id])
+  rental           Rental?  @relation(fields: [rentalId], references: [id])
+
 }
 
 model Currency {

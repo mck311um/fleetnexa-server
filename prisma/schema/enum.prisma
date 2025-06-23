@@ -82,6 +82,7 @@ enum StatItem {
 }
 
 enum TransactionType {
+  PAYMENT
   RENTAL
   REFUND
 }

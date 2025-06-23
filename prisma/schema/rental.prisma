@@ -23,6 +23,7 @@ model Rental {
 
   rentalActivity    RentalActivity[]
   payments          Payment[]
+  transactions      Transactions[]
   drivers           RentalDriver[]
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
@@ -31,6 +32,7 @@ model Rental {
   vehicle           Vehicle   @relation(fields: [vehicleId], references: [id])
 
   user             User?     @relation(fields: [createdBy], references: [id])
+
 }
 model RentalDriver {
   id                String     @id @default(dbgenerated("gen_random_uuid()"))

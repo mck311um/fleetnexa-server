@@ -20,6 +20,12 @@ const getTransactions = async (
           include: {
             paymentMethod: true,
             paymentType: true,
+            rental: {
+              select: {
+                id: true,
+                rentalNumber: true,
+              },
+            },
           },
         },
         user: {
@@ -71,35 +77,21 @@ const addRentalPayment = async (
         updatedBy: userId,
       };
 
-      const existingPayments = await tx.payment.findMany({
-        where: { rentalId: payment.rentalId },
-      });
-
       await tx.payment.create({
         data: rentalPaymentData,
       });
 
-      if (existingPayments.length === 0) {
-        await tx.rental.update({
-          where: { id: payment.rentalId },
-          data: {
-            status: "RESERVED",
-            updatedAt: new Date(),
-            updatedBy: userId,
-          },
-        });
-      }
-
       await tx.transactions.create({
         data: {
           amount: payment.amount,
-          type: "RENTAL",
+          type: "PAYMENT",
           transactionDate: payment.paymentDate,
           customerId: payment.customerId,
           createdBy: userId,
           createdAt: new Date(),
           paymentId: payment.id,
           tenantId: tenantId,
+          rentalId: payment.rentalId,
         },
       });
     });
