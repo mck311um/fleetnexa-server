@@ -16,6 +16,11 @@ const getTransactions = async (
       },
       include: {
         customer: true,
+        rental: {
+          select: {
+            rentalNumber: true,
+          },
+        },
         payment: {
           include: {
             paymentMethod: true,
