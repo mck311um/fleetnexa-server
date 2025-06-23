@@ -52,7 +52,7 @@ model Tenant {
   ratings             TenantRatings[]
   userRoles           UserRole[]
   yearlyStats         TenantYearlyStats[]
-
+  refunds             Refund[]
 }
 
 

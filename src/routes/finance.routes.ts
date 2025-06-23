@@ -7,5 +7,6 @@ const router = express.Router();
 router.get("/transactions", auth, controller.getTransactions);
 
 router.post("/rental/payment", auth, controller.addRentalPayment);
+router.post("/rental/refund", auth, controller.addRefundPayment);
 
 export default router;

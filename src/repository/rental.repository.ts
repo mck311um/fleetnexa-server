@@ -57,6 +57,11 @@ class RentalRepository {
           username: true,
         },
       },
+      refunds: {
+        include: {
+          customer: true,
+        },
+      },
       transactions: {
         include: {
           customer: true,
@@ -75,7 +80,6 @@ class RentalRepository {
           },
         },
       },
-
       vehicle: {
         include: {
           brand: true,

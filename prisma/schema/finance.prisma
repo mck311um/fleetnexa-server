@@ -8,6 +8,7 @@ model Payment {
   notes             String?
   isDeleted         Boolean  @default(false)
   paymentDate       DateTime
+  customerId        String?
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt
@@ -17,6 +18,7 @@ model Payment {
   paymentMethod     PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   rental            Rental   @relation(fields: [rentalId], references: [id])
+  customer          Customer? @relation(fields: [customerId], references: [id])
   
 
   transactions      Transactions?
@@ -42,6 +44,24 @@ model Transactions {
   user             User?    @relation(fields: [createdBy], references: [id])
   rental           Rental?  @relation(fields: [rentalId], references: [id])
 
+}
+
+model Refund {
+  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  amount            Float
+  tenantId          String
+  rentalId          String?
+  reason            String?
+  refundDate        DateTime  @default(now())
+  isDeleted         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  customerId        String?
+  createdBy         String?
+
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  rental            Rental?   @relation(fields: [rentalId], references: [id])
+  customer          Customer? @relation(fields: [customerId], references: [id])
 }
 
 model Currency {

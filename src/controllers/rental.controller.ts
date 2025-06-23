@@ -243,7 +243,10 @@ const confirmRental = async (req: Request, res: Response) => {
           data: {
             rentalId: rental.id,
             action: "BOOKED",
-            createdAt: new Date(),
+            createdAt:
+              new Date(rental.startDate) < new Date()
+                ? new Date(rental.startDate)
+                : new Date(),
             createdBy: userId,
             customerId: primaryDriver?.driverId!,
             vehicleId: rental.vehicleId,
@@ -302,13 +305,21 @@ const cancelRental = async (req: Request, res: Response) => {
         },
       });
 
+      const primaryDriver = await tx.rentalDriver.findFirst({
+        where: {
+          rentalId: rental.id,
+          primaryDriver: true,
+        },
+        select: { driverId: true },
+      });
+
       await tx.rentalActivity.create({
         data: {
           rentalId: rental.id,
           action: "CANCELED",
           createdAt: new Date(),
           createdBy: userId,
-          customerId: rental.customerId,
+          customerId: primaryDriver?.driverId!,
           vehicleId: rental.vehicleId,
           tenantId: tenantId!,
         },
@@ -366,7 +377,7 @@ const startRental = async (req: Request, res: Response) => {
         data: {
           rentalId: rental.id,
           action: "PICKED_UP",
-          createdAt: new Date(),
+          createdAt: rental.startDate,
           createdBy: userId,
           customerId: primaryDriver?.driverId!,
           vehicleId: rental.vehicleId,
@@ -392,7 +403,7 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
         where: { id: rental.id },
         data: {
           status: "COMPLETED",
-          updatedAt: new Date(),
+          updatedAt: rental.returnDate,
           updatedBy: userId,
         },
       });
@@ -414,6 +425,15 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
         throw new Error('Vehicle status "Pending Inspection" not found');
       }
 
+      if (rental.applyLateFee) {
+        await tx.values.update({
+          where: { rentalId: rental.id },
+          data: {
+            lateFee: rental.lateFee,
+          },
+        });
+      }
+
       await tx.vehicle.update({
         where: { id: rental.vehicleId },
         data: {
@@ -427,7 +447,7 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
         data: {
           rentalId: rental.id,
           action: "RETURNED",
-          createdAt: new Date(),
+          createdAt: rental.returnDate,
           createdBy: userId,
           customerId: primaryDriver?.driverId!,
           vehicleId: rental.vehicleId,

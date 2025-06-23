@@ -355,7 +355,7 @@ const saveMonthlyRentalStatus = async (
   });
 };
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("*/30 * * * *", async () => {
   try {
     await runMonthlyStatCron();
     await runYearlyStatCron();

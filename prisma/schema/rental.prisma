@@ -25,13 +25,13 @@ model Rental {
   payments          Payment[]
   transactions      Transactions[]
   drivers           RentalDriver[]
+  refunds           Refund[]
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   pickup            TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])
   return            TenantLocation @relation("ReturnLocation", fields: [returnLocationId], references: [id])
   vehicle           Vehicle   @relation(fields: [vehicleId], references: [id])
-
-  user             User?     @relation(fields: [createdBy], references: [id])
+  user              User?     @relation(fields: [createdBy], references: [id])
 
 }
 model RentalDriver {
@@ -105,7 +105,9 @@ model Values {
   discountMax       Int
   discountAmount    Float
   discountPolicy    String
-  additionalDriverFees Float
+  additionalDriverFees Float @default(0.0)
+  cancellationFee      Float @default(0.0)
+  lateFee              Float @default(0.0)
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt
