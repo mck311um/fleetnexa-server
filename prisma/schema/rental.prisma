@@ -92,11 +92,17 @@ model Values {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   numberOfDays      Int
   basePrice         Float
+  customBasePrice   Boolean @default(false)
   totalCost         Float
+  customTotalCost   Boolean @default(false)
   discount          Float
+  customDiscount    Boolean @default(false)
   deliveryFee       Float
+  customDeliveryFee Boolean @default(false)
   collectionFee     Float
+  customCollectionFee Boolean @default(false)
   deposit           Float
+  customDeposit     Boolean @default(false)
   totalExtras       Float
   subTotal          Float
   netTotal          Float
@@ -120,6 +126,7 @@ model RentalExtra{
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   extraId           String
   amount            Float
+  customAmount      Boolean @default(false)
   valuesId          String
 
   values            Values   @relation(fields: [valuesId], references: [id])
