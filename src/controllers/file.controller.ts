@@ -69,7 +69,7 @@ const uploadFile = async (req: Request, res: Response) => {
 
       await s3Client.send(command);
 
-      const bucket = process.env.AWS_BUCKET_NAME || "fleetnexa";
+      const bucket = process.env.AWS_BUCKET_NAME || "fleetnexa-dev";
       const region = process.env.AWS_REGION || "us-east-1";
       const url = `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
 
@@ -120,7 +120,7 @@ const deleteFile = async (req: Request, res: Response) => {
     }
 
     const command = new DeleteObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME || "fleetnexa",
+      Bucket: process.env.AWS_BUCKET_NAME || "fleetnexa-dev",
       Key: key,
     });
 

@@ -4,6 +4,7 @@ import { tenantRepo } from "../repository/tenant.repository";
 import { vehicleRepo } from "../repository/vehicle.repository";
 import logUtil from "../config/logger.config";
 import loggerConfig from "../config/logger.config";
+import numberGenerator from "../services/numberGenerator.service";
 
 const getAdminData = async (
   req: Request,
@@ -104,6 +105,7 @@ const getFeaturedData = async (
           },
         },
         select: {
+          id: true,
           year: true,
           color: true,
           licensePlate: true,
@@ -124,25 +126,26 @@ const getFeaturedData = async (
           chargeType: true,
           minimumRental: true,
           drivingExperience: true,
+          discounts: true,
+          securityDeposit: true,
           model: {
             include: {
               bodyType: true,
             },
           },
-          // vehicleGroup: {
-          //   select: {
-          //     price: true,
-          //     chargeType: true,
-          //     minimumRental: true,
-          //     maximumRental: true,
-          //     drivingExperience: true,
-          //   },
-          // },
           tenant: {
             select: {
               id: true,
               tenantName: true,
+              currency: true,
               logo: true,
+              address: {
+                include: {
+                  country: true,
+                  state: true,
+                  village: true,
+                },
+              },
             },
           },
         },
@@ -221,6 +224,8 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
         drivingExperience: true,
         minimumAge: true,
         fuelPolicy: true,
+        securityDeposit: true,
+        discounts: true,
         rentals: {
           where: {
             status: {
@@ -237,17 +242,6 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
             bodyType: true,
           },
         },
-        // vehicleGroup: {
-        //   select: {
-        //     price: true,
-        //     chargeType: true,
-        //     minimumRental: true,
-        //     maximumRental: true,
-        //     drivingExperience: true,
-        //     minimumAge: true,
-        //     fuelPolicy: true,
-        //   },
-        // },
         tenant: {
           select: {
             id: true,
@@ -255,6 +249,13 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
             logo: true,
             currency: true,
             tenantLocations: true,
+            address: {
+              include: {
+                country: true,
+                state: true,
+                village: true,
+              },
+            },
           },
         },
       },
@@ -303,8 +304,195 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const addBooking = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { rental } = req.body;
+
+    await prisma.$transaction(async (tx) => {
+      console.log(rental);
+
+      const tenant = await tenantRepo.getTenantById(rental.tenantId);
+
+      if (!tenant) {
+        return res.status(404).json({ message: "Tenant not found" });
+      }
+
+      const rentalNumber = await numberGenerator.generateRentalNumber(
+        rental.tenantId
+      );
+
+      const newRental = await tx.rental.create({
+        data: {
+          startDate: new Date(rental.startDate),
+          endDate: new Date(rental.endDate),
+          pickupLocationId: rental.pickupLocationId,
+          returnLocationId: rental.returnLocationId,
+          vehicleId: rental.vehicleId,
+          agent: "RENTNEXA",
+          createdAt: new Date(),
+          tenantId: rental.tenantId,
+          status: "PENDING",
+          notes: rental.notes,
+          rentalNumber: rentalNumber,
+        },
+      });
+
+      const values = await tx.values.create({
+        data: {
+          numberOfDays: parseFloat(rental.values.numberOfDays),
+          basePrice: parseFloat(rental.values.basePrice),
+          totalCost: parseFloat(rental.values.totalCost),
+          discount: parseFloat(rental.values.discount),
+          deliveryFee: parseFloat(rental.values.deliveryFee),
+          collectionFee: parseFloat(rental.values.collectionFee),
+          deposit: parseFloat(rental.values.deposit),
+          totalExtras: parseFloat(rental.values.totalExtras),
+          subTotal: parseFloat(rental.values.subTotal),
+          netTotal: parseFloat(rental.values.netTotal),
+          discountMin: parseFloat(rental.values.discountMin),
+          discountMax: parseFloat(rental.values.discountMax),
+          discountAmount: parseFloat(rental.values.discountAmount),
+          additionalDriverFees: parseFloat(rental.values.additionalDriverFees),
+          discountPolicy: rental.values.discountPolicy,
+          rental: {
+            connect: { id: newRental.id },
+          },
+        },
+      });
+
+      const extrasPromises = rental.values.extras.map((extra: any) =>
+        tx.rentalExtra.upsert({
+          where: { id: extra.id },
+          create: {
+            id: extra.id,
+            extraId: extra.extraId,
+            amount: extra.amount,
+            valuesId: values.id,
+          },
+          update: {
+            extraId: extra.extraId,
+            amount: extra.amount,
+            valuesId: values.id,
+          },
+        })
+      );
+
+      await Promise.all(extrasPromises);
+
+      const existingCustomer = await tx.customer.findFirst({
+        where: {
+          tenantId: rental.tenantId,
+          license: {
+            licenseNumber: rental.customer.license.licenseNumber,
+          },
+        },
+      });
+
+      if (existingCustomer) {
+        await tx.customer.update({
+          where: { id: existingCustomer.id },
+          data: {
+            firstName: rental.customer.firstName,
+            lastName: rental.customer.lastName,
+            gender: rental.customer.gender,
+            dateOfBirth: rental.customer.dateOfBirth,
+            email: rental.customer.email,
+            phone: rental.customer.phone,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            tenantId: tenant.id,
+          },
+        });
+
+        await tx.driverLicense.update({
+          where: { customerId: existingCustomer.id },
+          data: {
+            licenseExpiry: rental.customer.license.licenseExpiry,
+          },
+        });
+
+        await tx.customerAddress.update({
+          where: { customerId: existingCustomer.id },
+          data: {
+            street: rental.customer.address.street,
+            village: rental.customer.address.villageId
+              ? { connect: { id: rental.customer.address.villageId } }
+              : undefined,
+            state: rental.customer.address.stateId
+              ? { connect: { id: rental.customer.address.stateId } }
+              : undefined,
+            country: rental.customer.address.countryId
+              ? { connect: { id: rental.customer.address.countryId } }
+              : undefined,
+          },
+        });
+
+        await tx.rentalDriver.create({
+          data: {
+            rentalId: newRental.id,
+            driverId: existingCustomer.id,
+            primaryDriver: true,
+          },
+        });
+      } else {
+        const customer = await tx.customer.create({
+          data: {
+            firstName: rental.customer.firstName,
+            lastName: rental.customer.lastName,
+            gender: rental.customer.gender,
+            dateOfBirth: rental.customer.dateOfBirth,
+            email: rental.customer.email,
+            phone: rental.customer.phone,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            tenantId: tenant.id,
+            status: "ACTIVE",
+          },
+        });
+
+        await tx.driverLicense.create({
+          data: {
+            customerId: customer.id,
+            licenseNumber: rental.customer.license.licenseNumber,
+            licenseExpiry: rental.customer.license.licenseExpiry,
+          },
+        });
+
+        await tx.customerAddress.create({
+          data: {
+            customer: { connect: { id: customer.id } },
+            street: rental.customer.address.street,
+            village: rental.customer.address.villageId
+              ? { connect: { id: rental.customer.address.villageId } }
+              : undefined,
+            state: rental.customer.address.stateId
+              ? { connect: { id: rental.customer.address.stateId } }
+              : undefined,
+            country: rental.customer.address.countryId
+              ? { connect: { id: rental.customer.address.countryId } }
+              : undefined,
+          },
+        });
+
+        await tx.rentalDriver.create({
+          data: {
+            rentalId: newRental.id,
+            driverId: customer.id,
+            primaryDriver: true,
+          },
+        });
+      }
+    });
+
+    res.status(201).json({ message: "Booking created successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getAdminData,
   getFeaturedData,
   getVehicles,
+  addBooking,
 };

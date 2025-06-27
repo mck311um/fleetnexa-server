@@ -3,6 +3,7 @@ model CaribbeanCountry {
   countryId     String
   image         String
   isActive      Boolean   @default(false)
+  description   String    @default("")
 
   country       Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
 

@@ -84,9 +84,6 @@ const addCustomer = async (req: Request, res: Response) => {
         data: {
           customer: { connect: { id: customer.id } },
           street: customer.address.street,
-          zipCode: customer.address.zipCode
-            ? customer.address.zipCode.toString()
-            : null,
           village: customer.address.villageId
             ? { connect: { id: customer.address.villageId } }
             : undefined,
@@ -158,9 +155,7 @@ const updateCustomer = async (req: Request, res: Response) => {
         where: { customerId: customer.id },
         data: {
           street: customer.address.street,
-          zipCode: customer.address.zipCode
-            ? customer.address.zipCode.toString()
-            : null,
+
           village: customer.address.villageId
             ? { connect: { id: customer.address.villageId } }
             : undefined,
