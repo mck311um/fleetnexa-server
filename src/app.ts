@@ -25,6 +25,7 @@ import "./cron/plans.cron";
 import "./cron/country.cron";
 import errorHandler from "./middleware/error.middleware";
 import devvizeRoutes from "./routes/devvize.routes";
+import dodoRoutes from "./routes/dodo.routes";
 
 dotenv.config();
 
@@ -64,6 +65,7 @@ app.use("/api/finance", financeRoutes);
 app.use("/api/rentnexa", rentnexaRoutes);
 app.use("/api/zoho", zohoRoutes);
 app.use("/api/devvize", devvizeRoutes);
+app.use("/api/dodo", dodoRoutes);
 
 app.use(errorHandler);
 

@@ -31,6 +31,7 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.2.133",
     "resend": "^4.2.0",
+    "standardwebhooks": "^1.0.0",
     "twilio": "^5.5.2",
     "uuid": "^11.1.0",
     "winston": "^3.17.0"

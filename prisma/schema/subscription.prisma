@@ -5,10 +5,12 @@ model SubscriptionPlan {
   description       String?
   price             Float
   priceXCD          Float?
-  features          String[] 
+  features          String[]
+  subscriptionTier  Int @default(1) 
 
   tenantSubscription TenantSubscription[]
-  details PlanDetails[]
+  details            PlanDetails[]
+  payments           SubscriptionPayment[]
 }
 
 model PlanDetails {
@@ -16,6 +18,20 @@ model PlanDetails {
   subscriptionPlanId  String
   numberOfUsers       Int
   numberOfVehicles    Int
+  numberOfLocations   Int
 
-  subscriptionPlan SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
+  plan                SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
+}
+
+model SubscriptionPayment {
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  paymentId        String    @unique
+  totalAmount      Float
+  customerId       String
+  status           String
+  productId        String?
+  paymentDate      DateTime @default(now())
+  
+  subscription     TenantSubscription @relation(fields: [customerId], references: [dodoCustomerId])
+  plan             SubscriptionPlan? @relation(fields: [productId], references: [productId])
 }
