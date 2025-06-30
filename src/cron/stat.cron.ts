@@ -19,46 +19,48 @@ const prisma = new PrismaClient();
 export const runYearlyStatCron = async () => {
   const tenants = await prisma.tenant.findMany();
   const now = new Date();
-  const currentYear = getYear(now);
+  const years = [getYear(now), getYear(now) - 1];
 
   for (const tenant of tenants) {
-    const from = startOfYear(now);
-    const to = endOfYear(now);
+    for (const year of years) {
+      const from = startOfYear(new Date(year, 0, 1));
+      const to = endOfYear(new Date(year, 0, 1));
 
-    await Promise.all([
-      saveYearlyStat(
-        tenant.id,
-        currentYear,
-        "YEARLY_REVENUE",
-        await calcYearlyRevenue(tenant.id, from, to),
-        to,
-        from
-      ),
-      saveYearlyStat(
-        tenant.id,
-        currentYear,
-        "YEARLY_RENTALS",
-        await calcYearlyRentals(tenant.id, from, to),
-        to,
-        from
-      ),
-      saveYearlyStat(
-        tenant.id,
-        currentYear,
-        "YEARLY_CUSTOMERS",
-        await calcYearlyCustomers(tenant.id, from, to),
-        to,
-        from
-      ),
-      saveYearlyStat(
-        tenant.id,
-        currentYear,
-        "AVERAGE_RENTAL_DURATION",
-        await calcAverageRentalDuration(tenant.id, from, to),
-        to,
-        from
-      ),
-    ]);
+      await Promise.all([
+        saveYearlyStat(
+          tenant.id,
+          year,
+          "YEARLY_REVENUE",
+          await calcYearlyRevenue(tenant.id, from, to),
+          from,
+          to
+        ),
+        saveYearlyStat(
+          tenant.id,
+          year,
+          "YEARLY_RENTALS",
+          await calcYearlyRentals(tenant.id, from, to),
+          from,
+          to
+        ),
+        saveYearlyStat(
+          tenant.id,
+          year,
+          "YEARLY_CUSTOMERS",
+          await calcYearlyCustomers(tenant.id, from, to),
+          from,
+          to
+        ),
+        saveYearlyStat(
+          tenant.id,
+          year,
+          "AVERAGE_RENTAL_DURATION",
+          await calcAverageRentalDuration(tenant.id, from, to),
+          from,
+          to
+        ),
+      ]);
+    }
   }
 };
 
@@ -99,7 +101,7 @@ const calcYearlyRevenue = async (
   from: Date,
   to: Date
 ): Promise<number> => {
-  const result = await prisma.values.aggregate({
+  const { _sum } = await prisma.transactions.aggregate({
     where: {
       rental: {
         tenantId,
@@ -107,10 +109,10 @@ const calcYearlyRevenue = async (
         status: "COMPLETED",
       },
     },
-    _sum: { netTotal: true },
+    _sum: { amount: true },
   });
 
-  return result._sum.netTotal ?? 0;
+  return _sum.amount ?? 0;
 };
 
 const calcYearlyRentals = async (
@@ -251,7 +253,7 @@ const calcMonthlyEarnings = async (
   from: Date,
   to: Date
 ): Promise<number> => {
-  const result = await prisma.values.aggregate({
+  const { _sum } = await prisma.transactions.aggregate({
     where: {
       rental: {
         tenantId,
@@ -259,10 +261,10 @@ const calcMonthlyEarnings = async (
         status: "COMPLETED",
       },
     },
-    _sum: { netTotal: true },
+    _sum: { amount: true },
   });
 
-  return result._sum.netTotal ?? 0;
+  return _sum.amount ?? 0;
 };
 
 const calcMonthlyRentals = async (
@@ -357,6 +359,7 @@ const saveMonthlyRentalStatus = async (
 
 cron.schedule("*/30 * * * *", async () => {
   try {
+    console.log("Running stats cron job...");
     await runMonthlyStatCron();
     await runYearlyStatCron();
   } catch (error) {

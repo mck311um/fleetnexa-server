@@ -101,6 +101,11 @@ class TenantRepository {
           customer: true,
         },
       },
+      currencyRates: {
+        include: {
+          currency: true,
+        },
+      },
     };
   }
 }

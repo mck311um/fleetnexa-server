@@ -74,6 +74,24 @@ model Currency {
 
   bases ExchangeRate[] @relation("BaseCurrency")
   targets ExchangeRate[] @relation("TargetCurrency")
+
+  TenantCurrencyRate TenantCurrencyRate[]
+}
+
+model TenantCurrencyRate {
+  id          String    @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId    String
+  currencyId  String
+  fromRate    Float?    @default(0.0)
+  toRate      Float?    @default(0.0)
+  enabled     Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+
+  tenant      Tenant    @relation(fields: [tenantId], references: [id])
+  currency    Currency  @relation(fields: [currencyId], references: [id])
+
+  @@unique([tenantId, currencyId])
 }
 
 model ExchangeRate {

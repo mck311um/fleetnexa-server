@@ -93,7 +93,6 @@ const getTenantRentalActivity = async (
     next(error);
   }
 };
-
 const createTenant = async (req: Request, res: Response) => {
   const { tenantCode, tenantName, email, number, logo } = req.body;
 
@@ -210,6 +209,42 @@ const updateTenant = async (req: Request, res: Response) => {
           maxHours: body.latePolicy?.maxHours || 0,
         },
       });
+
+      const currencyRates = await tx.tenantCurrencyRate.findMany({
+        where: { tenantId: tenantId },
+      });
+
+      if (currencyRates.length <= 0) {
+        const currencies = await tx.currency.findMany({});
+
+        for (const currency of currencies) {
+          if (currency.id === body.currencyId) {
+            await tx.tenantCurrencyRate.create({
+              data: {
+                id: crypto.randomUUID(),
+                tenantId: tenantId!,
+                currencyId: currency.id,
+                enabled: true,
+                fromRate: 1,
+                toRate: 1,
+                createdAt: new Date(),
+              },
+            });
+          } else {
+            await tx.tenantCurrencyRate.create({
+              data: {
+                id: crypto.randomUUID(),
+                tenantId: tenantId!,
+                currencyId: currency.id,
+                enabled: false,
+                fromRate: 0.0,
+                toRate: 0.0,
+                createdAt: new Date(),
+              },
+            });
+          }
+        }
+      }
     });
 
     const tenant = await tenantRepo.getTenantById(tenantId!);
@@ -978,6 +1013,67 @@ const updateTenantReminder = async (
     res.status(500).json({ message: "Error updating tenant reminder" });
   }
 };
+// #endregion
+
+// #region Tenant Currency Rates
+const getTenantCurrencyRates = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  try {
+    const currencyRates = await prisma.tenantCurrencyRate.findMany({
+      where: { tenantId },
+      include: {
+        currency: true,
+      },
+    });
+
+    res.status(200).json(currencyRates);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching tenant currency rates" });
+  }
+};
+const updateTenantCurrencyRate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { rate } = req.body;
+  const tenantId = req.user?.tenantId;
+  try {
+    const existingRate = await prisma.tenantCurrencyRate.findUnique({
+      where: { id: rate.id },
+    });
+
+    if (!existingRate) {
+      return res.status(404).json({ message: "Currency rate not found" });
+    }
+
+    await prisma.tenantCurrencyRate.update({
+      where: { id: rate.id },
+      data: {
+        fromRate: rate.fromRate,
+        toRate: rate.toRate,
+        enabled: rate.enabled,
+        updatedAt: new Date(),
+      },
+    });
+
+    const currencyRates = await prisma.tenantCurrencyRate.findMany({
+      where: { tenantId },
+      include: {
+        currency: true,
+      },
+    });
+
+    res.status(200).json(currencyRates);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export default {
   getTenantById,
@@ -1010,4 +1106,6 @@ export default {
   updateTenantRole,
   addTenantReminder,
   updateTenantReminder,
+  getTenantCurrencyRates,
+  updateTenantCurrencyRate,
 };
