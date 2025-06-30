@@ -17,4 +17,6 @@ router.post("/cancel", auth, controller.cancelRental);
 router.post("/start", auth, controller.startRental);
 router.post("/end", auth, controller.endRental);
 
+router.delete("/:id", auth, controller.deleteRental);
+
 export default router;

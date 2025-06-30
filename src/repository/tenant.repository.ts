@@ -23,7 +23,20 @@ class TenantRepository {
       invoiceSequence: true,
       paymentMethods: true,
       customers: true,
-      subscription: true,
+      subscription: {
+        include: {
+          payments: {
+            include: {
+              plan: true,
+            },
+          },
+          plan: {
+            include: {
+              details: true,
+            },
+          },
+        },
+      },
       services: {
         where: { isDeleted: false },
         include: {
@@ -86,6 +99,11 @@ class TenantRepository {
             },
           },
           customer: true,
+        },
+      },
+      currencyRates: {
+        include: {
+          currency: true,
         },
       },
     };

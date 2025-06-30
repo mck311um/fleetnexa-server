@@ -8,4 +8,6 @@ router.get("/", api, controller.getFeaturedData);
 router.get("/admin", api, controller.getAdminData);
 router.get("/vehicles", api, controller.getVehicles);
 
+router.post("/rental", api, controller.addBooking);
+
 export default router;

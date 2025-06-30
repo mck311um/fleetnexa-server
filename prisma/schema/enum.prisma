@@ -86,3 +86,19 @@ enum TransactionType {
   RENTAL
   REFUND
 }
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum NotificationType {
+  BOOKING
+  UPCOMING
+  RETURN
+  UNCONFIRMED
+  PAYMENT
+  REFUND
+  GENERAL
+}

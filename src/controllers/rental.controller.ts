@@ -96,11 +96,17 @@ const handleRental = async (req: Request, res: Response) => {
         const valuesData = {
           numberOfDays: parseFloat(rental.values.numberOfDays),
           basePrice: parseFloat(rental.values.basePrice),
+          customBasePrice: rental.values.customBasePrice || false,
           totalCost: parseFloat(rental.values.totalCost),
+          customTotalCost: rental.values.customTotalCost || false,
           discount: parseFloat(rental.values.discount),
+          customDiscount: rental.values.customDiscount || false,
           deliveryFee: parseFloat(rental.values.deliveryFee),
+          customDeliveryFee: rental.values.customDeliveryFee || false,
           collectionFee: parseFloat(rental.values.collectionFee),
+          customCollectionFee: rental.values.customCollectionFee || false,
           deposit: parseFloat(rental.values.deposit),
+          customDeposit: rental.values.customDeposit || false,
           totalExtras: parseFloat(rental.values.totalExtras),
           subTotal: parseFloat(rental.values.subTotal),
           netTotal: parseFloat(rental.values.netTotal),
@@ -209,7 +215,6 @@ const handleRental = async (req: Request, res: Response) => {
     });
   }
 };
-
 const confirmRental = async (req: Request, res: Response) => {
   const { rental } = req.body;
   const userId = req.user?.id;
@@ -463,6 +468,40 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+const deleteRental = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const tenantId = req.user?.tenantId;
+  try {
+    if (!tenantId) {
+      return res.status(400).json({ error: "Tenant ID is required" });
+    }
+
+    const rental = await prisma.rental.findUnique({
+      where: { id },
+    });
+
+    if (!rental) {
+      return res.status(404).json({ error: "Rental not found" });
+    }
+
+    await prisma.rental.update({
+      where: { id },
+      data: {
+        isDeleted: true,
+        updatedAt: new Date(),
+        updatedBy: req.user?.id,
+      },
+    });
+
+    return res.status(200).json({ message: "Rental deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const generateInvoice = async (req: Request, res: Response) => {
   const { invoiceData } = req.body;
@@ -612,4 +651,5 @@ export default {
   endRental,
   generateInvoice,
   generateRentalAgreement,
+  deleteRental,
 };

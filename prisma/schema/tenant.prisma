@@ -53,6 +53,8 @@ model Tenant {
   userRoles           UserRole[]
   yearlyStats         TenantYearlyStats[]
   refunds             Refund[]
+  currencyRates       TenantCurrencyRate[]
+  notifications        TenantNotification[]
 }
 
 
@@ -160,16 +162,17 @@ model TenantService {
 model TenantSubscription {
   id                  String    @id @default(dbgenerated("gen_random_uuid()"))
   tenantId            String    @unique
-  paddleCustomerId    String    @unique
-  planId              String?
+  dodoCustomerId      String    @unique
+  productId           String?
   status              SubscriptionStatus @default(TRIAL)
   startDate           DateTime?
   endDate             DateTime?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime? @updatedAt
 
-  plan                SubscriptionPlan? @relation(fields: [planId], references: [id])
+  plan                SubscriptionPlan? @relation(fields: [productId], references: [productId])
   tenant              Tenant @relation(fields: [tenantId], references: [id])
+  payments            SubscriptionPayment[]
 }
 
 model TenantContact {
@@ -203,6 +206,24 @@ model TenantReminders {
 
   tenant              Tenant    @relation(fields: [tenantId], references: [id])
 }
+
+model TenantNotification {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  title               String
+  type                NotificationType
+  priority            NotificationPriority
+  message             String
+  tenantId            String
+  actionUrl           String?
+  read                Boolean   @default(false)
+  isDeleted           Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+}
+
+
+
 model CancellationPolicy {
   id                    String   @id @default(dbgenerated("gen_random_uuid()"))
   minimumDays           Int

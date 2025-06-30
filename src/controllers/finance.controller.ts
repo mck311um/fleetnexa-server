@@ -151,7 +151,7 @@ const addRefundPayment = async (
 
       await tx.transactions.create({
         data: {
-          amount: refund.amount,
+          amount: -refund.amount,
           type: "REFUND",
           transactionDate: refund.paymentDate,
           customerId: refund.customerId,

@@ -93,7 +93,8 @@ model InvoiceSequence {
 model Country {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   code              String    @unique
-  country           String
+  country           String    @unique
+  geoNameId         Int?      @unique
 
   addresses           Address[]
   states              State[]
@@ -108,8 +109,9 @@ model State {
   id                    String    @id @default(dbgenerated("gen_random_uuid()"))
   countryId             String
   state                 String
-  villages              Village[]
+  geoNameId             Int?      @unique
 
+  villages              Village[]
   addresses             Address[]
   customerAddresses     CustomerAddress[]
   presetLocations       PresetLocation[]
@@ -121,6 +123,7 @@ model Village {
   id                      String    @id @default(dbgenerated("gen_random_uuid()"))
   stateId                 String
   village                 String
+  geoNameId               Int?      @unique
 
   addresses               Address[]
   customerAddresses       CustomerAddress[]

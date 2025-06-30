@@ -411,7 +411,7 @@ const deleteVehicleDamage = async (req: Request, res: Response) => {
       where: { vehicleId: vehicle?.id, isDeleted: false },
     });
 
-    res.status(200).json({ ...vehicleDamages });
+    res.status(200).json(vehicleDamages);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error Deleting Vehicle Damage" });
