@@ -62,6 +62,7 @@ class VehicleRepository {
       location: true,
       discounts: true,
       rentals: {
+        where: { isDeleted: false },
         include: {
           pickup: true,
           return: true,
