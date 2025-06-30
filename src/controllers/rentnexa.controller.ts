@@ -5,6 +5,7 @@ import { vehicleRepo } from "../repository/vehicle.repository";
 import logUtil from "../config/logger.config";
 import loggerConfig from "../config/logger.config";
 import numberGenerator from "../services/numberGenerator.service";
+import app from "../app";
 
 const getAdminData = async (
   req: Request,
@@ -309,8 +310,6 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
     const { rental } = req.body;
 
     await prisma.$transaction(async (tx) => {
-      console.log(rental);
-
       const tenant = await tenantRepo.getTenantById(rental.tenantId);
 
       if (!tenant) {
@@ -482,6 +481,35 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
           },
         });
       }
+
+      const vehicle = await vehicleRepo.getVehicleById(
+        rental.vehicleId,
+        rental.tenantId
+      );
+
+      const bookingNumber = newRental.rentalNumber;
+      const actionUrl = `/app/bookings/${bookingNumber}`;
+      const driverName = `${rental.customer.firstName} ${rental.customer.lastName}`;
+      const vehicleName = `${vehicle?.brand?.brand} ${vehicle?.model?.model}`;
+      const fromDate = formatDate(new Date(newRental.startDate));
+      const toDate = formatDate(new Date(newRental.endDate));
+      const message = `${driverName} just submitted a booking request for a ${vehicleName}, scheduled from ${fromDate} to ${toDate}, via your storefront.`;
+
+      const notification = await tx.tenantNotification.create({
+        data: {
+          tenantId: tenant.id,
+          title: "New Booking Request",
+          type: "BOOKING",
+          priority: "HIGH",
+          message,
+          actionUrl,
+          read: false,
+          createdAt: new Date(),
+        },
+      });
+
+      const io = app.get("io");
+      io.to(tenant.id).emit("tenant-notification", notification);
     });
 
     res.status(201).json({ message: "Booking created successfully" });
@@ -489,6 +517,9 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
 export default {
   getAdminData,

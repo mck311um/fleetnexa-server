@@ -54,6 +54,7 @@ model Tenant {
   yearlyStats         TenantYearlyStats[]
   refunds             Refund[]
   currencyRates       TenantCurrencyRate[]
+  notifications        TenantNotification[]
 }
 
 
@@ -205,6 +206,24 @@ model TenantReminders {
 
   tenant              Tenant    @relation(fields: [tenantId], references: [id])
 }
+
+model TenantNotification {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  title               String
+  type                NotificationType
+  priority            NotificationPriority
+  message             String
+  tenantId            String
+  actionUrl           String?
+  read                Boolean   @default(false)
+  isDeleted           Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+}
+
+
+
 model CancellationPolicy {
   id                    String   @id @default(dbgenerated("gen_random_uuid()"))
   minimumDays           Int

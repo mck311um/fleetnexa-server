@@ -23,9 +23,11 @@ import "./cron/stat.cron";
 import "./cron/exchangeRate.cron";
 import "./cron/plans.cron";
 import "./cron/country.cron";
+import "./cron/notification.cron";
 import errorHandler from "./middleware/error.middleware";
 import devvizeRoutes from "./routes/devvize.routes";
 import dodoRoutes from "./routes/dodo.routes";
+import { bugsnagMiddleware } from "./config/bugsnag.config";
 
 dotenv.config();
 
@@ -34,6 +36,10 @@ const app: Application = express();
 // Middlewares
 app.use(helmet());
 app.use(express.json());
+
+if (bugsnagMiddleware) {
+  app.use(bugsnagMiddleware.requestHandler);
+}
 
 app.use(
   cors({
@@ -67,6 +73,9 @@ app.use("/api/zoho", zohoRoutes);
 app.use("/api/devvize", devvizeRoutes);
 app.use("/api/dodo", dodoRoutes);
 
+if (bugsnagMiddleware) {
+  app.use(bugsnagMiddleware.errorHandler);
+}
 app.use(errorHandler);
 
 export default app;
