@@ -36,7 +36,11 @@ router.put("/role/:id", auth, controller.updateTenantRole);
 router.put("/currency-rate", auth, controller.updateTenantCurrencyRate);
 
 router.patch("/reminder/:id", auth, controller.updateTenantReminder);
-router.patch("/notification/read", auth, controller.markNotificationAsRead);
+router.patch(
+  "/notifications/read",
+  auth,
+  controller.markAllNotificationsAsRead
+);
 router.patch("/notification/:id", auth, controller.markNotificationAsRead);
 
 router.delete("/location/:id", auth, controller.deleteTenantLocation);
