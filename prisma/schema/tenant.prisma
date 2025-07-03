@@ -55,6 +55,7 @@ model Tenant {
   refunds             Refund[]
   currencyRates       TenantCurrencyRate[]
   notifications        TenantNotification[]
+  charges             RentalCharge[]
 }
 
 

@@ -71,6 +71,7 @@ class TenantRepository {
       yearlyStats: true,
       cancellationPolicy: true,
       latePolicy: true,
+
       transactions: {
         where: { isDeleted: false },
         include: {

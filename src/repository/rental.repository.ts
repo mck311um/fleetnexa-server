@@ -57,6 +57,7 @@ class RentalRepository {
           username: true,
         },
       },
+      charges: true,
       refunds: {
         include: {
           customer: true,
@@ -71,6 +72,7 @@ class RentalRepository {
               paymentType: true,
             },
           },
+          refund: true,
           user: {
             select: {
               firstName: true,

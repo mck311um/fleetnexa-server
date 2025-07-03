@@ -12,6 +12,11 @@ model Customer {
   experience        Int?
   license           DriverLicense?
   address           CustomerAddress?
+  isActive          Boolean   @default(false)
+  isDeleted         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  updatedBy         String?
 
   documents         CustomerDocument[]
   damages           VehicleDamage[]
@@ -23,19 +28,9 @@ model Customer {
   drivers           RentalDriver[]
   refunds           Refund[]
   payments          Payment[]
-
-
-
-
-  isActive          Boolean   @default(false)
-  isDeleted         Boolean   @default(false)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime? @updatedAt
-  updatedBy         String?
+  charges           RentalCharge[]
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
-
-
 }
 
 model CustomerMessengerApp {

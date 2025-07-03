@@ -640,6 +640,36 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
   }
 };
 
+const addRentalCharge = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { charge } = req.body;
+    const userId = req.user?.id;
+    const tenantId = req.user?.tenantId;
+
+    await prisma.rentalCharge.create({
+      data: {
+        id: charge.id,
+        rentalId: charge.rentalId,
+        charge: charge.charge,
+        reason: charge.reason,
+        amount: charge.amount,
+        customerId: charge.customerId,
+        tenantId: tenantId!,
+      },
+    });
+
+    const rental = await rentalRepo.getRentalById(charge.rentalId, tenantId!);
+
+    res.status(201).json(rental);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getRentals,
   getRentalById,
@@ -652,4 +682,5 @@ export default {
   generateInvoice,
   generateRentalAgreement,
   deleteRental,
+  addRentalCharge,
 };
