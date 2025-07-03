@@ -48,6 +48,66 @@ const getTransactions = async (
     next(error);
   }
 };
+const removeTransaction = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const tenantId = req.user?.tenantId;
+  const userId = req.user?.id;
+
+  try {
+    const updated = await prisma.$transaction(async (tx) => {
+      let rentalId = null;
+      const transaction = await tx.transactions.findUnique({
+        where: {
+          id,
+          tenantId,
+        },
+      });
+
+      if (!transaction) {
+        return res.status(404).json({ error: "Transaction not found" });
+      }
+
+      if (transaction.rentalId) {
+        rentalId = transaction.rentalId;
+      }
+
+      if (transaction.paymentId) {
+        await tx.payment.delete({
+          where: {
+            id: transaction.paymentId,
+          },
+        });
+      } else if (transaction.refundId) {
+        await tx.refund.delete({
+          where: {
+            id: transaction.refundId,
+          },
+        });
+      }
+
+      await tx.transactions.delete({
+        where: {
+          id,
+          tenantId,
+        },
+      });
+
+      const updatedRental = rentalId
+        ? await rentalRepo.getRentalById(rentalId, tenantId!)
+        : null;
+
+      return updatedRental;
+    });
+
+    return res.status(201).json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const addRentalPayment = async (
   req: Request,
@@ -159,6 +219,7 @@ const addRefundPayment = async (
           createdAt: new Date(),
           tenantId: tenantId,
           rentalId: refund.rentalId,
+          refundId: refund.id,
         },
       });
     });
@@ -178,4 +239,5 @@ export default {
   addRentalPayment,
   getTransactions,
   addRefundPayment,
+  removeTransaction,
 };

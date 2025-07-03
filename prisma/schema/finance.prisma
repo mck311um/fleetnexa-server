@@ -13,7 +13,7 @@ model Payment {
   createdAt         DateTime      @default(now())
   updatedAt         DateTime?     @updatedAt
   updatedBy         String?
-  transactions      Transactions?
+  transaction       Transactions?
   paymentType       PaymentType   @relation(fields: [paymentTypeId], references: [id])
   paymentMethod     PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   tenant            Tenant        @relation(fields: [tenantId], references: [id])
@@ -35,13 +35,14 @@ model Transactions {
   createdBy         String?
   createdAt         DateTime  @default(now())
   paymentId         String?   @unique
+  refundId          String?   @unique
   details           String?
-
-  customer         Customer? @relation(fields: [customerId], references: [id])
-  tenant           Tenant   @relation(fields: [tenantId], references: [id])
-  payment          Payment? @relation(fields: [paymentId], references: [id])
-  user             User?    @relation(fields: [createdBy], references: [id])
-  rental           Rental?  @relation(fields: [rentalId], references: [id])
+  customer          Customer? @relation(fields: [customerId], references: [id])
+  tenant            Tenant   @relation(fields: [tenantId], references: [id])
+  payment           Payment? @relation(fields: [paymentId], references: [id])
+  user              User?    @relation(fields: [createdBy], references: [id])
+  rental            Rental?  @relation(fields: [rentalId], references: [id])
+  refund            Refund?  @relation(fields: [refundId], references: [id])
 
 }
 
@@ -57,10 +58,11 @@ model Refund {
   updatedAt         DateTime? @updatedAt
   customerId        String?
   createdBy         String?
-
+  transaction       Transactions?
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   rental            Rental?   @relation(fields: [rentalId], references: [id])
   customer          Customer? @relation(fields: [customerId], references: [id])
+
 }
 
 model Currency {
