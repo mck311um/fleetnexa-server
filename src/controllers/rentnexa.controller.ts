@@ -2,8 +2,6 @@ import prisma from "../config/prisma.config";
 import { Request, Response, NextFunction } from "express";
 import { tenantRepo } from "../repository/tenant.repository";
 import { vehicleRepo } from "../repository/vehicle.repository";
-import logUtil from "../config/logger.config";
-import loggerConfig from "../config/logger.config";
 import numberGenerator from "../services/numberGenerator.service";
 import app from "../app";
 
@@ -123,12 +121,10 @@ const getFeaturedData = async (
           transmission: true,
           features: true,
           fuelType: true,
-          price: true,
-          chargeType: true,
+          dayPrice: true,
           minimumRental: true,
           drivingExperience: true,
           discounts: true,
-          securityDeposit: true,
           model: {
             include: {
               bodyType: true,
@@ -140,6 +136,7 @@ const getFeaturedData = async (
               tenantName: true,
               currency: true,
               logo: true,
+              securityDeposit: true,
               address: {
                 include: {
                   country: true,
@@ -219,13 +216,11 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
         transmission: true,
         features: true,
         fuelType: true,
-        price: true,
-        chargeType: true,
+        dayPrice: true,
         minimumRental: true,
         drivingExperience: true,
         minimumAge: true,
         fuelPolicy: true,
-        securityDeposit: true,
         discounts: true,
         rentals: {
           where: {
@@ -250,6 +245,7 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
             logo: true,
             currency: true,
             tenantLocations: true,
+            securityDeposit: true,
             address: {
               include: {
                 country: true,

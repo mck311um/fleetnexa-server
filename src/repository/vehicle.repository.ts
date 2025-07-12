@@ -56,7 +56,6 @@ class VehicleRepository {
         },
       },
       vehicleStatus: true,
-      chargeType: true,
       transmission: true,
       wheelDrive: true,
       location: true,

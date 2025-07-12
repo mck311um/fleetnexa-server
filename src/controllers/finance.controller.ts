@@ -172,6 +172,58 @@ const addRentalPayment = async (
     next(error);
   }
 };
+const updateRentalPayment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { payment } = req.body;
+  const userId = req.user?.id;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const rentalPaymentData = {
+        amount: payment.amount,
+        paymentDate: payment.paymentDate,
+        notes: payment.notes,
+        paymentTypeId: payment.paymentTypeId,
+        paymentMethodId: payment.paymentMethodId,
+        updatedAt: new Date(),
+        updatedBy: userId,
+      };
+
+      await tx.payment.update({
+        where: {
+          id: payment.id,
+          tenantId: tenantId,
+        },
+        data: rentalPaymentData,
+      });
+
+      await tx.transactions.update({
+        where: {
+          paymentId: payment.id,
+          tenantId: tenantId,
+        },
+        data: {
+          amount: payment.amount,
+          type: "PAYMENT",
+          transactionDate: payment.paymentDate,
+        },
+      });
+    });
+
+    const updatedRental = await rentalRepo.getRentalById(
+      payment.rentalId,
+      tenantId!
+    );
+
+    return res.status(201).json(updatedRental);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const addRefundPayment = async (
   req: Request,
@@ -234,7 +286,6 @@ const addRefundPayment = async (
     next(error);
   }
 };
-
 const updateRefundPayment = async (
   req: Request,
   res: Response,
@@ -289,6 +340,7 @@ const updateRefundPayment = async (
 
 export default {
   addRentalPayment,
+  updateRentalPayment,
   getTransactions,
   addRefundPayment,
   removeTransaction,

@@ -83,6 +83,7 @@ const handleRental = async (req: Request, res: Response) => {
         status: rental.status,
         notes: rental.notes,
         rentalNumber: rental.rentalNumber,
+        chargeTypeId: rental.chargeTypeId,
       };
 
       await tx.rental.upsert({
@@ -114,6 +115,7 @@ const handleRental = async (req: Request, res: Response) => {
           discountMax: parseFloat(rental.values.discountMax),
           discountAmount: parseFloat(rental.values.discountAmount),
           additionalDriverFees: parseFloat(rental.values.additionalDriverFees),
+
           discountPolicy: rental.values.discountPolicy,
           createdAt: new Date(),
           updatedAt: new Date(),

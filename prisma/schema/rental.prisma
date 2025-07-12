@@ -16,6 +16,7 @@ model Rental {
   updatedBy         String?
   notes             String?
   isDeleted         Boolean  @default(false)
+  chargeTypeId      String?
 
   values            Values?
   invoice           Invoice?
@@ -29,12 +30,12 @@ model Rental {
   charges           RentalCharge[]
 
 
-  tenant            Tenant    @relation(fields: [tenantId], references: [id])
-  pickup            TenantLocation @relation("PickupLocation", fields: [pickupLocationId], references: [id])
-  return            TenantLocation @relation("ReturnLocation", fields: [returnLocationId], references: [id])
-  vehicle           Vehicle   @relation(fields: [vehicleId], references: [id])
-  user              User?     @relation(fields: [createdBy], references: [id])
-
+  tenant            Tenant          @relation(fields: [tenantId], references: [id])
+  pickup            TenantLocation  @relation("PickupLocation", fields: [pickupLocationId], references: [id])
+  return            TenantLocation  @relation("ReturnLocation", fields: [returnLocationId], references: [id])
+  vehicle           Vehicle         @relation(fields: [vehicleId], references: [id])
+  user              User?           @relation(fields: [createdBy], references: [id])
+  chargeType        ChargeType?     @relation(fields: [chargeTypeId], references: [id])
 
 }
 model RentalDriver {

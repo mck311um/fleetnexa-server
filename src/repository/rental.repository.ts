@@ -49,6 +49,7 @@ class RentalRepository {
       return: true,
       invoice: true,
       agreement: true,
+      chargeType: true,
       user: {
         select: {
           id: true,
@@ -81,6 +82,9 @@ class RentalRepository {
             },
           },
         },
+        orderBy: {
+          transactionDate: "desc",
+        },
       },
       vehicle: {
         include: {
@@ -108,6 +112,13 @@ class RentalRepository {
           driver: {
             include: {
               license: true,
+              address: {
+                include: {
+                  village: true,
+                  country: true,
+                  state: true,
+                },
+              },
             },
           },
         },

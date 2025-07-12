@@ -12,8 +12,7 @@ model ChargeType {
   chargeType   String
   unit         String
 
-
-  Vehicle Vehicle[]
+  rentals      Rental[]
 }
 
 model VehicleBrand {
