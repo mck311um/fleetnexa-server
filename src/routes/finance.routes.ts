@@ -9,4 +9,9 @@ router.get("/transactions", auth, controller.getTransactions);
 router.post("/rental/payment", auth, controller.addRentalPayment);
 router.post("/rental/refund", auth, controller.addRefundPayment);
 
+router.patch("/rental/refund", auth, controller.updateRefundPayment);
+router.patch("/rental/payment", auth, controller.updateRentalPayment);
+
+router.delete("/transaction/:id", auth, controller.removeTransaction);
+
 export default router;

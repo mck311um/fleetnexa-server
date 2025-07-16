@@ -142,17 +142,11 @@ const addVehicleModel = async (req: any, res: any) => {
       return res.status(404).json({ message: "Vehicle make not found" });
     }
 
-    const formattedModel = model
-      .toLowerCase()
-      .split(" ")
-      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-
     await prisma.vehicleModel.create({
       data: {
         brand: { connect: { id: brandId } },
         bodyType: { connect: { id: bodyTypeId } },
-        model: formattedModel,
+        model: model,
       },
     });
 

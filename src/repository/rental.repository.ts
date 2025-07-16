@@ -49,6 +49,7 @@ class RentalRepository {
       return: true,
       invoice: true,
       agreement: true,
+      chargeType: true,
       user: {
         select: {
           id: true,
@@ -57,6 +58,7 @@ class RentalRepository {
           username: true,
         },
       },
+      charges: true,
       refunds: {
         include: {
           customer: true,
@@ -71,6 +73,7 @@ class RentalRepository {
               paymentType: true,
             },
           },
+          refund: true,
           user: {
             select: {
               firstName: true,
@@ -78,6 +81,9 @@ class RentalRepository {
               username: true,
             },
           },
+        },
+        orderBy: {
+          transactionDate: "desc",
         },
       },
       vehicle: {
@@ -106,6 +112,13 @@ class RentalRepository {
           driver: {
             include: {
               license: true,
+              address: {
+                include: {
+                  village: true,
+                  country: true,
+                  state: true,
+                },
+              },
             },
           },
         },

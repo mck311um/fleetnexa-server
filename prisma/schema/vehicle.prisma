@@ -23,19 +23,16 @@ model Vehicle {
   brandId               String
   modelId               String
   tenantId              String?
-  locationId            String?
-  price                 Float     
-  chargeTypeId          String?
+  locationId            String?  
   timeBetweenRentals    Int
   minimumAge            Int
   minimumRental         Int
   fuelPolicyId          String?
   drivingExperience     Int       @default(1)
   refundAmount          Int       @default(100)
-  additionalDriverFee   Float     @default(0)
-  securityDeposit       Float     @default(0)
-
-
+  dayPrice              Float     @default(0)
+  weekPrice             Float     @default(0)
+  monthPrice            Float     @default(0) 
   isActive              Boolean   @default(false)
   isDeleted             Boolean   @default(false)
   createdAt             DateTime  @default(now())
@@ -53,7 +50,6 @@ model Vehicle {
   scheduledServices     VehicleServiceSchedule[]
   discounts             VehicleDiscount[]
 
-  chargeType            ChargeType?     @relation(fields: [chargeTypeId], references: [id])
   fuelPolicy            FuelPolicy?     @relation(fields: [fuelPolicyId], references: [id])
   fuelType              FuelType?       @relation(fields: [fuelTypeId], references: [id])
   brand                 VehicleBrand?   @relation(fields: [brandId], references: [id])

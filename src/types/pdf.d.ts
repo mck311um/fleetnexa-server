@@ -43,7 +43,7 @@ export interface InvoiceData {
   unit: string;
 }
 
-export interface AgreementData {
+interface AgreementData {
   tenantName: string;
   street: string;
   village: string;
@@ -71,21 +71,21 @@ export interface AgreementData {
   returnDate: string;
   returnLocation: string;
   returnTime: string;
-  lastName: string;
-  firstName: string;
-  dateOfBirth: string;
-  license: string;
-  issuedDate: string;
-  expiryDate: string;
-  city: string;
-  address: string;
   numberOfUnits: number;
   unit: string;
   unitPlural: string;
   basePrice: number;
   rentalAmount: number;
   services: RentalService[];
-  extrasTotal: string;
-  securityDeposit: string;
-  total: string;
+  extrasTotal: number;
+  securityDeposit: number;
+  total: number;
+  currency: string;
+  minimumDays: number;
+  bookingMinimumDays: number;
+  cancellationText: string;
+  lateAmount: number;
+  maxHours: number;
+  dailyRate: number;
+  drivers?: RentalAgreementDriver[];
 }

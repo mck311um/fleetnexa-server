@@ -36,7 +36,7 @@ const sendForSignature = async (
       prisma.tenant.findUnique({ where: { id: tenantId } }),
     ]);
 
-    const signatureResponse = await createSignatureRequest(
+    const signatureResponse = await createDocument(
       documentUrl,
       driver,
       driverEmail,
@@ -44,7 +44,12 @@ const sendForSignature = async (
       accessToken
     );
 
-    return res.status(200).json(signatureResponse);
+    const sendResponse = await sendForSigning(
+      signatureResponse.requests,
+      accessToken
+    );
+
+    return res.status(200).json(sendResponse);
   } catch (error: any) {
     console.error("Zoho Sign Error:", error.response?.data || error.message);
 
@@ -55,7 +60,7 @@ const sendForSignature = async (
   }
 };
 
-const createSignatureRequest = async (
+const createDocument = async (
   documentUrl: string,
   driver: any,
   driverEmail: string,
@@ -156,6 +161,26 @@ const createSignatureRequest = async (
     }
 
     throw error;
+  }
+};
+
+const sendForSigning = async (data: any, accessToken: string) => {
+  try {
+    const requestId = data.request_id;
+
+    const res = await axios.post(
+      `https://sign.zoho.com/api/v1/requests/${requestId}/send`,
+      data,
+      {
+        headers: {
+          Authorization: `Zoho-oauthtoken ${accessToken}`,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    loggerConfig.logger.error("Error sending for signature:", error);
   }
 };
 

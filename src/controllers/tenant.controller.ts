@@ -167,6 +167,8 @@ const updateTenant = async (req: Request, res: Response) => {
           financialYearStart: body.financialYearStart,
           setupCompleted: true,
           securityDeposit: body.securityDeposit,
+          additionalDriverFee: body.additionalDriverFee,
+          daysInMonth: body.daysInMonth,
           description: body.description,
           paymentMethods: {
             set: body.paymentMethods.map((method: any) => ({ id: method.id })),

@@ -1,27 +1,26 @@
 model Payment {
-  id                String    @id @default(dbgenerated("gen_random_uuid()"))
+  id                String        @id @default(dbgenerated("gen_random_uuid()"))
   amount            Float
   paymentMethodId   String
   paymentTypeId     String
   tenantId          String
   rentalId          String
   notes             String?
-  isDeleted         Boolean  @default(false)
   paymentDate       DateTime
   customerId        String?
-
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime? @updatedAt
+  currencyId        String?
+  isDeleted         Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime?     @updatedAt
   updatedBy         String?
-
-  paymentType       PaymentType @relation(fields: [paymentTypeId], references: [id])
+  transaction       Transactions?
+  paymentType       PaymentType   @relation(fields: [paymentTypeId], references: [id])
   paymentMethod     PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-  tenant            Tenant    @relation(fields: [tenantId], references: [id])
-  rental            Rental   @relation(fields: [rentalId], references: [id])
-  customer          Customer? @relation(fields: [customerId], references: [id])
-  
+  tenant            Tenant        @relation(fields: [tenantId], references: [id])
+  rental            Rental        @relation(fields: [rentalId], references: [id])
+  customer          Customer?     @relation(fields: [customerId], references: [id])
+  currency          Currency?     @relation(fields: [currencyId], references: [id])
 
-  transactions      Transactions?
 }
 
 model Transactions {
@@ -36,13 +35,14 @@ model Transactions {
   createdBy         String?
   createdAt         DateTime  @default(now())
   paymentId         String?   @unique
+  refundId          String?   @unique
   details           String?
-
-  customer         Customer? @relation(fields: [customerId], references: [id])
-  tenant           Tenant   @relation(fields: [tenantId], references: [id])
-  payment          Payment? @relation(fields: [paymentId], references: [id])
-  user             User?    @relation(fields: [createdBy], references: [id])
-  rental           Rental?  @relation(fields: [rentalId], references: [id])
+  customer          Customer? @relation(fields: [customerId], references: [id])
+  tenant            Tenant   @relation(fields: [tenantId], references: [id])
+  payment           Payment? @relation(fields: [paymentId], references: [id])
+  user              User?    @relation(fields: [createdBy], references: [id])
+  rental            Rental?  @relation(fields: [rentalId], references: [id])
+  refund            Refund?  @relation(fields: [refundId], references: [id])
 
 }
 
@@ -58,10 +58,11 @@ model Refund {
   updatedAt         DateTime? @updatedAt
   customerId        String?
   createdBy         String?
-
+  transaction       Transactions?
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
   rental            Rental?   @relation(fields: [rentalId], references: [id])
   customer          Customer? @relation(fields: [customerId], references: [id])
+
 }
 
 model Currency {
@@ -70,12 +71,11 @@ model Currency {
   currency  String?
   symbol    String?
 
-  tenants   Tenant[]
-
-  bases ExchangeRate[] @relation("BaseCurrency")
-  targets ExchangeRate[] @relation("TargetCurrency")
-
-  TenantCurrencyRate TenantCurrencyRate[]
+  tenants       Tenant[]
+  bases         ExchangeRate[] @relation("BaseCurrency")
+  targets       ExchangeRate[] @relation("TargetCurrency")
+  currencyRates TenantCurrencyRate[]
+  payments      Payment[]
 }
 
 model TenantCurrencyRate {

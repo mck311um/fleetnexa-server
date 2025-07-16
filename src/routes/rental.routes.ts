@@ -16,6 +16,7 @@ router.post("/decline", auth, controller.declineRental);
 router.post("/cancel", auth, controller.cancelRental);
 router.post("/start", auth, controller.startRental);
 router.post("/end", auth, controller.endRental);
+router.post("/charge", auth, controller.addRentalCharge);
 
 router.delete("/:id", auth, controller.deleteRental);
 
