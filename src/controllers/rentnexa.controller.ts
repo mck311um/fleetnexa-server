@@ -130,6 +130,17 @@ const getFeaturedData = async (
               bodyType: true,
             },
           },
+          rentals: {
+            where: {
+              status: {
+                in: ["PENDING", "ACTIVE", "COMPLETED"],
+              },
+            },
+            select: {
+              startDate: true,
+              endDate: true,
+            },
+          },
           tenant: {
             select: {
               id: true,
@@ -137,6 +148,11 @@ const getFeaturedData = async (
               currency: true,
               logo: true,
               securityDeposit: true,
+              currencyRates: {
+                include: {
+                  currency: true,
+                },
+              },
               address: {
                 include: {
                   country: true,
@@ -246,6 +262,12 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
             currency: true,
             tenantLocations: true,
             securityDeposit: true,
+            additionalDriverFee: true,
+            currencyRates: {
+              include: {
+                currency: true,
+              },
+            },
             address: {
               include: {
                 country: true,
@@ -305,7 +327,7 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { rental } = req.body;
 
-    await prisma.$transaction(async (tx) => {
+    const booking = await prisma.$transaction(async (tx) => {
       const tenant = await tenantRepo.getTenantById(rental.tenantId);
 
       if (!tenant) {
@@ -329,6 +351,12 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
           status: "PENDING",
           notes: rental.notes,
           rentalNumber: rentalNumber,
+        },
+        select: {
+          startDate: true,
+          endDate: true,
+          id: true,
+          rentalNumber: true,
         },
       });
 
@@ -476,6 +504,8 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
             primaryDriver: true,
           },
         });
+
+        return newRental;
       }
 
       const vehicle = await vehicleRepo.getVehicleById(
@@ -508,7 +538,7 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
       io.to(tenant.id).emit("tenant-notification", notification);
     });
 
-    res.status(201).json({ message: "Booking created successfully" });
+    res.status(201).json(booking);
   } catch (error) {
     next(error);
   }
