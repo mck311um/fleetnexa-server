@@ -8,4 +8,5 @@ export const allowedOrigins = [
   "https://rentnexa.vercel.app/",
   "https://www.fleetnexa.com",
   "https://www.rentnexa.com",
+  "https://www.fleetnexa.devvize.com",
 ];
