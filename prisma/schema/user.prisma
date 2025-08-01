@@ -25,6 +25,34 @@ model User {
   @@unique([username, tenantId])
 }
 
+model StorefrontUser {
+  id                     String          @id @default(dbgenerated("gen_random_uuid()"))
+  password               String
+  firstName               String
+  lastName               String
+  dateOfBirth            DateTime
+  gender                 String
+  email                  String          @unique
+  phone                  String          @unique
+  driverLicenseNumber    String          @unique
+  licenseExpiry          DateTime
+  licenseIssued          String
+  street                 String
+  villageId              String
+  stateId                String
+  countryId              String
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime?       @updatedAt
+
+  profilePicture          String?         @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
+  country                Country         @relation(fields: [countryId], references: [id])
+  village                Village         @relation(fields: [villageId], references: [id])
+  state                  State           @relation(fields: [stateId], references: [id])
+
+
+  bookings               StorefrontBooking[]
+}
+
 model UserRole {
   id              String          @id @default(dbgenerated("gen_random_uuid()"))
   name            String          

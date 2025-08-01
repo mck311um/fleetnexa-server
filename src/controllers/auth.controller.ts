@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -65,6 +65,75 @@ const register = async (req: Request, res: Response) => {
   }
 };
 
+const storefrontRegister = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { account } = req.body;
+  try {
+    const emailExists = await prisma.storefrontUser.findUnique({
+      where: { email: account.email },
+    });
+
+    if (emailExists) {
+      return res
+        .status(400)
+        .json({ message: "Account with this email already exists" });
+    }
+
+    const phoneExists = await prisma.storefrontUser.findUnique({
+      where: { phone: account.phone },
+    });
+
+    if (phoneExists) {
+      return res
+        .status(400)
+        .json({ message: "Account with this phone number already exists" });
+    }
+
+    const licenseExists = await prisma.storefrontUser.findUnique({
+      where: { driverLicenseNumber: account.driverLicenseNumber },
+    });
+
+    if (licenseExists) {
+      return res.status(400).json({
+        message: "Account with this driver license number already exists",
+      });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(account.password, salt);
+
+    const user = await prisma.storefrontUser.create({
+      data: {
+        firstName: account.firstName,
+        lastName: account.lastName,
+        email: account.email,
+        phone: account.phone,
+        driverLicenseNumber: account.driverLicenseNumber,
+        password: hashedPassword,
+        dateOfBirth: account.dateOfBirth,
+        gender: account.gender,
+        licenseExpiry: account.licenseExpiry,
+        licenseIssued: account.licenseIssued,
+        street: account.street,
+        villageId: account.villageId,
+        stateId: account.stateId,
+        countryId: account.countryId,
+        createdAt: new Date(),
+      },
+      select: {
+        password: false,
+      },
+    });
+
+    res.status(201).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
@@ -128,4 +197,33 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
-export default { register, login };
+const storefrontLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, password } = req.body;
+  try {
+    const user = await prisma.storefrontUser.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "An account with this email does not exist" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid Password" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { register, login, storefrontRegister, storefrontLogin };
