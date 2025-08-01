@@ -54,6 +54,7 @@ enum RentalStatus {
   CANCELED
   NO_SHOW
   REFUNDED
+  EXPIRED
 }
 
 enum RentalAction {

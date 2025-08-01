@@ -28,6 +28,7 @@ import errorHandler from "./middleware/error.middleware";
 import devvizeRoutes from "./routes/devvize.routes";
 import dodoRoutes from "./routes/dodo.routes";
 import { bugsnagMiddleware } from "./config/bugsnag.config";
+import sitemapRoutes from "./routes/sitemap.routes";
 
 dotenv.config();
 
@@ -72,6 +73,7 @@ app.use("/api/rentnexa", rentnexaRoutes);
 app.use("/api/zoho", zohoRoutes);
 app.use("/api/devvize", devvizeRoutes);
 app.use("/api/dodo", dodoRoutes);
+app.use("/api/sitemap", sitemapRoutes);
 
 if (bugsnagMiddleware) {
   app.use(bugsnagMiddleware.errorHandler);

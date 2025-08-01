@@ -102,6 +102,7 @@ model Country {
   licenseClasses      LicenseClass[]
   driverLicenses      DriverLicense[]
   caribbeanCountries  CaribbeanCountry[]
+  storefrontUser      StorefrontUser[]
 }
 
 model State {
@@ -114,8 +115,11 @@ model State {
   addresses             Address[]
   customerAddresses     CustomerAddress[]
   presetLocations       PresetLocation[]
+  storefrontUser        StorefrontUser[]
+
 
   country               Country   @relation(fields: [countryId], references: [id])
+
 }
 
 model Village {
@@ -127,8 +131,11 @@ model Village {
   addresses               Address[]
   customerAddresses       CustomerAddress[]
   presetLocations         PresetLocation[]
+  storefrontUser          StorefrontUser[]
+
 
   state     State     @relation(fields: [stateId], references: [id])
+
 }
 
 model MaintenanceService {

@@ -260,7 +260,9 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
             tenantName: true,
             logo: true,
             currency: true,
-            tenantLocations: true,
+            tenantLocations: {
+              where: { storefrontEnabled: true },
+            },
             securityDeposit: true,
             additionalDriverFee: true,
             currencyRates: {
@@ -318,6 +320,203 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     return res.status(200).json(updatedVehicles);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getVehicleById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  try {
+    const vehicle = await prisma.vehicle.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        year: true,
+        color: true,
+        licensePlate: true,
+        engineVolume: true,
+        steering: true,
+        fuelLevel: true,
+        featuredImage: true,
+        vehicleStatus: true,
+        wheelDrive: true,
+        images: true,
+        brand: true,
+        numberOfSeats: true,
+        numberOfDoors: true,
+        transmission: true,
+        features: true,
+        fuelType: true,
+        dayPrice: true,
+        minimumRental: true,
+        drivingExperience: true,
+        minimumAge: true,
+        fuelPolicy: true,
+        discounts: true,
+        rentals: {
+          where: {
+            status: {
+              in: ["PENDING", "ACTIVE", "COMPLETED"],
+            },
+          },
+          select: {
+            startDate: true,
+            endDate: true,
+          },
+        },
+        model: {
+          include: {
+            bodyType: true,
+          },
+        },
+        tenant: {
+          select: {
+            id: true,
+            tenantName: true,
+            logo: true,
+            currency: true,
+            tenantLocations: {
+              where: { storefrontEnabled: true },
+            },
+            securityDeposit: true,
+            additionalDriverFee: true,
+            currencyRates: {
+              include: {
+                currency: true,
+              },
+            },
+            address: {
+              include: {
+                country: true,
+                state: true,
+                village: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle not found" });
+    }
+
+    const [tenantServices, tenantEquipments] = await Promise.all([
+      prisma.tenantService.findMany({
+        where: { tenantId: vehicle.tenant?.id, isDeleted: false },
+        include: { service: true },
+      }),
+      prisma.tenantEquipment.findMany({
+        where: { tenantId: vehicle.tenant?.id, isDeleted: false },
+        include: { equipment: true },
+      }),
+    ]);
+
+    const combined = [
+      ...tenantServices.map((item) => ({
+        ...item,
+        type: "Service",
+        name: item.service.service,
+        icon: item.service.icon,
+        description: item.service.description,
+      })),
+      ...tenantEquipments.map((item) => ({
+        ...item,
+        type: "Equipment",
+        name: item.equipment.equipment,
+        icon: item.equipment.icon,
+        description: item.equipment.description,
+      })),
+    ];
+
+    const updatedVehicle = {
+      ...vehicle,
+      extras: combined,
+    };
+
+    return res.status(200).json(updatedVehicle);
+  } catch (error) {
+    next(error);
+  }
+};
+const getTenants = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const tenants = await prisma.tenant.findMany({
+      where: {
+        storefrontEnabled: true,
+      },
+      select: {
+        id: true,
+        tenantName: true,
+        logo: true,
+        rating: true,
+        description: true,
+        _count: {
+          select: {
+            vehicles: true,
+            ratings: true,
+          },
+        },
+        address: {
+          include: {
+            country: true,
+            state: true,
+            village: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json(tenants);
+  } catch (error) {
+    next(error);
+  }
+};
+const getTenantById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  try {
+    const tenant = await prisma.tenant.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        tenantName: true,
+        logo: true,
+        rating: true,
+        description: true,
+        _count: {
+          select: {
+            vehicles: true,
+            ratings: true,
+          },
+        },
+        address: {
+          include: {
+            country: true,
+            state: true,
+            village: true,
+          },
+        },
+      },
+    });
+
+    if (!tenant) {
+      return res.status(404).json({ message: "Tenant not found" });
+    }
+
+    return res.status(200).json(tenant);
   } catch (error) {
     next(error);
   }
@@ -551,5 +750,8 @@ export default {
   getAdminData,
   getFeaturedData,
   getVehicles,
+  getVehicleById,
+  getTenants,
+  getTenantById,
   addBooking,
 };

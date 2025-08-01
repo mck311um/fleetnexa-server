@@ -1,5 +1,6 @@
 import { createLogger, format, transports } from "winston";
 import { Request, Response } from "express";
+import { bugsnagClient } from "./bugsnag.config";
 
 const logger = createLogger({
   level: "info",
@@ -23,6 +24,18 @@ const handleError = (res: Response, error: unknown, context: string) => {
     error,
     context,
   });
+
+  if (error instanceof Error || typeof error === "string") {
+    bugsnagClient.notify(error, (event) => {
+      event.addMetadata("context", { context });
+      event.addMetadata("error", { message });
+    });
+  } else {
+    bugsnagClient.notify(new Error("Unknown error"), (event) => {
+      event.addMetadata("context", { context });
+      event.addMetadata("rawError", { error });
+    });
+  }
 
   if (process.env.NODE_ENV !== "production") {
     console.error(`Error in ${context}:`, error);
