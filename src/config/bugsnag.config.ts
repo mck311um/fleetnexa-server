@@ -6,7 +6,7 @@ const bugsnagClient = Bugsnag.start({
   plugins: [BugsnagPluginExpress],
   appVersion: "1.0.0",
   releaseStage: process.env.NODE_ENV || "development",
-  enabledReleaseStages: ["production", "staging", "development"],
+  enabledReleaseStages: ["production"],
 });
 
 const bugsnagMiddleware = bugsnagClient.getPlugin("express");

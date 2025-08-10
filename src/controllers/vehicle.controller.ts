@@ -4,7 +4,7 @@ import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
 
 // #region Vehicle
-const getVehicles = async (req: Request, res: Response) => {
+const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
   const tenantId = req.user?.tenantId;
 
   try {
@@ -12,10 +12,15 @@ const getVehicles = async (req: Request, res: Response) => {
     res.status(200).json(vehicles);
   } catch (error) {
     console.error(error);
+    next(error);
     res.status(500).json({ message: "Server error" });
   }
 };
-const getVehicleById = async (req: Request, res: Response) => {
+const getVehicleById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   try {
@@ -27,7 +32,7 @@ const getVehicleById = async (req: Request, res: Response) => {
 
     res.status(200).json(vehicle);
   } catch (error) {
-    console.error(error);
+    next(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -58,7 +63,7 @@ const updateVehicleStatus = async (
     next(error);
   }
 };
-const addVehicle = async (req: Request, res: Response) => {
+const addVehicle = async (req: Request, res: Response, next: NextFunction) => {
   const { vehicle } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -156,11 +161,16 @@ const addVehicle = async (req: Request, res: Response) => {
     const vehicles = await vehicleRepo.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ message: "Error Adding Vehicle" });
   }
 };
-const updateVehicle = async (req: Request, res: Response) => {
+const updateVehicle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { vehicle } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -261,11 +271,14 @@ const updateVehicle = async (req: Request, res: Response) => {
     const vehicles = await vehicleRepo.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error Updating Vehicle" });
+    next(error);
   }
 };
-const deleteVehicle = async (req: Request, res: Response) => {
+const deleteVehicle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -283,14 +296,17 @@ const deleteVehicle = async (req: Request, res: Response) => {
     const vehicles = await vehicleRepo.getVehicles(tenantId!);
     res.status(201).json(vehicles);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error Deleting Vehicle" });
+    next(error);
   }
 };
 // #endregion
 
 // #region VehicleDamages
-const getVehicleDamages = async (req: Request, res: Response) => {
+const getVehicleDamages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { vehicleId } = req.params;
 
   try {
@@ -303,11 +319,14 @@ const getVehicleDamages = async (req: Request, res: Response) => {
 
     res.status(200).json(vehicleDamages);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error Fetching Vehicle Damages" });
+    next(error);
   }
 };
-const addVehicleDamage = async (req: Request, res: Response) => {
+const addVehicleDamage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { damage } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -345,11 +364,14 @@ const addVehicleDamage = async (req: Request, res: Response) => {
 
     res.status(201).json({ ...vehicleDamages });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error Adding Vehicle Damage" });
+    next(error);
   }
 };
-const updateVehicleDamage = async (req: Request, res: Response) => {
+const updateVehicleDamage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { damage } = req.body;
   const userId = req.user?.id;
   console.log("damage", damage);
@@ -385,11 +407,14 @@ const updateVehicleDamage = async (req: Request, res: Response) => {
 
     res.status(200).json({ ...vehicleDamages });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error Updating Vehicle Damage" });
+    next(error);
   }
 };
-const deleteVehicleDamage = async (req: Request, res: Response) => {
+const deleteVehicleDamage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
   const userId = req.user?.id;
 
@@ -417,8 +442,7 @@ const deleteVehicleDamage = async (req: Request, res: Response) => {
 
     res.status(200).json(vehicleDamages);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error Deleting Vehicle Damage" });
+    next(error);
   }
 };
 // #endregion
