@@ -79,11 +79,14 @@ const addVehicle = async (req: Request, res: Response) => {
           color: vehicle.color,
           engineVolume: vehicle.engineVolume,
           featuredImage: vehicle.featuredImage,
-          features: {
-            connect: vehicle.features.map((feature: any) => ({
-              id: feature.id,
-            })),
-          },
+          features:
+            vehicle.features && vehicle.features.length > 0
+              ? {
+                  connect: vehicle.features.map((feature: any) => ({
+                    id: feature.id,
+                  })),
+                }
+              : undefined,
           fuelLevel: vehicle.fuelLevel,
           images: vehicle.images,
           insurance: vehicle.insurance,
@@ -170,11 +173,14 @@ const updateVehicle = async (req: Request, res: Response) => {
           color: vehicle.color,
           engineVolume: vehicle.engineVolume,
           featuredImage: vehicle.featuredImage,
-          features: {
-            connect: vehicle.features.map((feature: any) => ({
-              id: feature.id,
-            })),
-          },
+          features:
+            vehicle.features && vehicle.features.length > 0
+              ? {
+                  connect: vehicle.features.map((feature: any) => ({
+                    id: feature.id,
+                  })),
+                }
+              : undefined,
           fuelLevel: vehicle.fuelLevel,
           fuelType: { connect: { id: vehicle.fuelTypeId } },
           images: vehicle.images,
