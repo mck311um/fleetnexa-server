@@ -536,6 +536,10 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
       const rentalNumber = await numberGenerator.generateRentalNumber(
         rental.tenantId
       );
+      const bookingCode = numberGenerator.generateBookingCode(
+        tenant.tenantCode,
+        rentalNumber
+      );
 
       const newRental = await tx.rental.create({
         data: {
@@ -550,12 +554,32 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
           status: "PENDING",
           notes: rental.notes,
           rentalNumber: rentalNumber,
+          bookingCode: bookingCode,
         },
         select: {
           startDate: true,
           endDate: true,
           id: true,
           rentalNumber: true,
+          bookingCode: true,
+          vehicle: {
+            select: {
+              year: true,
+              brand: true,
+              model: true,
+              tenant: {
+                select: {
+                  currency: true,
+                },
+              },
+            },
+          },
+          pickup: true,
+          values: {
+            select: {
+              netTotal: true,
+            },
+          },
         },
       });
 
@@ -630,6 +654,7 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
           where: { customerId: existingCustomer.id },
           data: {
             licenseExpiry: rental.customer.license.licenseExpiry,
+            licenseIssued: rental.customer.license.licenseIssued,
           },
         });
 
@@ -677,6 +702,7 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
             customerId: customer.id,
             licenseNumber: rental.customer.license.licenseNumber,
             licenseExpiry: rental.customer.license.licenseExpiry,
+            licenseIssued: rental.customer.license.licenseIssued,
           },
         });
 
@@ -703,8 +729,6 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
             primaryDriver: true,
           },
         });
-
-        return newRental;
       }
 
       const vehicle = await vehicleRepo.getVehicleById(
@@ -735,9 +759,11 @@ const addBooking = async (req: Request, res: Response, next: NextFunction) => {
 
       const io = app.get("io");
       io.to(tenant.id).emit("tenant-notification", notification);
+
+      return newRental;
     });
 
-    res.status(201).json(booking);
+    res.status(201).json({ booking, values: rental.values });
   } catch (error) {
     next(error);
   }
