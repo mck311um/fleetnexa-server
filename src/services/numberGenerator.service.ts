@@ -79,8 +79,20 @@ const generateRentalNumber = async (tenantId: string): Promise<string> => {
   return nextNumber.toString().padStart(6, "0");
 };
 
+const generateBookingCode = (
+  tenantCode: string,
+  rentalNumber: string
+): string => {
+  const cleanedTenantCode = tenantCode.replace(/-/g, "");
+
+  const paddedRentalNumber = rentalNumber.padStart(6, "0");
+
+  return `${cleanedTenantCode}-${paddedRentalNumber}`;
+};
+
 export default {
   generateInvoiceNumber,
   generateRentalAgreementNumber,
+  generateBookingCode,
   generateRentalNumber,
 };

@@ -6,7 +6,7 @@ import prisma from "../config/prisma.config";
 import numberGenerator from "../services/numberGenerator.service";
 import { rentalRepo } from "../repository/rental.repository";
 
-const getRentals = async (req: Request, res: Response) => {
+const getRentals = async (req: Request, res: Response, next: NextFunction) => {
   const tenantId = req.user?.tenantId;
 
   try {
@@ -16,14 +16,14 @@ const getRentals = async (req: Request, res: Response) => {
     const rentals = await rentalRepo.getRentals(tenantId);
     return res.status(200).json(rentals);
   } catch (error) {
-    console.error("Error fetching rentals:", error);
-    return res.status(500).json({
-      error: "Internal server error",
-      details: error instanceof Error ? error.message : undefined,
-    });
+    next(error);
   }
 };
-const getRentalById = async (req: Request, res: Response) => {
+const getRentalById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
   const userId = req.user?.id;
@@ -37,14 +37,14 @@ const getRentalById = async (req: Request, res: Response) => {
     }
     return res.status(200).json(rental);
   } catch (error) {
-    console.error("Error fetching rental:", error);
-    return res.status(500).json({
-      error: "Internal server error",
-      details: error instanceof Error ? error.message : undefined,
-    });
+    next(error);
   }
 };
-const handleRental = async (req: Request, res: Response) => {
+const handleRental = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { rental } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -210,14 +210,14 @@ const handleRental = async (req: Request, res: Response) => {
 
     return res.status(200).json({ rentals, updatedRental });
   } catch (error) {
-    console.error("Error handling rental:", error);
-    return res.status(500).json({
-      error: "Internal server error",
-      details: error instanceof Error ? error.message : undefined,
-    });
+    next(error);
   }
 };
-const confirmRental = async (req: Request, res: Response) => {
+const confirmRental = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { rental } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -271,10 +271,14 @@ const confirmRental = async (req: Request, res: Response) => {
     const updatedRental = await rentalRepo.getRentalById(rental.id, tenantId!);
     return res.status(201).json({ updatedRental, rentals });
   } catch (error) {
-    return logUtil.handleError(res, error, "confirming rental");
+    next(error);
   }
 };
-const declineRental = async (req: Request, res: Response) => {
+const declineRental = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { rental } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -292,12 +296,17 @@ const declineRental = async (req: Request, res: Response) => {
     });
 
     const updatedRental = await rentalRepo.getRentalById(rental.id, tenantId!);
-    return res.status(200).json(updatedRental);
+    const rentals = await rentalRepo.getRentals(tenantId!);
+    return res.status(200).json({ updatedRental, rentals });
   } catch (error) {
-    return logUtil.handleError(res, error, "declining rental");
+    next(error);
   }
 };
-const cancelRental = async (req: Request, res: Response) => {
+const cancelRental = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { rental } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -334,9 +343,10 @@ const cancelRental = async (req: Request, res: Response) => {
     });
 
     const updatedRental = await rentalRepo.getRentalById(rental.id, tenantId!);
-    return res.status(200).json(updatedRental);
+    const rentals = await rentalRepo.getRentals(tenantId!);
+    return res.status(200).json({ updatedRental, rentals });
   } catch (error) {
-    return logUtil.handleError(res, error, "cancelling rental");
+    next(error);
   }
 };
 const startRental = async (req: Request, res: Response) => {
@@ -394,8 +404,9 @@ const startRental = async (req: Request, res: Response) => {
     });
 
     const updatedRental = await rentalRepo.getRentalById(rental.id, tenantId!);
+    const rentals = await rentalRepo.getRentals(tenantId!);
 
-    return res.status(200).json(updatedRental);
+    return res.status(200).json({ updatedRental, rentals });
   } catch (error) {
     return logUtil.handleError(res, error, "starting rental");
   }
@@ -499,7 +510,8 @@ const deleteRental = async (
       },
     });
 
-    return res.status(200).json({ message: "Rental deleted successfully" });
+    const rentals = await rentalRepo.getRentals(tenantId!);
+    return res.status(201).json(rentals);
   } catch (error) {
     next(error);
   }

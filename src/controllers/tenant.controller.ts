@@ -4,7 +4,11 @@ import prisma from "../config/prisma.config";
 import crypto from "crypto";
 import loggerConfig from "../config/logger.config";
 
-const getTenantById = async (req: Request, res: Response) => {
+const getTenantById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   try {
@@ -16,11 +20,14 @@ const getTenantById = async (req: Request, res: Response) => {
 
     res.json(tenant);
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
-const getTenantExtras = async (req: Request, res: Response) => {
+const getTenantExtras = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const tenantId = req.user?.tenantId;
   try {
     const [tenantServices, tenantEquipments, tenantInsurances] =
@@ -65,7 +72,7 @@ const getTenantExtras = async (req: Request, res: Response) => {
     res.status(200).json(combined);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error fetching tenant extras" });
+    next(error);
   }
 };
 const getTenantRentalActivity = async (
@@ -93,8 +100,12 @@ const getTenantRentalActivity = async (
     next(error);
   }
 };
-const createTenant = async (req: Request, res: Response) => {
-  const { tenantCode, tenantName, email, number, logo } = req.body;
+const createTenant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { tenantCode, tenantName, email, number } = req.body;
 
   try {
     const tenant = await prisma.$transaction(async (tx) => {
@@ -116,7 +127,7 @@ const createTenant = async (req: Request, res: Response) => {
           tenantName,
           email,
           number,
-          logo,
+          logo: "https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/placeholder_tenant.jpg",
         },
       });
 
@@ -125,11 +136,14 @@ const createTenant = async (req: Request, res: Response) => {
 
     res.status(201).json(tenant);
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
-const updateTenant = async (req: Request, res: Response) => {
+const updateTenant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const body = req.body;
   const tenantId = req.user?.tenantId;
 
@@ -252,8 +266,7 @@ const updateTenant = async (req: Request, res: Response) => {
     const tenant = await tenantRepo.getTenantById(tenantId!);
     res.json(tenant);
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
@@ -319,7 +332,11 @@ const initializeTenantLocations = async (
     next(error);
   }
 };
-const getTenantLocations = async (req: Request, res: Response) => {
+const getTenantLocations = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const tenantId = req.user?.tenantId;
 
   try {
@@ -335,11 +352,14 @@ const getTenantLocations = async (req: Request, res: Response) => {
 
     res.json(tenantLocations);
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
-const createTenantLocation = async (req: Request, res: Response) => {
+const createTenantLocation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { location } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -368,10 +388,14 @@ const createTenantLocation = async (req: Request, res: Response) => {
     res.status(201).json({ ...tenantLocations });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Error Adding Location" });
+    next(error);
   }
 };
-const updateTenantLocation = async (req: Request, res: Response) => {
+const updateTenantLocation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { location } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -405,11 +429,14 @@ const updateTenantLocation = async (req: Request, res: Response) => {
 
     res.status(201).json(tenantLocations);
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: "Error Updating Location" });
+    next(error);
   }
 };
-const deleteTenantLocation = async (req: Request, res: Response) => {
+const deleteTenantLocation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -436,7 +463,7 @@ const deleteTenantLocation = async (req: Request, res: Response) => {
     res.status(200).json(tenantLocations);
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Error deleting tenant location" });
+    next(error);
   }
 };
 // #endregion
