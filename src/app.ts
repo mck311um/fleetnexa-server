@@ -20,9 +20,7 @@ import zohoRoutes from "./routes/zoho.routes";
 
 import "./cron/maintenance.cron";
 import "./cron/stat.cron";
-import "./cron/exchangeRate.cron";
 import "./cron/plans.cron";
-import "./cron/country.cron";
 import "./cron/notification.cron";
 import errorHandler from "./middleware/error.middleware";
 import devvizeRoutes from "./routes/devvize.routes";
