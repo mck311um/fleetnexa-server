@@ -82,7 +82,6 @@ const getTransactions = async () => {
 
 cron.schedule("0 * * * *", async () => {
   try {
-    console.log("Running dodo cron job...");
     await getTransactions();
   } catch (error) {
     console.error("Error running dodo cron job:", error);
@@ -93,7 +92,6 @@ cron.schedule("0 * * * *", async () => {
 
 cron.schedule("0 0 1 * *", async () => {
   try {
-    console.log("Running dodo cron job...");
     await getProducts();
   } catch (error) {
     console.error("Error running dodo cron job:", error);
