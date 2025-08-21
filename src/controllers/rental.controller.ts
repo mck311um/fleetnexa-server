@@ -59,11 +59,21 @@ const handleRental = async (
 
   try {
     await prisma.$transaction(async (tx) => {
+      const tenant = await tenantRepo.getTenantById(tenantId);
+
       if (!rental.rentalNumber) {
         const rentalNumber = await numberGenerator.generateRentalNumber(
           tenantId!
         );
         rental.rentalNumber = rentalNumber;
+      }
+
+      if (!rental.bookingCode) {
+        const bookingCode = numberGenerator.generateBookingCode(
+          tenant?.tenantCode || "",
+          rental.rentalNumber
+        );
+        rental.bookingCode = bookingCode;
       }
 
       const rentalData = {
@@ -83,6 +93,7 @@ const handleRental = async (
         status: rental.status,
         notes: rental.notes,
         rentalNumber: rental.rentalNumber,
+        bookingCode: rental.bookingCode,
         chargeTypeId: rental.chargeTypeId,
       };
 
