@@ -1,7 +1,7 @@
 model Rental {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   rentalNumber      String? 
-  bookingCode       String?   
+  bookingCode       String?   @unique
   startDate         DateTime
   endDate           DateTime
   pickupLocationId  String

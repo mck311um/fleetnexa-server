@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { tenantRepo } from "../repository/tenant.repository";
 import prisma from "../config/prisma.config";
-import crypto from "crypto";
+import crypto, { randomUUID } from "crypto";
 import loggerConfig from "../config/logger.config";
+import generator from "../services/generator.service";
 
 const getTenantById = async (
   req: Request,
@@ -120,6 +121,9 @@ const createTenant = async (
           .status(400)
           .json({ message: "Tenant with this code or email already exists" });
       }
+
+      const tenantId = randomUUID();
+      const slug = await generator.generateTenantSlug(tenantId);
 
       const newTenant = await tx.tenant.create({
         data: {

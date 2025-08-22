@@ -2,7 +2,7 @@ import prisma from "../config/prisma.config";
 import { Request, Response, NextFunction } from "express";
 import { tenantRepo } from "../repository/tenant.repository";
 import { vehicleRepo } from "../repository/vehicle.repository";
-import numberGenerator from "../services/numberGenerator.service";
+import numberGenerator from "../services/generator.service";
 import app from "../app";
 
 const getAdminData = async (
@@ -28,6 +28,7 @@ const getAdminData = async (
       select: {
         id: true,
         tenantName: true,
+        slug: true,
         logo: true,
         rating: true,
         description: true,
@@ -145,6 +146,7 @@ const getFeaturedData = async (
             select: {
               id: true,
               tenantName: true,
+              slug: true,
               currency: true,
               logo: true,
               securityDeposit: true,
@@ -258,6 +260,7 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
           select: {
             id: true,
             tenantName: true,
+            slug: true,
             logo: true,
             currency: true,
             tenantLocations: {
@@ -380,6 +383,7 @@ const getVehicleById = async (
           select: {
             id: true,
             tenantName: true,
+            slug: true,
             logo: true,
             currency: true,
             tenantLocations: {
@@ -455,6 +459,7 @@ const getTenants = async (req: Request, res: Response, next: NextFunction) => {
       select: {
         id: true,
         tenantName: true,
+        slug: true,
         logo: true,
         rating: true,
         description: true,
@@ -496,6 +501,186 @@ const getTenantById = async (
         logo: true,
         rating: true,
         description: true,
+        vehicles: {
+          select: {
+            id: true,
+            year: true,
+            color: true,
+            licensePlate: true,
+            engineVolume: true,
+            steering: true,
+            fuelLevel: true,
+            featuredImage: true,
+            vehicleStatus: true,
+            wheelDrive: true,
+            images: true,
+            brand: true,
+            numberOfSeats: true,
+            numberOfDoors: true,
+            transmission: true,
+            features: true,
+            fuelType: true,
+            dayPrice: true,
+            minimumRental: true,
+            drivingExperience: true,
+            minimumAge: true,
+            fuelPolicy: true,
+            discounts: true,
+            rentals: {
+              where: {
+                status: {
+                  in: ["PENDING", "ACTIVE", "COMPLETED"],
+                },
+              },
+              select: {
+                startDate: true,
+                endDate: true,
+              },
+            },
+            model: {
+              include: {
+                bodyType: true,
+              },
+            },
+            tenant: {
+              select: {
+                id: true,
+                tenantName: true,
+                slug: true,
+                logo: true,
+                currency: true,
+                tenantLocations: {
+                  where: { storefrontEnabled: true },
+                },
+                securityDeposit: true,
+                additionalDriverFee: true,
+                currencyRates: {
+                  include: {
+                    currency: true,
+                  },
+                },
+                address: {
+                  include: {
+                    country: true,
+                    state: true,
+                    village: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            vehicles: true,
+            ratings: true,
+          },
+        },
+        address: {
+          include: {
+            country: true,
+            state: true,
+            village: true,
+          },
+        },
+      },
+    });
+
+    if (!tenant) {
+      return res.status(404).json({ message: "Tenant not found" });
+    }
+
+    return res.status(200).json(tenant);
+  } catch (error) {
+    next(error);
+  }
+};
+const getTenantBySlug = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { slug } = req.params;
+  try {
+    const tenant = await prisma.tenant.findUnique({
+      where: {
+        slug,
+      },
+      select: {
+        id: true,
+        tenantName: true,
+        logo: true,
+        rating: true,
+        description: true,
+        vehicles: {
+          select: {
+            id: true,
+            year: true,
+            color: true,
+            licensePlate: true,
+            engineVolume: true,
+            steering: true,
+            fuelLevel: true,
+            featuredImage: true,
+            vehicleStatus: true,
+            wheelDrive: true,
+            images: true,
+            brand: true,
+            numberOfSeats: true,
+            numberOfDoors: true,
+            transmission: true,
+            features: true,
+            fuelType: true,
+            dayPrice: true,
+            minimumRental: true,
+            drivingExperience: true,
+            minimumAge: true,
+            fuelPolicy: true,
+            discounts: true,
+            rentals: {
+              where: {
+                status: {
+                  in: ["PENDING", "ACTIVE", "COMPLETED"],
+                },
+              },
+              select: {
+                startDate: true,
+                endDate: true,
+              },
+            },
+            model: {
+              include: {
+                bodyType: true,
+              },
+            },
+            tenant: {
+              select: {
+                id: true,
+                tenantName: true,
+                slug: true,
+                logo: true,
+                currency: true,
+                tenantLocations: {
+                  where: { storefrontEnabled: true },
+                },
+                securityDeposit: true,
+                additionalDriverFee: true,
+                currencyRates: {
+                  include: {
+                    currency: true,
+                  },
+                },
+                address: {
+                  include: {
+                    country: true,
+                    state: true,
+                    village: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         _count: {
           select: {
             vehicles: true,
@@ -780,4 +965,5 @@ export default {
   getTenants,
   getTenantById,
   addBooking,
+  getTenantBySlug,
 };
