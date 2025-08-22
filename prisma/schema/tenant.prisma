@@ -2,6 +2,7 @@ model Tenant {
   tenantCode            String                @unique
   id                    String                @id @default(dbgenerated("gen_random_uuid()"))
   tenantName            String
+  slug                  String?               @unique
   email                 String                @unique
   number                String                @unique
   currencyId            String?

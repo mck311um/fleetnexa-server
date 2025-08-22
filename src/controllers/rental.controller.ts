@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { tenantRepo } from "../repository/tenant.repository";
-import generator from "../services/pdfGenerator.service";
+import pdf from "../services/pdf.service";
 import logUtil from "../config/logger.config";
 import prisma from "../config/prisma.config";
-import numberGenerator from "../services/numberGenerator.service";
+import generator from "../services/generator.service";
 import { rentalRepo } from "../repository/rental.repository";
 
 const getRentals = async (req: Request, res: Response, next: NextFunction) => {
@@ -62,14 +62,12 @@ const handleRental = async (
       const tenant = await tenantRepo.getTenantById(tenantId);
 
       if (!rental.rentalNumber) {
-        const rentalNumber = await numberGenerator.generateRentalNumber(
-          tenantId!
-        );
+        const rentalNumber = await generator.generateRentalNumber(tenantId!);
         rental.rentalNumber = rentalNumber;
       }
 
       if (!rental.bookingCode) {
-        const bookingCode = numberGenerator.generateBookingCode(
+        const bookingCode = generator.generateBookingCode(
           tenant?.tenantCode || "",
           rental.rentalNumber
         );
@@ -544,13 +542,13 @@ const generateInvoice = async (req: Request, res: Response) => {
     if (invoice) {
       invoiceNumber = invoice.invoiceNumber;
     } else {
-      invoiceNumber = await numberGenerator.generateInvoiceNumber(tenantId!);
+      invoiceNumber = await generator.generateInvoiceNumber(tenantId!);
     }
 
     const rental = await rentalRepo.getRentalById(rentalId, tenantId!);
     const tenant = await tenantRepo.getTenantById(tenantId!);
 
-    const { publicUrl } = await generator.createInvoice(
+    const { publicUrl } = await pdf.createInvoice(
       {
         ...invoiceData,
         invoiceNumber,
@@ -611,7 +609,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
     if (agreement) {
       agreementNumber = agreement.number;
     } else {
-      agreementNumber = await numberGenerator.generateRentalAgreementNumber(
+      agreementNumber = await generator.generateRentalAgreementNumber(
         tenantId!
       );
     }
@@ -619,7 +617,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
     const rental = await rentalRepo.getRentalById(rentalId, tenantId!);
     const tenant = await tenantRepo.getTenantById(tenantId!);
 
-    const { publicUrl, signablePublicUrl } = await generator.createAgreement(
+    const { publicUrl, signablePublicUrl } = await pdf.createAgreement(
       {
         ...agreementData,
         agreementNumber,

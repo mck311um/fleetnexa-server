@@ -1,4 +1,5 @@
 import prisma from "../config/prisma.config";
+import slugify from "slugify";
 
 const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
   const tenant = await prisma.tenant.findUnique({
@@ -90,9 +91,25 @@ const generateBookingCode = (
   return `${cleanedTenantCode}-${paddedRentalNumber}`;
 };
 
+const generateTenantSlug = async (tenantId: string): Promise<string> => {
+  let slug = "";
+  const tenant = await prisma.tenant.findUnique({
+    where: { id: tenantId },
+  });
+
+  if (!tenant) {
+    throw new Error("Tenant not found");
+  }
+
+  slug = slugify(tenant.tenantName, { lower: true, strict: true });
+
+  return slug;
+};
+
 export default {
   generateInvoiceNumber,
   generateRentalAgreementNumber,
   generateBookingCode,
   generateRentalNumber,
+  generateTenantSlug,
 };

@@ -3,7 +3,7 @@ import controller from "../controllers/health.controller";
 
 const router = express.Router();
 
-router.head("/health", controller.healthCheck);
-router.get("/health", controller.healthCheck);
+router.head("", controller.healthCheck);
+router.get("", controller.healthCheck);
 
 export default router;
