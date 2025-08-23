@@ -91,19 +91,73 @@ const generateBookingCode = (
   return `${cleanedTenantCode}-${paddedRentalNumber}`;
 };
 
-const generateTenantSlug = async (tenantId: string): Promise<string> => {
+const generateTenantSlug = async (tenantName: string): Promise<string> => {
   let slug = "";
-  const tenant = await prisma.tenant.findUnique({
-    where: { id: tenantId },
-  });
-
-  if (!tenant) {
-    throw new Error("Tenant not found");
-  }
-
-  slug = slugify(tenant.tenantName, { lower: true, strict: true });
+  slug = slugify(tenantName, { lower: true, strict: true });
 
   return slug;
+};
+
+const generateTenantCode = async (tenantName: string): Promise<string> => {
+  const initials = tenantName
+    .split(" ")
+    .map((word) => word[0].toUpperCase())
+    .join("");
+
+  const existingTenants = await prisma.tenant.findMany({
+    where: {
+      tenantCode: {
+        startsWith: initials,
+      },
+    },
+    select: {
+      tenantCode: true,
+    },
+  });
+
+  const seriesNumbers = existingTenants.map((t) => {
+    const parts = t.tenantCode.split("-");
+    return parts[1] ? parseInt(parts[1], 10) : 0;
+  });
+
+  const nextNumber =
+    seriesNumbers.length === 0 ? 1 : Math.max(...seriesNumbers) + 1;
+
+  const series = nextNumber.toString().padStart(3, "0");
+
+  return `${initials}-${series}`;
+};
+
+const generateUserName = async (
+  firstName: string,
+  lastName: string
+): Promise<string> => {
+  const cleanFirst = firstName.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+  const cleanLast = lastName.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+
+  let attempt = 1;
+  let username = "";
+
+  while (true) {
+    const prefix = cleanFirst.substring(0, attempt);
+    username = `${prefix}${cleanLast}`;
+
+    const existingUser = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (!existingUser) {
+      return username;
+    }
+
+    attempt++;
+
+    if (attempt > cleanFirst.length) {
+      const randomNumber = Math.floor(1000 + Math.random() * 9000);
+      username = `${cleanFirst[0]}${cleanLast}${randomNumber}`;
+      return username;
+    }
+  }
 };
 
 export default {
@@ -112,4 +166,6 @@ export default {
   generateBookingCode,
   generateRentalNumber,
   generateTenantSlug,
+  generateTenantCode,
+  generateUserName,
 };

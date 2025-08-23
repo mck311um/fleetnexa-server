@@ -4,6 +4,7 @@ import prisma from "../config/prisma.config";
 import crypto, { randomUUID } from "crypto";
 import loggerConfig from "../config/logger.config";
 import generator from "../services/generator.service";
+import bcrypt from "bcrypt";
 
 const getTenantById = async (
   req: Request,
@@ -106,22 +107,11 @@ const createTenant = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { tenantCode, tenantName, email, number } = req.body;
+  const { tenantName, email, number, firstName, lastName } = req.body;
 
   try {
-    const tenant = await prisma.$transaction(async (tx) => {
-      const existingTenant = await tx.tenant.findFirst({
-        where: {
-          OR: [{ tenantCode }, { email }],
-        },
-      });
-
-      if (existingTenant) {
-        return res
-          .status(400)
-          .json({ message: "Tenant with this code or email already exists" });
-      }
-
+    await prisma.$transaction(async (tx) => {
+      const tenantCode = await generator.generateTenantCode(tenantName);
       const tenantId = randomUUID();
       const slug = await generator.generateTenantSlug(tenantId);
 
@@ -129,16 +119,51 @@ const createTenant = async (
         data: {
           tenantCode,
           tenantName,
+          slug,
           email,
           number,
           logo: "https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/placeholder_tenant.jpg",
         },
       });
 
-      return newTenant;
+      const role = await tx.userRole.create({
+        data: {
+          name: "Admin",
+          description: "Default role for new tenants",
+          tenant: { connect: { id: newTenant.id } },
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
+
+      const permissions = await tx.appPermission.findMany({});
+
+      await tx.userRolePermission.createMany({
+        data: permissions.map((perm: any) => ({
+          roleId: role.id,
+          permissionId: perm.id,
+          assignedAt: new Date(),
+        })),
+      });
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash("ThisIsAPassword", salt);
+      const username = await generator.generateUserName(firstName, lastName);
+
+      const user = await tx.user.create({
+        data: {
+          username,
+          password: hashedPassword,
+          firstName,
+          lastName,
+          tenantId: newTenant.id,
+          lastChanged: new Date(),
+          roleId: role.id,
+        },
+      });
     });
 
-    res.status(201).json(tenant);
+    res.status(201).json();
   } catch (error: any) {
     next(error);
   }
@@ -1210,6 +1235,7 @@ const deleteNotification = async (
     next(error);
   }
 };
+//#endregion
 
 export default {
   getTenantById,

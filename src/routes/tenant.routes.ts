@@ -1,6 +1,7 @@
 import express from "express";
 import controller from "../controllers/tenant.controller";
 import { auth } from "../middleware/auth.middleware";
+import { api } from "../middleware/api.middleware";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.get("/notifications", auth, controller.getTenantNotifications);
 router.get("/roles/:id", auth, controller.getTenantRolesById);
 router.get("/:id", auth, controller.getTenantById);
 
-router.post("/", controller.createTenant);
+router.post("/", api, controller.createTenant);
 router.post("/location", auth, controller.createTenantLocation);
 router.post("/location/initialize", auth, controller.initializeTenantLocations);
 router.post("/service", auth, controller.addService);
