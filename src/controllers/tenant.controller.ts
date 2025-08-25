@@ -5,6 +5,7 @@ import crypto, { randomUUID } from "crypto";
 import loggerConfig from "../config/logger.config";
 import generator from "../services/generator.service";
 import bcrypt from "bcrypt";
+import emailService from "../services/email.service";
 
 const getTenantById = async (
   req: Request,
@@ -110,7 +111,7 @@ const createTenant = async (
   const { tenantName, email, number, firstName, lastName } = req.body;
 
   try {
-    await prisma.$transaction(async (tx) => {
+    const success = await prisma.$transaction(async (tx) => {
       const tenantCode = await generator.generateTenantCode(tenantName);
       const tenantId = randomUUID();
       const slug = await generator.generateTenantSlug(tenantId);
@@ -147,7 +148,8 @@ const createTenant = async (
       });
 
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash("ThisIsAPassword", salt);
+      const password = await generator.generateTempPassword(12);
+      const hashedPassword = await bcrypt.hash(password, salt);
       const username = await generator.generateUserName(firstName, lastName);
 
       const user = await tx.user.create({
@@ -161,6 +163,19 @@ const createTenant = async (
           roleId: role.id,
         },
       });
+
+      return { user, tenant: newTenant, password };
+    });
+
+    await emailService.sendEmail({
+      to: [success.tenant.email],
+      template: "WelcomeTemplate",
+      templateData: {
+        name: success.user.firstName + " " + success.user.lastName,
+        tenantName: success.tenant.tenantName,
+        username: success.user.username,
+        password: success.password,
+      },
     });
 
     res.status(201).json();

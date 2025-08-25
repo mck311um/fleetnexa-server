@@ -1,5 +1,6 @@
 import prisma from "../config/prisma.config";
 import slugify from "slugify";
+import crypto from "crypto";
 
 const generateInvoiceNumber = async (tenantId: string): Promise<string> => {
   const tenant = await prisma.tenant.findUnique({
@@ -160,6 +161,10 @@ const generateUserName = async (
   }
 };
 
+const generateTempPassword = (length = 12) => {
+  return crypto.randomBytes(length).toString("base64").slice(0, length);
+};
+
 export default {
   generateInvoiceNumber,
   generateRentalAgreementNumber,
@@ -168,4 +173,5 @@ export default {
   generateTenantSlug,
   generateTenantCode,
   generateUserName,
+  generateTempPassword,
 };
