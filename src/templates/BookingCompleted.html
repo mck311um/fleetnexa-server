@@ -86,6 +86,7 @@
         display: flex;
         margin-right: 5px;
         justify-content: space-between;
+        margin-right: 5px;
       }
 
       .info-label {
@@ -178,12 +179,24 @@
             <span class="info-value">{{endDate}}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Pickup Location:</span>
-            <span class="info-value">{{pickupLocation}}</span>
-          </div>
-          <div class="info-item">
             <span class="info-label">Total Price:</span>
             <span class="info-value">{{totalPrice}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Pickup Details</div>
+          <div class="info-item">
+            <span class="info-label">Pickup Date:</span>
+            <span class="info-value">{{startDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Time:</span>
+            <span class="info-value">{{pickupTime}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Location:</span>
+            <span class="info-value">{{pickupLocation}}</span>
           </div>
         </div>
 
@@ -208,11 +221,15 @@
         <div class="notes-section">
           <strong>Important Notes:</strong>
           <ul>
+            <li>
+              The rental company will contact you within 24 hours to confirm
+              your pickup details and answer any questions you may have.
+            </li>
             <li>Please bring a valid driver's license.</li>
             <li>Arrive 15 minutes before your scheduled pickup time.</li>
             <li>
               Contact the rental company if you need to make any changes with
-              your booking ID.
+              your booking Id {{bookingId}}.
             </li>
           </ul>
         </div>

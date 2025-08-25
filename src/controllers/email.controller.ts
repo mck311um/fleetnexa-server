@@ -193,8 +193,7 @@ const sendCompletionEmail = async (
   res: Response,
   next: NextFunction
 ) => {
-  const bookingId = req.params.bookingId;
-  const tenantId = req.user?.tenantId;
+  const { bookingId, tenantId } = req.body;
 
   try {
     if (!bookingId) {

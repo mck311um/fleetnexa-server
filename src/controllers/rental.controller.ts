@@ -270,6 +270,14 @@ const handleStorefrontRental = async (
           id: true,
           rentalNumber: true,
           bookingCode: true,
+          tenant: {
+            select: {
+              id: true,
+              tenantName: true,
+              email: true,
+              number: true,
+            },
+          },
           vehicle: {
             select: {
               year: true,
