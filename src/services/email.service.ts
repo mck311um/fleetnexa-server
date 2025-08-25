@@ -35,6 +35,7 @@ const testRenderEmailTemplate = async (
 const sendEmail = async (params: SendEmailParams) => {
   const {
     to,
+    cc = [],
     template,
     templateData,
     from = "no-reply@fleetnexa.com",
@@ -46,6 +47,7 @@ const sendEmail = async (params: SendEmailParams) => {
     const command = new SendTemplatedEmailCommand({
       Destination: {
         ToAddresses: to,
+        CcAddresses: cc,
       },
       Template: template,
       TemplateData: JSON.stringify(templateData),
@@ -56,6 +58,7 @@ const sendEmail = async (params: SendEmailParams) => {
     logger.info(`Email sent successfully to: ${to.join(", ")}`);
     return true;
   } catch (error) {
+    console.error("Failed to send email:", error);
     logger.error("Failed to send email:", error);
     throw error;
   }

@@ -12,6 +12,4 @@ router.get("/tenant/:id", api, controller.getTenantById);
 router.get("/vehicles", api, controller.getVehicles);
 router.get("/vehicle/:id", api, controller.getVehicleById);
 
-router.post("/rental", api, controller.addBooking);
-
 export default router;

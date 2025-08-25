@@ -90,6 +90,7 @@
 
       .info-item .info-label {
         font-weight: 600;
+        margin-right: 5px;
       }
 
       .company-item {
@@ -139,7 +140,6 @@
         justify-content: space-between;
         align-items: center;
         padding: 12px 15px;
-        border: 1px solid #e9ecef;
         border-radius: 6px;
         margin-bottom: 10px;
         background-color: #f8f9fa;
@@ -218,12 +218,24 @@
             <span class="info-value">{{endDate}}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Pickup Location:</span>
-            <span class="info-value">{{pickupLocation}}</span>
-          </div>
-          <div class="info-item">
             <span class="info-label">Total Price:</span>
             <span class="info-value">{{totalPrice}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Pickup Details</div>
+          <div class="info-item">
+            <span class="info-label">Pickup Date:</span>
+            <span class="info-value">{{startDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Time:</span>
+            <span class="info-value">{{pickupTime}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Location:</span>
+            <span class="info-value">{{pickupLocation}}</span>
           </div>
         </div>
 
@@ -243,21 +255,18 @@
           </div>
         </div>
 
-        <div class="documents-section">
-          <div class="documents-heading">Your Documents</div>
-
+        <div class="info-card">
+          <div class="info-heading">Your Documents</div>
           {{#if invoiceUrl}}
           <div class="document-item">
-            <span class="document-name">Invoice</span>
             <a href="{{invoiceUrl}}" class="download-btn" target="_blank"
-              >Download</a
+              >Download Invoice</a
             >
           </div>
           {{/if}} {{#if agreementUrl}}
           <div class="document-item">
-            <span class="document-name">Booking Agreement</span>
             <a href="{{agreementUrl}}" class="download-btn" target="_blank"
-              >Download</a
+              >Booking Agreement</a
             >
           </div>
           {{/if}}
@@ -267,7 +276,7 @@
           <strong>Important Reminder</strong>
           <p>
             💡 Tip: Save these documents for your records. You may need to
-            present them at picku
+            present them at pickup
           </p>
           <p>
             Please bring your driver's license and payment method used for

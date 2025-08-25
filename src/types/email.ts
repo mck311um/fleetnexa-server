@@ -1,7 +1,16 @@
+type EmailTemplate =
+  | "WelcomeTemplate"
+  | "BookingConfirmation"
+  | "BookingCompleted";
+
 export interface SendEmailParams {
   to: string[];
-  template: string;
-  templateData: WelcomeEmailParams;
+  cc?: string[];
+  template: EmailTemplate;
+  templateData:
+    | WelcomeEmailParams
+    | BookingConfirmationEmailParams
+    | BookingCompletedEmailParams;
   from?: string;
 }
 
@@ -22,9 +31,26 @@ export interface BookingConfirmationEmailParams {
   bookingId: string;
   startDate: string;
   endDate: string;
+  pickupTime: string;
   pickupLocation: string;
   totalPrice: string;
   tenantName: string;
   phone: string;
+  vehicle: string;
+  email: string;
+  invoiceUrl: string;
+  agreementUrl: string;
+}
+
+export interface BookingCompletedEmailParams {
+  bookingId: string;
+  startDate: string;
+  endDate: string;
+  pickupLocation: string;
+  pickupTime: string;
+  totalPrice: string;
+  tenantName: string;
+  phone: string;
+  vehicle: string;
   email: string;
 }

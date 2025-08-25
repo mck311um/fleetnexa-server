@@ -5,10 +5,15 @@ import { tenantRepo } from "../repository/tenant.repository";
 import { rentalRepo } from "../repository/rental.repository";
 import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
-import { rentalDocumentsEmail } from "../templates/rentalEmail.template";
 import service from "../services/email.service";
-import { EmailTemplateParams } from "../types/email";
+import {
+  BookingCompletedEmailParams,
+  BookingConfirmationEmailParams,
+  EmailTemplateParams,
+} from "../types/email";
 import { logger } from "../config/logger.config";
+import emailService from "../services/email.service";
+import formatter from "../utils/formatter";
 
 interface Document {
   documentUrl: string;
@@ -123,101 +128,119 @@ const updateEmailTemplate = async (
   }
 };
 
-const sendDocuments = async (
+const sendConfirmationEmail = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const resend = new Resend(process.env.RESEND_API_KEY || "");
-  const { body } = req.body as { body: SendDocumentBody };
+  const bookingId = req.params.bookingId;
   const tenantId = req.user?.tenantId;
   const userId = req.user?.id;
 
   try {
-    if (!body.documents || !body.documents.length || !body.recipientEmail) {
-      return res.status(400).json({ message: "Missing required fields" });
+    if (!bookingId) {
+      return res.status(400).json({ message: "BookingId is Required" });
     }
 
     const tenant = await tenantRepo.getTenantById(tenantId!);
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        firstName: true,
-        lastName: true,
-      },
-    });
-    const rental = await rentalRepo.getRentalById(body.rentalId, tenantId!);
-    const vehicle = await vehicleRepo.getVehicleById(
-      rental?.vehicleId!,
-      tenantId!
-    );
+    const booking = await rentalRepo.getRentalById(bookingId, tenantId!);
 
-    const documentAttachments = await Promise.all(
-      body.documents.map(async (doc) => {
-        const response = await fetch(doc.documentUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch document: ${doc.documentType}`);
-        }
-
-        const fileBuffer = await response.arrayBuffer();
-        const filename =
-          doc.filename || `${doc.documentType}_${rental?.rentalNumber}.pdf`;
-
-        return {
-          filename,
-          content: Buffer.from(fileBuffer),
-        };
-      })
-    );
-
-    const vehicleDescription = `${vehicle?.year} ${vehicle?.brand?.brand} ${vehicle?.model?.model} - ${vehicle?.color}`;
-
-    const subject =
-      body.documents.length > 1
-        ? `Documents for Vehicle Rental`
-        : `${body.documents[0].documentType} for Vehicle Rental`;
-
-    const documentList = body.documents
-      .map((doc) => `- ${doc.documentType}`)
-      .join("\n");
-
-    const localSenderName = body.senderName.replace(/\s+/g, "").toLowerCase();
-    const emailHtml = rentalDocumentsEmail({
-      message: body.message,
-      vehicleDescription,
-      rental,
-      documents: body.documents,
-      user: {
-        firstName: user?.firstName || "",
-        lastName: user?.lastName || "",
-      },
-      tenant: {
-        tenantName: tenant?.tenantName || "",
-        email: tenant?.email || "",
-        number: tenant?.number || "",
-        logo: tenant?.logo || "",
-      },
-    });
-
-    const { data, error } = await resend.emails.send({
-      from: `${body.senderName} <${localSenderName}@fleetnexa.com>`,
-      to: body.recipientEmail,
-      // cc: body.senderEmail,
-      subject,
-      html: emailHtml,
-      attachments: documentAttachments,
-    });
-
-    if (error) {
-      throw new Error(error.message);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
     }
 
-    res.json({
-      success: true,
-      message: "Documents sent successfully",
-      data,
-      documentsSent: body.documents.map((doc: any) => doc.documentType),
+    const primaryDriver = await prisma.rentalDriver.findFirst({
+      where: {
+        rentalId: booking.id,
+        primaryDriver: true,
+      },
+      select: { driverId: true, driver: { select: { email: true } } },
     });
+
+    const templateData: BookingConfirmationEmailParams = {
+      bookingId: booking?.bookingCode || "",
+      startDate: formatter.formatDateToFriendlyDate(booking?.startDate) || "",
+      pickupTime: formatter.formatDateToFriendlyTime(booking?.startDate) || "",
+      endDate: formatter.formatDateToFriendlyDate(booking?.endDate) || "",
+      pickupLocation: booking?.pickup.location || "",
+      totalPrice: formatter.formatNumberToTenantCurrency(
+        booking?.values?.netTotal || 0,
+        tenant?.currency?.code || "USD"
+      ),
+      tenantName: tenant?.tenantName || "",
+      phone: tenant?.number || "",
+      vehicle: formatter.formatVehicleToFriendly(booking?.vehicle) || "",
+      email: tenant?.email || "",
+      invoiceUrl: booking?.invoice?.invoiceUrl || "",
+      agreementUrl: booking?.agreement?.agreementUrl || "",
+    };
+
+    await emailService.sendEmail({
+      to: [primaryDriver?.driver.email || ""],
+      cc: [tenant?.email || ""],
+      template: "BookingConfirmation",
+      templateData,
+    });
+
+    res.status(200).json({ message: "Confirmation email sent successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const sendCompletionEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const bookingId = req.params.bookingId;
+  const tenantId = req.user?.tenantId;
+
+  try {
+    if (!bookingId) {
+      return res.status(400).json({ message: "BookingId is Required" });
+    }
+
+    const tenant = await tenantRepo.getTenantById(tenantId!);
+    const booking = await rentalRepo.getRentalById(bookingId, tenantId!);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    const primaryDriver = await prisma.rentalDriver.findFirst({
+      where: {
+        rentalId: booking.id,
+        primaryDriver: true,
+      },
+      select: { driverId: true, driver: { select: { email: true } } },
+    });
+
+    const templateData: BookingCompletedEmailParams = {
+      bookingId: booking?.bookingCode || "",
+      startDate: formatter.formatDateToFriendlyDate(booking?.startDate) || "",
+      pickupTime: formatter.formatDateToFriendlyTime(booking?.startDate) || "",
+      endDate: formatter.formatDateToFriendlyDate(booking?.endDate) || "",
+      pickupLocation: booking?.pickup.location || "",
+      totalPrice: formatter.formatNumberToTenantCurrency(
+        booking?.values?.netTotal || 0,
+        tenant?.currency?.code || "USD"
+      ),
+      tenantName: tenant?.tenantName || "",
+      phone: tenant?.number || "",
+      vehicle: formatter.formatVehicleToFriendly(booking?.vehicle) || "",
+      email: tenant?.email || "",
+    };
+
+    await emailService.sendEmail({
+      to: [primaryDriver?.driver.email || ""],
+      cc: [tenant?.email || ""],
+      from: "no-reply@rentnexa.com",
+      template: "BookingCompleted",
+      templateData,
+    });
+
+    res.status(200).json({ message: "Completion email sent successfully" });
   } catch (error) {
     next(error);
   }
@@ -225,7 +248,8 @@ const sendDocuments = async (
 
 export default {
   setupTemplates,
-  sendDocuments,
+  sendConfirmationEmail,
+  sendCompletionEmail,
   createEmailTemplate,
   updateEmailTemplate,
 };

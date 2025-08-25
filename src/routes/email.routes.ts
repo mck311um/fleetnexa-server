@@ -7,6 +7,12 @@ const router = express.Router();
 router.post("/send-documents", auth, controller.sendDocuments);
 router.post("/template", controller.setupTemplates);
 
+router.post(
+  "/booking/confirm/:bookingId",
+  auth,
+  controller.sendConfirmationEmail
+);
+
 router.put("/template", controller.updateEmailTemplate);
 
 export default router;

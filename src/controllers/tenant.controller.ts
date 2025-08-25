@@ -6,6 +6,7 @@ import loggerConfig from "../config/logger.config";
 import generator from "../services/generator.service";
 import bcrypt from "bcrypt";
 import emailService from "../services/email.service";
+import { WelcomeEmailParams } from "../types/email";
 
 const getTenantById = async (
   req: Request,
@@ -167,15 +168,17 @@ const createTenant = async (
       return { user, tenant: newTenant, password };
     });
 
+    const templateData: WelcomeEmailParams = {
+      name: success.user.firstName + " " + success.user.lastName,
+      tenantName: success.tenant.tenantName,
+      username: success.user.username,
+      password: success.password,
+    };
+
     await emailService.sendEmail({
       to: [success.tenant.email],
       template: "WelcomeTemplate",
-      templateData: {
-        name: success.user.firstName + " " + success.user.lastName,
-        tenantName: success.tenant.tenantName,
-        username: success.user.username,
-        password: success.password,
-      },
+      templateData,
     });
 
     res.status(201).json();
