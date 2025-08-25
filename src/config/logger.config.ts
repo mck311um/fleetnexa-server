@@ -2,7 +2,7 @@ import { createLogger, format, transports } from "winston";
 import { Request, Response } from "express";
 import { bugsnagClient } from "./bugsnag.config";
 
-const logger = createLogger({
+export const logger = createLogger({
   level: "info",
   format: format.combine(
     format.timestamp(),

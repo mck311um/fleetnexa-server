@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking Confirmed</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+        color: #495057;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .email-header {
+        color: #ffffff;
+        text-align: center;
+        padding: 25px;
+        background-color: #1e2a32;
+      }
+
+      .email-header .logo {
+        max-width: 50px;
+        margin-bottom: 10px;
+      }
+
+      .email-header .brand-title {
+        font-size: 30px;
+        font-weight: 800;
+        margin: 0 0 5px 0;
+      }
+
+      .email-header .tagline {
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      .email-body {
+        padding: 30px 20px;
+      }
+
+      .welcome-title {
+        color: #1580b5;
+        font-size: 24px;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .intro-text {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+
+      .info-card {
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .info-heading {
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #1580b5;
+        border-bottom: 1px solid #dfe3e8;
+        padding-bottom: 8px;
+      }
+
+      .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        font-size: 14px;
+        margin-right: 5px;
+      }
+
+      .info-item .info-label {
+        font-weight: 600;
+        margin-right: 5px;
+      }
+
+      .company-item {
+        margin-bottom: 12px;
+        font-size: 18px;
+      }
+
+      .password-value {
+        font-family: monospace;
+        background-color: #e9ecef;
+        padding: 2px 5px;
+        border-radius: 4px;
+      }
+
+      .notes-section {
+        background-color: #fff8e5;
+        border: 1px solid #ffe0a3;
+        border-radius: 6px;
+        padding: 15px 18px;
+        margin-bottom: 25px;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .notes-section strong {
+        color: #d48806;
+      }
+
+      .action-section {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+
+      .documents-section {
+        margin-bottom: 25px;
+      }
+
+      .documents-heading {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 12px;
+        color: #1580b5;
+      }
+
+      .document-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
+      }
+
+      .download-btn {
+        background-color: #4cd3e3;
+        color: #ffffff;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      .download-btn:hover {
+        background-color: #1580b5;
+      }
+
+      .footer {
+        background-color: #f1f3f5;
+        color: #6c757d;
+        text-align: center;
+        padding: 18px 20px;
+        font-size: 12px;
+      }
+
+      .footer a {
+        color: #1580b5;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="email-container">
+      <div class="email-header">
+        <img
+          src="https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/Logos/fleenexa.png"
+          alt="FleetNexa Logo"
+          class="logo"
+        />
+        <h1 class="brand-title">FleetNexa</h1>
+        <div class="tagline">Caribbean Rental Management</div>
+      </div>
+
+      <div class="email-body">
+        <h1 class="welcome-title">Booking Confirmed!</h1>
+        <p class="intro-text">
+          Great news — {{tenantName}} has confirmed your reservation! Your
+          booking details are listed below, and we’ve attached your invoice and
+          agreement for easy reference.
+        </p>
+
+        <div class="info-card">
+          <div class="info-heading">Booking Details</div>
+          <div class="info-item">
+            <span class="info-label">Booking ID:</span>
+            <span class="info-value booking-id">{{bookingId}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Vehicle:</span>
+            <span class="info-value">{{vehicle}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Start Date:</span>
+            <span class="info-value">{{startDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">End Date:</span>
+            <span class="info-value">{{endDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Total Price:</span>
+            <span class="info-value">{{totalPrice}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Pickup Details</div>
+          <div class="info-item">
+            <span class="info-label">Pickup Date:</span>
+            <span class="info-value">{{startDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Time:</span>
+            <span class="info-value">{{pickupTime}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Location:</span>
+            <span class="info-value">{{pickupLocation}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Rental Company</div>
+          <div class="info-item">
+            <span class="info-label">Company:</span>
+            <span class="info-value">{{tenantName}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Phone:</span>
+            <span class="info-value">{{phone}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email:</span>
+            <span class="info-value">{{email}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Your Documents</div>
+          {{#if invoiceUrl}}
+          <div class="document-item">
+            <a href="{{invoiceUrl}}" class="download-btn" target="_blank"
+              >Download Invoice</a
+            >
+          </div>
+          {{/if}} {{#if agreementUrl}}
+          <div class="document-item">
+            <a href="{{agreementUrl}}" class="download-btn" target="_blank"
+              >Booking Agreement</a
+            >
+          </div>
+          {{/if}}
+        </div>
+
+        <div class="notes-section">
+          <strong>Important Reminder</strong>
+          <p>
+            💡 Tip: Save these documents for your records. You may need to
+            present them at pickup
+          </p>
+          <p>
+            Please bring your driver's license and payment method used for
+            booking when you pick up your vehicle.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>© 2025 Devvize Services. All rights reserved.</p>
+        <div class="contact-info">
+          Need assistance? Contact our support team at
+          <a href="mailto:support@devvize.com" class="contact-link"
+            >support@devvize.com</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

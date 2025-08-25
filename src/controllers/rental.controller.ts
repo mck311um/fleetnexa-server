@@ -5,6 +5,10 @@ import logUtil from "../config/logger.config";
 import prisma from "../config/prisma.config";
 import generator from "../services/generator.service";
 import { rentalRepo } from "../repository/rental.repository";
+import { BookingConfirmationEmailParams } from "../types/email";
+import formatter from "../utils/formatter";
+import { vehicleRepo } from "../repository/vehicle.repository";
+import app from "../app";
 
 const getRentals = async (req: Request, res: Response, next: NextFunction) => {
   const tenantId = req.user?.tenantId;
@@ -222,6 +226,269 @@ const handleRental = async (
     next(error);
   }
 };
+const handleStorefrontRental = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { rental } = req.body;
+
+    const booking = await prisma.$transaction(async (tx) => {
+      const tenant = await tenantRepo.getTenantById(rental.tenantId);
+
+      if (!tenant) {
+        return res.status(404).json({ message: "Tenant not found" });
+      }
+
+      const rentalNumber = await generator.generateRentalNumber(
+        rental.tenantId
+      );
+      const bookingCode = generator.generateBookingCode(
+        tenant.tenantCode,
+        rentalNumber
+      );
+
+      const newRental = await tx.rental.create({
+        data: {
+          startDate: new Date(rental.startDate),
+          endDate: new Date(rental.endDate),
+          pickupLocationId: rental.pickupLocationId,
+          returnLocationId: rental.returnLocationId,
+          vehicleId: rental.vehicleId,
+          agent: "RENTNEXA",
+          createdAt: new Date(),
+          tenantId: rental.tenantId,
+          status: "PENDING",
+          notes: rental.notes,
+          rentalNumber: rentalNumber,
+          bookingCode: bookingCode,
+        },
+        select: {
+          startDate: true,
+          endDate: true,
+          id: true,
+          rentalNumber: true,
+          bookingCode: true,
+          tenant: {
+            select: {
+              id: true,
+              tenantName: true,
+              email: true,
+              number: true,
+            },
+          },
+          vehicle: {
+            select: {
+              year: true,
+              brand: true,
+              model: true,
+              tenant: {
+                select: {
+                  currency: true,
+                },
+              },
+            },
+          },
+          pickup: true,
+          values: {
+            select: {
+              netTotal: true,
+            },
+          },
+        },
+      });
+
+      const values = await tx.values.create({
+        data: {
+          numberOfDays: parseFloat(rental.values.numberOfDays),
+          basePrice: parseFloat(rental.values.basePrice),
+          totalCost: parseFloat(rental.values.totalCost),
+          discount: parseFloat(rental.values.discount),
+          deliveryFee: parseFloat(rental.values.deliveryFee),
+          collectionFee: parseFloat(rental.values.collectionFee),
+          deposit: parseFloat(rental.values.deposit),
+          totalExtras: parseFloat(rental.values.totalExtras),
+          subTotal: parseFloat(rental.values.subTotal),
+          netTotal: parseFloat(rental.values.netTotal),
+          discountMin: parseFloat(rental.values.discountMin),
+          discountMax: parseFloat(rental.values.discountMax),
+          discountAmount: parseFloat(rental.values.discountAmount),
+          additionalDriverFees: parseFloat(rental.values.additionalDriverFees),
+          discountPolicy: rental.values.discountPolicy,
+          rental: {
+            connect: { id: newRental.id },
+          },
+        },
+      });
+
+      const extrasPromises = rental.values.extras.map((extra: any) =>
+        tx.rentalExtra.upsert({
+          where: { id: extra.id },
+          create: {
+            id: extra.id,
+            extraId: extra.extraId,
+            amount: extra.amount,
+            valuesId: values.id,
+          },
+          update: {
+            extraId: extra.extraId,
+            amount: extra.amount,
+            valuesId: values.id,
+          },
+        })
+      );
+
+      await Promise.all(extrasPromises);
+
+      const existingCustomer = await tx.customer.findFirst({
+        where: {
+          tenantId: rental.tenantId,
+          license: {
+            licenseNumber: rental.customer.license.licenseNumber,
+          },
+        },
+      });
+
+      if (existingCustomer) {
+        await tx.customer.update({
+          where: { id: existingCustomer.id },
+          data: {
+            firstName: rental.customer.firstName,
+            lastName: rental.customer.lastName,
+            gender: rental.customer.gender,
+            dateOfBirth: rental.customer.dateOfBirth,
+            email: rental.customer.email,
+            phone: rental.customer.phone,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            tenantId: tenant.id,
+          },
+        });
+
+        await tx.driverLicense.update({
+          where: { customerId: existingCustomer.id },
+          data: {
+            licenseExpiry: rental.customer.license.licenseExpiry,
+            licenseIssued: rental.customer.license.licenseIssued,
+          },
+        });
+
+        await tx.customerAddress.update({
+          where: { customerId: existingCustomer.id },
+          data: {
+            street: rental.customer.address.street,
+            village: rental.customer.address.villageId
+              ? { connect: { id: rental.customer.address.villageId } }
+              : undefined,
+            state: rental.customer.address.stateId
+              ? { connect: { id: rental.customer.address.stateId } }
+              : undefined,
+            country: rental.customer.address.countryId
+              ? { connect: { id: rental.customer.address.countryId } }
+              : undefined,
+          },
+        });
+
+        await tx.rentalDriver.create({
+          data: {
+            rentalId: newRental.id,
+            driverId: existingCustomer.id,
+            primaryDriver: true,
+          },
+        });
+      } else {
+        const customer = await tx.customer.create({
+          data: {
+            firstName: rental.customer.firstName,
+            lastName: rental.customer.lastName,
+            gender: rental.customer.gender,
+            dateOfBirth: rental.customer.dateOfBirth,
+            email: rental.customer.email,
+            phone: rental.customer.phone,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            tenantId: tenant.id,
+            status: "ACTIVE",
+          },
+        });
+
+        await tx.driverLicense.create({
+          data: {
+            customerId: customer.id,
+            licenseNumber: rental.customer.license.licenseNumber,
+            licenseExpiry: rental.customer.license.licenseExpiry,
+            licenseIssued: rental.customer.license.licenseIssued,
+          },
+        });
+
+        await tx.customerAddress.create({
+          data: {
+            customer: { connect: { id: customer.id } },
+            street: rental.customer.address.street,
+            village: rental.customer.address.villageId
+              ? { connect: { id: rental.customer.address.villageId } }
+              : undefined,
+            state: rental.customer.address.stateId
+              ? { connect: { id: rental.customer.address.stateId } }
+              : undefined,
+            country: rental.customer.address.countryId
+              ? { connect: { id: rental.customer.address.countryId } }
+              : undefined,
+          },
+        });
+
+        await tx.rentalDriver.create({
+          data: {
+            rentalId: newRental.id,
+            driverId: customer.id,
+            primaryDriver: true,
+          },
+        });
+      }
+
+      const vehicle = await vehicleRepo.getVehicleById(
+        rental.vehicleId,
+        rental.tenantId
+      );
+
+      const bookingNumber = newRental.rentalNumber;
+      const actionUrl = `/app/bookings/${bookingNumber}`;
+      const driverName = `${rental.customer.firstName} ${rental.customer.lastName}`;
+      const vehicleName = `${vehicle?.brand?.brand} ${vehicle?.model?.model}`;
+      const fromDate = formatter.formatDateToFriendlyDateShort(
+        new Date(newRental.startDate)
+      );
+      const toDate = formatter.formatDateToFriendlyDateShort(
+        new Date(newRental.endDate)
+      );
+      const message = `${driverName} just submitted a booking request for a ${vehicleName}, scheduled from ${fromDate} to ${toDate}, via your storefront.`;
+
+      const notification = await tx.tenantNotification.create({
+        data: {
+          tenantId: tenant.id,
+          title: "New Booking Request",
+          type: "BOOKING",
+          priority: "HIGH",
+          message,
+          actionUrl,
+          read: false,
+          createdAt: new Date(),
+        },
+      });
+
+      const io = app.get("io");
+      io.to(tenant.id).emit("tenant-notification", notification);
+
+      return newRental;
+    });
+
+    res.status(201).json({ booking, values: rental.values });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const confirmRental = async (
   req: Request,
   res: Response,
@@ -278,6 +545,7 @@ const confirmRental = async (
 
     const rentals = await rentalRepo.getRentals(tenantId);
     const updatedRental = await rentalRepo.getRentalById(rental.id, tenantId!);
+
     return res.status(201).json({ updatedRental, rentals });
   } catch (error) {
     next(error);
@@ -697,6 +965,7 @@ export default {
   getRentals,
   getRentalById,
   handleRental,
+  handleStorefrontRental,
   confirmRental,
   declineRental,
   cancelRental,
