@@ -36,6 +36,29 @@ const getVehicleById = async (
     res.status(500).json({ message: "Server error" });
   }
 };
+const getVehicleByLicensePlate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { licensePlate } = req.params;
+
+  try {
+    const vehicle = await vehicleRepo.getVehicleByLicensePlate(
+      licensePlate,
+      req.user?.tenantId!
+    );
+
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle not found" });
+    }
+
+    res.status(200).json(vehicle);
+  } catch (error) {
+    next(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 const updateVehicleStatus = async (
   req: Request,
   res: Response,

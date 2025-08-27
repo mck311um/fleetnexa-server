@@ -32,6 +32,13 @@ class VehicleRepository {
     });
   }
 
+  async getVehicleByLicensePlate(licensePlate: string, tenantId: string) {
+    return prisma.vehicle.findUnique({
+      where: { licensePlate, tenantId, isDeleted: false },
+      include: this.getVehicleIncludeOptions(),
+    });
+  }
+
   async getVehicleByGroupId(
     groupId: string,
     tenantId: string,

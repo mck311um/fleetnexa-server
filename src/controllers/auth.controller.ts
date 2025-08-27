@@ -134,10 +134,16 @@ const storefrontRegister = async (
   }
 };
 
-const login = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+const login = async (req: Request, res: Response, next: NextFunction) => {
+  const { username, password, rememberMe } = req.body;
 
   try {
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Username and password are required" });
+    }
+
     const user = await prisma.user.findUnique({
       where: { username },
       include: {
@@ -155,13 +161,13 @@ const login = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid Username" });
+      return res.status(400).json({ message: "Invalid username or password" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid Password" });
+      return res.status(400).json({ message: "Invalid username or password" });
     }
 
     const userData = {
@@ -172,11 +178,9 @@ const login = async (req: Request, res: Response) => {
       initials: `${user.firstName[0]}${user.lastName[0]}`,
       fullName: `${user.firstName} ${user.lastName}`,
       tenantId: user.tenantId,
-      tenant: user.tenant?.tenantCode,
+      tenantCode: user.tenant?.tenantCode,
       theme: user.theme,
-      color: user.color,
       roleId: user.roleId,
-      role: user.role,
     };
 
     const payload = {
@@ -187,13 +191,12 @@ const login = async (req: Request, res: Response) => {
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
-      expiresIn: "7d",
+      expiresIn: rememberMe ? "7d" : "30d",
     });
 
     res.status(200).json({ userData, token });
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
