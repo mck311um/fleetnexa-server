@@ -127,10 +127,22 @@ const createTenant = async (
         },
       });
 
-      const role = await tx.userRole.create({
+      const userRole = await tx.userRole.create({
         data: {
           name: "Admin",
           description: "Default role for new tenants",
+          show: true,
+          tenant: { connect: { id: newTenant.id } },
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
+
+      const superAdminRole = await tx.userRole.create({
+        data: {
+          name: "Super Admin",
+          description: "Super Admin role for new tenants",
+          show: false,
           tenant: { connect: { id: newTenant.id } },
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -141,7 +153,15 @@ const createTenant = async (
 
       await tx.userRolePermission.createMany({
         data: permissions.map((perm: any) => ({
-          roleId: role.id,
+          roleId: userRole.id,
+          permissionId: perm.id,
+          assignedAt: new Date(),
+        })),
+      });
+
+      await tx.userRolePermission.createMany({
+        data: permissions.map((perm: any) => ({
+          roleId: superAdminRole.id,
           permissionId: perm.id,
           assignedAt: new Date(),
         })),
@@ -152,6 +172,12 @@ const createTenant = async (
       const hashedPassword = await bcrypt.hash(password, salt);
       const username = await generator.generateUserName(firstName, lastName);
 
+      const superAdminPassword = await generator.generateTempPassword(12);
+      const superAdminHashedPassword = await bcrypt.hash(
+        superAdminPassword,
+        salt
+      );
+
       const user = await tx.user.create({
         data: {
           username,
@@ -160,7 +186,20 @@ const createTenant = async (
           lastName,
           tenantId: newTenant.id,
           lastChanged: new Date(),
-          roleId: role.id,
+          roleId: userRole.id,
+        },
+      });
+
+      await tx.user.create({
+        data: {
+          username: `admin_${tenantCode.toLowerCase()}`,
+          password: superAdminHashedPassword,
+          firstName,
+          lastName,
+          tenantId: newTenant.id,
+          lastChanged: new Date(),
+          roleId: superAdminRole.id,
+          requiredPasswordChange: false,
         },
       });
 

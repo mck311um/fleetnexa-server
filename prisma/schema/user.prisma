@@ -3,8 +3,8 @@ model User {
   password               String
   firstName               String
   lastName               String
-  username               String          @unique    
-  tenantId               String
+  username               String          @unique           
+  tenantId               String?
   roleId                 String?
   color                  String          @default("#343434")
   theme                  String          @default("light")
@@ -14,13 +14,14 @@ model User {
   lastChanged            DateTime?
   email                  String?         @unique
   profilePicture          String?         @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
+  show                   Boolean?        @default(false)
 
   rentals                Rental[]
   rentalActivity         RentalActivity[]
   transactions           Transactions[]
       
   role                   UserRole?       @relation(fields: [roleId], references: [id])
-  tenant                 Tenant          @relation(fields: [tenantId], references: [id])
+  tenant                 Tenant?         @relation(fields: [tenantId], references: [id])
 
   @@unique([username, tenantId])
 }
@@ -62,6 +63,8 @@ model UserRole {
   updatedAt       DateTime?       @updatedAt
   isDeleted       Boolean         @default(false)
   updatedBy       String?
+  show            Boolean?        @default(false)
+
 
   users           User[]
   tenant          Tenant          @relation(fields: [tenantId], references: [id])

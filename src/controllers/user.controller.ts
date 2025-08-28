@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import prisma from "../config/prisma.config";
 import logUtil from "../config/logger.config";
 import bcrypt from "bcrypt";
+import generator from "../services/generator.service";
 
 const getCurrentUser = async (req: Request, res: Response) => {
   try {
@@ -278,26 +279,12 @@ const createTenantUser = async (req: Request, res: Response) => {
       where: { id: tenantId },
     });
 
-    let username = "";
-    let attempt = 1;
-
-    while (true) {
-      const prefix = firstName.substring(0, attempt).toLowerCase();
-      username = `${prefix}${lastName}`.toLowerCase();
-
-      const existingUser = await prisma.user.findUnique({
-        where: {
-          username_tenantId: {
-            username,
-            tenantId: tenantId!,
-          },
-        },
-      });
-
-      if (!existingUser) break;
-
-      attempt++;
+    if (!tenant) {
+      return res.status(404).json({ message: "Tenant not found" });
     }
+
+    const username = await generator.generateUserName(firstName, lastName);
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash("ThisIsAPassword!", salt);
 
@@ -314,7 +301,7 @@ const createTenantUser = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json({ username: username });
+    res.status(201).json({ username });
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: error.message });

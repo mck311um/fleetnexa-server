@@ -161,6 +161,11 @@ const generateUserName = async (
   }
 };
 
+const generateAdminUsername = (tenantCode: string): string => {
+  const cleanTenantCode = tenantCode.replace(/-/g, "");
+  return `admin_${cleanTenantCode}`;
+};
+
 const generateTempPassword = (length = 12) => {
   return crypto.randomBytes(length).toString("base64").slice(0, length);
 };
