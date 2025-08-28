@@ -181,6 +181,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       tenantCode: user.tenant?.tenantCode,
       theme: user.theme,
       roleId: user.roleId,
+      requiredPasswordChange: user.requiredPasswordChange,
     };
 
     const payload = {

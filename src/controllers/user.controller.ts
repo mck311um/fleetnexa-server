@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import prisma from "../config/prisma.config";
 import logUtil from "../config/logger.config";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { profile } from "console";
 
 const getCurrentUser = async (req: Request, res: Response) => {
   try {
@@ -59,6 +57,7 @@ const getCurrentUser = async (req: Request, res: Response) => {
       color: user.color,
       email: user.email,
       profilePicture: user.profilePicture || null,
+      roleId: user.roleId,
       requiredPasswordChange: user.requiredPasswordChange,
     };
 

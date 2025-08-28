@@ -112,10 +112,9 @@ const createTenant = async (
   const { tenantName, email, number, firstName, lastName } = req.body;
 
   try {
-    const success = await prisma.$transaction(async (tx) => {
+    const success = await prisma.$transaction(async (tx: any) => {
       const tenantCode = await generator.generateTenantCode(tenantName);
-      const tenantId = randomUUID();
-      const slug = await generator.generateTenantSlug(tenantId);
+      const slug = await generator.generateTenantSlug(tenantName);
 
       const newTenant = await tx.tenant.create({
         data: {
