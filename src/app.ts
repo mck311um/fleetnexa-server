@@ -28,6 +28,7 @@ import dodoRoutes from "./routes/dodo.routes";
 import { bugsnagMiddleware } from "./config/bugsnag.config";
 import sitemapRoutes from "./routes/sitemap.routes";
 import healthRoutes from "./routes/health.routes";
+import subscriptionRoutes from "./routes/subscription.routes";
 
 dotenv.config();
 
@@ -74,6 +75,7 @@ app.use("/api/devvize", devvizeRoutes);
 app.use("/api/dodo", dodoRoutes);
 app.use("/api/sitemap", sitemapRoutes);
 app.use("/api/health", healthRoutes);
+app.use("/api/subscription", subscriptionRoutes);
 
 if (bugsnagMiddleware) {
   app.use(bugsnagMiddleware.errorHandler);

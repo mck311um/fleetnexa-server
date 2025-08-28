@@ -1,7 +1,6 @@
 import { rentalRepo } from "../repository/rental.repository";
 import { NextFunction, Request, Response } from "express";
 import prisma from "../config/prisma.config";
-import { UUID } from "crypto";
 
 const getTransactions = async (
   req: Request,

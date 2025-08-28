@@ -12,8 +12,7 @@ model Tenant {
   invoiceSequenceId     String?
   invoiceFootNotes      String    @default("")
   subscriptionId        String?
-  islandWideDelivery    Boolean   @default(true)
-  storefrontEnabled     Boolean   @default(true)
+  storefrontEnabled     Boolean   @default(false)
   securityDeposit       Float     @default(0)
   rating                Float     @default(0)
   description           String?   @default("")

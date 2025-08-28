@@ -1,26 +1,34 @@
 model SubscriptionPlan {
   id                String    @id @default(dbgenerated("gen_random_uuid()"))
   productId         String    @unique
-  name              String
+  name              String    @unique
   description       String?
   price             Float
   priceXCD          Float?
-  features          String[]
   subscriptionTier  Int @default(1) 
 
-  tenantSubscription TenantSubscription[]
-  details            PlanDetails[]
+  tenants            TenantSubscription[]
+  details            PlanDetails?
   payments           SubscriptionPayment[]
+  features           PlanFeatures[]
 }
+
+model PlanFeatures {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
+  planId              String
+  feature             String
+
+  plan                SubscriptionPlan @relation(fields: [planId], references: [id])
+} 
 
 model PlanDetails {
   id                  String    @id @default(dbgenerated("gen_random_uuid()"))
-  subscriptionPlanId  String
+  planId              String    @unique
   numberOfUsers       Int
-  numberOfVehicles    Int
+  numberOfVehicles    Int 
   numberOfLocations   Int
 
-  plan                SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
+  plan                SubscriptionPlan @relation(fields: [planId], references: [id])
 }
 
 model SubscriptionPayment {

@@ -28,7 +28,9 @@ const getData = async (req: Request, res: Response) => {
     const licenseClasses = await prisma.licenseClass.findMany();
     const messengerApps = await prisma.messengerApp.findMany();
     const equipments = await prisma.equipment.findMany();
-    const subscriptionPlans = await prisma.subscriptionPlan.findMany();
+    const subscriptionPlans = await prisma.subscriptionPlan.findMany({
+      include: { features: true },
+    });
     const contactTypes = await prisma.contactType.findMany();
     const paymentTypes = await prisma.paymentType.findMany();
     const permissions = await prisma.appPermission.findMany();

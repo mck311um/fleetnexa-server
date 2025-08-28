@@ -1,11 +1,11 @@
 import DodoPayments from "dodopayments";
 import cron from "node-cron";
 import prisma from "../config/prisma.config";
-import client from "../config/dodo.config";
+import dodo from "../config/dodo.config";
 
 const getProducts = async () => {
   try {
-    const response = await client.products.list();
+    const response = await dodo.products.list();
     const products = response.items;
 
     await prisma.$transaction(async (tx) => {
@@ -35,7 +35,7 @@ const getProducts = async () => {
 
 const getTransactions = async () => {
   try {
-    const response = await client.payments.list();
+    const response = await dodo.payments.list();
     const payments = response.items;
 
     await prisma.$transaction(async (tx) => {
@@ -55,8 +55,7 @@ const getTransactions = async () => {
           continue;
         }
 
-        const subscription =
-          await client.subscriptions.retrieve(subscriptionId);
+        const subscription = await dodo.subscriptions.retrieve(subscriptionId);
 
         const paymentData = {
           paymentId: payment.payment_id,
@@ -90,7 +89,7 @@ cron.schedule("0 * * * *", async () => {
   }
 });
 
-cron.schedule("0 0 1 * *", async () => {
+cron.schedule("* * * * *", async () => {
   try {
     await getProducts();
   } catch (error) {

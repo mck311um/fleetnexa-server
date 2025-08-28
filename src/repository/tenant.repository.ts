@@ -33,6 +33,7 @@ class TenantRepository {
           plan: {
             include: {
               details: true,
+              features: true,
             },
           },
         },
