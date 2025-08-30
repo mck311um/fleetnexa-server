@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import { allowedOrigins } from "./config/cors";
+import { registerRoutes } from "./routes";
 import cors from "cors";
 
 import authRoutes from "./routes/auth.routes";
@@ -58,6 +59,7 @@ app.use(
 app.options("*", cors());
 
 // Routes
+registerRoutes(app);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/tenant", tenantRoutes);

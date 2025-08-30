@@ -8,7 +8,6 @@ model Rental {
   returnLocationId  String
   vehicleId         String
   agent             Agent
-  signature         String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime? @updatedAt
   tenantId          String
@@ -16,8 +15,10 @@ model Rental {
   createdBy         String?
   updatedBy         String?
   notes             String?
-  isDeleted         Boolean  @default(false)
   chargeTypeId      String?
+
+  isDeleted         Boolean  @default(false)
+  deletedAt         DateTime?
 
   values            Values?
   invoice           Invoice?
@@ -59,6 +60,7 @@ model RentalDriver {
   id                String     @id @default(dbgenerated("gen_random_uuid()"))
   rentalId          String
   driverId          String
+  isPrimary         Boolean    @default(false)
   primaryDriver     Boolean    @default(false)
 
   rental            Rental     @relation(fields: [rentalId], references: [id])

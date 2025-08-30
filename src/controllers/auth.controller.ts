@@ -188,6 +188,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       user: {
         id: user.id,
         tenantId: user.tenantId,
+        tenantCode: user.tenant?.tenantCode,
       },
     };
 
