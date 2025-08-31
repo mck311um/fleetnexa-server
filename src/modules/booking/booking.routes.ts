@@ -8,6 +8,8 @@ const router = express.Router();
 router.get("/", auth, controller.getBookings);
 router.get("/:id", auth, controller.getBookingById);
 
-router.post("/system", auth, controller.createSystemBooking);
+router.post("/", auth, controller.createSystemBooking);
+
+router.put("/:id", auth, controller.updateBooking);
 
 export default router;

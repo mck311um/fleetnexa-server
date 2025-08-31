@@ -144,7 +144,7 @@ const updateBooking = async (
       },
     });
 
-    tx.rentalDriver.deleteMany({ where: { rentalId: booking.id } });
+    await tx.rentalDriver.deleteMany({ where: { rentalId: booking.id } });
 
     await Promise.all(
       data.drivers.map((driver) =>
@@ -182,6 +182,8 @@ const updateBooking = async (
         discountPolicy: data.values.discountPolicy || "",
       },
     });
+
+    await tx.rentalExtra.deleteMany({ where: { valuesId: data.values.id } });
 
     await Promise.all(
       data.values.extras.map((extra) =>
