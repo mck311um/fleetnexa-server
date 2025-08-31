@@ -5,6 +5,8 @@ import { logger } from "../../config/logger";
 import prisma from "../../config/prisma.config";
 import { CreateBookingDtoSchema } from "./dto/create-booking.dto";
 import { UpdateBookingDtoSchema } from "./dto/update-booking.dto";
+import { ConfirmBookingDtoSchema } from "./dto/confirm-booking.dto";
+import { RentalStatus } from "@prisma/client";
 
 //#region Get Bookings
 const getBookings = async (req: Request, res: Response, next: NextFunction) => {
@@ -118,7 +120,6 @@ const createSystemBooking = async (
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 const updateBooking = async (
   req: Request,
   res: Response,
@@ -194,9 +195,95 @@ const updateBooking = async (
   }
 };
 
+const confirmRental = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+  const { data } = req.body;
+  const { id } = req.params;
+  const userId = req.user?.id;
+
+  if (!tenantId) {
+    logger.w("Tenant ID is missing", { tenantId });
+    return res.status(400).json({ error: "Tenant ID is required" });
+  }
+
+  if (!data) {
+    logger.w("Rental confirmation data is missing", { tenantId });
+    return res
+      .status(400)
+      .json({ error: "Rental confirmation data is required" });
+  }
+
+  const parseResult = ConfirmBookingDtoSchema.safeParse(data);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: "Invalid booking confirmation data",
+      details: parseResult.error.issues,
+    });
+  }
+
+  const bookingDto = parseResult.data;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const tenant = await tx.tenant.findUnique({ where: { id: tenantId } });
+
+      const booking = await tx.rental.findUnique({
+        where: { id: bookingDto.bookingId },
+      });
+
+      if (!booking) {
+        logger.w("Booking not found", {
+          tenantId,
+          bookingId: bookingDto.bookingId,
+        });
+        throw new Error("Booking not found");
+      }
+
+      if (!tenant) {
+        logger.w("Tenant not found", { tenantId });
+        throw new Error("Tenant not found");
+      }
+
+      await service.updateBookingStatus(
+        bookingDto.bookingId,
+        RentalStatus.CONFIRMED,
+        tenant,
+        tx
+      );
+
+      await service.createRentalActivity(bookingDto, tenant, tx, userId!);
+    });
+
+    const updatedBooking = await repo.getRentalById(id, tenantId);
+    const bookings = await repo.getRentals(tenantId);
+
+    logger.i("Booking confirmed successfully", {
+      tenantId,
+      tenantCode,
+      bookingId: updatedBooking!.id,
+      bookingCode: updatedBooking!.bookingCode,
+    });
+
+    return res.status(200).json({
+      message: `Booking #${updatedBooking!.rentalNumber} confirmed successfully`,
+      updatedBooking,
+      bookings,
+    });
+  } catch (error) {
+    logger.e(error, "Failed to confirm booking", { tenantId });
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 export default {
   getBookings,
   getBookingById,
   createSystemBooking,
   updateBooking,
+  confirmRental,
 };

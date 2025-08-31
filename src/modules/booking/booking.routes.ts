@@ -9,6 +9,7 @@ router.get("/", auth, controller.getBookings);
 router.get("/:id", auth, controller.getBookingById);
 
 router.post("/", auth, controller.createSystemBooking);
+router.post("/confirm", auth, controller.confirmRental);
 
 router.put("/:id", auth, controller.updateBooking);
 

@@ -4,6 +4,7 @@ import { DefaultArgs } from "@prisma/client/runtime/library";
 import { CreateBookingDto } from "./dto/create-booking.dto";
 import { logger } from "../../config/logger";
 import { UpdateBookingDto } from "./dto/update-booking.dto";
+import { CreateRentalActivityDto } from "./dto/create-activity.dto";
 
 const createBooking = async (
   tenant: any,
@@ -209,7 +210,100 @@ const updateBooking = async (
   }
 };
 
+const updateBookingStatus = async (
+  bookingId: string,
+  status: RentalStatus,
+  tenant: any,
+  tx: Omit<
+    PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+    "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+  >
+) => {
+  try {
+    const booking = await tx.rental.findUnique({ where: { id: bookingId } });
+
+    if (!booking) {
+      throw new Error("Booking not found");
+    }
+
+    await tx.rental.update({
+      where: { id: bookingId },
+      data: {
+        status,
+        updatedAt: new Date(),
+        updatedBy: tenant.id,
+      },
+    });
+
+    return;
+  } catch (error) {
+    logger.e(error, "Failed to update booking status", {
+      tenantId: tenant.id,
+      tenantCode: tenant.code,
+      bookingId,
+      status,
+    });
+    throw new Error("Failed to update booking status");
+  }
+};
+
+const createRentalActivity = async (
+  data: CreateRentalActivityDto,
+  tenant: any,
+  tx: Omit<
+    PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+    "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+  >,
+  userId: string
+) => {
+  try {
+    const booking = await tx.rental.findUnique({
+      where: { id: data.bookingId },
+    });
+
+    if (!booking) {
+      throw new Error("Booking not found");
+    }
+
+    const primaryDriver = await tx.rentalDriver.findFirst({
+      where: {
+        rentalId: booking.id,
+        primaryDriver: true,
+      },
+      select: { driverId: true },
+    });
+
+    if (!primaryDriver) {
+      throw new Error("Primary driver not found");
+    }
+
+    await tx.rentalActivity.create({
+      data: {
+        rentalId: data.bookingId,
+        action: data.action,
+        tenantId: tenant.id,
+        createdAt: new Date(),
+        createdBy: userId,
+        customerId: primaryDriver.driverId,
+        vehicleId: booking.vehicleId,
+      },
+    });
+
+    return;
+  } catch (error) {
+    logger.e(error, "Failed to create rental activity", {
+      tenantId: tenant.id,
+      tenantCode: tenant.code,
+      bookingId: data.bookingId,
+      action: data.action,
+    });
+    throw new Error("Failed to create rental activity");
+  }
+};
+
 export default {
   createBooking,
   updateBooking,
+  updateBookingStatus,
+  createRentalActivity,
 };
