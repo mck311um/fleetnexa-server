@@ -5,7 +5,6 @@ import { Agent } from "@prisma/client";
 const RentalDriverSchema = z.object({
   id: z.uuid(),
   driverId: z.uuid(),
-  primaryDriver: z.boolean().default(false),
   isPrimary: z.boolean().default(false),
 });
 

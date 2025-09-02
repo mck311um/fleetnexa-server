@@ -119,10 +119,7 @@ const createBooking = async (
 const updateBooking = async (
   data: UpdateBookingDto,
   tenant: any,
-  tx: Omit<
-    PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-    "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
-  >,
+  tx: TxClient,
   userId: string
 ) => {
   try {
@@ -259,7 +256,8 @@ const createRentalActivity = async (
     PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
     "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
   >,
-  userId: string
+  userId: string,
+  createdAt?: Date
 ) => {
   try {
     const booking = await tx.rental.findUnique({
@@ -284,7 +282,11 @@ const createRentalActivity = async (
         rentalId: data.bookingId,
         action: data.action,
         tenantId: tenant.id,
-        createdAt: new Date(),
+        createdAt: createdAt
+          ? createdAt
+          : new Date(booking.startDate) < new Date()
+            ? new Date(booking.startDate)
+            : new Date(),
         createdBy: userId,
         customerId: primaryDriver.driverId,
         vehicleId: booking.vehicleId,
@@ -352,8 +354,8 @@ const generateInvoice = async (
       throw new Error("Primary driver not found");
     }
 
-    await tx.invoice.upsert({
-      where: { id: bookingId },
+    const invoice = await tx.invoice.upsert({
+      where: { rentalId: bookingId },
       create: {
         invoiceNumber,
         amount: booking?.values?.netTotal || 0,
@@ -373,6 +375,8 @@ const generateInvoice = async (
         updatedBy: userId,
       },
     });
+
+    return invoice;
   } catch (error) {
     logger.e(error, "Failed to generate invoice", {
       bookingId,
@@ -430,7 +434,7 @@ const generateBookingAgreement = async (
 
     const primaryDriver = await customerService.getPrimaryDriver(bookingId, tx);
 
-    await tx.rentalAgreement.upsert({
+    const agreement = await tx.rentalAgreement.upsert({
       where: { rentalId: bookingId },
       create: {
         number: agreementNumber,
@@ -451,6 +455,8 @@ const generateBookingAgreement = async (
         updatedBy: userId,
       },
     });
+
+    return agreement;
   } catch (error) {
     logger.e(error, "Failed to generate booking agreement", {
       bookingId,

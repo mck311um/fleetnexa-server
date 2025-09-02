@@ -15,7 +15,17 @@ const sendConfirmationEmail = async (
       where: { id: bookingId },
       include: {
         pickup: true,
-        vehicle: true,
+        vehicle: {
+          include: {
+            brand: true,
+            model: {
+              include: {
+                bodyType: true,
+              },
+            },
+            transmission: true,
+          },
+        },
         invoice: true,
         agreement: true,
         values: true,

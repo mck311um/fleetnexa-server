@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { repo } from "./booking.repository";
 import service from "./booking.service";
 import emailService from "../email/email.service";
+import vehicleService from "../vehicle/vehicle.service";
 import { logger } from "../../config/logger";
 import prisma from "../../config/prisma.config";
 import { CreateBookingDtoSchema } from "./dto/create-booking.dto";
 import { UpdateBookingDtoSchema } from "./dto/update-booking.dto";
-import { ConfirmBookingDtoSchema } from "./dto/confirm-booking.dto";
+import { ActionBookingDtoSchema } from "./dto/action-booking.dto";
 import { Rental, RentalStatus, Tenant } from "@prisma/client";
 
 //#region Get Bookings
@@ -20,12 +21,28 @@ const getBookings = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const bookings = await repo.getRentals(tenantId);
 
-    return res.status(200).json(bookings);
+    if (!bookings || bookings.length === 0) {
+      logger.w("No bookings found", { tenantId });
+      return res.status(404).json({ error: "No bookings found" });
+    }
+
+    const updatedBookings = bookings.map((booking) => {
+      if (booking.drivers && booking.drivers.length > 0) {
+        booking.drivers = booking.drivers.map((driver, index) => ({
+          ...driver,
+          isPrimary: index === 0,
+        }));
+      }
+      return booking;
+    });
+
+    return res.status(200).json(updatedBookings);
   } catch (error) {
     logger.e(error, "Failed to fetch bookings", { tenantId });
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const getBookingById = async (
   req: Request,
   res: Response,
@@ -196,7 +213,7 @@ const updateBooking = async (
   }
 };
 
-const confirmRental = async (
+const confirmBooking = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -204,7 +221,6 @@ const confirmRental = async (
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
   const { data } = req.body;
-  const { id } = req.params;
   const userId = req.user?.id;
 
   if (!tenantId) {
@@ -219,7 +235,7 @@ const confirmRental = async (
       .json({ error: "Rental confirmation data is required" });
   }
 
-  const parseResult = ConfirmBookingDtoSchema.safeParse(data);
+  const parseResult = ActionBookingDtoSchema.safeParse(data);
   if (!parseResult.success) {
     return res.status(400).json({
       error: "Invalid booking confirmation data",
@@ -312,7 +328,7 @@ const confirmRental = async (
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const declineRental = async (
+const declineBooking = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -358,16 +374,16 @@ const declineRental = async (
       );
     });
 
-    const updatedRental = await repo.getRentalById(id, tenantId);
-    const rentals = await repo.getRentals(tenantId);
+    const updatedBooking = await repo.getRentalById(id, tenantId);
+    const bookings = await repo.getRentals(tenantId);
 
     return res.status(200).json({
-      message: `Rental #${updatedRental!.rentalNumber} declined successfully`,
-      updatedRental,
-      rentals,
+      message: `Booking #${updatedBooking!.rentalNumber} declined successfully`,
+      updatedBooking,
+      bookings,
     });
   } catch (error) {
-    logger.e(error, "Failed to decline rental", { tenantId });
+    logger.e(error, "Failed to decline booking", { tenantId });
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -417,24 +433,332 @@ const cancelBooking = async (
       );
     });
 
-    const updatedRental = await repo.getRentalById(id, tenantId);
-    const rentals = await repo.getRentals(tenantId);
+    const updatedBooking = await repo.getRentalById(id, tenantId);
+    const bookings = await repo.getRentals(tenantId);
 
     return res.status(200).json({
-      message: `Rental #${updatedRental!.rentalNumber} cancelled successfully`,
-      updatedRental,
-      rentals,
+      message: `Booking #${updatedBooking!.rentalNumber} cancelled successfully`,
+      updatedBooking,
+      bookings,
     });
   } catch (error) {
-    logger.e(error, "Failed to cancel rental", { tenantId });
+    logger.e(error, "Failed to cancel booking", { tenantId });
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+const startBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+  const { data } = req.body;
+  const userId = req.user?.id;
+
+  if (!tenantId) {
+    logger.w("Tenant ID is missing", { tenantId });
+    return res.status(400).json({ error: "Tenant ID is required" });
+  }
+
+  if (!data) {
+    logger.w("Rental confirmation data is missing", { tenantId });
+    return res
+      .status(400)
+      .json({ error: "Rental confirmation data is required" });
+  }
+
+  const parseResult = ActionBookingDtoSchema.safeParse(data);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: "Invalid booking confirmation data",
+      details: parseResult.error.issues,
+    });
+  }
+
+  const bookingDto = parseResult.data;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const tenant = await tx.tenant.findUnique({
+        where: { id: tenantId },
+      });
+
+      if (!tenant) {
+        logger.w("Tenant not found", { tenantId });
+        throw new Error("Tenant not found");
+      }
+
+      const booking = await tx.rental.findUnique({
+        where: { id: bookingDto.bookingId },
+      });
+
+      if (!booking) {
+        logger.w("Booking not found", {
+          tenantId,
+          tenantCode,
+          bookingId: bookingDto.bookingId,
+        });
+        throw new Error("Booking not found");
+      }
+
+      await service.updateBookingStatus(
+        booking.id,
+        bookingDto.status,
+        tenant,
+        tx,
+        userId!
+      );
+
+      await vehicleService.updateVehicleStatus(
+        booking.vehicleId,
+        bookingDto.vehicleStatus,
+        tenant,
+        tx,
+        userId!
+      );
+
+      await service.createRentalActivity(bookingDto, tenant, tx, userId!);
+    });
+
+    const updatedBooking = await repo.getRentalById(
+      bookingDto.bookingId,
+      tenantId
+    );
+    const bookings = await repo.getRentals(tenantId);
+
+    return res.status(200).json({
+      message: `Booking #${updatedBooking!.rentalNumber} started successfully`,
+      updatedBooking,
+      bookings,
+    });
+  } catch (error) {
+    logger.e(error, "Failed to start booking", {
+      tenantId,
+      tenantCode,
+      bookingId: bookingDto.bookingId,
+    });
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+const endBooking = async (req: Request, res: Response, next: NextFunction) => {
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+  const { data } = req.body;
+  const userId = req.user?.id;
+
+  if (!tenantId) {
+    logger.w("Tenant ID is missing", { tenantId });
+    return res.status(400).json({ error: "Tenant ID is required" });
+  }
+
+  if (!data) {
+    logger.w("Rental confirmation data is missing", { tenantId });
+    return res
+      .status(400)
+      .json({ error: "Rental confirmation data is required" });
+  }
+
+  const parseResult = ActionBookingDtoSchema.safeParse(data);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: "Invalid booking confirmation data",
+      details: parseResult.error.issues,
+    });
+  }
+
+  const bookingDto = parseResult.data;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const tenant = await tx.tenant.findUnique({
+        where: { id: tenantId },
+      });
+
+      if (!tenant) {
+        logger.w("Tenant not found", { tenantId });
+        throw new Error("Tenant not found");
+      }
+
+      const booking = await tx.rental.findUnique({
+        where: { id: bookingDto.bookingId },
+      });
+
+      if (!booking) {
+        logger.w("Booking not found", {
+          tenantId,
+          tenantCode,
+          bookingId: bookingDto.bookingId,
+        });
+        throw new Error("Booking not found");
+      }
+
+      await service.updateBookingStatus(
+        booking.id,
+        bookingDto.status,
+        tenant,
+        tx,
+        userId!
+      );
+
+      await vehicleService.updateVehicleStatus(
+        booking.vehicleId,
+        bookingDto.vehicleStatus,
+        tenant,
+        tx,
+        userId!
+      );
+
+      await service.createRentalActivity(
+        bookingDto,
+        tenant,
+        tx,
+        userId!,
+        bookingDto.returnDate ? new Date(bookingDto.returnDate) : undefined
+      );
+    });
+
+    const updatedBooking = await repo.getRentalById(
+      bookingDto.bookingId,
+      tenantId
+    );
+    const bookings = await repo.getRentals(tenantId);
+
+    return res.status(200).json({
+      message: `Booking #${updatedBooking!.rentalNumber} ended successfully`,
+      updatedBooking,
+      bookings,
+    });
+  } catch (error) {
+    logger.e(error, "Failed to end booking", {
+      tenantId,
+      tenantCode,
+      bookingId: bookingDto.bookingId,
+    });
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+//#region Generate Documents
+const generateInvoice = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+  const { id } = req.params;
+  const userId = req.user?.id;
+
+  if (!tenantId) {
+    logger.w("Tenant ID is missing", { tenantId });
+    return res.status(400).json({ error: "Tenant ID is required" });
+  }
+
+  try {
+    const invoice = await prisma.$transaction(
+      async (tx) => {
+        const tenant = await tx.tenant.findUnique({ where: { id: tenantId } });
+
+        if (!tenant) {
+          logger.w("Tenant not found", { tenantId });
+          throw new Error("Tenant not found");
+        }
+
+        const booking = await tx.rental.findUnique({
+          where: { id },
+        });
+
+        if (!booking) {
+          logger.w("Booking not found", {
+            tenantId,
+            tenantCode,
+            bookingId: id,
+          });
+          throw new Error("Booking not found");
+        }
+
+        return await service.generateInvoice(booking.id, tenant, tx, userId!);
+      },
+      { maxWait: 10000, timeout: 20000 }
+    );
+
+    return res.status(200).json({
+      message: `${invoice.invoiceNumber} generated successfully`,
+    });
+  } catch (error) {
+    logger.e(error, "Failed to generate rental invoice", { tenantId });
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+const generateBookingAgreement = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+  const { id } = req.params;
+  const userId = req.user?.id;
+
+  if (!tenantId) {
+    logger.w("Tenant ID is missing", { tenantId });
+    return res.status(400).json({ error: "Tenant ID is required" });
+  }
+
+  try {
+    const agreement = await prisma.$transaction(
+      async (tx) => {
+        const tenant = await tx.tenant.findUnique({ where: { id: tenantId } });
+
+        if (!tenant) {
+          logger.w("Tenant not found", { tenantId });
+          throw new Error("Tenant not found");
+        }
+
+        const booking = await tx.rental.findUnique({
+          where: { id },
+        });
+
+        if (!booking) {
+          logger.w("Booking not found", {
+            tenantId,
+            tenantCode,
+            bookingId: id,
+          });
+          throw new Error("Booking not found");
+        }
+
+        return await service.generateBookingAgreement(
+          booking.id,
+          tenant,
+          tx,
+          userId!
+        );
+      },
+      { maxWait: 10000, timeout: 20000 }
+    );
+
+    return res.status(200).json({
+      message: `${agreement.number} generated successfully`,
+    });
+  } catch (error) {
+    logger.e(error, "Failed to generate rental agreement", { tenantId });
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+//#endregion
+
 export default {
-  getBookings,
-  getBookingById,
+  cancelBooking,
+  confirmBooking,
   createSystemBooking,
+  declineBooking,
+  generateBookingAgreement,
+  generateInvoice,
+  getBookingById,
+  getBookings,
+  startBooking,
+  endBooking,
   updateBooking,
-  confirmRental,
 };

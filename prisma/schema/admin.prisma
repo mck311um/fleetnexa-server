@@ -44,7 +44,7 @@ model VehicleBodyType {
 
 model VehicleStatus {
   id        String    @id @default(dbgenerated("gen_random_uuid()"))
-  status    String
+  status    String    @unique
 
   vehicles  Vehicle[]
 }
