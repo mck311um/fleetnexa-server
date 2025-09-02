@@ -1,159 +1,70 @@
-import {
-  SESClient,
-  SendTemplatedEmailCommand,
-  CreateTemplateCommand,
-  CreateTemplateCommandInput,
-  TestRenderTemplateCommand,
-  UpdateTemplateCommandInput,
-  UpdateTemplateCommand,
-} from "@aws-sdk/client-ses";
-import { sesClient } from "../../config/aws.config";
+import { TxClient } from "../../config/prisma.config";
+import { BookingConfirmationEmailParams } from "../../types/email";
+import formatter from "../../utils/formatter";
+import ses from "../../services/ses.service";
 import { logger } from "../../config/logger";
-import { EmailTemplateParams, SendEmailParams } from "../../types/email";
-import {
-  generateTextFromHtml,
-  readTemplateFile,
-} from "../../utils/template-reader";
+import customerService from "../customer/customer.service";
 
-const testRenderEmailTemplate = async (
-  templateName: string,
-  templateData: any
+const sendConfirmationEmail = async (
+  bookingId: string,
+  tenant: any,
+  tx: TxClient
 ) => {
   try {
-    const command = new TestRenderTemplateCommand({
-      TemplateName: templateName,
-      TemplateData: JSON.stringify(templateData),
-    });
-    const response = await sesClient.send(command);
-    return response;
-  } catch (error) {
-    logger.e(error, `Failed to test render template: ${templateName}`);
-    throw error;
-  }
-};
-
-const sendEmail = async (params: SendEmailParams) => {
-  const {
-    to,
-    cc = [],
-    template,
-    templateData,
-    from = "no-reply@fleetnexa.com",
-  } = params;
-
-  try {
-    await testRenderEmailTemplate(template, templateData);
-
-    const command = new SendTemplatedEmailCommand({
-      Destination: {
-        ToAddresses: to,
-        CcAddresses: cc,
+    const booking = await tx.rental.findUnique({
+      where: { id: bookingId },
+      include: {
+        pickup: true,
+        vehicle: true,
+        invoice: true,
+        agreement: true,
+        values: true,
       },
-      Template: template,
-      TemplateData: JSON.stringify(templateData),
-      Source: from,
     });
 
-    await sesClient.send(command);
-    logger.i(`Email sent successfully to: ${to.join(", ")}`);
-    return true;
-  } catch (error) {
-    logger.e(error, "Failed to send email:");
-    throw error;
-  }
-};
-
-const createEmailTemplate = async (
-  templateParams: EmailTemplateParams
-): Promise<boolean> => {
-  const { name, subject, text } = templateParams;
-
-  try {
-    const html = readTemplateFile(name);
-
-    const templateConfig: CreateTemplateCommandInput = {
-      Template: {
-        TemplateName: name,
-        SubjectPart: subject,
-        HtmlPart: html,
-        TextPart: text || generateTextFromHtml(html),
-      },
-    };
-
-    const command = new CreateTemplateCommand(templateConfig);
-    await sesClient.send(command);
-
-    logger.i(`Email template created successfully: ${name}`);
-    return true;
-  } catch (error) {
-    logger.e(error, `Failed to create template ${name}:`);
-    throw error;
-  }
-};
-
-const updateEmailTemplate = async (
-  templateParams: EmailTemplateParams
-): Promise<boolean> => {
-  const { name, subject, text } = templateParams;
-
-  try {
-    const html = readTemplateFile(name);
-
-    const templateConfig: UpdateTemplateCommandInput = {
-      Template: {
-        TemplateName: name,
-        SubjectPart: subject,
-        HtmlPart: html,
-        TextPart: text || generateTextFromHtml(html),
-      },
-    };
-
-    const command = new UpdateTemplateCommand(templateConfig);
-    await sesClient.send(command);
-
-    logger.i(`Email template updated successfully: ${name}`);
-    return true;
-  } catch (error: any) {
-    if (
-      error.name === "TemplateDoesNotExistException" ||
-      error.Error?.Code === "TemplateDoesNotExist"
-    ) {
-      logger.i(`Template ${name} doesn't exist in SES, will create it`);
-      return false;
+    if (!booking) {
+      throw new Error("Booking not found");
     }
 
-    logger.e(error, `Failed to update template ${name}:`);
-    throw error;
-  }
-};
-
-const createOrUpdateEmailTemplate = async (
-  templateParams: EmailTemplateParams
-): Promise<boolean> => {
-  const { name } = templateParams;
-
-  try {
-    const updated = await updateEmailTemplate(templateParams);
-    if (updated) {
-      logger.i(`Template ${name} updated successfully`);
-      return true;
-    }
-
-    logger.i(`Template ${name} doesn't exist, creating it...`);
-    return await createEmailTemplate(templateParams);
-  } catch (error) {
-    logger.e(
-      error,
-      `Failed to create or update template ${templateParams.name}:`
+    const primaryDriver = await customerService.getPrimaryDriver(
+      booking.id,
+      tx
     );
 
+    const templateData: BookingConfirmationEmailParams = {
+      bookingId: booking?.bookingCode || "",
+      startDate: formatter.formatDateToFriendlyDate(booking?.startDate) || "",
+      pickupTime: formatter.formatDateToFriendlyTime(booking?.startDate) || "",
+      endDate: formatter.formatDateToFriendlyDate(booking?.endDate) || "",
+      pickupLocation: booking?.pickup.location || "",
+      totalPrice: formatter.formatNumberToTenantCurrency(
+        booking?.values?.netTotal || 0,
+        tenant?.currency?.code || "USD"
+      ),
+      tenantName: tenant?.tenantName || "",
+      phone: tenant?.number || "",
+      vehicle: formatter.formatVehicleToFriendly(booking?.vehicle) || "",
+      email: tenant?.email || "",
+      invoiceUrl: booking?.invoice?.invoiceUrl || "",
+      agreementUrl: booking?.agreement?.agreementUrl || "",
+    };
+
+    await ses.sendEmail({
+      to: [primaryDriver?.customer.email || ""],
+      cc: [tenant?.email || ""],
+      template: "BookingConfirmation",
+      templateData,
+    });
+  } catch (error) {
+    logger.e(error, "Error sending confirmation email", {
+      bookingId,
+      tenantId: tenant?.id,
+      tenantCode: tenant?.code,
+    });
     throw error;
   }
 };
 
 export default {
-  sendEmail,
-  createEmailTemplate,
-  updateEmailTemplate,
-  createOrUpdateEmailTemplate,
+  sendConfirmationEmail,
 };

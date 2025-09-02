@@ -5,7 +5,7 @@ import crypto, { randomUUID } from "crypto";
 import loggerConfig from "../config/logger.config";
 import generator from "../services/generator.service";
 import bcrypt from "bcrypt";
-import emailService from "../services/email.service";
+import emailService from "../services/ses.service";
 import { WelcomeEmailParams } from "../types/email";
 
 const getTenantById = async (

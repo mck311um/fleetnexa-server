@@ -109,7 +109,7 @@ class RentalRepository {
       },
       drivers: {
         include: {
-          driver: {
+          customer: {
             include: {
               license: true,
               address: {

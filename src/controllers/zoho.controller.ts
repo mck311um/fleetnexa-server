@@ -30,7 +30,7 @@ const sendForSignature = async (
     const [driver, user, tenant] = await Promise.all([
       prisma.rentalDriver.findFirst({
         where: { rentalId },
-        include: { driver: true },
+        include: { customer: true },
       }),
       prisma.user.findUnique({ where: { id: userId } }),
       prisma.tenant.findUnique({ where: { id: tenantId } }),

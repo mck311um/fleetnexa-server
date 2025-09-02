@@ -109,7 +109,7 @@ class BookingRepository {
       },
       drivers: {
         include: {
-          driver: {
+          customer: {
             include: {
               license: true,
               address: {

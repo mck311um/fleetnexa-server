@@ -28,10 +28,10 @@ const runUnconfirmedRentalsCron = async () => {
         const primaryDriver = await prisma.rentalDriver.findFirst({
           where: {
             rentalId: rental.id,
-            primaryDriver: true,
+            isPrimary: true,
           },
           include: {
-            driver: {
+            customer: {
               select: {
                 id: true,
                 firstName: true,
@@ -44,11 +44,11 @@ const runUnconfirmedRentalsCron = async () => {
 
         const bookingNumber = rental.rentalNumber;
         const actionUrl = `/app/bookings`;
-        const driverName = primaryDriver
-          ? `${primaryDriver.driver.firstName} ${primaryDriver.driver.lastName}`
-          : "Unknown Driver";
+        const customerName = primaryDriver
+          ? `${primaryDriver.customer.firstName} ${primaryDriver.customer.lastName}`
+          : "Unknown Customer";
 
-        const message = `Booking #${rental.rentalNumber} by ${driverName} remains unconfirmed (2 days remaining)`;
+        const message = `Booking #${rental.rentalNumber} by ${customerName} remains unconfirmed (2 days remaining)`;
 
         const notification = await prisma.tenantNotification.create({
           data: {
@@ -110,10 +110,10 @@ const runUpcomingRentalsCron = async () => {
         const primaryDriver = await prisma.rentalDriver.findFirst({
           where: {
             rentalId: rental.id,
-            primaryDriver: true,
+            isPrimary: true,
           },
           include: {
-            driver: {
+            customer: {
               select: {
                 id: true,
                 firstName: true,
@@ -130,16 +130,16 @@ const runUpcomingRentalsCron = async () => {
           minute: "2-digit",
           hour12: true,
         });
-        const driverName = primaryDriver
-          ? `${primaryDriver.driver.firstName} ${primaryDriver.driver.lastName}`
-          : "Unknown Driver";
+        const customerName = primaryDriver
+          ? `${primaryDriver.customer.firstName} ${primaryDriver.customer.lastName}`
+          : "Unknown Customer";
         const vehicleName =
           (rental.vehicle.brand?.brand ?? "Unknown Brand") +
           " " +
           (rental.vehicle.model?.model ?? "Unknown Model");
         const pickupLocation = rental.pickup?.location ?? "Unknown Location";
 
-        const message = `Reminder: ${driverName} pickup scheduled for tomorrow at ${formattedTime} - ${vehicleName} at ${pickupLocation}`;
+        const message = `Reminder: ${customerName} pickup scheduled for tomorrow at ${formattedTime} - ${vehicleName} at ${pickupLocation}`;
 
         const notification = await prisma.tenantNotification.create({
           data: {
@@ -201,10 +201,10 @@ const runUpcomingReturnsCron = async () => {
         const primaryDriver = await prisma.rentalDriver.findFirst({
           where: {
             rentalId: rental.id,
-            primaryDriver: true,
+            isPrimary: true,
           },
           include: {
-            driver: {
+            customer: {
               select: {
                 id: true,
                 firstName: true,
@@ -221,16 +221,16 @@ const runUpcomingReturnsCron = async () => {
           minute: "2-digit",
           hour12: true,
         });
-        const driverName = primaryDriver
-          ? `${primaryDriver.driver.firstName} ${primaryDriver.driver.lastName}`
-          : "Unknown Driver";
+        const customerName = primaryDriver
+          ? `${primaryDriver.customer.firstName} ${primaryDriver.customer.lastName}`
+          : "Unknown Customer";
         const vehicleName =
           (rental.vehicle.brand?.brand ?? "Unknown Brand") +
           " " +
           (rental.vehicle.model?.model ?? "Unknown Model");
         const returnLocation = rental.return?.location ?? "Unknown Location";
 
-        const message = `Vehicle return  tomorrow: ${vehicleName} by ${driverName} to ${returnLocation} - ${formattedTime}`;
+        const message = `Vehicle return  tomorrow: ${vehicleName} by ${customerName} to ${returnLocation} - ${formattedTime}`;
 
         const notification = await prisma.tenantNotification.create({
           data: {

@@ -61,10 +61,9 @@ model RentalDriver {
   rentalId          String
   driverId          String
   isPrimary         Boolean    @default(false)
-  primaryDriver     Boolean    @default(false)
 
   rental            Rental     @relation(fields: [rentalId], references: [id])
-  driver            Customer   @relation(fields: [driverId], references: [id])  
+  customer          Customer   @relation(fields: [driverId], references: [id])  
 
   @@unique([rentalId, driverId], name: "rentalId_driverId")
 }

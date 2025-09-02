@@ -75,7 +75,7 @@ class VehicleRepository {
           values: true,
           drivers: {
             include: {
-              driver: {
+              customer: {
                 include: {
                   license: true,
                 },

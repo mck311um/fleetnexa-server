@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { DefaultArgs } from "@prisma/client/runtime/library";
 import logger from "./logger.config";
 
 const prisma = new PrismaClient({
@@ -23,3 +24,8 @@ prisma.$on("warn", (e) => {
 });
 
 export default prisma;
+
+export type TxClient = Omit<
+  PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;

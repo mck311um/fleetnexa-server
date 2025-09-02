@@ -204,11 +204,9 @@ const handleRental = async (
                 id: rd.id,
                 rentalId: rental.id,
                 driverId: rd.driverId,
-                primaryDriver: rd.primaryDriver,
               },
               update: {
                 driverId: rd.driverId,
-                primaryDriver: rd.primaryDriver,
               },
             });
           });
@@ -394,7 +392,7 @@ const handleStorefrontRental = async (
           data: {
             rentalId: newRental.id,
             driverId: existingCustomer.id,
-            primaryDriver: true,
+            isPrimary: true,
           },
         });
       } else {
@@ -442,7 +440,7 @@ const handleStorefrontRental = async (
           data: {
             rentalId: newRental.id,
             driverId: customer.id,
-            primaryDriver: true,
+            isPrimary: true,
           },
         });
       }
@@ -517,7 +515,7 @@ const confirmRental = async (
         const primaryDriver = await tx.rentalDriver.findFirst({
           where: {
             rentalId: rental.id,
-            primaryDriver: true,
+            isPrimary: true,
           },
           select: { driverId: true },
         });
@@ -601,7 +599,7 @@ const cancelRental = async (
       const primaryDriver = await tx.rentalDriver.findFirst({
         where: {
           rentalId: rental.id,
-          primaryDriver: true,
+          isPrimary: true,
         },
         select: { driverId: true },
       });
@@ -644,7 +642,7 @@ const startRental = async (req: Request, res: Response) => {
       const primaryDriver = await tx.rentalDriver.findFirst({
         where: {
           rentalId: rental.id,
-          primaryDriver: true,
+          isPrimary: true,
         },
         select: { driverId: true },
       });
@@ -706,7 +704,7 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
       const primaryDriver = await tx.rentalDriver.findFirst({
         where: {
           rentalId: rental.id,
-          primaryDriver: true,
+          isPrimary: true,
         },
         select: { driverId: true },
       });
@@ -828,7 +826,7 @@ const generateInvoice = async (req: Request, res: Response) => {
     const primaryDriver = await prisma.rentalDriver.findFirst({
       where: {
         rentalId: rental?.id,
-        primaryDriver: true,
+        isPrimary: true,
       },
       select: { driverId: true },
     });
@@ -897,7 +895,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
     const primaryDriver = await prisma.rentalDriver.findFirst({
       where: {
         rentalId: rental?.id,
-        primaryDriver: true,
+        isPrimary: true,
       },
       select: { driverId: true },
     });

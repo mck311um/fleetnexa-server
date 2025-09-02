@@ -5,14 +5,14 @@ import { tenantRepo } from "../repository/tenant.repository";
 import { rentalRepo } from "../repository/rental.repository";
 import { vehicleRepo } from "../repository/vehicle.repository";
 import prisma from "../config/prisma.config";
-import service from "../services/email.service";
+import service from "../services/ses.service";
 import {
   BookingCompletedEmailParams,
   BookingConfirmationEmailParams,
   EmailTemplateParams,
 } from "../types/email";
 import { logger } from "../config/logger.config";
-import emailService from "../services/email.service";
+import emailService from "../services/ses.service";
 import formatter from "../utils/formatter";
 
 interface Document {
@@ -152,9 +152,9 @@ const sendConfirmationEmail = async (
     const primaryDriver = await prisma.rentalDriver.findFirst({
       where: {
         rentalId: booking.id,
-        primaryDriver: true,
+        isPrimary: true,
       },
-      select: { driverId: true, driver: { select: { email: true } } },
+      select: { driverId: true, customer: { select: { email: true } } },
     });
 
     const templateData: BookingConfirmationEmailParams = {
@@ -176,7 +176,7 @@ const sendConfirmationEmail = async (
     };
 
     await emailService.sendEmail({
-      to: [primaryDriver?.driver.email || ""],
+      to: [primaryDriver?.customer.email || ""],
       cc: [tenant?.email || ""],
       template: "BookingConfirmation",
       templateData,
@@ -210,9 +210,9 @@ const sendCompletionEmail = async (
     const primaryDriver = await prisma.rentalDriver.findFirst({
       where: {
         rentalId: booking.id,
-        primaryDriver: true,
+        isPrimary: true,
       },
-      select: { driverId: true, driver: { select: { email: true } } },
+      select: { driverId: true, customer: { select: { email: true } } },
     });
 
     const templateData: BookingCompletedEmailParams = {
@@ -232,7 +232,7 @@ const sendCompletionEmail = async (
     };
 
     await emailService.sendEmail({
-      to: [primaryDriver?.driver.email || ""],
+      to: [primaryDriver?.customer.email || ""],
       cc: [tenant?.email || ""],
       from: "no-reply@rentnexa.com",
       template: "BookingCompleted",

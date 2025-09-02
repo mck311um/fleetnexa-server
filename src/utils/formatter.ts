@@ -1,5 +1,15 @@
+import { Decimal } from "@prisma/client/runtime/library";
+
 const formatDateToFriendlyDateShort = (date: Date) => {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+};
+
+const formatDate = (date: Date): string => {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
 };
 
 const formatDateToFriendly = (
@@ -47,6 +57,21 @@ const formatDateToFriendlyTime = (
   return new Date(date).toLocaleString("en-US", options);
 };
 
+const formatDateToFriendlyWithTime = (date: Date): string => {
+  if (!date) return "";
+
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+
+  return new Date(date).toLocaleString("en-US", options);
+};
+
 const formatNumberToTenantCurrency = (
   amount: number | null | undefined,
   currency: string = "USD"
@@ -77,11 +102,37 @@ const formatVehicleToFriendly = (vehicle: any): string => {
   return `${vehicle.brand.brand} ${vehicle.model.model} (${vehicle.year})`;
 };
 
+const formatCurrencyWithCode = (
+  code: string,
+  amount: number | Decimal
+): string => {
+  const formattedAmount = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount instanceof Decimal ? amount.toNumber() : amount);
+
+  return `${code} \$${formattedAmount}`;
+};
+
+const formatMilage = (mileage: number): string => {
+  const formatted = new Intl.NumberFormat("en-US", {
+    style: "decimal",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(mileage);
+
+  return `${formatted} km`;
+};
+
 export default {
+  formatDate,
   formatDateToFriendly,
   formatNumberToTenantCurrency,
   formatVehicleToFriendly,
   formatDateToFriendlyDate,
   formatDateToFriendlyTime,
   formatDateToFriendlyDateShort,
+  formatDateToFriendlyWithTime,
+  formatCurrencyWithCode,
+  formatMilage,
 };
