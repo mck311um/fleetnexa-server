@@ -19,4 +19,6 @@ router.post("/agreement/:id", auth, controller.generateBookingAgreement);
 
 router.put("/:id", auth, controller.updateBooking);
 
+router.delete("/:id", auth, controller.deleteBooking);
+
 export default router;

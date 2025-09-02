@@ -42,7 +42,6 @@ const getBookings = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 const getBookingById = async (
   req: Request,
   res: Response,
@@ -212,7 +211,51 @@ const updateBooking = async (
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const deleteBooking = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+  const userId = req.user?.id;
 
+  if (!tenantId) {
+    logger.w("Tenant ID is missing", { tenantId });
+    return res.status(400).json({ error: "Tenant ID is required" });
+  }
+
+  if (!id) {
+    logger.w("Booking ID is missing", { tenantId });
+    return res.status(400).json({ error: "Booking ID is required" });
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const tenant = await tx.tenant.findUnique({ where: { id: tenantId } });
+
+      if (!tenant) {
+        logger.w("Tenant not found", { tenantId });
+        throw new Error("Tenant not found");
+      }
+
+      await service.deleteBooking(id, tenant, tx, userId!);
+    });
+
+    logger.i("Booking deleted successfully", {
+      tenantId,
+      tenantCode,
+      bookingId: id,
+    });
+
+    const bookings = await repo.getRentals(tenantId);
+
+    return res.status(200).json({
+      message: `Booking  deleted successfully`,
+      bookings,
+    });
+  } catch (error) {
+    logger.e(error, "Failed to delete booking", { tenantId, id });
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 const confirmBooking = async (
   req: Request,
   res: Response,
@@ -754,11 +797,12 @@ export default {
   confirmBooking,
   createSystemBooking,
   declineBooking,
+  deleteBooking,
+  endBooking,
   generateBookingAgreement,
   generateInvoice,
   getBookingById,
   getBookings,
   startBooking,
-  endBooking,
   updateBooking,
 };

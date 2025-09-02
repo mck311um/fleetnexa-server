@@ -9,6 +9,7 @@ import pdf from "../../services/pdf.service";
 import documentService from "../../services/document.service";
 import customerService from "../customer/customer.service";
 import { TxClient } from "../../config/prisma.config";
+import transactionService from "../transaction/transaction.service";
 
 const createBooking = async (
   tenant: any,
@@ -467,6 +468,37 @@ const generateBookingAgreement = async (
   }
 };
 
+const deleteBooking = async (
+  bookingId: string,
+  tenant: any,
+  tx: TxClient,
+  userId: string
+) => {
+  try {
+    const booking = await tx.rental.findUnique({
+      where: { id: bookingId },
+    });
+
+    if (!booking) {
+      throw new Error("Booking not found");
+    }
+
+    await tx.rental.update({
+      where: { id: bookingId },
+      data: { isDeleted: true, deletedAt: new Date() },
+    });
+
+    await transactionService.deleteBookingTransaction(bookingId, tx);
+  } catch (error) {
+    logger.e(error, "Failed to delete booking", {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+      bookingId,
+    });
+    throw error;
+  }
+};
+
 export default {
   createBooking,
   updateBooking,
@@ -474,4 +506,5 @@ export default {
   createRentalActivity,
   generateInvoice,
   generateBookingAgreement,
+  deleteBooking,
 };
