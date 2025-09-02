@@ -1,10 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import {
-  startOfWeek,
-  endOfWeek,
-  getISOWeek,
   getYear,
-  eachWeekOfInterval,
   eachMonthOfInterval,
   getMonth,
   startOfMonth,
@@ -108,6 +104,7 @@ const calcYearlyRevenue = async (
         startDate: { gte: from, lte: to },
         status: "COMPLETED",
       },
+      isDeleted: false,
     },
     _sum: { amount: true },
   });
@@ -125,6 +122,7 @@ const calcYearlyRentals = async (
       tenantId,
       startDate: { gte: from, lte: to },
       status: "COMPLETED",
+      isDeleted: false,
     },
   });
 };
@@ -138,6 +136,7 @@ const calcYearlyCustomers = async (
     where: {
       tenantId,
       createdAt: { gte: from, lte: to },
+      isDeleted: false,
     },
   });
 };
@@ -153,6 +152,7 @@ const calcAverageRentalDuration = async (
       startDate: { gte: from },
       endDate: { lte: to },
       status: "COMPLETED",
+      isDeleted: false,
     },
     select: {
       startDate: true,
@@ -259,6 +259,7 @@ const calcMonthlyEarnings = async (
         tenantId,
         startDate: { gte: from, lte: to },
         status: "COMPLETED",
+        isDeleted: false,
       },
     },
     _sum: { amount: true },
@@ -277,6 +278,7 @@ const calcMonthlyRentals = async (
       tenantId,
       startDate: { gte: from, lte: to },
       status: "COMPLETED",
+      isDeleted: false,
     },
   });
 };
@@ -301,6 +303,7 @@ const calcMonthlyRentalStatus = async (
         tenantId,
         createdAt: { gte: from, lte: to },
         status: status,
+        isDeleted: false,
       },
     });
 
