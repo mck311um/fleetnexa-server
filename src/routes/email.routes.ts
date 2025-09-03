@@ -5,7 +5,7 @@ import { api } from "../middleware/api.middleware";
 
 const router = express.Router();
 
-router.post("/template", controller.setupTemplates);
+// router.post("/template", controller.setupTemplates);
 
 router.post(
   "/booking/confirm/:bookingId",

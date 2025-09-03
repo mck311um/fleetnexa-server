@@ -1,7 +1,9 @@
 type EmailTemplate =
   | "WelcomeTemplate"
   | "BookingConfirmation"
-  | "BookingCompleted";
+  | "BookingCompleted"
+  | "NewUser"
+  | "ResetPassword";
 
 export interface SendEmailParams {
   to: string[];

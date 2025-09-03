@@ -4,6 +4,7 @@ import formatter from "../../utils/formatter";
 import ses from "../../services/ses.service";
 import { logger } from "../../config/logger";
 import customerService from "../customer/customer.service";
+import { Tenant } from "@prisma/client";
 
 const sendConfirmationEmail = async (
   bookingId: string,
@@ -75,6 +76,82 @@ const sendConfirmationEmail = async (
   }
 };
 
+const newUserEmail = async (
+  tenant: Tenant,
+  userId: string,
+  password: string,
+  tx: TxClient
+) => {
+  try {
+    const user = await tx.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const templateData = {
+      tenantName: tenant?.tenantName,
+      name: `${user?.firstName} ${user?.lastName}`,
+      username: user?.username,
+      password,
+    };
+
+    await ses.sendEmail({
+      to: [user.email || ""],
+      template: "NewUser",
+      templateData,
+    });
+  } catch (error) {
+    logger.e(error, "Error sending new user email", {
+      userId,
+      tenantId: tenant?.id,
+      tenantCode: tenant?.tenantCode,
+    });
+    throw error;
+  }
+};
+
+const resetPasswordEmail = async (
+  tenant: Tenant,
+  userId: string,
+  password: string,
+  tx: TxClient
+) => {
+  try {
+    const user = await tx.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const templateData = {
+      tenantName: tenant?.tenantName,
+      name: `${user?.firstName} ${user?.lastName}`,
+      username: user?.username,
+      password,
+    };
+
+    await ses.sendEmail({
+      to: [user.email || ""],
+      template: "ResetPassword",
+      templateData,
+    });
+  } catch (error) {
+    logger.e(error, "Error sending reset password email", {
+      userId,
+      tenantId: tenant?.id,
+      tenantCode: tenant?.tenantCode,
+    });
+    throw error;
+  }
+};
+
 export default {
   sendConfirmationEmail,
+  newUserEmail,
+  resetPasswordEmail,
 };

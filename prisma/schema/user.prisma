@@ -16,6 +16,9 @@ model User {
   profilePicture          String?         @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
   show                   Boolean?        @default(false)
 
+  isDeleted              Boolean         @default(false)
+  deletedAt              DateTime?
+
   rentals                Rental[]
   rentalActivity         RentalActivity[]
   transactions           Transactions[]
