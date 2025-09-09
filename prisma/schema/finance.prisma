@@ -1,4 +1,11 @@
+model ShopDMMerchant {
+  id              String    @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId        String    @unique
+  merchant_handle String
+  merchant_secret String
 
+  tenant           Tenant @relation(fields: [tenantId], references: [id])
+}
 
 model Currency {
   id        String    @id @default(dbgenerated("gen_random_uuid()"))

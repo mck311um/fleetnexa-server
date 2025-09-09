@@ -5,4 +5,5 @@ export interface AuthRequest extends Request {
     tenant: Tenant;
   };
   tenant?: Tenant;
+  rawBody?: Buffer;
 }
