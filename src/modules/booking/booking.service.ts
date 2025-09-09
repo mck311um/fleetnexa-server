@@ -62,7 +62,7 @@ const createBooking = async (
     });
 
     await Promise.all(
-      data.drivers.map((driver) =>
+      data.drivers.map((driver: any) =>
         tx.rentalDriver.create({
           data: {
             ...driver,
@@ -100,7 +100,7 @@ const createBooking = async (
     });
 
     await Promise.all(
-      data.values.extras.map((extra) =>
+      data.values.extras.map((extra: any) =>
         tx.rentalExtra.create({
           data: {
             id: extra.id,
@@ -156,7 +156,7 @@ const updateBooking = async (
     await tx.rentalDriver.deleteMany({ where: { rentalId: booking.id } });
 
     await Promise.all(
-      data.drivers.map((driver) =>
+      data.drivers.map((driver: any) =>
         tx.rentalDriver.create({
           data: {
             ...driver,
@@ -195,7 +195,7 @@ const updateBooking = async (
     await tx.rentalExtra.deleteMany({ where: { valuesId: data.values.id } });
 
     await Promise.all(
-      data.values.extras.map((extra) =>
+      data.values.extras.map((extra: any) =>
         tx.rentalExtra.create({
           data: {
             id: extra.id,
