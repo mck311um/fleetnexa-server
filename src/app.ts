@@ -24,7 +24,6 @@ import './cron/plans.cron';
 import './cron/notification.cron';
 import devvizeRoutes from './routes/devvize.routes';
 import dodoRoutes from './routes/dodo.routes';
-import { bugsnagMiddleware } from './config/bugsnag.config';
 import sitemapRoutes from './routes/sitemap.routes';
 import healthRoutes from './routes/health.routes';
 import subscriptionRoutes from './routes/subscription.routes';
@@ -36,10 +35,6 @@ const app: Application = express();
 // Middlewares
 app.use(helmet());
 app.use(express.json());
-
-if (bugsnagMiddleware) {
-  app.use(bugsnagMiddleware.requestHandler);
-}
 
 app.use(
   cors({
