@@ -22,7 +22,6 @@ import './cron/maintenance.cron';
 import './cron/stat.cron';
 import './cron/plans.cron';
 import './cron/notification.cron';
-import errorHandler from './middleware/error.middleware';
 import devvizeRoutes from './routes/devvize.routes';
 import dodoRoutes from './routes/dodo.routes';
 import { bugsnagMiddleware } from './config/bugsnag.config';
@@ -76,10 +75,5 @@ app.use('/api/dodo', dodoRoutes);
 app.use('/api/sitemap', sitemapRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/subscription', subscriptionRoutes);
-
-if (bugsnagMiddleware) {
-  app.use(bugsnagMiddleware.errorHandler);
-}
-app.use(errorHandler);
 
 export default app;
