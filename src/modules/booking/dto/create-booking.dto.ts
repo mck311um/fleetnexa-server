@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import { Agent } from "@prisma/client";
+import { Agent } from '@prisma/client';
 
 const RentalDriverSchema = z.object({
   id: z.uuid(),
@@ -15,7 +15,7 @@ const RentalExtrasSchema = z.array(
     amount: z.float64().min(0),
     customAmount: z.boolean().default(false),
     valuesId: z.uuid(),
-  })
+  }),
 );
 
 const RentalValuesSchema = z.object({
@@ -47,10 +47,10 @@ const RentalValuesSchema = z.object({
 export const CreateBookingDtoSchema = z.object({
   id: z.uuid(),
   startDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "Invalid startDate",
+    message: 'Invalid startDate',
   }),
   endDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "Invalid endDate",
+    message: 'Invalid endDate',
   }),
   pickupLocationId: z.uuid(),
   returnLocationId: z.uuid(),

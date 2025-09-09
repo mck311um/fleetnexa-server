@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-import { NextFunction, Request, Response } from "express";
-import { vehicleRepo } from "../repository/vehicle.repository";
-import prisma from "../config/prisma.config";
+import { NextFunction, Request, Response } from 'express';
+import { vehicleRepo } from '../repository/vehicle.repository';
+import prisma from '../config/prisma.config';
 
 // #region Vehicle
 const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
@@ -13,13 +12,13 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     console.error(error);
     next(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 const getVehicleById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
 
@@ -27,42 +26,42 @@ const getVehicleById = async (
     const vehicle = await vehicleRepo.getVehicleById(id, req.user?.tenantId!);
 
     if (!vehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      return res.status(404).json({ message: 'Vehicle not found' });
     }
 
     res.status(200).json(vehicle);
   } catch (error) {
     next(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 const getVehicleByLicensePlate = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { licensePlate } = req.params;
 
   try {
     const vehicle = await vehicleRepo.getVehicleByLicensePlate(
       licensePlate,
-      req.user?.tenantId!
+      req.user?.tenantId!,
     );
 
     if (!vehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      return res.status(404).json({ message: 'Vehicle not found' });
     }
 
     res.status(200).json(vehicle);
   } catch (error) {
     next(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 const updateVehicleStatus = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -97,7 +96,7 @@ const addVehicle = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     if (existingPlate) {
-      return res.status(400).json({ message: "License plate already exists" });
+      return res.status(400).json({ message: 'License plate already exists' });
     }
 
     await prisma.$transaction(async (tx) => {
@@ -186,13 +185,13 @@ const addVehicle = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     next(error);
     console.error(error);
-    res.status(500).json({ message: "Error Adding Vehicle" });
+    res.status(500).json({ message: 'Error Adding Vehicle' });
   }
 };
 const updateVehicle = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { vehicle } = req.body;
   const userId = req.user?.id;
@@ -265,7 +264,7 @@ const updateVehicle = async (
         await Promise.all(
           vehicle.discounts.map((discount: any) =>
             tx.vehicleDiscount.upsert({
-              where: { id: discount.id || "" },
+              where: { id: discount.id || '' },
               update: {
                 periodMin: discount.periodMin,
                 periodMax: discount.periodMax,
@@ -285,8 +284,8 @@ const updateVehicle = async (
                 updatedAt: new Date(),
                 updatedBy: userId,
               },
-            })
-          )
+            }),
+          ),
         );
       }
     });
@@ -300,7 +299,7 @@ const updateVehicle = async (
 const deleteVehicle = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const userId = req.user?.id;
@@ -328,7 +327,7 @@ const deleteVehicle = async (
 const getVehicleDamages = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { vehicleId } = req.params;
 
@@ -348,13 +347,12 @@ const getVehicleDamages = async (
 const addVehicleDamage = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { damage } = req.body;
   const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
   try {
-    console.log("damage", damage);
+    console.log('damage', damage);
 
     await prisma.vehicleDamage.create({
       data: {
@@ -393,11 +391,11 @@ const addVehicleDamage = async (
 const updateVehicleDamage = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { damage } = req.body;
   const userId = req.user?.id;
-  console.log("damage", damage);
+  console.log('damage', damage);
 
   try {
     await prisma.vehicleDamage.update({
@@ -436,7 +434,7 @@ const updateVehicleDamage = async (
 const deleteVehicleDamage = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const userId = req.user?.id;
@@ -481,4 +479,5 @@ export default {
   updateVehicleDamage,
   deleteVehicleDamage,
   updateVehicleStatus,
+  getVehicleByLicensePlate,
 };

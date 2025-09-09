@@ -1,10 +1,10 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../config/prisma.config";
+import { Prisma } from '@prisma/client';
+import prisma from '../config/prisma.config';
 
 class RentalRepository {
   async getRentals(
     tenantId: string,
-    additionalWhere?: Prisma.RentalWhereInput
+    additionalWhere?: Prisma.RentalWhereInput,
   ) {
     return prisma.rental.findMany({
       where: {
@@ -26,7 +26,7 @@ class RentalRepository {
   async getRentalsByCustomerId(
     customerId: string,
     tenantId: string,
-    additionalWhere?: Prisma.RentalWhereInput
+    additionalWhere?: Prisma.RentalWhereInput,
   ) {
     return prisma.rental.findMany({
       where: {
@@ -83,7 +83,7 @@ class RentalRepository {
           },
         },
         orderBy: {
-          transactionDate: "desc",
+          transactionDate: 'desc',
         },
       },
       vehicle: {

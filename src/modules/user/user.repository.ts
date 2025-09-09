@@ -1,10 +1,10 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../../config/prisma.config";
+import { Prisma } from '@prisma/client';
+import prisma from '../../config/prisma.config';
 
 class UserRepository {
   getUsers = async (
     tenantId: string,
-    additionalWhere?: Prisma.UserWhereInput
+    additionalWhere?: Prisma.UserWhereInput,
   ) => {
     return await prisma.user.findMany({
       where: { tenantId, ...additionalWhere, isDeleted: false },

@@ -1,21 +1,20 @@
-import { NextFunction, Request, Response } from "express";
-import { tenantRepo } from "../repository/tenant.repository";
-import pdf from "../services/pdf.service";
-import logUtil from "../config/logger.config";
-import prisma from "../config/prisma.config";
-import generator from "../services/generator.service";
-import { rentalRepo } from "../repository/rental.repository";
-import { BookingConfirmationEmailParams } from "../types/email";
-import formatter from "../utils/formatter";
-import { vehicleRepo } from "../repository/vehicle.repository";
-import app from "../app";
+import { NextFunction, Request, Response } from 'express';
+import { tenantRepo } from '../repository/tenant.repository';
+import pdf from '../services/pdf.service';
+import logUtil from '../config/logger.config';
+import prisma from '../config/prisma.config';
+import generator from '../services/generator.service';
+import { rentalRepo } from '../repository/rental.repository';
+import formatter from '../utils/formatter';
+import { vehicleRepo } from '../repository/vehicle.repository';
+import app from '../app';
 
 const getRentals = async (req: Request, res: Response, next: NextFunction) => {
   const tenantId = req.user?.tenantId;
 
   try {
     if (!tenantId) {
-      return res.status(400).json({ error: "Tenant ID is required" });
+      return res.status(400).json({ error: 'Tenant ID is required' });
     }
     const rentals = await rentalRepo.getRentals(tenantId);
     return res.status(200).json(rentals);
@@ -26,18 +25,17 @@ const getRentals = async (req: Request, res: Response, next: NextFunction) => {
 const getRentalById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
-  const userId = req.user?.id;
   try {
     if (!tenantId) {
-      return res.status(400).json({ error: "Tenant ID is required" });
+      return res.status(400).json({ error: 'Tenant ID is required' });
     }
     const rental = await rentalRepo.getRentalById(id, tenantId);
     if (!rental) {
-      return res.status(404).json({ error: "Rental not found" });
+      return res.status(404).json({ error: 'Rental not found' });
     }
     return res.status(200).json(rental);
   } catch (error) {
@@ -47,18 +45,18 @@ const getRentalById = async (
 const handleRental = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { rental } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
   if (!tenantId) {
-    return res.status(400).json({ error: "Tenant ID is required" });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   if (!rental) {
-    return res.status(400).json({ error: "Rental data is required" });
+    return res.status(400).json({ error: 'Rental data is required' });
   }
 
   try {
@@ -72,8 +70,8 @@ const handleRental = async (
 
       if (!rental.bookingCode) {
         const bookingCode = generator.generateBookingCode(
-          tenant?.tenantCode || "",
-          rental.rentalNumber
+          tenant?.tenantCode || '',
+          rental.rentalNumber,
         );
         rental.bookingCode = bookingCode;
       }
@@ -172,7 +170,7 @@ const handleRental = async (
                 amount: extra.amount,
                 valuesId: upsertedValues.id,
               },
-            })
+            }),
           );
 
           await Promise.all(extrasPromises);
@@ -227,7 +225,7 @@ const handleRental = async (
 const handleStorefrontRental = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { rental } = req.body;
@@ -236,15 +234,15 @@ const handleStorefrontRental = async (
       const tenant = await tenantRepo.getTenantById(rental.tenantId);
 
       if (!tenant) {
-        return res.status(404).json({ message: "Tenant not found" });
+        return res.status(404).json({ message: 'Tenant not found' });
       }
 
       const rentalNumber = await generator.generateRentalNumber(
-        rental.tenantId
+        rental.tenantId,
       );
       const bookingCode = generator.generateBookingCode(
         tenant.tenantCode,
-        rentalNumber
+        rentalNumber,
       );
 
       const newRental = await tx.rental.create({
@@ -254,10 +252,10 @@ const handleStorefrontRental = async (
           pickupLocationId: rental.pickupLocationId,
           returnLocationId: rental.returnLocationId,
           vehicleId: rental.vehicleId,
-          agent: "RENTNEXA",
+          agent: 'RENTNEXA',
           createdAt: new Date(),
           tenantId: rental.tenantId,
-          status: "PENDING",
+          status: 'PENDING',
           notes: rental.notes,
           rentalNumber: rentalNumber,
           bookingCode: bookingCode,
@@ -334,7 +332,7 @@ const handleStorefrontRental = async (
             amount: extra.amount,
             valuesId: values.id,
           },
-        })
+        }),
       );
 
       await Promise.all(extrasPromises);
@@ -407,7 +405,7 @@ const handleStorefrontRental = async (
             createdAt: new Date(),
             updatedAt: new Date(),
             tenantId: tenant.id,
-            status: "ACTIVE",
+            status: 'ACTIVE',
           },
         });
 
@@ -447,7 +445,7 @@ const handleStorefrontRental = async (
 
       const vehicle = await vehicleRepo.getVehicleById(
         rental.vehicleId,
-        rental.tenantId
+        rental.tenantId,
       );
 
       const bookingNumber = newRental.rentalNumber;
@@ -455,19 +453,19 @@ const handleStorefrontRental = async (
       const driverName = `${rental.customer.firstName} ${rental.customer.lastName}`;
       const vehicleName = `${vehicle?.brand?.brand} ${vehicle?.model?.model}`;
       const fromDate = formatter.formatDateToFriendlyDateShort(
-        new Date(newRental.startDate)
+        new Date(newRental.startDate),
       );
       const toDate = formatter.formatDateToFriendlyDateShort(
-        new Date(newRental.endDate)
+        new Date(newRental.endDate),
       );
       const message = `${driverName} just submitted a booking request for a ${vehicleName}, scheduled from ${fromDate} to ${toDate}, via your storefront.`;
 
       const notification = await tx.tenantNotification.create({
         data: {
           tenantId: tenant.id,
-          title: "New Booking Request",
-          type: "BOOKING",
-          priority: "HIGH",
+          title: 'New Booking Request',
+          type: 'BOOKING',
+          priority: 'HIGH',
           message,
           actionUrl,
           read: false,
@@ -475,8 +473,8 @@ const handleStorefrontRental = async (
         },
       });
 
-      const io = app.get("io");
-      io.to(tenant.id).emit("tenant-notification", notification);
+      const io = app.get('io');
+      io.to(tenant.id).emit('tenant-notification', notification);
 
       return newRental;
     });
@@ -490,14 +488,14 @@ const handleStorefrontRental = async (
 const confirmRental = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { rental } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
   if (!tenantId) {
-    return res.status(400).json({ error: "Tenant ID is required" });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   try {
@@ -506,7 +504,7 @@ const confirmRental = async (
         await tx.rental.update({
           where: { id: rental.id },
           data: {
-            status: "CONFIRMED",
+            status: 'CONFIRMED',
             updatedAt: new Date(),
             updatedBy: userId,
           },
@@ -523,7 +521,7 @@ const confirmRental = async (
         await tx.rentalActivity.create({
           data: {
             rentalId: rental.id,
-            action: "BOOKED",
+            action: 'BOOKED',
             createdAt:
               new Date(rental.startDate) < new Date()
                 ? new Date(rental.startDate)
@@ -538,7 +536,7 @@ const confirmRental = async (
       {
         maxWait: 20000,
         timeout: 15000,
-      }
+      },
     );
 
     const rentals = await rentalRepo.getRentals(tenantId);
@@ -552,7 +550,7 @@ const confirmRental = async (
 const declineRental = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { rental } = req.body;
   const userId = req.user?.id;
@@ -563,7 +561,7 @@ const declineRental = async (
       await tx.rental.update({
         where: { id: rental.id },
         data: {
-          status: "DECLINED",
+          status: 'DECLINED',
           updatedAt: new Date(),
           updatedBy: userId,
         },
@@ -580,7 +578,7 @@ const declineRental = async (
 const cancelRental = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { rental } = req.body;
   const userId = req.user?.id;
@@ -590,7 +588,7 @@ const cancelRental = async (
       await tx.rental.update({
         where: { id: rental.id },
         data: {
-          status: "CANCELED",
+          status: 'CANCELED',
           updatedAt: new Date(),
           updatedBy: userId,
         },
@@ -607,7 +605,7 @@ const cancelRental = async (
       await tx.rentalActivity.create({
         data: {
           rentalId: rental.id,
-          action: "CANCELED",
+          action: 'CANCELED',
           createdAt: new Date(),
           createdBy: userId,
           customerId: primaryDriver?.driverId!,
@@ -633,7 +631,7 @@ const startRental = async (req: Request, res: Response) => {
       await tx.rental.update({
         where: { id: rental.id },
         data: {
-          status: "ACTIVE",
+          status: 'ACTIVE',
           updatedAt: new Date(),
           updatedBy: userId,
         },
@@ -648,7 +646,7 @@ const startRental = async (req: Request, res: Response) => {
       });
 
       const rentedStatus = await tx.vehicleStatus.findFirst({
-        where: { status: "Rented" },
+        where: { status: 'Rented' },
         select: { id: true },
       });
 
@@ -668,7 +666,7 @@ const startRental = async (req: Request, res: Response) => {
       await tx.rentalActivity.create({
         data: {
           rentalId: rental.id,
-          action: "PICKED_UP",
+          action: 'PICKED_UP',
           createdAt: rental.startDate,
           createdBy: userId,
           customerId: primaryDriver?.driverId!,
@@ -683,7 +681,7 @@ const startRental = async (req: Request, res: Response) => {
 
     return res.status(200).json({ updatedRental, rentals });
   } catch (error) {
-    return logUtil.handleError(res, error, "starting rental");
+    return logUtil.handleError(res, error, 'starting rental');
   }
 };
 const endRental = async (req: Request, res: Response, next: NextFunction) => {
@@ -695,7 +693,7 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
       await tx.rental.update({
         where: { id: rental.id },
         data: {
-          status: "COMPLETED",
+          status: 'COMPLETED',
           updatedAt: rental.returnDate,
           updatedBy: userId,
         },
@@ -710,7 +708,7 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
       });
 
       const rentedStatus = await tx.vehicleStatus.findFirst({
-        where: { status: "Pending Inspection" },
+        where: { status: 'Pending Inspection' },
         select: { id: true },
       });
 
@@ -739,7 +737,7 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
       await tx.rentalActivity.create({
         data: {
           rentalId: rental.id,
-          action: "RETURNED",
+          action: 'RETURNED',
           createdAt: rental.returnDate,
           createdBy: userId,
           customerId: primaryDriver?.driverId!,
@@ -759,13 +757,13 @@ const endRental = async (req: Request, res: Response, next: NextFunction) => {
 const deleteRental = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
   try {
     if (!tenantId) {
-      return res.status(400).json({ error: "Tenant ID is required" });
+      return res.status(400).json({ error: 'Tenant ID is required' });
     }
 
     const rental = await prisma.rental.findUnique({
@@ -773,7 +771,7 @@ const deleteRental = async (
     });
 
     if (!rental) {
-      return res.status(404).json({ error: "Rental not found" });
+      return res.status(404).json({ error: 'Rental not found' });
     }
 
     await prisma.rental.update({
@@ -820,7 +818,7 @@ const generateInvoice = async (req: Request, res: Response) => {
         invoiceNumber,
       },
       invoiceNumber,
-      tenant?.tenantCode!
+      tenant?.tenantCode!,
     );
 
     const primaryDriver = await prisma.rentalDriver.findFirst({
@@ -836,8 +834,8 @@ const generateInvoice = async (req: Request, res: Response) => {
       create: {
         invoiceNumber,
         amount: rental?.values?.netTotal || 0,
-        customerId: primaryDriver?.driverId || "",
-        rentalId: rental?.id || "",
+        customerId: primaryDriver?.driverId || '',
+        rentalId: rental?.id || '',
         tenantId: tenantId!,
         createdAt: new Date(),
         createdBy: userId,
@@ -845,7 +843,7 @@ const generateInvoice = async (req: Request, res: Response) => {
       },
       update: {
         amount: rental?.values?.netTotal || 0,
-        customerId: primaryDriver?.driverId || "",
+        customerId: primaryDriver?.driverId || '',
         tenantId: tenantId!,
         invoiceUrl: publicUrl,
         updatedAt: new Date(),
@@ -855,8 +853,8 @@ const generateInvoice = async (req: Request, res: Response) => {
 
     return res.status(201).json(publicUrl);
   } catch (error) {
-    console.error("Error generating invoice number:", error);
-    throw new Error("Error generating invoice number");
+    console.error('Error generating invoice number:', error);
+    throw new Error('Error generating invoice number');
   }
 };
 const generateRentalAgreement = async (req: Request, res: Response) => {
@@ -876,7 +874,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
       agreementNumber = agreement.number;
     } else {
       agreementNumber = await generator.generateRentalAgreementNumber(
-        tenantId!
+        tenantId!,
       );
     }
 
@@ -889,7 +887,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
         agreementNumber,
       },
       agreementNumber,
-      tenant?.tenantCode!
+      tenant?.tenantCode!,
     );
 
     const primaryDriver = await prisma.rentalDriver.findFirst({
@@ -904,8 +902,8 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
       where: { rentalId },
       create: {
         number: agreementNumber,
-        customerId: primaryDriver?.driverId || "",
-        rentalId: rental?.id || "",
+        customerId: primaryDriver?.driverId || '',
+        rentalId: rental?.id || '',
         tenantId: tenantId!,
         createdAt: new Date(),
         createdBy: userId,
@@ -913,7 +911,7 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
         signableUrl: signablePublicUrl,
       },
       update: {
-        customerId: primaryDriver?.driverId || "",
+        customerId: primaryDriver?.driverId || '',
         tenantId: tenantId!,
         agreementUrl: publicUrl,
         signableUrl: signablePublicUrl,
@@ -924,19 +922,18 @@ const generateRentalAgreement = async (req: Request, res: Response) => {
 
     return res.status(201).json(publicUrl);
   } catch (error) {
-    console.error("Error generating rental agreement number:", error);
-    throw new Error("Error generating rental agreement number");
+    console.error('Error generating rental agreement number:', error);
+    throw new Error('Error generating rental agreement number');
   }
 };
 
 const addRentalCharge = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { charge } = req.body;
-    const userId = req.user?.id;
     const tenantId = req.user?.tenantId;
 
     await prisma.rentalCharge.create({

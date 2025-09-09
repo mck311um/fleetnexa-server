@@ -1,5 +1,5 @@
-import { logger } from "../../config/logger";
-import { TxClient } from "../../config/prisma.config";
+import { logger } from '../../config/logger';
+import { TxClient } from '../../config/prisma.config';
 
 const getPrimaryDriver = async (bookingId: string, tx: TxClient) => {
   try {
@@ -24,12 +24,12 @@ const getPrimaryDriver = async (bookingId: string, tx: TxClient) => {
     });
 
     if (!driver) {
-      throw new Error("Primary driver not found");
+      throw new Error('Primary driver not found');
     }
 
     return driver;
   } catch (error) {
-    logger.e(error, "Error fetching primary driver", { bookingId });
+    logger.e(error, 'Error fetching primary driver', { bookingId });
     throw error;
   }
 };

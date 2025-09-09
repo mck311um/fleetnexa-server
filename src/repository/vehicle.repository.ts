@@ -1,10 +1,10 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../config/prisma.config";
+import { Prisma } from '@prisma/client';
+import prisma from '../config/prisma.config';
 
 class VehicleRepository {
   async getVehicles(
     tenantId: string,
-    additionalWhere?: Prisma.VehicleWhereInput
+    additionalWhere?: Prisma.VehicleWhereInput,
   ) {
     return prisma.vehicle.findMany({
       where: {
@@ -42,7 +42,7 @@ class VehicleRepository {
   async getVehicleByGroupId(
     groupId: string,
     tenantId: string,
-    additionalWhere?: Prisma.VehicleWhereInput
+    additionalWhere?: Prisma.VehicleWhereInput,
   ) {
     return prisma.vehicle.findMany({
       where: {

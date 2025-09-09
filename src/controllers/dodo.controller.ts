@@ -1,21 +1,19 @@
-import { NextFunction, Request, Response } from "express";
-import prisma from "../config/prisma.config";
-import { Prisma } from "@prisma/client";
-import client from "../config/dodo.config";
-import { WebhookUnbrandedRequiredHeaders } from "standardwebhooks";
-import { start } from "repl";
-const { Webhook } = require("standardwebhooks");
-import { SubscriptionStatus } from "@prisma/client";
+import { NextFunction, Request, Response } from 'express';
+import prisma from '../config/prisma.config';
+import client from '../config/dodo.config';
+import { WebhookUnbrandedRequiredHeaders } from 'standardwebhooks';
+import { Webhook } from 'standardwebhooks';
+import { SubscriptionStatus } from '@prisma/client';
 
-const REDIRECT_URI = process.env.DODOPAYMENTS_REDIRECT_URI || "";
-const WEBHOOK_KEY = process.env.DODOPAYMENTS_WEBHOOK_KEY || "";
+const REDIRECT_URI = process.env.DODOPAYMENTS_REDIRECT_URI || '';
+const WEBHOOK_KEY = process.env.DODOPAYMENTS_WEBHOOK_KEY || '';
 
 const webhook = new Webhook(WEBHOOK_KEY);
 
 const createDodoPayment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { body } = req.body;
   try {
@@ -52,22 +50,22 @@ const getInvoice = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const payment = await client.payments.retrieve(paymentId);
     if (!payment) {
-      return res.status(404).json({ error: "Payment not found" });
+      return res.status(404).json({ error: 'Payment not found' });
     }
 
     const invoice = await client.invoices.payments.retrieve(payment.payment_id);
     if (!invoice) {
-      return res.status(404).json({ error: "Invoice not found" });
+      return res.status(404).json({ error: 'Invoice not found' });
     }
 
     const blob = await invoice.blob();
     const arrayBuffer = await blob.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=invoice-${paymentId}.pdf`
+      'Content-Disposition',
+      `attachment; filename=invoice-${paymentId}.pdf`,
     );
     res.send(buffer);
   } catch (error) {
@@ -78,15 +76,15 @@ const getInvoice = async (req: Request, res: Response, next: NextFunction) => {
 const dodoPaymentWebhook = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const body = req.body;
 
     const webhookHeaders: WebhookUnbrandedRequiredHeaders = {
-      "webhook-id": (req.headers["webhook-id"] || "") as string,
-      "webhook-signature": (req.headers["webhook-signature"] || "") as string,
-      "webhook-timestamp": (req.headers["webhook-timestamp"] || "") as string,
+      'webhook-id': (req.headers['webhook-id'] || '') as string,
+      'webhook-signature': (req.headers['webhook-signature'] || '') as string,
+      'webhook-timestamp': (req.headers['webhook-timestamp'] || '') as string,
     };
 
     const raw = JSON.stringify(body);
@@ -95,20 +93,20 @@ const dodoPaymentWebhook = async (
     console.log(samePayloadOutput == body);
 
     switch (body.type) {
-      case "subscription.active":
+      case 'subscription.active':
         handleSubscriptionActive(body.data);
         break;
-      case "payment.succeeded":
+      case 'payment.succeeded':
         break;
-      case "subscription.on_hold":
+      case 'subscription.on_hold':
         handleSubscriptionPending(body.data);
         break;
-      case "subscription.failed":
+      case 'subscription.failed':
         handleSubscriptionFailed(body.data);
         break;
-      case "payment.failed":
+      case 'payment.failed':
         break;
-      case "subscription.renewed":
+      case 'subscription.renewed':
         handleSubscriptionActive(body.data);
         break;
     }
@@ -142,7 +140,7 @@ const handleSubscriptionActive = async (data: any) => {
       create: subscriptionData,
     });
   } catch (error) {
-    console.error("Error handling subscription active:", error);
+    console.error('Error handling subscription active:', error);
   }
 };
 
@@ -169,7 +167,7 @@ const handleSubscriptionFailed = async (data: any) => {
       create: subscriptionData,
     });
   } catch (error) {
-    console.error("Error handling subscription failed:", error);
+    console.error('Error handling subscription failed:', error);
   }
 };
 
@@ -196,7 +194,7 @@ const handleSubscriptionPending = async (data: any) => {
       create: subscriptionData,
     });
   } catch (error) {
-    console.error("Error handling subscription pending:", error);
+    console.error('Error handling subscription pending:', error);
   }
 };
 

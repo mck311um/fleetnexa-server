@@ -16,6 +16,7 @@ interface ShopDMPaymentData {
   amount_in_currency: number;
   amount_xcd: number;
   reason: string;
+  fee_data: ShopDMFeeData;
 }
 
 interface ShopDMFeeData {

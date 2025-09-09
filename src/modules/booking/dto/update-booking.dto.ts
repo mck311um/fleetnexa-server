@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { CreateBookingDtoSchema } from "./create-booking.dto";
-import { RentalStatus } from "@prisma/client";
+import { z } from 'zod';
+import { CreateBookingDtoSchema } from './create-booking.dto';
+import { RentalStatus } from '@prisma/client';
 
 export const UpdateBookingDtoSchema = CreateBookingDtoSchema.extend({
   bookingCode: z.string().optional(),

@@ -1,13 +1,13 @@
-import { readFileSync } from "fs";
-import { join } from "path";
-import { logger } from "../config/logger.config";
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { logger } from '../config/logger.config';
 
-const TEMPLATES_DIR = join(__dirname, "../templates");
+const TEMPLATES_DIR = join(__dirname, '../templates');
 
 export const readTemplateFile = (templateName: string): string => {
   try {
     const filePath = join(TEMPLATES_DIR, `${templateName}.html`);
-    const templateContent = readFileSync(filePath, "utf-8");
+    const templateContent = readFileSync(filePath, 'utf-8');
     return templateContent;
   } catch (error) {
     logger.error(`Failed to read template file: ${templateName}`, error);
@@ -17,10 +17,10 @@ export const readTemplateFile = (templateName: string): string => {
 
 export const generateTextFromHtml = (html: string): string => {
   return html
-    .replace(/<head>.*<\/head>/s, "")
-    .replace(/<style>.*<\/style>/s, "")
-    .replace(/<[^>]*>/g, "")
-    .replace(/\s+/g, " ")
-    .replace(/\n\s*\n/g, "\n")
+    .replace(/<head>.*<\/head>/s, '')
+    .replace(/<style>.*<\/style>/s, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\n\s*\n/g, '\n')
     .trim();
 };

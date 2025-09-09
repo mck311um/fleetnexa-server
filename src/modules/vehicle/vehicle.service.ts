@@ -1,13 +1,13 @@
-import { VehicleStatus } from "@prisma/client";
-import { logger } from "../../config/logger";
-import { TxClient } from "../../config/prisma.config";
+import { Tenant } from '@prisma/client';
+import { logger } from '../../config/logger';
+import { TxClient } from '../../config/prisma.config';
 
 const updateVehicleStatus = async (
   vehicleId: string,
   status: string,
-  tenant: any,
+  tenant: Tenant,
   tx: TxClient,
-  userId: string
+  userId: string,
 ) => {
   try {
     const vehicle = await tx.vehicle.findUnique({
@@ -15,8 +15,8 @@ const updateVehicleStatus = async (
     });
 
     if (!vehicle) {
-      logger.w("Vehicle not found", { vehicleId, userId });
-      throw new Error("Vehicle not found");
+      logger.w('Vehicle not found', { vehicleId, userId });
+      throw new Error('Vehicle not found');
     }
 
     const foundStatus = await tx.vehicleStatus.findUnique({
@@ -24,8 +24,8 @@ const updateVehicleStatus = async (
     });
 
     if (!foundStatus) {
-      logger.w("Vehicle status not found", { status, userId });
-      throw new Error("Vehicle status not found");
+      logger.w('Vehicle status not found', { status, userId });
+      throw new Error('Vehicle status not found');
     }
 
     await tx.vehicle.update({
@@ -33,13 +33,13 @@ const updateVehicleStatus = async (
       data: { vehicleStatusId: foundStatus.id, updatedBy: userId },
     });
   } catch (error) {
-    logger.e(error, "Failed to update vehicle status", {
+    logger.e(error, 'Failed to update vehicle status', {
       tenantId: tenant.id,
-      tenantCode: tenant.code,
+      tenantCode: tenant.tenantCode,
       vehicleId,
       userId,
     });
-    throw new Error("Failed to update vehicle status");
+    throw new Error('Failed to update vehicle status');
   }
 };
 

@@ -1,7 +1,6 @@
-import DodoPayments from "dodopayments";
-import cron from "node-cron";
-import prisma from "../config/prisma.config";
-import dodo from "../config/dodo.config";
+import cron from 'node-cron';
+import prisma from '../config/prisma.config';
+import dodo from '../config/dodo.config';
 
 const getProducts = async () => {
   try {
@@ -12,11 +11,11 @@ const getProducts = async () => {
       for (const product of products) {
         const productData = {
           productId: product.product_id,
-          name: product.name ?? "",
-          description: product.description ?? "",
+          name: product.name ?? '',
+          description: product.description ?? '',
           price: (product.price || 0) / 100,
           priceXCD: parseFloat(
-            (((product.price || 0) * 2.712) / 100).toFixed(2)
+            (((product.price || 0) * 2.712) / 100).toFixed(2),
           ),
         };
 
@@ -28,7 +27,7 @@ const getProducts = async () => {
       }
     });
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error);
     throw error;
   }
 };
@@ -61,7 +60,7 @@ const getTransactions = async () => {
           paymentId: payment.payment_id,
           totalAmount: (payment.total_amount || 0) / 100,
           customerId: payment.customer.customer_id,
-          status: payment.status || "unknown",
+          status: payment.status || 'unknown',
           productId: subscription.product_id,
           paymentDate: new Date(payment.created_at),
         };
@@ -74,27 +73,27 @@ const getTransactions = async () => {
       }
     });
   } catch (error) {
-    console.error("Error fetching transactions:", error);
+    console.error('Error fetching transactions:', error);
     throw error;
   }
 };
 
-cron.schedule("0 * * * *", async () => {
+cron.schedule('0 * * * *', async () => {
   try {
     await getTransactions();
   } catch (error) {
-    console.error("Error running dodo cron job:", error);
+    console.error('Error running dodo cron job:', error);
   } finally {
-    console.log("Dodo cron job completed.");
+    console.log('Dodo cron job completed.');
   }
 });
 
-cron.schedule("* * * * *", async () => {
+cron.schedule('* * * * *', async () => {
   try {
     await getProducts();
   } catch (error) {
-    console.error("Error running dodo cron job:", error);
+    console.error('Error running dodo cron job:', error);
   } finally {
-    console.log("Dodo cron job completed.");
+    console.log('Dodo cron job completed.');
   }
 });

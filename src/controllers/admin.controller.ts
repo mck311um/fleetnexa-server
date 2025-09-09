@@ -1,6 +1,6 @@
-import prisma from "../config/prisma.config";
-import { Request, Response } from "express";
-import logUtil from "../config/logger.config";
+import prisma from '../config/prisma.config';
+import { Request, Response } from 'express';
+import { logger } from '../config/logger';
 
 const getData = async (req: Request, res: Response) => {
   try {
@@ -65,12 +65,12 @@ const getData = async (req: Request, res: Response) => {
       paymentTypes,
       permissions,
     });
-  } catch (error: any) {
-    logUtil.handleError(res, error, "fetching data");
+  } catch (error) {
+    logger.e(error, 'Error fetching admin data');
   }
 };
 
-const addVehicleMake = async (req: any, res: any) => {
+const addVehicleMake = async (req: Request, res: Response) => {
   const { brand } = req.body;
 
   try {
@@ -78,13 +78,13 @@ const addVehicleMake = async (req: any, res: any) => {
       where: {
         brand: {
           equals: brand.toLowerCase(),
-          mode: "insensitive",
+          mode: 'insensitive',
         },
       },
     });
 
     if (existingMake) {
-      return res.status(409).json({ message: "Vehicle make already exists" });
+      return res.status(409).json({ message: 'Vehicle make already exists' });
     }
 
     await prisma.vehicleBrand.create({
@@ -96,12 +96,12 @@ const addVehicleMake = async (req: any, res: any) => {
     const vehicleMakes = await prisma.vehicleBrand.findMany();
 
     res.status(201).json(vehicleMakes);
-  } catch (error: any) {
-    logUtil.handleError(res, error, "adding vehicle make");
+  } catch (error) {
+    logger.e(error, 'Error adding vehicle make');
   }
 };
 
-const addVehicleType = async (req: any, res: any) => {
+const addVehicleType = async (req: Request, res: Response) => {
   const { bodyType } = req.body;
 
   try {
@@ -109,13 +109,13 @@ const addVehicleType = async (req: any, res: any) => {
       where: {
         bodyType: {
           equals: bodyType.toLowerCase(),
-          mode: "insensitive",
+          mode: 'insensitive',
         },
       },
     });
 
     if (existingType) {
-      return res.status(409).json({ message: "Vehicle type already exists" });
+      return res.status(409).json({ message: 'Vehicle type already exists' });
     }
 
     await prisma.vehicleBodyType.create({
@@ -127,8 +127,8 @@ const addVehicleType = async (req: any, res: any) => {
     const vehicleTypes = await prisma.vehicleBodyType.findMany();
 
     res.status(201).json({ ...vehicleTypes });
-  } catch (error: any) {
-    logUtil.handleError(res, error, "adding vehicle type");
+  } catch (error) {
+    logger.e(error, 'Error adding vehicle type');
   }
 };
 
@@ -141,7 +141,7 @@ const addVehicleModel = async (req: any, res: any) => {
     });
 
     if (!vehicleMake) {
-      return res.status(404).json({ message: "Vehicle make not found" });
+      return res.status(404).json({ message: 'Vehicle make not found' });
     }
 
     await prisma.vehicleModel.create({
@@ -155,8 +155,8 @@ const addVehicleModel = async (req: any, res: any) => {
     const vehicleModels = await prisma.vehicleModel.findMany();
 
     res.status(201).json({ ...vehicleModels });
-  } catch (error: any) {
-    logUtil.handleError(res, error, "adding vehicle model");
+  } catch (error) {
+    logger.e(error, 'Error adding vehicle model');
   }
 };
 
@@ -167,7 +167,7 @@ const addVehicleFeature = async (req: any, res: any) => {
       where: {
         feature: {
           equals: feature.toLowerCase(),
-          mode: "insensitive",
+          mode: 'insensitive',
         },
       },
     });
@@ -175,7 +175,7 @@ const addVehicleFeature = async (req: any, res: any) => {
     if (existingFeature) {
       return res
         .status(409)
-        .json({ message: "Vehicle feature already exists" });
+        .json({ message: 'Vehicle feature already exists' });
     }
 
     await prisma.vehicleFeature.create({
@@ -187,8 +187,8 @@ const addVehicleFeature = async (req: any, res: any) => {
     const vehicleFeatures = await prisma.vehicleFeature.findMany();
 
     res.status(201).json({ ...vehicleFeatures });
-  } catch (error: any) {
-    logUtil.handleError(res, error, "adding vehicle feature");
+  } catch (error) {
+    logger.e(error, 'Error adding vehicle feature');
   }
 };
 

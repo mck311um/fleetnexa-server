@@ -1,5 +1,5 @@
-import { RentalAction, RentalStatus } from "@prisma/client";
-import { z } from "zod";
+import { RentalAction, RentalStatus } from '@prisma/client';
+import { z } from 'zod';
 
 export const ActionBookingDtoSchema = z.object({
   bookingId: z.uuid(),

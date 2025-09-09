@@ -1,17 +1,25 @@
-import { TxClient } from "../../config/prisma.config";
-import { BookingConfirmationEmailParams } from "../../types/email";
-import formatter from "../../utils/formatter";
-import ses from "../../services/ses.service";
-import { logger } from "../../config/logger";
-import customerService from "../customer/customer.service";
-import { Tenant } from "@prisma/client";
+import { TxClient } from '../../config/prisma.config';
+import { BookingConfirmationEmailParams } from '../../types/email';
+import formatter from '../../utils/formatter';
+import ses from '../../services/ses.service';
+import { logger } from '../../config/logger';
+import customerService from '../customer/customer.service';
+import { Tenant } from '@prisma/client';
 
 const sendConfirmationEmail = async (
   bookingId: string,
-  tenant: any,
-  tx: TxClient
+  tenant: Tenant | null,
+  tx: TxClient,
 ) => {
   try {
+    if (!tenant) {
+      throw new Error('Tenant not found');
+    }
+
+    const currency = await tx.currency.findUnique({
+      where: { id: tenant.currencyId! },
+    });
+
     const booking = await tx.rental.findUnique({
       where: { id: bookingId },
       include: {
@@ -34,43 +42,43 @@ const sendConfirmationEmail = async (
     });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     const primaryDriver = await customerService.getPrimaryDriver(
       booking.id,
-      tx
+      tx,
     );
 
     const templateData: BookingConfirmationEmailParams = {
-      bookingId: booking?.bookingCode || "",
-      startDate: formatter.formatDateToFriendlyDate(booking?.startDate) || "",
-      pickupTime: formatter.formatDateToFriendlyTime(booking?.startDate) || "",
-      endDate: formatter.formatDateToFriendlyDate(booking?.endDate) || "",
-      pickupLocation: booking?.pickup.location || "",
+      bookingId: booking?.bookingCode || '',
+      startDate: formatter.formatDateToFriendlyDate(booking?.startDate) || '',
+      pickupTime: formatter.formatDateToFriendlyTime(booking?.startDate) || '',
+      endDate: formatter.formatDateToFriendlyDate(booking?.endDate) || '',
+      pickupLocation: booking?.pickup.location || '',
       totalPrice: formatter.formatNumberToTenantCurrency(
         booking?.values?.netTotal || 0,
-        tenant?.currency?.code || "USD"
+        currency?.code || 'USD',
       ),
-      tenantName: tenant?.tenantName || "",
-      phone: tenant?.number || "",
-      vehicle: formatter.formatVehicleToFriendly(booking?.vehicle) || "",
-      email: tenant?.email || "",
-      invoiceUrl: booking?.invoice?.invoiceUrl || "",
-      agreementUrl: booking?.agreement?.agreementUrl || "",
+      tenantName: tenant?.tenantName || '',
+      phone: tenant?.number || '',
+      vehicle: formatter.formatVehicleToFriendly(booking?.vehicle) || '',
+      email: tenant?.email || '',
+      invoiceUrl: booking?.invoice?.invoiceUrl || '',
+      agreementUrl: booking?.agreement?.agreementUrl || '',
     };
 
     await ses.sendEmail({
-      to: [primaryDriver?.customer.email || ""],
-      cc: [tenant?.email || ""],
-      template: "BookingConfirmation",
+      to: [primaryDriver?.customer.email || ''],
+      cc: [tenant?.email || ''],
+      template: 'BookingConfirmation',
       templateData,
     });
   } catch (error) {
-    logger.e(error, "Error sending confirmation email", {
+    logger.e(error, 'Error sending confirmation email', {
       bookingId,
       tenantId: tenant?.id,
-      tenantCode: tenant?.code,
+      tenantCode: tenant?.tenantCode,
     });
     throw error;
   }
@@ -80,7 +88,7 @@ const newUserEmail = async (
   tenant: Tenant,
   userId: string,
   password: string,
-  tx: TxClient
+  tx: TxClient,
 ) => {
   try {
     const user = await tx.user.findUnique({
@@ -88,7 +96,7 @@ const newUserEmail = async (
     });
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const templateData = {
@@ -99,12 +107,12 @@ const newUserEmail = async (
     };
 
     await ses.sendEmail({
-      to: [user.email || ""],
-      template: "NewUser",
+      to: [user.email || ''],
+      template: 'NewUser',
       templateData,
     });
   } catch (error) {
-    logger.e(error, "Error sending new user email", {
+    logger.e(error, 'Error sending new user email', {
       userId,
       tenantId: tenant?.id,
       tenantCode: tenant?.tenantCode,
@@ -117,7 +125,7 @@ const resetPasswordEmail = async (
   tenant: Tenant,
   userId: string,
   password: string,
-  tx: TxClient
+  tx: TxClient,
 ) => {
   try {
     const user = await tx.user.findUnique({
@@ -125,7 +133,7 @@ const resetPasswordEmail = async (
     });
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const templateData = {
@@ -136,12 +144,12 @@ const resetPasswordEmail = async (
     };
 
     await ses.sendEmail({
-      to: [user.email || ""],
-      template: "ResetPassword",
+      to: [user.email || ''],
+      template: 'ResetPassword',
       templateData,
     });
   } catch (error) {
-    logger.e(error, "Error sending reset password email", {
+    logger.e(error, 'Error sending reset password email', {
       userId,
       tenantId: tenant?.id,
       tenantCode: tenant?.tenantCode,

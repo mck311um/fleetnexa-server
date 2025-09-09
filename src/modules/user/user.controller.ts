@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from "express";
-import service from "./user.service";
-import { logger } from "../../config/logger";
-import { tenantRepo } from "../../repository/tenant.repository";
-import prisma from "../../config/prisma.config";
-import { CreateUserSchema } from "./dto/create-user.dto";
-import emailService from "../email/email.service";
-import { userRepo } from "./user.repository";
-import { ChangePasswordSchema } from "./dto/change-passoword.dto";
+import { Request, Response } from 'express';
+import service from './user.service';
+import { logger } from '../../config/logger';
+import { tenantRepo } from '../../repository/tenant.repository';
+import prisma from '../../config/prisma.config';
+import { CreateUserSchema } from './dto/create-user.dto';
+import emailService from '../email/email.service';
+import { userRepo } from './user.repository';
+import { ChangePasswordSchema } from './dto/change-password.dto';
 
 const getCurrentUser = async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -14,13 +14,13 @@ const getCurrentUser = async (req: Request, res: Response) => {
   const tenantCode = req.user?.tenantCode;
 
   if (!tenantId) {
-    logger.w("Tenant ID is missing", { tenantId });
-    return res.status(400).json({ error: "Tenant ID is required" });
+    logger.w('Tenant ID is missing', { tenantId });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   if (!userId) {
-    logger.w("User ID is missing", { userId });
-    return res.status(400).json({ error: "User ID is required" });
+    logger.w('User ID is missing', { userId });
+    return res.status(400).json({ error: 'User ID is required' });
   }
 
   try {
@@ -28,16 +28,16 @@ const getCurrentUser = async (req: Request, res: Response) => {
       const tenant = await tenantRepo.getTenantById(tenantId);
 
       if (!tenant) {
-        logger.w("Tenant not found", { tenantId });
-        return res.status(404).json({ error: "Tenant not found" });
+        logger.w('Tenant not found', { tenantId });
+        return res.status(404).json({ error: 'Tenant not found' });
       }
 
       return await service.getCurrentUser(userId!, tenant, tx);
     });
 
     res.status(200).json(user);
-  } catch (error: any) {
-    logger.e(error, "Error fetching current user", {
+  } catch (error) {
+    logger.e(error, 'Error fetching current user', {
       userId,
       tenantId,
       tenantCode,
@@ -48,16 +48,16 @@ const getSystemUsers = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   if (!tenantId) {
-    logger.w("Tenant ID is missing", { tenantId });
-    return res.status(400).json({ error: "Tenant ID is required" });
+    logger.w('Tenant ID is missing', { tenantId });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   try {
     const users = await userRepo.getUsers(tenantId);
     res.status(200).json(users);
   } catch (error) {
-    logger.e(error, "Error fetching users", { tenantId });
-    res.status(500).json({ error: "Internal server error" });
+    logger.e(error, 'Error fetching users', { tenantId });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -68,19 +68,19 @@ const createSystemUser = async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
   if (!tenantId) {
-    logger.w("Tenant ID is missing", { tenantId });
-    return res.status(400).json({ error: "Tenant ID is required" });
+    logger.w('Tenant ID is missing', { tenantId });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   if (!data) {
-    logger.w("User data is missing", { tenantId });
-    return res.status(400).json({ error: "User data is required" });
+    logger.w('User data is missing', { tenantId });
+    return res.status(400).json({ error: 'User data is required' });
   }
 
   const parseResult = CreateUserSchema.safeParse(data);
   if (!parseResult.success) {
     return res.status(400).json({
-      error: "Invalid user data",
+      error: 'Invalid user data',
       details: parseResult.error.issues,
     });
   }
@@ -92,8 +92,8 @@ const createSystemUser = async (req: Request, res: Response) => {
       const tenant = await tenantRepo.getTenantById(tenantId);
 
       if (!tenant) {
-        logger.w("Tenant not found", { tenantId });
-        return res.status(404).json({ error: "Tenant not found" });
+        logger.w('Tenant not found', { tenantId });
+        return res.status(404).json({ error: 'Tenant not found' });
       }
 
       const { user, password } = await service.createUser(userDto, tenant, tx);
@@ -101,10 +101,10 @@ const createSystemUser = async (req: Request, res: Response) => {
       await emailService.newUserEmail(tenant, user.id, password, tx);
     });
 
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
-    logger.e(error, "Error creating user", { tenantId, userId, tenantCode });
-    res.status(500).json({ error: "Internal server error" });
+    logger.e(error, 'Error creating user', { tenantId, userId, tenantCode });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 const changePassword = async (req: Request, res: Response) => {
@@ -114,19 +114,19 @@ const changePassword = async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
   if (!tenantId) {
-    logger.w("Tenant ID is missing", { tenantId });
-    return res.status(400).json({ error: "Tenant ID is required" });
+    logger.w('Tenant ID is missing', { tenantId });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   if (!data) {
-    logger.w("User data is missing", { tenantId });
-    return res.status(400).json({ error: "User data is required" });
+    logger.w('User data is missing', { tenantId });
+    return res.status(400).json({ error: 'User data is required' });
   }
 
   const parseResult = ChangePasswordSchema.safeParse(data);
   if (!parseResult.success) {
     return res.status(400).json({
-      error: "Invalid password data",
+      error: 'Invalid password data',
       details: parseResult.error.issues,
     });
   }
@@ -138,8 +138,8 @@ const changePassword = async (req: Request, res: Response) => {
       const tenant = await tenantRepo.getTenantById(tenantId);
 
       if (!tenant) {
-        logger.w("Tenant not found", { tenantId });
-        return res.status(404).json({ error: "Tenant not found" });
+        logger.w('Tenant not found', { tenantId });
+        return res.status(404).json({ error: 'Tenant not found' });
       }
 
       await service.changePassword(userDto, tenant, tx, userId!);
@@ -147,9 +147,9 @@ const changePassword = async (req: Request, res: Response) => {
       return await service.getCurrentUser(userId!, tenant, tx);
     });
 
-    res.status(200).json({ user, message: "Password updated successfully" });
-  } catch (error: any) {
-    logger.e(error, "Error fetching current user", {
+    res.status(200).json({ user, message: 'Password updated successfully' });
+  } catch (error) {
+    logger.e(error, 'Error fetching current user', {
       userId,
       tenantId,
       tenantCode,
@@ -163,13 +163,13 @@ const resetUserPassword = async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
   if (!tenantId) {
-    logger.w("Tenant ID is missing", { tenantId });
-    return res.status(400).json({ error: "Tenant ID is required" });
+    logger.w('Tenant ID is missing', { tenantId });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   if (!id) {
-    logger.w("User ID is missing", { tenantId });
-    return res.status(400).json({ error: "User ID is required" });
+    logger.w('User ID is missing', { tenantId });
+    return res.status(400).json({ error: 'User ID is required' });
   }
 
   try {
@@ -177,32 +177,32 @@ const resetUserPassword = async (req: Request, res: Response) => {
       const tenant = await tenantRepo.getTenantById(tenantId);
 
       if (!tenant) {
-        logger.w("Tenant not found", { tenantId });
-        return res.status(404).json({ error: "Tenant not found" });
+        logger.w('Tenant not found', { tenantId });
+        return res.status(404).json({ error: 'Tenant not found' });
       }
 
       const { updatedUser, password } = await service.resetPassword(
         id,
         tenant,
-        tx
+        tx,
       );
 
       await emailService.resetPasswordEmail(
         tenant,
         updatedUser.id,
         password,
-        tx
+        tx,
       );
     });
 
-    res.status(200).json({ message: "User password reset successfully" });
+    res.status(200).json({ message: 'User password reset successfully' });
   } catch (error) {
-    logger.e(error, "Error resetting user password", {
+    logger.e(error, 'Error resetting user password', {
       tenantId,
       userId,
       tenantCode,
     });
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -213,13 +213,13 @@ const deleteUser = async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
   if (!tenantId) {
-    logger.w("Tenant ID is missing", { tenantId });
-    return res.status(400).json({ error: "Tenant ID is required" });
+    logger.w('Tenant ID is missing', { tenantId });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   if (!id) {
-    logger.w("Customer ID is missing", { tenantId });
-    return res.status(400).json({ error: "Customer ID is required" });
+    logger.w('Customer ID is missing', { tenantId });
+    return res.status(400).json({ error: 'Customer ID is required' });
   }
 
   try {
@@ -227,8 +227,8 @@ const deleteUser = async (req: Request, res: Response) => {
       const tenant = await tenantRepo.getTenantById(tenantId);
 
       if (!tenant) {
-        logger.w("Tenant not found", { tenantId });
-        return res.status(404).json({ error: "Tenant not found" });
+        logger.w('Tenant not found', { tenantId });
+        return res.status(404).json({ error: 'Tenant not found' });
       }
 
       await service.deleteUser(id, tenant, tx);
@@ -238,10 +238,10 @@ const deleteUser = async (req: Request, res: Response) => {
 
     res.status(200).json({
       users,
-      message: "User deleted successfully",
+      message: 'User deleted successfully',
     });
   } catch (error) {
-    logger.e(error, "Error deleting user", { tenantId, userId, tenantCode });
+    logger.e(error, 'Error deleting user', { tenantId, userId, tenantCode });
   }
 };
 

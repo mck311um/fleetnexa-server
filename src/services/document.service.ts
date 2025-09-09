@@ -1,20 +1,20 @@
-import { logger } from "../config/logger";
-import { TxClient } from "../config/prisma.config";
-import customerService from "../modules/customer/customer.service";
-import tenantService from "../modules/tenant/tenant.service";
+import { logger } from '../config/logger';
+import { TxClient } from '../config/prisma.config';
+import customerService from '../modules/customer/customer.service';
+import tenantService from '../modules/tenant/tenant.service';
 import {
   InvoiceData,
   InvoiceItem,
   RentalAgreementData,
   RentalAgreementDriver,
   RentalService,
-} from "../types/pdf";
-import formatter from "../utils/formatter";
+} from '../types/pdf';
+import formatter from '../utils/formatter';
 
 const generateInvoiceData = async (
   bookingId: string,
   tenantId: string,
-  tx: TxClient
+  tx: TxClient,
 ) => {
   try {
     const tenantExtras = await tenantService.getTenantExtras(tenantId, tx);
@@ -43,7 +43,7 @@ const generateInvoiceData = async (
     });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     const tenant = await tx.tenant.findUnique({
@@ -57,7 +57,7 @@ const generateInvoiceData = async (
     });
 
     if (!tenant) {
-      throw new Error("Tenant not found");
+      throw new Error('Tenant not found');
     }
 
     const primaryDriver = await customerService.getPrimaryDriver(bookingId, tx);
@@ -69,40 +69,43 @@ const generateInvoiceData = async (
           primaryDriver.customer.address.country?.country,
         ]
           .filter(Boolean)
-          .join(", ")
-      : "No Address Provided";
+          .join(', ')
+      : 'No Address Provided';
 
     const services: RentalService[] = (booking?.values?.extras || []).map(
       (item) => {
         const extraItem = getExtra(item.extraId!);
         const cost = booking?.values?.extras?.find(
-          (el) => el.extraId === extraItem?.id
+          (el) => el.extraId === extraItem?.id,
         )?.amount;
 
         return {
-          label: extraItem?.name || "",
-          description: extraItem?.description || "",
+          label: extraItem?.name || '',
+          description:
+            typeof extraItem?.description === 'string'
+              ? extraItem.description
+              : '',
           amount: parseFloat((cost || 0).toFixed(2)),
         };
-      }
+      },
     );
 
     const returnItem: InvoiceItem = {
-      label: "Return Fee",
+      label: 'Return Fee',
       amount: parseFloat((booking?.return?.collectionFee || 0).toFixed(2)),
-      description: `Car Pickup at ${booking?.return?.location || ""}`,
+      description: `Car Pickup at ${booking?.return?.location || ''}`,
     };
 
     const pickupItem: InvoiceItem = {
-      label: "Pickup Fee",
+      label: 'Pickup Fee',
       amount: parseFloat((booking?.pickup?.deliveryFee || 0).toFixed(2)),
-      description: `Car Delivery to ${booking?.pickup?.location || ""}`,
+      description: `Car Delivery to ${booking?.pickup?.location || ''}`,
     };
 
     const additionalDriverItem: InvoiceItem = {
-      label: "Additional Driver Fee",
+      label: 'Additional Driver Fee',
       amount: parseFloat(
-        (booking?.values?.additionalDriverFees || 0).toFixed(2)
+        (booking?.values?.additionalDriverFees || 0).toFixed(2),
       ),
       description: `Additional Driver Fee for ${
         (booking?.drivers?.length || 1) - 1
@@ -118,27 +121,30 @@ const generateInvoiceData = async (
 
     const unitPlural = () => {
       switch (booking?.chargeType?.unit) {
-        case "day":
+        case 'day': {
           const days = booking?.values?.numberOfDays ?? 0;
-          return `day${days > 1 ? "s" : ""}`;
-        case "week":
+          return `day${days > 1 ? 's' : ''}`;
+        }
+        case 'week': {
           const weeks = Math.ceil((booking?.values?.numberOfDays ?? 0) / 7);
-          return `week${weeks > 1 ? "s" : ""}`;
-        case "month":
+          return `week${weeks > 1 ? 's' : ''}`;
+        }
+        case 'month': {
           const months = Math.ceil((booking?.values?.numberOfDays ?? 0) / 30);
-          return `month${months > 1 ? "s" : ""}`;
+          return `month${months > 1 ? 's' : ''}`;
+        }
         default:
-          return "days";
+          return 'days';
       }
     };
 
     const numberOfUnits = () => {
       switch (booking?.chargeType?.unit) {
-        case "day":
+        case 'day':
           return booking?.values?.numberOfDays ?? 0;
-        case "week":
+        case 'week':
           return Math.ceil((booking?.values?.numberOfDays ?? 0) / 7);
-        case "month":
+        case 'month':
           return Math.ceil((booking?.values?.numberOfDays ?? 0) / 30);
         default:
           return booking?.values?.numberOfDays;
@@ -146,62 +152,62 @@ const generateInvoiceData = async (
     };
 
     const data: InvoiceData = {
-      companyName: tenant?.tenantName || "",
-      streetAddress: tenant?.address?.street || "",
-      city: tenant?.address?.village?.village || "",
-      state: tenant?.address?.state?.state || "",
-      country: tenant?.address?.country?.country || "",
-      email: tenant?.email || "",
-      phone: tenant?.number || "",
-      logoUrl: tenant?.logo || "",
+      companyName: tenant?.tenantName || '',
+      streetAddress: tenant?.address?.street || '',
+      city: tenant?.address?.village?.village || '',
+      state: tenant?.address?.state?.state || '',
+      country: tenant?.address?.country?.country || '',
+      email: tenant?.email || '',
+      phone: tenant?.number || '',
+      logoUrl: tenant?.logo || '',
       customerName: `${primaryDriver?.customer?.firstName} ${primaryDriver?.customer?.lastName}`,
       customerAddress: customerAddress,
-      customerEmail: primaryDriver?.customer?.email || "",
-      customerPhone: primaryDriver?.customer?.phone || "",
-      invoiceNumber: "",
+      customerEmail: primaryDriver?.customer?.email || '',
+      customerPhone: primaryDriver?.customer?.phone || '',
+      invoiceNumber: '',
       issuedDate: `${formatter.formatDate(new Date())}`,
       dueDate: `${formatter.formatDate(booking?.startDate)}`,
       numberOfUnits: numberOfUnits() || 0,
       unitPlural: unitPlural(),
-      unit: booking?.chargeType?.unit?.toString() || "",
+      unit: booking?.chargeType?.unit?.toString() || '',
       basePrice: parseFloat((booking?.values?.basePrice || 0).toFixed(2)),
-      make: booking?.vehicle?.brand?.brand || "",
-      model: booking?.vehicle?.model?.model || "",
+      make: booking?.vehicle?.brand?.brand || '',
+      model: booking?.vehicle?.model?.model || '',
       year: booking?.vehicle?.year || 0,
-      color: booking?.vehicle?.color || "",
-      licensePlate: booking?.vehicle?.licensePlate || "",
+      color: booking?.vehicle?.color || '',
+      licensePlate: booking?.vehicle?.licensePlate || '',
       startDate: `${formatter.formatDateToFriendlyWithTime(booking?.startDate)}`,
       endDate: `${formatter.formatDateToFriendlyWithTime(booking?.endDate)}`,
-      pickupLocation: booking?.pickup?.location || "",
-      returnLocation: booking?.return?.location || "",
+      pickupLocation: booking?.pickup?.location || '',
+      returnLocation: booking?.return?.location || '',
       rentalAmount: parseFloat((booking?.values?.totalCost || 0).toFixed(2)),
       subTotal: parseFloat(
         (
           (booking?.values?.subTotal || 0) - (booking?.values?.deposit || 0)
-        ).toFixed(2)
+        ).toFixed(2),
       ),
       deposit: parseFloat((booking?.values?.deposit || 0).toFixed(2)),
       total: parseFloat((booking?.values?.netTotal || 0).toFixed(2)),
       discount: parseFloat((booking?.values?.discount || 0).toFixed(2)),
-      invoiceNotes: tenant?.invoiceFootNotes || "",
+      invoiceNotes: tenant?.invoiceFootNotes || '',
       services: filteredServices,
-      currency: tenant?.currency?.code || "XCD",
+      currency: tenant?.currency?.code || 'XCD',
     };
 
     return data;
   } catch (error) {
-    logger.e(error, "Failed to generate invoice data", {
+    logger.e(error, 'Failed to generate invoice data', {
       bookingId,
       tenantId,
     });
-    throw new Error("Failed to generate invoice data");
+    throw new Error('Failed to generate invoice data');
   }
 };
 
 const generateAgreementData = async (
   bookingId: string,
   tenantId: string,
-  tx: TxClient
+  tx: TxClient,
 ) => {
   try {
     const tenantExtras = await tenantService.getTenantExtras(tenantId, tx);
@@ -252,7 +258,7 @@ const generateAgreementData = async (
     });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     const tenant = await tx.tenant.findUnique({
@@ -268,17 +274,17 @@ const generateAgreementData = async (
     });
 
     if (!tenant) {
-      throw new Error("Tenant not found");
+      throw new Error('Tenant not found');
     }
 
     const pricePolicy = (policy: string) => {
       switch (policy) {
-        case "FLAT_RATE":
-          return "/day";
-        case "FIXED_AMOUNT":
-          return "";
-        case "PERCENTAGE":
-          return "% of total";
+        case 'FLAT_RATE':
+          return '/day';
+        case 'FIXED_AMOUNT':
+          return '';
+        case 'PERCENTAGE':
+          return '% of total';
       }
     };
 
@@ -286,42 +292,49 @@ const generateAgreementData = async (
       (item) => {
         const extraItem = getExtra(item.extraId!);
         const cost = booking?.values?.extras?.find(
-          (el) => el.extraId === extraItem?.id
+          (el) => el.extraId === extraItem?.id,
         )?.amount;
 
         return {
-          label: extraItem?.name || "",
-          description: extraItem?.description || "",
+          label: extraItem?.name || '',
+          description:
+            typeof extraItem?.description === 'string'
+              ? extraItem.description
+              : '',
           amount: parseFloat((cost || 0).toFixed(2)),
           rate: extraItem?.price || 0,
-          policy: pricePolicy(extraItem?.pricePolicy || ""),
+          policy: pricePolicy(
+            typeof extraItem?.pricePolicy === 'string'
+              ? extraItem.pricePolicy
+              : '',
+          ),
         };
-      }
+      },
     );
 
     const returnItem: InvoiceItem = {
-      label: "Return Fee",
+      label: 'Return Fee',
       amount: parseFloat((booking?.return?.collectionFee || 0).toFixed(2)),
       rate: booking?.return?.collectionFee || 0,
     };
 
     const additionalDriverItem: InvoiceItem = {
-      label: "Additional Driver Fee",
+      label: 'Additional Driver Fee',
       amount: parseFloat(
-        (booking?.values?.additionalDriverFees || 0).toFixed(2)
+        (booking?.values?.additionalDriverFees || 0).toFixed(2),
       ),
       rate: tenant?.additionalDriverFee || 0,
     };
 
     const pickupItem: InvoiceItem = {
-      label: "Pickup Fee",
+      label: 'Pickup Fee',
       amount: parseFloat((booking?.pickup?.deliveryFee || 0).toFixed(2)),
       rate: booking?.pickup?.deliveryFee || 0,
     };
 
     const extrasTotal = services.reduce(
       (acc, item) => acc + (item.amount || 0),
-      0
+      0,
     );
 
     const filteredServices = [
@@ -333,27 +346,30 @@ const generateAgreementData = async (
 
     const unitPlural = () => {
       switch (booking?.chargeType?.unit) {
-        case "day":
+        case 'day': {
           const days = booking?.values?.numberOfDays ?? 0;
-          return `day${days > 1 ? "s" : ""}`;
-        case "week":
+          return `day${days > 1 ? 's' : ''}`;
+        }
+        case 'week': {
           const weeks = Math.ceil((booking?.values?.numberOfDays ?? 0) / 7);
-          return `week${weeks > 1 ? "s" : ""}`;
-        case "month":
+          return `week${weeks > 1 ? 's' : ''}`;
+        }
+        case 'month': {
           const months = Math.ceil((booking?.values?.numberOfDays ?? 0) / 30);
-          return `month${months > 1 ? "s" : ""}`;
+          return `month${months > 1 ? 's' : ''}`;
+        }
         default:
-          return "days";
+          return 'days';
       }
     };
 
     const numberOfUnits = () => {
       switch (booking?.chargeType?.unit) {
-        case "day":
+        case 'day':
           return booking?.values?.numberOfDays ?? 0;
-        case "week":
+        case 'week':
           return Math.ceil((booking?.values?.numberOfDays ?? 0) / 7);
-        case "month":
+        case 'month':
           return Math.ceil((booking?.values?.numberOfDays ?? 0) / 30);
         default:
           return booking?.values?.numberOfDays;
@@ -362,92 +378,92 @@ const generateAgreementData = async (
 
     const getPolicyText = (policy: string) => {
       switch (policy) {
-        case "percent":
+        case 'percent':
           return `${
             tenant?.cancellationPolicy?.amount ?? 0
           }% of the total booking amount`;
-        case "fixed_amount":
+        case 'fixed_amount':
           return `${formatter.formatCurrencyWithCode(
-            tenant.currency?.code || "USD",
-            tenant?.cancellationPolicy?.amount ?? 0
+            tenant.currency?.code || 'USD',
+            tenant?.cancellationPolicy?.amount ?? 0,
           )}`;
         default:
           return `${formatter.formatCurrencyWithCode(
-            tenant.currency?.code || "USD",
-            tenant?.cancellationPolicy?.amount ?? 0
+            tenant.currency?.code || 'USD',
+            tenant?.cancellationPolicy?.amount ?? 0,
           )}`;
       }
     };
 
     const drivers: RentalAgreementDriver[] = (booking?.drivers || []).map(
       (el) => ({
-        firstName: el.customer?.firstName || "",
-        lastName: el.customer?.lastName || "",
+        firstName: el.customer?.firstName || '',
+        lastName: el.customer?.lastName || '',
         dateOfBirth: formatter.formatDateToFriendly(
-          el.customer?.dateOfBirth || ""
+          el.customer?.dateOfBirth || '',
         ),
-        licenseNumber: el.customer?.license?.licenseNumber || "",
-        license: el.customer?.license?.licenseNumber || "",
-        email: el.customer?.email || "",
-        phone: el.customer?.phone || "",
-        address: el.customer?.address?.street || "",
+        licenseNumber: el.customer?.license?.licenseNumber || '',
+        license: el.customer?.license?.licenseNumber || '',
+        email: el.customer?.email || '',
+        phone: el.customer?.phone || '',
+        address: el.customer?.address?.street || '',
         issuedDate: formatter.formatDateToFriendly(
-          el.customer?.license?.licenseIssued || ""
+          el.customer?.license?.licenseIssued || '',
         ),
         expiryDate: formatter.formatDateToFriendly(
-          el.customer?.license?.licenseExpiry || ""
+          el.customer?.license?.licenseExpiry || '',
         ),
-        city: el.customer?.address?.village?.village || "",
-        country: el.customer?.address?.country?.country || "",
+        city: el.customer?.address?.village?.village || '',
+        country: el.customer?.address?.country?.country || '',
         primaryDriver: el.isPrimary || false,
-      })
+      }),
     );
 
     const data: RentalAgreementData = {
-      tenantName: tenant?.tenantName || "",
-      street: tenant?.address?.street || "",
-      village: tenant?.address?.village?.village || "",
-      parish: tenant?.address?.state?.state || "",
-      country: tenant?.address?.country?.country || "",
-      email: tenant?.email || "",
-      phone: tenant?.number || "",
-      agreementNumber: "",
+      tenantName: tenant?.tenantName || '',
+      street: tenant?.address?.street || '',
+      village: tenant?.address?.village?.village || '',
+      parish: tenant?.address?.state?.state || '',
+      country: tenant?.address?.country?.country || '',
+      email: tenant?.email || '',
+      phone: tenant?.number || '',
+      agreementNumber: '',
       agreementDate: formatter.formatDate(new Date()),
-      make: booking?.vehicle?.brand?.brand || "",
-      model: booking?.vehicle?.model?.model || "",
-      plate: booking?.vehicle?.licensePlate || "",
-      bodyType: booking?.vehicle.model?.bodyType?.bodyType || "",
-      transmission: booking?.vehicle?.transmission?.transmission || "",
-      color: booking?.vehicle?.color || "",
+      make: booking?.vehicle?.brand?.brand || '',
+      model: booking?.vehicle?.model?.model || '',
+      plate: booking?.vehicle?.licensePlate || '',
+      bodyType: booking?.vehicle.model?.bodyType?.bodyType || '',
+      transmission: booking?.vehicle?.transmission?.transmission || '',
+      color: booking?.vehicle?.color || '',
       year: booking?.vehicle?.year || 0,
-      fuelPercent: `${booking?.vehicle?.fuelLevel}%` || "",
-      mileage: formatter.formatMilage(booking?.vehicle?.odometer || 0) || "",
-      fuel: booking?.vehicle?.fuelType?.fuel || "",
-      drive: booking?.vehicle?.wheelDrive?.drive || "",
-      featuredImage: booking?.vehicle?.featuredImage || "",
-      pickupDate: `${formatter.formatDateToFriendly(booking?.startDate || "")}`,
-      pickupLocation: booking?.pickup?.location || "",
-      pickupTime: `${formatter.formatDateToFriendlyTime(booking?.startDate || "")}`,
-      returnDate: `${formatter.formatDateToFriendly(booking?.endDate || "")}`,
-      returnLocation: booking?.return?.location || "",
-      returnTime: `${formatter.formatDateToFriendlyTime(booking?.endDate || "")}`,
+      fuelPercent: `${booking?.vehicle?.fuelLevel}%`,
+      mileage: formatter.formatMilage(booking?.vehicle?.odometer || 0) || '',
+      fuel: booking?.vehicle?.fuelType?.fuel || '',
+      drive: booking?.vehicle?.wheelDrive?.drive || '',
+      featuredImage: booking?.vehicle?.featuredImage || '',
+      pickupDate: `${formatter.formatDateToFriendly(booking?.startDate || '')}`,
+      pickupLocation: booking?.pickup?.location || '',
+      pickupTime: `${formatter.formatDateToFriendlyTime(booking?.startDate || '')}`,
+      returnDate: `${formatter.formatDateToFriendly(booking?.endDate || '')}`,
+      returnLocation: booking?.return?.location || '',
+      returnTime: `${formatter.formatDateToFriendlyTime(booking?.endDate || '')}`,
       drivers,
       numberOfUnits: numberOfUnits() || 0,
-      unit: booking?.chargeType?.unit?.toString() || "",
+      unit: booking?.chargeType?.unit?.toString() || '',
       unitPlural: unitPlural(),
       basePrice: parseFloat((booking?.values?.basePrice || 0).toFixed(2)),
       rentalAmount: parseFloat((booking?.values?.totalCost || 0).toFixed(2)),
       services: filteredServices,
       extrasTotal: parseFloat(
-        (extrasTotal + pickupItem.amount + returnItem.amount).toFixed(2)
+        (extrasTotal + pickupItem.amount + returnItem.amount).toFixed(2),
       ),
       securityDeposit: parseFloat((booking?.values?.deposit || 0).toFixed(2)),
       total: parseFloat((booking?.values?.netTotal || 0).toFixed(2)),
-      currency: tenant?.currency?.code || "USD",
+      currency: tenant?.currency?.code || 'USD',
       minimumDays: tenant?.cancellationPolicy?.minimumDays || 0,
       bookingMinimumDays: tenant?.cancellationPolicy?.bookingMinimumDays || 0,
       cancellationText: getPolicyText(
-        tenant?.cancellationPolicy?.policy || "fixed_amount"
+        tenant?.cancellationPolicy?.policy || 'fixed_amount',
       ),
       lateAmount: tenant?.latePolicy?.amount?.toNumber() ?? 0,
       maxHours: tenant?.latePolicy?.maxHours || 0,
@@ -456,11 +472,11 @@ const generateAgreementData = async (
 
     return data;
   } catch (error) {
-    logger.e(error, "Failed to generate agreement data", {
+    logger.e(error, 'Failed to generate agreement data', {
       tenantId,
       bookingId,
     });
-    throw new Error("Failed to generate agreement data");
+    throw new Error('Failed to generate agreement data');
   }
 };
 

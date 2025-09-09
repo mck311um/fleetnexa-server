@@ -1,10 +1,12 @@
-import { NextFunction, Request, Response } from "express";
-import crypto from "crypto";
-import bodyParser from "body-parser";
+import { Request } from 'express';
+import { logger } from '../../config/logger';
 
-const handlePayment = (req: Request, res: Response, next: NextFunction) => {
+const handlePayment = (req: Request) => {
   try {
-  } catch (error) {}
+    logger.i('Received ShopDM payment webhook', { body: req.body });
+  } catch (error) {
+    logger.e(error, 'Error handling ShopDM payment webhook');
+  }
 };
 
 export default {

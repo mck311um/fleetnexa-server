@@ -1,11 +1,11 @@
-import { rentalRepo } from "../repository/rental.repository";
-import { NextFunction, Request, Response } from "express";
-import prisma from "../config/prisma.config";
+import { rentalRepo } from '../repository/rental.repository';
+import { NextFunction, Request, Response } from 'express';
+import prisma from '../config/prisma.config';
 
 const getTransactions = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tenantId = req.user?.tenantId;
   try {
@@ -50,11 +50,10 @@ const getTransactions = async (
 const removeTransaction = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
-  const userId = req.user?.id;
 
   try {
     const updated = await prisma.$transaction(async (tx) => {
@@ -67,7 +66,7 @@ const removeTransaction = async (
       });
 
       if (!transaction) {
-        return res.status(404).json({ error: "Transaction not found" });
+        return res.status(404).json({ error: 'Transaction not found' });
       }
 
       if (transaction.rentalId) {
@@ -111,18 +110,18 @@ const removeTransaction = async (
 const addRentalPayment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { payment } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
   if (!tenantId) {
-    return res.status(400).json({ error: "Tenant ID is required" });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   if (!payment) {
-    return res.status(400).json({ error: "Payment data is required" });
+    return res.status(400).json({ error: 'Payment data is required' });
   }
 
   try {
@@ -149,7 +148,7 @@ const addRentalPayment = async (
       await tx.transactions.create({
         data: {
           amount: payment.amount,
-          type: "PAYMENT",
+          type: 'PAYMENT',
           transactionDate: payment.paymentDate,
           customerId: payment.customerId,
           createdBy: userId,
@@ -163,7 +162,7 @@ const addRentalPayment = async (
 
     const updatedRental = await rentalRepo.getRentalById(
       payment.rentalId,
-      tenantId
+      tenantId,
     );
 
     return res.status(201).json(updatedRental);
@@ -174,7 +173,7 @@ const addRentalPayment = async (
 const updateRentalPayment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { payment } = req.body;
   const userId = req.user?.id;
@@ -207,7 +206,7 @@ const updateRentalPayment = async (
         },
         data: {
           amount: payment.amount,
-          type: "PAYMENT",
+          type: 'PAYMENT',
           transactionDate: payment.paymentDate,
         },
       });
@@ -215,7 +214,7 @@ const updateRentalPayment = async (
 
     const updatedRental = await rentalRepo.getRentalById(
       payment.rentalId,
-      tenantId!
+      tenantId!,
     );
 
     return res.status(201).json(updatedRental);
@@ -227,18 +226,18 @@ const updateRentalPayment = async (
 const addRefundPayment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { refund } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
 
   if (!tenantId) {
-    return res.status(400).json({ error: "Tenant ID is required" });
+    return res.status(400).json({ error: 'Tenant ID is required' });
   }
 
   if (!refund) {
-    return res.status(400).json({ error: "Payment data is required" });
+    return res.status(400).json({ error: 'Payment data is required' });
   }
 
   try {
@@ -263,7 +262,7 @@ const addRefundPayment = async (
       await tx.transactions.create({
         data: {
           amount: -refund.amount,
-          type: "REFUND",
+          type: 'REFUND',
           transactionDate: refund.paymentDate,
           customerId: refund.customerId,
           createdBy: userId,
@@ -277,7 +276,7 @@ const addRefundPayment = async (
 
     const updatedRental = await rentalRepo.getRentalById(
       refund.rentalId,
-      tenantId!
+      tenantId!,
     );
 
     return res.status(201).json(updatedRental);
@@ -288,7 +287,7 @@ const addRefundPayment = async (
 const updateRefundPayment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { refund } = req.body;
   const userId = req.user?.id;
@@ -320,7 +319,7 @@ const updateRefundPayment = async (
         },
         data: {
           amount: -refund.amount,
-          type: "REFUND",
+          type: 'REFUND',
           transactionDate: refund.paymentDate,
         },
       });
@@ -328,7 +327,7 @@ const updateRefundPayment = async (
 
     const updatedRental = await rentalRepo.getRentalById(
       refund.rentalId,
-      tenantId!
+      tenantId!,
     );
 
     return res.status(201).json(updatedRental);

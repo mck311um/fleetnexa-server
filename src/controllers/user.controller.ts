@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-import prisma from "../config/prisma.config";
-import logUtil from "../config/logger.config";
-import bcrypt from "bcrypt";
-import generator from "../services/generator.service";
+import { NextFunction, Request, Response } from 'express';
+import prisma from '../config/prisma.config';
+import logUtil from '../config/logger.config';
+import bcrypt from 'bcrypt';
+import generator from '../services/generator.service';
 
 const getCurrentUser = async (req: Request, res: Response) => {
   try {
@@ -40,7 +40,7 @@ const getCurrentUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     const userData = {
@@ -64,13 +64,13 @@ const getCurrentUser = async (req: Request, res: Response) => {
 
     res.json(userData);
   } catch (error: any) {
-    logUtil.handleError(res, error, "fetching current user");
+    logUtil.handleError(res, error, 'fetching current user');
   }
 };
 const getTenantUsers = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tenantId = req.user?.tenantId;
   try {
@@ -178,7 +178,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
 const updatePassword = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { currentPassword, newPassword } = req.body;
   const userId = req.user?.id;
@@ -190,19 +190,19 @@ const updatePassword = async (
       });
 
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: 'User not found' });
       }
 
       const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) {
         return res
           .status(400)
-          .json({ message: "Current password is incorrect" });
+          .json({ message: 'Current password is incorrect' });
       }
 
       if (currentPassword === newPassword) {
         return res.status(400).json({
-          message: "New password cannot be the same as current password",
+          message: 'New password cannot be the same as current password',
         });
       }
 
@@ -280,13 +280,13 @@ const createTenantUser = async (req: Request, res: Response) => {
     });
 
     if (!tenant) {
-      return res.status(404).json({ message: "Tenant not found" });
+      return res.status(404).json({ message: 'Tenant not found' });
     }
 
     const username = await generator.generateUserName(firstName, lastName);
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash("ThisIsAPassword!", salt);
+    const hashedPassword = await bcrypt.hash('ThisIsAPassword!', salt);
 
     await prisma.user.create({
       data: {

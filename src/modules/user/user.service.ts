@@ -1,12 +1,12 @@
-import { Tenant } from "@prisma/client";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { TxClient } from "../../config/prisma.config";
-import generator from "../../services/generator.service";
-import bcrypt from "bcrypt";
-import { logger } from "../../config/logger";
-import { ChangePasswordDto } from "./dto/change-passoword.dto";
+import { Tenant } from '@prisma/client';
+import { CreateUserDto } from './dto/create-user.dto';
+import { TxClient } from '../../config/prisma.config';
+import generator from '../../services/generator.service';
+import bcrypt from 'bcrypt';
+import { logger } from '../../config/logger';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
-const getCurrentUser = async (userId: string, tenant: any, tx: TxClient) => {
+const getCurrentUser = async (userId: string, tenant: Tenant, tx: TxClient) => {
   try {
     const user = await tx.user.findUnique({
       where: { id: userId },
@@ -42,7 +42,7 @@ const getCurrentUser = async (userId: string, tenant: any, tx: TxClient) => {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const userData = {
@@ -66,19 +66,19 @@ const getCurrentUser = async (userId: string, tenant: any, tx: TxClient) => {
 
     return userData;
   } catch (error) {
-    logger.e(error, "Error fetching current user", {
+    logger.e(error, 'Error fetching current user', {
       userId,
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
     });
-    throw new Error("Error fetching current user");
+    throw new Error('Error fetching current user');
   }
 };
 
 const createUser = async (
   data: CreateUserDto,
   tenant: Tenant,
-  tx: TxClient
+  tx: TxClient,
 ) => {
   try {
     const emailExists = await tx.user.findUnique({
@@ -88,12 +88,12 @@ const createUser = async (
     });
 
     if (emailExists) {
-      throw new Error("Email already exists");
+      throw new Error('Email already exists');
     }
 
     const username = await generator.generateUserName(
       data.firstName,
-      data.lastName
+      data.lastName,
     );
 
     const salt = await bcrypt.genSalt(10);
@@ -115,11 +115,11 @@ const createUser = async (
 
     return { user, password };
   } catch (error) {
-    logger.e(error, "Error creating user", {
+    logger.e(error, 'Error creating user', {
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
     });
-    throw new Error("Error creating user");
+    throw new Error('Error creating user');
   }
 };
 
@@ -133,7 +133,7 @@ const deleteUser = async (id: string, tenant: Tenant, tx: TxClient) => {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     await tx.user.update({
@@ -147,12 +147,12 @@ const deleteUser = async (id: string, tenant: Tenant, tx: TxClient) => {
       },
     });
   } catch (error) {
-    logger.e(error, "Error deleting user", {
+    logger.e(error, 'Error deleting user', {
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
       userId: id,
     });
-    throw new Error("Error deleting user");
+    throw new Error('Error deleting user');
   }
 };
 
@@ -160,7 +160,7 @@ const changePassword = async (
   data: ChangePasswordDto,
   tenant: Tenant,
   tx: TxClient,
-  userId: string
+  userId: string,
 ) => {
   try {
     const user = await tx.user.findUnique({
@@ -170,12 +170,12 @@ const changePassword = async (
     });
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const isMatch = await bcrypt.compare(data.currentPassword, user.password);
     if (!isMatch) {
-      throw new Error("Current password is incorrect");
+      throw new Error('Current password is incorrect');
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -191,7 +191,7 @@ const changePassword = async (
       },
     });
   } catch (error) {
-    logger.e(error, "Error changing password", {
+    logger.e(error, 'Error changing password', {
       userId: tenant.id,
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
@@ -209,7 +209,7 @@ const resetPassword = async (id: string, tenant: Tenant, tx: TxClient) => {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -228,12 +228,12 @@ const resetPassword = async (id: string, tenant: Tenant, tx: TxClient) => {
 
     return { updatedUser, password };
   } catch (error) {
-    logger.e(error, "Error resetting password", {
+    logger.e(error, 'Error resetting password', {
       userId: id,
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
     });
-    throw new Error("Error resetting password");
+    throw new Error('Error resetting password');
   }
 };
 

@@ -1,15 +1,15 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 import {
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import multer from "multer";
-import { v4 as uuidv4 } from "uuid";
-import path from "path";
-import logUtil from "../config/logger.config";
-import { s3Client } from "../config/aws.config";
+} from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import logUtil from '../config/logger.config';
+import { s3Client } from '../config/aws.config';
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -19,16 +19,16 @@ const upload = multer({
     const filetypes = /jpeg|jpg|png|webp|gif|pdf/;
     const mimetype = filetypes.test(file.mimetype);
     const extname = filetypes.test(
-      path.extname(file.originalname).toLowerCase()
+      path.extname(file.originalname).toLowerCase(),
     );
 
     if (mimetype && extname) {
       return cb(null, true);
     }
 
-    cb(new Error("Only images and PDFs are allowed"));
+    cb(new Error('Only images and PDFs are allowed'));
   },
-}).single("file");
+}).single('file');
 
 const uploadFile = async (req: Request, res: Response) => {
   try {
@@ -38,19 +38,19 @@ const uploadFile = async (req: Request, res: Response) => {
       }
 
       if (!req.file) {
-        return res.status(400).json({ message: "No file uploaded" });
+        return res.status(400).json({ message: 'No file uploaded' });
       }
 
       const file = req.file;
       const fileId = uuidv4();
       const fileExtension = path.extname(file.originalname);
       const fileName = `${fileId}${fileExtension}`;
-      const folderPath = req.body.folderPath || "default";
-      const normalizedPath = folderPath.replace(/^\/|\/$/g, "");
+      const folderPath = req.body.folderPath || 'default';
+      const normalizedPath = folderPath.replace(/^\/|\/$/g, '');
       const key = `Tenants/${normalizedPath}/${fileName}`;
 
       const command = new PutObjectCommand({
-        Bucket: process.env.AWS_BUCKET_NAME || "fleetnexa",
+        Bucket: process.env.AWS_BUCKET_NAME || 'fleetnexa',
         Key: key,
         Body: file.buffer,
         ContentType: file.mimetype,
@@ -61,12 +61,12 @@ const uploadFile = async (req: Request, res: Response) => {
 
       await s3Client.send(command);
 
-      const bucket = process.env.AWS_BUCKET_NAME || "fleetnexa-dev";
-      const region = process.env.AWS_REGION || "us-east-1";
+      const bucket = process.env.AWS_BUCKET_NAME || 'fleetnexa-dev';
+      const region = process.env.AWS_REGION || 'us-east-1';
       const url = `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
 
       res.status(201).json({
-        message: "File uploaded successfully",
+        message: 'File uploaded successfully',
         file: {
           id: fileId,
           name: file.originalname,
@@ -78,7 +78,7 @@ const uploadFile = async (req: Request, res: Response) => {
       });
     });
   } catch (error: any) {
-    logUtil.handleError(res, error, "uploading file");
+    logUtil.handleError(res, error, 'uploading file');
   }
 };
 
@@ -87,11 +87,11 @@ const getFileUrl = async (req: Request, res: Response) => {
     const { key } = req.query;
 
     if (!key) {
-      return res.status(400).json({ message: "File key is required" });
+      return res.status(400).json({ message: 'File key is required' });
     }
 
     const command = new GetObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME || "fleetnexa",
+      Bucket: process.env.AWS_BUCKET_NAME || 'fleetnexa',
       Key: key as string,
     });
 
@@ -99,7 +99,7 @@ const getFileUrl = async (req: Request, res: Response) => {
 
     res.json({ url });
   } catch (error: any) {
-    logUtil.handleError(res, error, "getting file URL");
+    logUtil.handleError(res, error, 'getting file URL');
   }
 };
 
@@ -108,19 +108,19 @@ const deleteFile = async (req: Request, res: Response) => {
     const { key } = req.params;
 
     if (!key) {
-      return res.status(400).json({ message: "File key is required" });
+      return res.status(400).json({ message: 'File key is required' });
     }
 
     const command = new DeleteObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME || "fleetnexa-dev",
+      Bucket: process.env.AWS_BUCKET_NAME || 'fleetnexa-dev',
       Key: key,
     });
 
     await s3Client.send(command);
 
-    res.json({ message: "File deleted successfully" });
+    res.json({ message: 'File deleted successfully' });
   } catch (error: any) {
-    logUtil.handleError(res, error, "deleting file");
+    logUtil.handleError(res, error, 'deleting file');
   }
 };
 

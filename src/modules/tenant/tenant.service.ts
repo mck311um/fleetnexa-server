@@ -1,15 +1,16 @@
-import { logger } from "../../config/logger";
-import { TxClient } from "../../config/prisma.config";
-import { repo } from "./tenant.repository";
+import { logger } from '../../config/logger';
+import { TxClient } from '../../config/prisma.config';
+import { TenantExtra } from '../../types/tenant';
+import { repo } from './tenant.repository';
 
 const getTenantById = async (tenantId: string, tx: TxClient) => {
   try {
     return await repo.getTenantById(tenantId, tx);
   } catch (error) {
-    logger.e(error, "Failed to get tenant by ID", {
+    logger.e(error, 'Failed to get tenant by ID', {
       tenantId,
     });
-    throw new Error("Failed to get tenant by ID");
+    throw new Error('Failed to get tenant by ID');
   }
 };
 
@@ -30,24 +31,24 @@ const getTenantExtras = async (tenantId: string, tx: TxClient) => {
         }),
       ]);
 
-    const combined: any[] = [
+    const combined: TenantExtra[] = [
       ...tenantServices.map((item) => ({
         ...item,
-        type: "Service",
+        type: 'Service' as const,
         name: item.service.service,
         icon: item.service.icon,
         description: item.service.description,
       })),
       ...tenantInsurances.map((item) => ({
         ...item,
-        type: "Insurance",
+        type: 'Insurance' as const,
         name: item.insurance,
-        icon: "FaShieldAlt",
+        icon: 'FaShieldAlt',
         description: item.description,
       })),
       ...tenantEquipments.map((item) => ({
         ...item,
-        type: "Equipment",
+        type: 'Equipment' as const,
         name: item.equipment.equipment,
         icon: item.equipment.icon,
         description: item.equipment.description,
@@ -56,10 +57,10 @@ const getTenantExtras = async (tenantId: string, tx: TxClient) => {
 
     return combined;
   } catch (error) {
-    logger.e(error, "Failed to get tenant extras", {
+    logger.e(error, 'Failed to get tenant extras', {
       tenantId,
     });
-    throw new Error("Failed to get tenant extras");
+    throw new Error('Failed to get tenant extras');
   }
 };
 

@@ -1,13 +1,13 @@
-import { Router, Request, Response, NextFunction } from "express";
-import prisma from "../config/prisma.config";
-import slugify from "slugify";
+import { Request, Response, NextFunction } from 'express';
+import prisma from '../config/prisma.config';
+import slugify from 'slugify';
 
 function makeSlug(name: string) {
   return slugify(name, { lower: true, strict: true });
 }
 
 const getSitemap = async (req: Request, res: Response, next: NextFunction) => {
-  console.log("Generating sitemap...");
+  console.log('Generating sitemap...');
 
   try {
     const tenants = await prisma.tenant.findMany({
@@ -34,16 +34,16 @@ const getSitemap = async (req: Request, res: Response, next: NextFunction) => {
     }));
 
     const staticPages = [
-      { slug: "", lastModified: undefined },
-      { slug: "about", lastModified: undefined },
-      { slug: "contact", lastModified: undefined },
-      { slug: "companies", lastModified: undefined },
-      { slug: "destinations", lastModified: undefined },
-      { slug: "privacy", lastModified: undefined },
-      { slug: "terms", lastModified: undefined },
+      { slug: '', lastModified: undefined },
+      { slug: 'about', lastModified: undefined },
+      { slug: 'contact', lastModified: undefined },
+      { slug: 'companies', lastModified: undefined },
+      { slug: 'destinations', lastModified: undefined },
+      { slug: 'privacy', lastModified: undefined },
+      { slug: 'terms', lastModified: undefined },
     ];
 
-    res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
+    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
 
     return res.json({
       staticPages,

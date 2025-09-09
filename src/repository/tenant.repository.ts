@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
-import { getISOWeek, getYear, subWeeks } from "date-fns";
-import prisma from "../config/prisma.config";
+import { Prisma } from '@prisma/client';
+import { getISOWeek, getYear } from 'date-fns';
+import prisma from '../config/prisma.config';
 
 class TenantRepository {
   async getTenantById(tenantId: string) {

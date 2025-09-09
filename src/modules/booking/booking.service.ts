@@ -1,39 +1,45 @@
-import { Agent, Prisma, PrismaClient, RentalStatus } from "@prisma/client";
-import generator from "../../services/generator.service";
-import { DefaultArgs } from "@prisma/client/runtime/library";
-import { CreateBookingDto } from "./dto/create-booking.dto";
-import { logger } from "../../config/logger";
-import { UpdateBookingDto } from "./dto/update-booking.dto";
-import { CreateRentalActivityDto } from "./dto/create-activity.dto";
-import pdf from "../../services/pdf.service";
-import documentService from "../../services/document.service";
-import customerService from "../customer/customer.service";
-import { TxClient } from "../../config/prisma.config";
-import transactionService from "../transaction/transaction.service";
+import {
+  Agent,
+  Prisma,
+  PrismaClient,
+  RentalStatus,
+  Tenant,
+} from '@prisma/client';
+import generator from '../../services/generator.service';
+import { DefaultArgs } from '@prisma/client/runtime/library';
+import { CreateBookingDto } from './dto/create-booking.dto';
+import { logger } from '../../config/logger';
+import { UpdateBookingDto } from './dto/update-booking.dto';
+import { CreateRentalActivityDto } from './dto/create-activity.dto';
+import pdf from '../../services/pdf.service';
+import documentService from '../../services/document.service';
+import customerService from '../customer/customer.service';
+import { TxClient } from '../../config/prisma.config';
+import transactionService from '../transaction/transaction.service';
 
 const createBooking = async (
-  tenant: any,
+  tenant: Tenant,
   data: CreateBookingDto,
   tx: Omit<
     PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-    "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
   >,
-  userId?: string
+  userId?: string,
 ) => {
   try {
     const bookingNumber = await generator.generateRentalNumber(tenant.id);
 
     if (!bookingNumber) {
-      throw new Error("Failed to generate booking number");
+      throw new Error('Failed to generate booking number');
     }
 
     const bookingCode = generator.generateBookingCode(
       tenant.tenantCode,
-      bookingNumber
+      bookingNumber,
     );
 
     if (!bookingCode) {
-      throw new Error("Failed to generate booking code");
+      throw new Error('Failed to generate booking code');
     }
 
     const newBooking = await tx.rental.create({
@@ -47,7 +53,7 @@ const createBooking = async (
         chargeTypeId: data.chargeTypeId,
         bookingCode,
         createdAt: new Date(),
-        createdBy: userId ?? "SYSTEM",
+        createdBy: userId ?? 'SYSTEM',
         rentalNumber: bookingNumber,
         tenantId: tenant.id,
         status: RentalStatus.PENDING,
@@ -62,8 +68,8 @@ const createBooking = async (
             ...driver,
             rentalId: newBooking.id,
           },
-        })
-      )
+        }),
+      ),
     );
 
     await tx.values.create({
@@ -88,7 +94,7 @@ const createBooking = async (
         discountMin: data.values.discountMin,
         discountMax: data.values.discountMax,
         discountAmount: data.values.discountAmount,
-        discountPolicy: data.values.discountPolicy || "",
+        discountPolicy: data.values.discountPolicy || '',
         rentalId: newBooking.id,
       },
     });
@@ -103,31 +109,31 @@ const createBooking = async (
             customAmount: extra.customAmount,
             valuesId: extra.valuesId,
           },
-        })
-      )
+        }),
+      ),
     );
 
     return newBooking;
   } catch (error) {
-    logger.e(error, "Failed to create booking", {
+    logger.e(error, 'Failed to create booking', {
       tenantId: tenant.id,
-      tenantCode: tenant.code,
+      tenantCode: tenant.tenantCode,
     });
-    throw new Error("Failed to create booking");
+    throw new Error('Failed to create booking');
   }
 };
 
 const updateBooking = async (
   data: UpdateBookingDto,
-  tenant: any,
+  tenant: Tenant,
   tx: TxClient,
-  userId: string
+  userId: string,
 ) => {
   try {
     const booking = await tx.rental.findUnique({ where: { id: data.id } });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     const updatedBooking = await tx.rental.update({
@@ -156,8 +162,8 @@ const updateBooking = async (
             ...driver,
             rentalId: booking.id,
           },
-        })
-      )
+        }),
+      ),
     );
 
     await tx.values.update({
@@ -182,7 +188,7 @@ const updateBooking = async (
         discountMin: data.values.discountMin,
         discountMax: data.values.discountMax,
         discountAmount: data.values.discountAmount,
-        discountPolicy: data.values.discountPolicy || "",
+        discountPolicy: data.values.discountPolicy || '',
       },
     });
 
@@ -198,35 +204,35 @@ const updateBooking = async (
             customAmount: extra.customAmount,
             valuesId: extra.valuesId,
           },
-        })
-      )
+        }),
+      ),
     );
 
     return updatedBooking;
   } catch (error) {
-    logger.e(error, "Failed to update booking", {
+    logger.e(error, 'Failed to update booking', {
       tenantId: tenant.id,
-      tenantCode: tenant.code,
+      tenantCode: tenant.tenantCode,
     });
-    throw new Error("Failed to update booking");
+    throw new Error('Failed to update booking');
   }
 };
 
 const updateBookingStatus = async (
   bookingId: string,
   status: RentalStatus,
-  tenant: any,
+  tenant: Tenant,
   tx: Omit<
     PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-    "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
   >,
-  userId: string
+  userId: string,
 ) => {
   try {
     const booking = await tx.rental.findUnique({ where: { id: bookingId } });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     await tx.rental.update({
@@ -240,25 +246,25 @@ const updateBookingStatus = async (
 
     return;
   } catch (error) {
-    logger.e(error, "Failed to update booking status", {
+    logger.e(error, 'Failed to update booking status', {
       tenantId: tenant.id,
-      tenantCode: tenant.code,
+      tenantCode: tenant.tenantCode,
       bookingId,
       status,
     });
-    throw new Error("Failed to update booking status");
+    throw new Error('Failed to update booking status');
   }
 };
 
 const createRentalActivity = async (
   data: CreateRentalActivityDto,
-  tenant: any,
+  tenant: Tenant,
   tx: Omit<
     PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-    "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
   >,
   userId: string,
-  createdAt?: Date
+  createdAt?: Date,
 ) => {
   try {
     const booking = await tx.rental.findUnique({
@@ -266,16 +272,16 @@ const createRentalActivity = async (
     });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     const primaryDriver = await customerService.getPrimaryDriver(
       booking.id,
-      tx
+      tx,
     );
 
     if (!primaryDriver) {
-      throw new Error("Primary driver not found");
+      throw new Error('Primary driver not found');
     }
 
     await tx.rentalActivity.create({
@@ -296,13 +302,13 @@ const createRentalActivity = async (
 
     return;
   } catch (error) {
-    logger.e(error, "Failed to create rental activity", {
+    logger.e(error, 'Failed to create rental activity', {
       tenantId: tenant.id,
-      tenantCode: tenant.code,
+      tenantCode: tenant.tenantCode,
       bookingId: data.bookingId,
       action: data.action,
     });
-    throw new Error("Failed to create rental activity");
+    throw new Error('Failed to create rental activity');
   }
 };
 
@@ -310,7 +316,7 @@ const generateInvoice = async (
   bookingId: any,
   tenant: any,
   tx: TxClient,
-  userId: string
+  userId: string,
 ) => {
   try {
     let invoiceNumber;
@@ -321,7 +327,7 @@ const generateInvoice = async (
     });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     const existingInvoice = await tx.invoice.findUnique({
@@ -337,7 +343,7 @@ const generateInvoice = async (
     const data = await documentService.generateInvoiceData(
       bookingId,
       tenant.id,
-      tx
+      tx,
     );
 
     const { publicUrl } = await pdf.createInvoice(
@@ -346,13 +352,13 @@ const generateInvoice = async (
         invoiceNumber,
       },
       invoiceNumber,
-      tenant?.tenantCode!
+      tenant?.tenantCode!,
     );
 
     const primaryDriver = await customerService.getPrimaryDriver(bookingId, tx);
 
     if (!primaryDriver) {
-      throw new Error("Primary driver not found");
+      throw new Error('Primary driver not found');
     }
 
     const invoice = await tx.invoice.upsert({
@@ -360,8 +366,8 @@ const generateInvoice = async (
       create: {
         invoiceNumber,
         amount: booking?.values?.netTotal || 0,
-        customerId: primaryDriver?.driverId || "",
-        rentalId: booking?.id || "",
+        customerId: primaryDriver?.driverId || '',
+        rentalId: booking?.id || '',
         tenantId: tenant.id!,
         createdAt: new Date(),
         createdBy: userId,
@@ -369,7 +375,7 @@ const generateInvoice = async (
       },
       update: {
         amount: booking?.values?.netTotal || 0,
-        customerId: primaryDriver?.driverId || "",
+        customerId: primaryDriver?.driverId || '',
         tenantId: tenant.id!,
         invoiceUrl: publicUrl,
         updatedAt: new Date(),
@@ -379,12 +385,12 @@ const generateInvoice = async (
 
     return invoice;
   } catch (error) {
-    logger.e(error, "Failed to generate invoice", {
+    logger.e(error, 'Failed to generate invoice', {
       bookingId,
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
     });
-    throw new Error("Failed to generate invoice");
+    throw new Error('Failed to generate invoice');
   }
 };
 
@@ -392,7 +398,7 @@ const generateBookingAgreement = async (
   bookingId: any,
   tenant: any,
   tx: TxClient,
-  userId: string
+  userId: string,
 ) => {
   try {
     let agreementNumber;
@@ -403,7 +409,7 @@ const generateBookingAgreement = async (
     });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     const existingAgreement = await tx.rentalAgreement.findUnique({
@@ -414,14 +420,14 @@ const generateBookingAgreement = async (
       agreementNumber = existingAgreement.number;
     } else {
       agreementNumber = await generator.generateRentalAgreementNumber(
-        tenant.id!
+        tenant.id!,
       );
     }
 
     const data = await documentService.generateAgreementData(
       bookingId,
       tenant.id,
-      tx
+      tx,
     );
 
     const { publicUrl, signablePublicUrl } = await pdf.createAgreement(
@@ -430,7 +436,7 @@ const generateBookingAgreement = async (
         agreementNumber,
       },
       agreementNumber,
-      tenant?.tenantCode!
+      tenant?.tenantCode!,
     );
 
     const primaryDriver = await customerService.getPrimaryDriver(bookingId, tx);
@@ -439,7 +445,7 @@ const generateBookingAgreement = async (
       where: { rentalId: bookingId },
       create: {
         number: agreementNumber,
-        customerId: primaryDriver?.driverId || "",
+        customerId: primaryDriver?.driverId || '',
         rentalId: bookingId,
         tenantId: tenant.id,
         createdAt: new Date(),
@@ -448,7 +454,7 @@ const generateBookingAgreement = async (
         signableUrl: signablePublicUrl,
       },
       update: {
-        customerId: primaryDriver?.driverId || "",
+        customerId: primaryDriver?.driverId || '',
         tenantId: tenant.id,
         agreementUrl: publicUrl,
         signableUrl: signablePublicUrl,
@@ -459,20 +465,20 @@ const generateBookingAgreement = async (
 
     return agreement;
   } catch (error) {
-    logger.e(error, "Failed to generate booking agreement", {
+    logger.e(error, 'Failed to generate booking agreement', {
       bookingId,
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
     });
-    throw new Error("Failed to generate booking agreement");
+    throw new Error('Failed to generate booking agreement');
   }
 };
 
 const deleteBooking = async (
   bookingId: string,
-  tenant: any,
+  tenant: Tenant,
   tx: TxClient,
-  userId: string
+  userId: string,
 ) => {
   try {
     const booking = await tx.rental.findUnique({
@@ -480,17 +486,17 @@ const deleteBooking = async (
     });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     await tx.rental.update({
       where: { id: bookingId },
-      data: { isDeleted: true, deletedAt: new Date() },
+      data: { isDeleted: true, deletedAt: new Date(), updatedBy: userId },
     });
 
     await transactionService.deleteBookingTransaction(bookingId, tx);
   } catch (error) {
-    logger.e(error, "Failed to delete booking", {
+    logger.e(error, 'Failed to delete booking', {
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
       bookingId,

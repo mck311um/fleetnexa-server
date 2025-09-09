@@ -1,14 +1,13 @@
-import { Tenant, TransactionType } from "@prisma/client";
-import { logger } from "../../config/logger";
-import { TxClient } from "../../config/prisma.config";
-import { CreatePaymentDto } from "./dto/create-payment.dto";
-import { transactionRepo } from "./transaction.repository";
+import { Tenant, TransactionType } from '@prisma/client';
+import { logger } from '../../config/logger';
+import { TxClient } from '../../config/prisma.config';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 
 const createPayment = async (
   data: CreatePaymentDto,
   tenant: Tenant,
   tx: TxClient,
-  userId: string
+  userId: string,
 ) => {
   try {
     const booking = await tx.rental.findUnique({
@@ -16,7 +15,7 @@ const createPayment = async (
     });
 
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error('Booking not found');
     }
 
     await tx.payment.create({
@@ -48,7 +47,7 @@ const createPayment = async (
       },
     });
   } catch (error) {
-    logger.e(error, "Failed to create booking payment", {
+    logger.e(error, 'Failed to create booking payment', {
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
       bookingId: data.bookingId,
@@ -65,7 +64,7 @@ const deleteBookingTransaction = async (bookingId: string, tx: TxClient) => {
     });
 
     if (!booking) {
-      logger.e("Booking not found", "Failed to delete booking");
+      logger.e('Booking not found', 'Failed to delete booking');
       return;
     }
 
@@ -84,7 +83,7 @@ const deleteBookingTransaction = async (bookingId: string, tx: TxClient) => {
       data: { isDeleted: true, deletedAt: new Date() },
     });
   } catch (error) {
-    logger.e(error, "Failed to delete booking", {
+    logger.e(error, 'Failed to delete booking', {
       bookingId,
     });
     throw error;

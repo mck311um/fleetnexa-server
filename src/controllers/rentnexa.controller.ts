@@ -1,15 +1,8 @@
-import prisma from "../config/prisma.config";
-import { Request, Response, NextFunction } from "express";
-import { tenantRepo } from "../repository/tenant.repository";
-import { vehicleRepo } from "../repository/vehicle.repository";
-import numberGenerator from "../services/generator.service";
-import app from "../app";
+import { logger } from '../config/logger';
+import prisma from '../config/prisma.config';
+import { Request, Response } from 'express';
 
-const getAdminData = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getAdminData = async (req: Request, res: Response) => {
   try {
     const caribbeanCountries = await prisma.caribbeanCountry.findMany({
       where: {
@@ -58,14 +51,12 @@ const getAdminData = async (
       currencies,
       tenants,
     });
-  } catch (error) {}
+  } catch (error) {
+    logger.e(error, 'Get admin data failed:');
+  }
 };
 
-const getFeaturedData = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getFeaturedData = async (req: Request, res: Response) => {
   try {
     const featuredData = await prisma.$transaction(async (tx) => {
       const caribbeanCountries = await tx.caribbeanCountry.findMany({
@@ -95,7 +86,7 @@ const getFeaturedData = async (
             ...country,
             tenantCount,
           };
-        })
+        }),
       );
 
       const vehicles = await tx.vehicle.findMany({
@@ -134,7 +125,7 @@ const getFeaturedData = async (
           rentals: {
             where: {
               status: {
-                in: ["PENDING", "ACTIVE", "COMPLETED"],
+                in: ['PENDING', 'ACTIVE', 'COMPLETED'],
               },
             },
             select: {
@@ -206,9 +197,11 @@ const getFeaturedData = async (
     });
 
     res.status(200).json(featuredData);
-  } catch (error) {}
+  } catch (error) {
+    logger.e(error, 'Get featured data failed:');
+  }
 };
-const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
+const getVehicles = async (req: Request, res: Response) => {
   try {
     const vehicles = await prisma.vehicle.findMany({
       where: {
@@ -243,7 +236,7 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
         rentals: {
           where: {
             status: {
-              in: ["PENDING", "ACTIVE", "COMPLETED"],
+              in: ['PENDING', 'ACTIVE', 'COMPLETED'],
             },
           },
           select: {
@@ -301,14 +294,14 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
         const combined = [
           ...tenantServices.map((item) => ({
             ...item,
-            type: "Service",
+            type: 'Service',
             name: item.service.service,
             icon: item.service.icon,
             description: item.service.description,
           })),
           ...tenantEquipments.map((item) => ({
             ...item,
-            type: "Equipment",
+            type: 'Equipment',
             name: item.equipment.equipment,
             icon: item.equipment.icon,
             description: item.equipment.description,
@@ -319,20 +312,16 @@ const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
           ...vehicle,
           extras: combined,
         };
-      })
+      }),
     );
 
     return res.status(200).json(updatedVehicles);
   } catch (error) {
-    next(error);
+    logger.e(error, 'Get vehicles failed:');
   }
 };
 
-const getVehicleById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getVehicleById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const vehicle = await prisma.vehicle.findUnique({
@@ -366,7 +355,7 @@ const getVehicleById = async (
         rentals: {
           where: {
             status: {
-              in: ["PENDING", "ACTIVE", "COMPLETED"],
+              in: ['PENDING', 'ACTIVE', 'COMPLETED'],
             },
           },
           select: {
@@ -409,7 +398,7 @@ const getVehicleById = async (
     });
 
     if (!vehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      return res.status(404).json({ message: 'Vehicle not found' });
     }
 
     const [tenantServices, tenantEquipments] = await Promise.all([
@@ -426,14 +415,14 @@ const getVehicleById = async (
     const combined = [
       ...tenantServices.map((item) => ({
         ...item,
-        type: "Service",
+        type: 'Service',
         name: item.service.service,
         icon: item.service.icon,
         description: item.service.description,
       })),
       ...tenantEquipments.map((item) => ({
         ...item,
-        type: "Equipment",
+        type: 'Equipment',
         name: item.equipment.equipment,
         icon: item.equipment.icon,
         description: item.equipment.description,
@@ -447,10 +436,10 @@ const getVehicleById = async (
 
     return res.status(200).json(updatedVehicle);
   } catch (error) {
-    next(error);
+    logger.e(error, 'Get vehicle by ID failed:');
   }
 };
-const getTenants = async (req: Request, res: Response, next: NextFunction) => {
+const getTenants = async (req: Request, res: Response) => {
   try {
     const tenants = await prisma.tenant.findMany({
       where: {
@@ -481,14 +470,10 @@ const getTenants = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.status(200).json(tenants);
   } catch (error) {
-    next(error);
+    logger.e(error, 'Get tenants failed:');
   }
 };
-const getTenantById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getTenantById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const tenant = await prisma.tenant.findUnique({
@@ -529,7 +514,7 @@ const getTenantById = async (
             rentals: {
               where: {
                 status: {
-                  in: ["PENDING", "ACTIVE", "COMPLETED"],
+                  in: ['PENDING', 'ACTIVE', 'COMPLETED'],
                 },
               },
               select: {
@@ -587,19 +572,15 @@ const getTenantById = async (
     });
 
     if (!tenant) {
-      return res.status(404).json({ message: "Tenant not found" });
+      return res.status(404).json({ message: 'Tenant not found' });
     }
 
     return res.status(200).json(tenant);
   } catch (error) {
-    next(error);
+    logger.e(error, 'Get tenant by ID failed:');
   }
 };
-const getTenantBySlug = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getTenantBySlug = async (req: Request, res: Response) => {
   const { slug } = req.params;
   try {
     const tenant = await prisma.tenant.findUnique({
@@ -640,7 +621,7 @@ const getTenantBySlug = async (
             rentals: {
               where: {
                 status: {
-                  in: ["PENDING", "ACTIVE", "COMPLETED"],
+                  in: ['PENDING', 'ACTIVE', 'COMPLETED'],
                 },
               },
               select: {
@@ -698,12 +679,12 @@ const getTenantBySlug = async (
     });
 
     if (!tenant) {
-      return res.status(404).json({ message: "Tenant not found" });
+      return res.status(404).json({ message: 'Tenant not found' });
     }
 
     return res.status(200).json(tenant);
   } catch (error) {
-    next(error);
+    logger.e(error, 'Get tenant by slug failed:');
   }
 };
 

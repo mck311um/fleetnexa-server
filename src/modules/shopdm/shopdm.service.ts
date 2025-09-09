@@ -1,11 +1,13 @@
-import { NextFunction, Request, Response } from "express";
-import crypto from "crypto";
+import { logger } from '../../config/logger';
 
-const verifySignature = (req: Request) => {
+const verifySignature = () => {
   try {
-    const signature = req.headers["x-shopdm-signature"];
-    const payload = req.body;
+    // const payload = req.body;
+  } catch (error) {
+    logger.e(error, 'Error verifying ShopDM signature');
+  }
+};
 
-    const sortedPayload = JSON.stringify(payload, Object.keys(payload).sort());
-  } catch (error) {}
+export default {
+  verifySignature,
 };

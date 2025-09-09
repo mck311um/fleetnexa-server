@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
-import { customerRepo } from "../repository/customer.repository";
-import prisma from "../config/prisma.config";
-import logUtil from "../config/logger.config";
-import { rentalRepo } from "../repository/rental.repository";
+import { Request, Response } from 'express';
+import { customerRepo } from '../repository/customer.repository';
+import prisma from '../config/prisma.config';
+import logUtil from '../config/logger.config';
+import { rentalRepo } from '../repository/rental.repository';
 
 const getCustomers = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -12,7 +11,7 @@ const getCustomers = async (req: Request, res: Response) => {
     const customers = await customerRepo.getCustomers(tenantId!);
     res.status(200).json(customers);
   } catch (error) {
-    logUtil.handleError(res, error, "fetching customers");
+    logUtil.handleError(res, error, 'fetching customers');
   }
 };
 const getCustomerById = async (req: Request, res: Response) => {
@@ -20,16 +19,16 @@ const getCustomerById = async (req: Request, res: Response) => {
   try {
     const customer = await customerRepo.getCustomerById(
       id,
-      req.user?.tenantId!
+      req.user?.tenantId!,
     );
 
     const rentals = await rentalRepo.getRentalsByCustomerId(
       id,
-      req.user?.tenantId!
+      req.user?.tenantId!,
     );
 
     if (!customer) {
-      return res.status(404).json({ error: "Customer not found" });
+      return res.status(404).json({ error: 'Customer not found' });
     }
 
     const data = {
@@ -39,7 +38,7 @@ const getCustomerById = async (req: Request, res: Response) => {
 
     res.status(200).json(data);
   } catch (error) {
-    logUtil.handleError(res, error, "getting customer by ID");
+    logUtil.handleError(res, error, 'getting customer by ID');
   }
 };
 const addCustomer = async (req: Request, res: Response) => {
@@ -113,7 +112,7 @@ const addCustomer = async (req: Request, res: Response) => {
     const customers = await customerRepo.getCustomers(tenantId!);
     res.status(201).json(customers);
   } catch (error) {
-    logUtil.handleError(res, error, "adding customer");
+    logUtil.handleError(res, error, 'adding customer');
   }
 };
 const updateCustomer = async (req: Request, res: Response) => {
@@ -189,7 +188,7 @@ const updateCustomer = async (req: Request, res: Response) => {
     const customers = await customerRepo.getCustomers(tenantId!);
     res.status(201).json(customers);
   } catch (error) {
-    logUtil.handleError(res, error, "updating customer");
+    logUtil.handleError(res, error, 'updating customer');
   }
 };
 const deleteCustomer = async (req: Request, res: Response) => {
@@ -210,7 +209,7 @@ const deleteCustomer = async (req: Request, res: Response) => {
     const customers = await customerRepo.getCustomers(tenantId!);
     res.status(201).json(customers);
   } catch (error) {
-    logUtil.handleError(res, error, "deleting customer");
+    logUtil.handleError(res, error, 'deleting customer');
   }
 };
 
@@ -218,7 +217,6 @@ const deleteCustomer = async (req: Request, res: Response) => {
 const addCustomerDocument = async (req: Request, res: Response) => {
   const { document } = req.body;
   const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
 
   try {
     await prisma.customerDocument.create({
@@ -246,7 +244,7 @@ const addCustomerDocument = async (req: Request, res: Response) => {
 
     res.status(201).json(documents);
   } catch (error) {
-    logUtil.handleError(res, error, "adding customer document");
+    logUtil.handleError(res, error, 'adding customer document');
   }
 };
 

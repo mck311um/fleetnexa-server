@@ -1,23 +1,31 @@
 import {
-  SESClient,
   SendTemplatedEmailCommand,
   CreateTemplateCommand,
   CreateTemplateCommandInput,
   TestRenderTemplateCommand,
   UpdateTemplateCommandInput,
   UpdateTemplateCommand,
-} from "@aws-sdk/client-ses";
-import { sesClient } from "../config/aws.config";
-import { EmailTemplateParams, SendEmailParams } from "../types/email";
+} from '@aws-sdk/client-ses';
+import { sesClient } from '../config/aws.config';
+import {
+  BookingCompletedEmailParams,
+  BookingConfirmationEmailParams,
+  EmailTemplateParams,
+  SendEmailParams,
+  WelcomeEmailParams,
+} from '../types/email';
 import {
   generateTextFromHtml,
   readTemplateFile,
-} from "../utils/template-reader";
-import { logger } from "../config/logger";
+} from '../utils/template-reader';
+import { logger } from '../config/logger';
 
 const testRenderEmailTemplate = async (
   templateName: string,
-  templateData: any
+  templateData:
+    | WelcomeEmailParams
+    | BookingConfirmationEmailParams
+    | BookingCompletedEmailParams,
 ) => {
   try {
     const command = new TestRenderTemplateCommand({
@@ -38,7 +46,7 @@ const sendEmail = async (params: SendEmailParams) => {
     cc = [],
     template,
     templateData,
-    from = "no-reply@fleetnexa.com",
+    from = 'no-reply@fleetnexa.com',
   } = params;
 
   try {
@@ -55,17 +63,17 @@ const sendEmail = async (params: SendEmailParams) => {
     });
 
     await sesClient.send(command);
-    logger.i(`Email sent successfully to: ${to.join(", ")}`);
+    logger.i(`Email sent successfully to: ${to.join(', ')}`);
     return true;
   } catch (error) {
-    console.error("Failed to send email:", error);
-    logger.e(error, "Failed to send email:");
+    console.error('Failed to send email:', error);
+    logger.e(error, 'Failed to send email:');
     throw error;
   }
 };
 
 const createEmailTemplate = async (
-  templateParams: EmailTemplateParams
+  templateParams: EmailTemplateParams,
 ): Promise<boolean> => {
   const { name, subject, text } = templateParams;
 
@@ -93,7 +101,7 @@ const createEmailTemplate = async (
 };
 
 const updateEmailTemplate = async (
-  templateParams: EmailTemplateParams
+  templateParams: EmailTemplateParams,
 ): Promise<boolean> => {
   const { name, subject, text } = templateParams;
 
@@ -114,22 +122,14 @@ const updateEmailTemplate = async (
 
     logger.i(`Email template updated successfully: ${name}`);
     return true;
-  } catch (error: any) {
-    if (
-      error.name === "TemplateDoesNotExistException" ||
-      error.Error?.Code === "TemplateDoesNotExist"
-    ) {
-      logger.i(`Template ${name} doesn't exist in SES, will create it`);
-      return false;
-    }
-
+  } catch (error) {
     logger.e(error, `Failed to update template ${name}:`);
     throw error;
   }
 };
 
 const createOrUpdateEmailTemplate = async (
-  templateParams: EmailTemplateParams
+  templateParams: EmailTemplateParams,
 ): Promise<boolean> => {
   const { name } = templateParams;
 
@@ -145,7 +145,7 @@ const createOrUpdateEmailTemplate = async (
   } catch (error) {
     logger.e(
       error,
-      `Failed to create or update template ${templateParams.name}:`
+      `Failed to create or update template ${templateParams.name}:`,
     );
 
     throw error;

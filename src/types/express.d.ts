@@ -1,4 +1,4 @@
-import { User, Tenant } from "@prisma/client";
+import { User, Tenant } from '@prisma/client';
 
 export interface AuthRequest extends Request {
   user?: User & {

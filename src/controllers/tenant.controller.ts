@@ -1,17 +1,18 @@
-import { NextFunction, Request, Response } from "express";
-import { tenantRepo } from "../repository/tenant.repository";
-import prisma from "../config/prisma.config";
-import crypto, { randomUUID } from "crypto";
-import loggerConfig from "../config/logger.config";
-import generator from "../services/generator.service";
-import bcrypt from "bcrypt";
-import emailService from "../services/ses.service";
-import { WelcomeEmailParams } from "../types/email";
+import { NextFunction, Request, Response } from 'express';
+import { tenantRepo } from '../repository/tenant.repository';
+import prisma from '../config/prisma.config';
+import crypto from 'crypto';
+import loggerConfig from '../config/logger.config';
+import generator from '../services/generator.service';
+import bcrypt from 'bcrypt';
+import emailService from '../services/ses.service';
+import { WelcomeEmailParams } from '../types/email';
+import { logger } from '../config/logger';
 
 const getTenantById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
 
@@ -19,7 +20,7 @@ const getTenantById = async (
     const tenant = await tenantRepo.getTenantById(id);
 
     if (!tenant) {
-      return res.status(404).json({ message: "Tenant not found" });
+      return res.status(404).json({ message: 'Tenant not found' });
     }
 
     res.json(tenant);
@@ -30,7 +31,7 @@ const getTenantById = async (
 const getTenantExtras = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tenantId = req.user?.tenantId;
   try {
@@ -52,21 +53,21 @@ const getTenantExtras = async (
     const combined: any[] = [
       ...tenantServices.map((item) => ({
         ...item,
-        type: "Service",
+        type: 'Service',
         name: item.service.service,
         icon: item.service.icon,
         description: item.service.description,
       })),
       ...tenantInsurances.map((item) => ({
         ...item,
-        type: "Insurance",
+        type: 'Insurance',
         name: item.insurance,
-        icon: "FaShieldAlt",
+        icon: 'FaShieldAlt',
         description: item.description,
       })),
       ...tenantEquipments.map((item) => ({
         ...item,
-        type: "Equipment",
+        type: 'Equipment',
         name: item.equipment.equipment,
         icon: item.equipment.icon,
         description: item.equipment.description,
@@ -82,7 +83,7 @@ const getTenantExtras = async (
 const getTenantRentalActivity = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tenantId = req.user?.tenantId;
   try {
@@ -107,7 +108,7 @@ const getTenantRentalActivity = async (
 const createTenant = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { tenantName, email, number, firstName, lastName } = req.body;
 
@@ -123,14 +124,14 @@ const createTenant = async (
           slug,
           email,
           number,
-          logo: "https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/placeholder_tenant.jpg",
+          logo: 'https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/placeholder_tenant.jpg',
         },
       });
 
       const userRole = await tx.userRole.create({
         data: {
-          name: "Admin",
-          description: "Default role for new tenants",
+          name: 'Admin',
+          description: 'Default role for new tenants',
           show: true,
           tenant: { connect: { id: newTenant.id } },
           createdAt: new Date(),
@@ -140,8 +141,8 @@ const createTenant = async (
 
       const superAdminRole = await tx.userRole.create({
         data: {
-          name: "Super Admin",
-          description: "Super Admin role for new tenants",
+          name: 'Super Admin',
+          description: 'Super Admin role for new tenants',
           show: false,
           tenant: { connect: { id: newTenant.id } },
           createdAt: new Date(),
@@ -175,7 +176,7 @@ const createTenant = async (
       const superAdminPassword = await generator.generateTempPassword(12);
       const superAdminHashedPassword = await bcrypt.hash(
         superAdminPassword,
-        salt
+        salt,
       );
 
       const user = await tx.user.create({
@@ -207,7 +208,7 @@ const createTenant = async (
     });
 
     const templateData: WelcomeEmailParams = {
-      name: success.user.firstName + " " + success.user.lastName,
+      name: success.user.firstName + ' ' + success.user.lastName,
       tenantName: success.tenant.tenantName,
       username: success.user.username,
       password: success.password,
@@ -215,7 +216,7 @@ const createTenant = async (
 
     await emailService.sendEmail({
       to: [success.tenant.email],
-      template: "WelcomeTemplate",
+      template: 'WelcomeTemplate',
       templateData,
     });
 
@@ -227,7 +228,7 @@ const createTenant = async (
 const updateTenant = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const body = req.body;
   const tenantId = req.user?.tenantId;
@@ -281,14 +282,14 @@ const updateTenant = async (
         },
         update: {
           amount: parseInt(body.cancellationPolicy?.amount) || 0,
-          policy: body.cancellationPolicy?.policy || "fixed_amount",
+          policy: body.cancellationPolicy?.policy || 'fixed_amount',
           minimumDays: parseInt(body.cancellationPolicy?.minimumDays) || 0,
         },
         create: {
           tenantId: tenantId!,
           tenant: { connect: { id: tenantId } },
           amount: parseInt(body.cancellationPolicy?.amount) || 0,
-          policy: body.cancellationPolicy?.policy || "fixed_amount",
+          policy: body.cancellationPolicy?.policy || 'fixed_amount',
           minimumDays: parseInt(body.cancellationPolicy?.minimumDays) || 0,
           bookingMinimumDays:
             parseInt(body.cancellationPolicy?.bookingMinimumDays) || 0,
@@ -359,7 +360,7 @@ const updateTenant = async (
 const initializeTenantLocations = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { country } = req.body;
   const userId = req.user?.id;
@@ -367,7 +368,7 @@ const initializeTenantLocations = async (
 
   try {
     await prisma.$transaction(async (tx) => {
-      console.log("Initializing tenant locations for country:", country);
+      console.log('Initializing tenant locations for country:', country);
 
       const presetLocations = await tx.presetLocation.findMany({
         where: { countryId: country },
@@ -376,7 +377,7 @@ const initializeTenantLocations = async (
       await tx.tenantLocation.create({
         data: {
           id: crypto.randomUUID(),
-          location: "Main Office",
+          location: 'Main Office',
           tenantId: tenantId!,
           pickupEnabled: true,
           returnEnabled: true,
@@ -420,7 +421,7 @@ const initializeTenantLocations = async (
 const getTenantLocations = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tenantId = req.user?.tenantId;
 
@@ -443,7 +444,7 @@ const getTenantLocations = async (
 const createTenantLocation = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { location } = req.body;
   const userId = req.user?.id;
@@ -454,7 +455,7 @@ const createTenantLocation = async (
       data: {
         id: location.id,
         location: location.location,
-        tenantId: tenantId ?? "",
+        tenantId: tenantId ?? '',
         pickupEnabled: location.pickupEnabled ?? false,
         returnEnabled: location.returnEnabled ?? false,
         storefrontEnabled: location.storefrontEnabled ?? false,
@@ -479,7 +480,7 @@ const createTenantLocation = async (
 const updateTenantLocation = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { location } = req.body;
   const userId = req.user?.id;
@@ -491,7 +492,7 @@ const updateTenantLocation = async (
       where: { id: location.id },
       data: {
         location: location.location,
-        tenantId: tenantId ?? "",
+        tenantId: tenantId ?? '',
         pickupEnabled: location.pickupEnabled ?? false,
         returnEnabled: location.returnEnabled ?? false,
         storefrontEnabled: location.storefrontEnabled,
@@ -520,7 +521,7 @@ const updateTenantLocation = async (
 const deleteTenantLocation = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const userId = req.user?.id;
@@ -567,7 +568,7 @@ const getServices = async (req: Request, res: Response) => {
     res.status(200).json(tenantServices);
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Error fetching tenant services" });
+    res.status(500).json({ message: 'Error fetching tenant services' });
   }
 };
 const addService = async (req: Request, res: Response) => {
@@ -597,7 +598,7 @@ const addService = async (req: Request, res: Response) => {
     res.status(200).json({ ...tenantServices });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Error Adding Service" });
+    res.status(500).json({ message: 'Error Adding Service' });
   }
 };
 const updateService = async (req: Request, res: Response) => {
@@ -624,7 +625,7 @@ const updateService = async (req: Request, res: Response) => {
     res.status(200).json({ ...tenantServices });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Error Updating Service" });
+    res.status(500).json({ message: 'Error Updating Service' });
   }
 };
 const deleteService = async (req: Request, res: Response) => {
@@ -648,7 +649,7 @@ const deleteService = async (req: Request, res: Response) => {
     res.status(200).json(tenantServices);
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Error deleting tenant service" });
+    res.status(500).json({ message: 'Error deleting tenant service' });
   }
 };
 // #endregion
@@ -668,7 +669,7 @@ const getEquipment = async (req: Request, res: Response) => {
     res.status(200).json(tenantEquipments);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error fetching tenant equipments" });
+    res.status(500).json({ message: 'Error fetching tenant equipments' });
   }
 };
 const addEquipment = async (req: Request, res: Response) => {
@@ -701,7 +702,7 @@ const addEquipment = async (req: Request, res: Response) => {
     res.status(201).json({ ...tenantEquipments });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error adding equipment" });
+    res.status(500).json({ message: 'Error adding equipment' });
   }
 };
 const updateEquipment = async (req: Request, res: Response) => {
@@ -715,7 +716,7 @@ const updateEquipment = async (req: Request, res: Response) => {
     });
 
     if (!existingEquipment) {
-      return res.status(404).json({ message: "Equipment not found" });
+      return res.status(404).json({ message: 'Equipment not found' });
     }
 
     await prisma.tenantEquipment.update({
@@ -739,7 +740,7 @@ const updateEquipment = async (req: Request, res: Response) => {
     res.status(200).json({ ...tenantEquipments });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error updating equipment" });
+    res.status(500).json({ message: 'Error updating equipment' });
   }
 };
 const deleteEquipment = async (req: Request, res: Response) => {
@@ -766,7 +767,7 @@ const deleteEquipment = async (req: Request, res: Response) => {
     res.status(200).json({ ...tenantEquipments });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error deleting tenant equipment" });
+    res.status(500).json({ message: 'Error deleting tenant equipment' });
   }
 };
 // #endregion
@@ -783,7 +784,7 @@ const getInsurance = async (req: Request, res: Response) => {
     res.status(200).json(tenantInsurances);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error fetching tenant insurances" });
+    res.status(500).json({ message: 'Error fetching tenant insurances' });
   }
 };
 const addInsurance = async (req: Request, res: Response) => {
@@ -814,7 +815,7 @@ const addInsurance = async (req: Request, res: Response) => {
     res.status(201).json({ ...tenantInsurances });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error adding insurance" });
+    res.status(500).json({ message: 'Error adding insurance' });
   }
 };
 const updateInsurance = async (req: Request, res: Response) => {
@@ -841,7 +842,7 @@ const updateInsurance = async (req: Request, res: Response) => {
     res.status(200).json({ ...tenantInsurances });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error updating insurance" });
+    res.status(500).json({ message: 'Error updating insurance' });
   }
 };
 const deleteInsurance = async (req: Request, res: Response) => {
@@ -866,17 +867,13 @@ const deleteInsurance = async (req: Request, res: Response) => {
     res.status(200).json({ ...tenantInsurances });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error deleting tenant insurance" });
+    res.status(500).json({ message: 'Error deleting tenant insurance' });
   }
 };
 // #endregion
 
 // #region User Roles
-const getTenantRoles = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getTenantRoles = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
 
   try {
@@ -894,13 +891,13 @@ const getTenantRoles = async (
     res.status(200).json(roles);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error fetching tenant roles" });
+    res.status(500).json({ message: 'Error fetching tenant roles' });
   }
 };
 const getTenantRolesById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
@@ -916,7 +913,7 @@ const getTenantRolesById = async (
       },
     });
     if (!role) {
-      return res.status(404).json({ message: "Role not found" });
+      return res.status(404).json({ message: 'Role not found' });
     }
     res.status(200).json(role);
   } catch (error) {
@@ -926,7 +923,7 @@ const getTenantRolesById = async (
 const assignPermissionsToRole = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { roleId, permissions } = req.body;
   const userId = req.user?.id;
@@ -937,7 +934,7 @@ const assignPermissionsToRole = async (
     });
 
     if (!role) {
-      return res.status(404).json({ message: "Role not found" });
+      return res.status(404).json({ message: 'Role not found' });
     }
 
     await prisma.userRolePermission.deleteMany({
@@ -969,11 +966,7 @@ const assignPermissionsToRole = async (
     next(error);
   }
 };
-const addTenantRole = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const addTenantRole = async (req: Request, res: Response) => {
   const { name, description } = req.body;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -1003,14 +996,10 @@ const addTenantRole = async (
     res.status(201).json(roles);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error creating tenant role" });
+    res.status(500).json({ message: 'Error creating tenant role' });
   }
 };
-const updateTenantRole = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateTenantRole = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, description } = req.body;
   const userId = req.user?.id;
@@ -1041,7 +1030,7 @@ const updateTenantRole = async (
     res.status(201).json(roles);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error creating tenant role" });
+    res.status(500).json({ message: 'Error creating tenant role' });
   }
 };
 // #endregion
@@ -1050,7 +1039,7 @@ const updateTenantRole = async (
 const getTenantReminders = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tenantId = req.user?.tenantId;
   try {
@@ -1063,41 +1052,31 @@ const getTenantReminders = async (
     next(error);
   }
 };
-const addTenantReminder = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { reminder, date } = req.body;
+const addTenantReminder = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
-  const userId = req.user?.id;
   try {
-    const newReminder = await prisma.tenantReminders.create({
-      data: {
-        reminder,
-        date: new Date(date),
-        tenantId: tenantId!,
-        updatedBy: userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
+    // const newReminder = await prisma.tenantReminders.create({
+    //   data: {
+    //     reminder,
+    //     date: new Date(date),
+    //     tenantId: tenantId!,
+    //     updatedBy: userId,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   },
+    // });
 
     const reminders = await prisma.tenantReminders.findMany({
       where: { tenantId: tenantId },
-      orderBy: { date: "asc" },
+      orderBy: { date: 'asc' },
     });
 
     res.status(201).json(reminders);
   } catch (error) {
-    next(error);
+    logger.e(error, 'Error adding tenant reminder');
   }
 };
-const updateTenantReminder = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateTenantReminder = async (req: Request, res: Response) => {
   const { id } = req.params;
   const userId = req.user?.id;
   const tenantId = req.user?.tenantId;
@@ -1118,23 +1097,19 @@ const updateTenantReminder = async (
 
     const reminders = await prisma.tenantReminders.findMany({
       where: { tenantId: tenantId },
-      orderBy: { date: "asc" },
+      orderBy: { date: 'asc' },
     });
 
     res.status(200).json(reminders);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error updating tenant reminder" });
+    res.status(500).json({ message: 'Error updating tenant reminder' });
   }
 };
 // #endregion
 
 // #region Tenant Currency Rates
-const getTenantCurrencyRates = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getTenantCurrencyRates = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   try {
     const currencyRates = await prisma.tenantCurrencyRate.findMany({
@@ -1147,13 +1122,13 @@ const getTenantCurrencyRates = async (
     res.status(200).json(currencyRates);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error fetching tenant currency rates" });
+    res.status(500).json({ message: 'Error fetching tenant currency rates' });
   }
 };
 const updateTenantCurrencyRate = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { rate } = req.body;
   const tenantId = req.user?.tenantId;
@@ -1163,7 +1138,7 @@ const updateTenantCurrencyRate = async (
     });
 
     if (!existingRate) {
-      return res.status(404).json({ message: "Currency rate not found" });
+      return res.status(404).json({ message: 'Currency rate not found' });
     }
 
     await prisma.tenantCurrencyRate.update({
@@ -1194,13 +1169,13 @@ const updateTenantCurrencyRate = async (
 const getTenantNotifications = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tenantId = req.user?.tenantId;
   try {
     const notifications = await prisma.tenantNotification.findMany({
       where: { tenantId, isDeleted: false },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     });
 
     res.status(200).json(notifications);
@@ -1211,7 +1186,7 @@ const getTenantNotifications = async (
 const markNotificationAsRead = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
@@ -1221,7 +1196,7 @@ const markNotificationAsRead = async (
     });
 
     if (!notification) {
-      return res.status(404).json({ message: "Notification not found" });
+      return res.status(404).json({ message: 'Notification not found' });
     }
 
     await prisma.tenantNotification.update({
@@ -1231,7 +1206,7 @@ const markNotificationAsRead = async (
 
     const notifications = await prisma.tenantNotification.findMany({
       where: { tenantId, isDeleted: false },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     });
 
     res.status(200).json(notifications);
@@ -1242,7 +1217,7 @@ const markNotificationAsRead = async (
 const markAllNotificationsAsRead = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tenantId = req.user?.tenantId;
   try {
@@ -1253,7 +1228,7 @@ const markAllNotificationsAsRead = async (
 
     const notifications = await prisma.tenantNotification.findMany({
       where: { tenantId, isDeleted: false },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     });
 
     res.status(200).json(notifications);
@@ -1264,7 +1239,7 @@ const markAllNotificationsAsRead = async (
 const deleteNotification = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
@@ -1274,7 +1249,7 @@ const deleteNotification = async (
     });
 
     if (!notification) {
-      return res.status(404).json({ message: "Notification not found" });
+      return res.status(404).json({ message: 'Notification not found' });
     }
 
     await prisma.tenantNotification.update({

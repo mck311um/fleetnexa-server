@@ -1,10 +1,10 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../../config/prisma.config";
+import { Prisma } from '@prisma/client';
+import prisma from '../../config/prisma.config';
 
 class TransactionRepository {
   async getTransactions(
     tenantId: string,
-    additionalWhere?: Prisma.TransactionsWhereInput
+    additionalWhere?: Prisma.TransactionsWhereInput,
   ) {
     return await prisma.transactions.findMany({
       where: {
