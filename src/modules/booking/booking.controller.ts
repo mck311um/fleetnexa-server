@@ -21,22 +21,7 @@ const getBookings = async (req: Request, res: Response) => {
   try {
     const bookings = await repo.getRentals(tenantId);
 
-    if (!bookings || bookings.length === 0) {
-      logger.w('No bookings found', { tenantId });
-      return res.status(404).json({ error: 'No bookings found' });
-    }
-
-    const updatedBookings = bookings.map((booking) => {
-      if (booking.drivers && booking.drivers.length > 0) {
-        booking.drivers = booking.drivers.map((driver, index) => ({
-          ...driver,
-          isPrimary: index === 0,
-        }));
-      }
-      return booking;
-    });
-
-    return res.status(200).json(updatedBookings);
+    return res.status(200).json(bookings);
   } catch (error) {
     logger.e(error, 'Failed to fetch bookings', { tenantId });
     return res.status(500).json({ error: 'Internal Server Error' });

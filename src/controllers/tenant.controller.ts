@@ -878,7 +878,7 @@ const getTenantRoles = async (req: Request, res: Response) => {
 
   try {
     const roles = await prisma.userRole.findMany({
-      where: { tenantId, isDeleted: false },
+      where: { tenantId, isDeleted: false, show: true },
       include: {
         rolePermission: {
           include: {
@@ -903,7 +903,7 @@ const getTenantRolesById = async (
   const tenantId = req.user?.tenantId;
   try {
     const role = await prisma.userRole.findUnique({
-      where: { id, tenantId },
+      where: { id, tenantId, show: true, isDeleted: false },
       include: {
         rolePermission: {
           include: {

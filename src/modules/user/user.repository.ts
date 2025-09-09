@@ -7,7 +7,7 @@ class UserRepository {
     additionalWhere?: Prisma.UserWhereInput,
   ) => {
     return await prisma.user.findMany({
-      where: { tenantId, ...additionalWhere, isDeleted: false },
+      where: { tenantId, ...additionalWhere, isDeleted: false, show: true },
       select: this.getUserSelectOptions(),
     });
   };
