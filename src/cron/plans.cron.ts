@@ -1,4 +1,3 @@
-import cron from 'node-cron';
 import prisma from '../config/prisma.config';
 import dodo from '../config/dodo.config';
 
@@ -78,22 +77,22 @@ const getTransactions = async () => {
   }
 };
 
-cron.schedule('0 * * * *', async () => {
-  try {
-    await getTransactions();
-  } catch (error) {
-    console.error('Error running dodo cron job:', error);
-  } finally {
-    console.log('Dodo cron job completed.');
-  }
-});
+// cron.schedule('0 * * * *', async () => {
+//   try {
+//     await getTransactions();
+//   } catch (error) {
+//     console.error('Error running dodo cron job:', error);
+//   } finally {
+//     console.log('Dodo cron job completed.');
+//   }
+// });
 
-cron.schedule('* * * * *', async () => {
-  try {
-    await getProducts();
-  } catch (error) {
-    console.error('Error running dodo cron job:', error);
-  } finally {
-    console.log('Dodo cron job completed.');
-  }
-});
+// cron.schedule('* * * * *', async () => {
+//   try {
+//     await getProducts();
+//   } catch (error) {
+//     console.error('Error running dodo cron job:', error);
+//   } finally {
+//     console.log('Dodo cron job completed.');
+//   }
+// });

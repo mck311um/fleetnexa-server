@@ -7,6 +7,7 @@ import { CreateUserSchema } from './dto/create-user.dto';
 import emailService from '../email/email.service';
 import { userRepo } from './user.repository';
 import { ChangePasswordSchema } from './dto/change-password.dto';
+import { UpdateUserSchema } from './dto/update-user.dto';
 
 const getCurrentUser = async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -24,16 +25,14 @@ const getCurrentUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const user = await prisma.$transaction(async (tx) => {
-      const tenant = await tenantRepo.getTenantById(tenantId);
+    const tenant = await tenantRepo.getTenantById(tenantId);
 
-      if (!tenant) {
-        logger.w('Tenant not found', { tenantId });
-        return res.status(404).json({ error: 'Tenant not found' });
-      }
+    if (!tenant) {
+      logger.w('Tenant not found', { tenantId });
+      return res.status(404).json({ error: 'Tenant not found' });
+    }
 
-      return await service.getCurrentUser(userId!, tenant, tx);
-    });
+    const user = await service.getCurrentUser(userId!, tenant);
 
     res.status(200).json(user);
   } catch (error) {
@@ -60,7 +59,6 @@ const getSystemUsers = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
 const createSystemUser = async (req: Request, res: Response) => {
   const { data } = req.body;
   const tenantId = req.user?.tenantId;
@@ -107,6 +105,51 @@ const createSystemUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+const updateSystemUser = async (req: Request, res: Response) => {
+  const { data } = req.body;
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+  const userId = req.user?.id;
+
+  if (!tenantId) {
+    logger.w('Tenant ID is missing', { tenantId });
+    return res.status(400).json({ error: 'Tenant ID is required' });
+  }
+
+  if (!data) {
+    logger.w('User data is missing', { tenantId });
+    return res.status(400).json({ error: 'User data is required' });
+  }
+
+  const parseResult = UpdateUserSchema.safeParse(data);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: 'Invalid user data',
+      details: parseResult.error.issues,
+    });
+  }
+
+  const userDto = parseResult.data;
+
+  try {
+    const tenant = await tenantRepo.getTenantById(tenantId);
+
+    if (!tenant) {
+      logger.w('Tenant not found', { tenantId });
+      return res.status(404).json({ error: 'Tenant not found' });
+    }
+
+    const user = await service.updateUser(userDto, tenant, userId!);
+
+    res.status(201).json({
+      message: 'User updated successfully',
+      user,
+    });
+  } catch (error) {
+    logger.e(error, 'Error updating user', { tenantId, userId, tenantCode });
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 const changePassword = async (req: Request, res: Response) => {
   const { data } = req.body;
   const tenantId = req.user?.tenantId;
@@ -142,9 +185,9 @@ const changePassword = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Tenant not found' });
       }
 
-      await service.changePassword(userDto, tenant, tx, userId!);
+      await service.changePassword(userDto, tenant, userId!);
 
-      return await service.getCurrentUser(userId!, tenant, tx);
+      return await service.getCurrentUser(userId!, tenant);
     });
 
     res.status(200).json({ user, message: 'Password updated successfully' });
@@ -205,7 +248,6 @@ const resetUserPassword = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
 const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
@@ -250,6 +292,7 @@ export default {
   getSystemUsers,
   deleteUser,
   createSystemUser,
+  updateSystemUser,
   changePassword,
   resetUserPassword,
 };

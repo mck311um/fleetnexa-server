@@ -1,15 +1,16 @@
 import { Tenant } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
-import { TxClient } from '../../config/prisma.config';
+import prisma, { TxClient } from '../../config/prisma.config';
 import generator from '../../services/generator.service';
 import bcrypt from 'bcrypt';
 import { logger } from '../../config/logger';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
-const getCurrentUser = async (userId: string, tenant: Tenant, tx: TxClient) => {
+const getCurrentUser = async (userId: string, tenant: Tenant) => {
   try {
-    const user = await tx.user.findUnique({
-      where: { id: userId },
+    const user = await prisma.user.findUnique({
+      where: { id: userId, tenantId: tenant.id },
       select: {
         id: true,
         username: true,
@@ -122,6 +123,66 @@ const createUser = async (
     throw new Error('Error creating user');
   }
 };
+const updateUser = async (
+  data: UpdateUserDto,
+  tenant: Tenant,
+  userId: string,
+) => {
+  try {
+    const emailExists = await prisma.user.findUnique({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (emailExists) {
+      throw new Error('Email already exists');
+    }
+
+    const username = await generator.generateUserName(
+      data.firstName,
+      data.lastName,
+    );
+
+    const user = await prisma.user.update({
+      where: {
+        id: userId,
+        tenantId: tenant.id,
+      },
+      data: {
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        username,
+      },
+    });
+
+    const userData = {
+      id: user.id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      initials: `${user.firstName[0]}${user.lastName[0]}`,
+      fullName: `${user.firstName} ${user.lastName}`,
+      tenantId: user.tenantId,
+      createdAt: user.createdAt,
+      theme: user.theme,
+      color: user.color,
+      email: user.email,
+      profilePicture: user.profilePicture,
+      roleId: user.roleId,
+      requiredPasswordChange: user.requiredPasswordChange,
+    };
+
+    return userData;
+  } catch (error) {
+    logger.e(error, 'Error creating user', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+    });
+    throw new Error('Error creating user');
+  }
+};
 
 const deleteUser = async (id: string, tenant: Tenant, tx: TxClient) => {
   try {
@@ -159,11 +220,10 @@ const deleteUser = async (id: string, tenant: Tenant, tx: TxClient) => {
 const changePassword = async (
   data: ChangePasswordDto,
   tenant: Tenant,
-  tx: TxClient,
   userId: string,
 ) => {
   try {
-    const user = await tx.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         id: userId,
       },
@@ -181,9 +241,10 @@ const changePassword = async (
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(data.newPassword, salt);
 
-    await tx.user.update({
+    await prisma.user.update({
       where: {
-        id: tenant.id,
+        id: userId,
+        tenantId: tenant.id,
       },
       data: {
         password: hashedPassword,
@@ -239,6 +300,7 @@ const resetPassword = async (id: string, tenant: Tenant, tx: TxClient) => {
 
 export default {
   createUser,
+  updateUser,
   deleteUser,
   getCurrentUser,
   changePassword,
