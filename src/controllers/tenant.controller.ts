@@ -200,7 +200,7 @@ const createTenant = async (
           tenantId: newTenant.id,
           lastChanged: new Date(),
           roleId: superAdminRole.id,
-          requiredPasswordChange: false,
+          requirePasswordChange: false,
         },
       });
 

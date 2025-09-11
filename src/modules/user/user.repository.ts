@@ -28,10 +28,8 @@ class UserRepository {
       tenantId: true,
       createdAt: true,
       email: true,
-      theme: true,
-      color: true,
       roleId: true,
-      requiredPasswordChange: true,
+      requirePasswordChange: true,
       role: {
         include: {
           rolePermission: {

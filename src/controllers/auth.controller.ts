@@ -43,8 +43,6 @@ const register = async (req: Request, res: Response) => {
       fullName: `${user.firstName} ${user.lastName}`,
       tenantId: user.tenantId,
       tenant: tenant?.tenantCode,
-      theme: user.theme,
-      color: user.color,
     };
 
     const payload = {
@@ -183,9 +181,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       fullName: `${user.firstName} ${user.lastName}`,
       tenantId: user.tenantId,
       tenantCode: user.tenant?.tenantCode,
-      theme: user.theme,
       roleId: user.roleId,
-      requiredPasswordChange: user.requiredPasswordChange,
+      requirePasswordChange: user.requirePasswordChange,
     };
 
     const payload = {

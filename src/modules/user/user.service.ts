@@ -19,11 +19,9 @@ const getCurrentUser = async (userId: string, tenant: Tenant) => {
         tenantId: true,
         createdAt: true,
         email: true,
-        theme: true,
-        color: true,
         roleId: true,
         profilePicture: true,
-        requiredPasswordChange: true,
+        requirePasswordChange: true,
         role: {
           include: {
             rolePermission: {
@@ -57,12 +55,10 @@ const getCurrentUser = async (userId: string, tenant: Tenant) => {
       tenant: user.tenant?.tenantCode,
       tenantName: user.tenant?.tenantName,
       createdAt: user.createdAt,
-      theme: user.theme,
-      color: user.color,
       email: user.email,
       profilePicture: user.profilePicture || null,
       roleId: user.roleId,
-      requiredPasswordChange: user.requiredPasswordChange,
+      requirePasswordChange: user.requirePasswordChange,
       role: user.role,
     };
 
@@ -109,7 +105,7 @@ const createUser = async (
         username,
         password: hashedPassword,
         tenantId: tenant.id,
-        requiredPasswordChange: true,
+        requirePasswordChange: true,
         roleId: data.roleId,
       },
     });
@@ -201,12 +197,10 @@ const updateUser = async (
       fullName: `${user.firstName} ${user.lastName}`,
       tenantId: user.tenantId,
       createdAt: user.createdAt,
-      theme: user.theme,
-      color: user.color,
       email: user.email,
       profilePicture: user.profilePicture,
       roleId: user.roleId,
-      requiredPasswordChange: user.requiredPasswordChange,
+      requirePasswordChange: user.requirePasswordChange,
       role: user.role,
     };
 
@@ -283,7 +277,7 @@ const changePassword = async (
       },
       data: {
         password: hashedPassword,
-        requiredPasswordChange: false,
+        requirePasswordChange: false,
       },
     });
   } catch (error) {
