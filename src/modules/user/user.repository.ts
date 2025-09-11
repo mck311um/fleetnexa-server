@@ -12,6 +12,13 @@ class UserRepository {
     });
   };
 
+  getUserById = async (id: string) => {
+    return await prisma.user.findUnique({
+      where: { id },
+      select: this.getUserSelectOptions(),
+    });
+  };
+
   private getUserSelectOptions(): Prisma.UserSelect {
     return {
       id: true,

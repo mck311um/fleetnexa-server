@@ -1,7 +1,37 @@
-import { Tenant, UserRole } from '@prisma/client';
-import { TxClient } from '../../config/prisma.config';
+import { Tenant, User, UserRole } from '@prisma/client';
+import prisma, { TxClient } from '../../config/prisma.config';
 import { logger } from '../../config/logger';
 import { CreateRoleDto } from './role.dto';
+
+const getRole = async (user: User) => {
+  try {
+    if (!user) {
+      throw new Error('User is required to fetch role');
+    }
+    if (!user.roleId) {
+      throw new Error('User does not have a role assigned');
+    }
+
+    const role = await prisma.userRole.findUnique({
+      where: { id: user.roleId },
+      include: {
+        rolePermission: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+
+    if (!role) {
+      throw new Error('Role not found');
+    }
+
+    return role;
+  } catch (error) {
+    logger.e(error, 'Error fetching user role', { userId: user.id });
+  }
+};
 
 const createRole = async (
   data: CreateRoleDto,

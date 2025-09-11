@@ -3,7 +3,7 @@ type EmailTemplate =
   | 'BookingConfirmation'
   | 'BookingCompleted'
   | 'NewUser'
-  | 'ResetPassword';
+  | 'PasswordReset';
 
 export interface SendEmailParams {
   to: string[];

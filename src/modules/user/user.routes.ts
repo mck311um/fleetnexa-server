@@ -8,7 +8,9 @@ router.get('/', auth, controller.getSystemUsers);
 router.get('/me', auth, controller.getCurrentUser);
 
 router.post('/', auth, controller.createSystemUser);
-router.post('/reset/:id', auth, controller.resetUserPassword);
+router.post('/reset/:id', controller.resetUserPassword);
+
+router.put('/', auth, controller.updateSystemUser);
 
 router.patch('/password', auth, controller.changePassword);
 

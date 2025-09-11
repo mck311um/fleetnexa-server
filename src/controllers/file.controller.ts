@@ -44,7 +44,7 @@ const uploadFile = async (req: Request, res: Response) => {
       const file = req.file;
       const fileId = uuidv4();
       const fileExtension = path.extname(file.originalname);
-      const fileName = `${fileId}${fileExtension}`;
+      const fileName = req.body.fileName || `${fileId}${fileExtension}`;
       const folderPath = req.body.folderPath || 'default';
       const normalizedPath = folderPath.replace(/^\/|\/$/g, '');
       const key = `Tenants/${normalizedPath}/${fileName}`;

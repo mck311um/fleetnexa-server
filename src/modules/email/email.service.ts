@@ -176,7 +176,7 @@ const resetPasswordEmail = async (
 
     await ses.sendEmail({
       to: [user.email || ''],
-      template: 'ResetPassword',
+      template: 'PasswordReset',
       templateData,
     });
   } catch (error) {

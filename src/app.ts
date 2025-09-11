@@ -54,7 +54,7 @@ app.options('*', cors());
 // Routes
 registerRoutes(app);
 app.use('/api/auth', authRoutes);
-// app.use('/api/tenant', tenantRoutes);
+app.use('/api/tenant', tenantRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/vehicle', vehicleRoutes);

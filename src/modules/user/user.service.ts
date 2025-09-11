@@ -63,6 +63,7 @@ const getCurrentUser = async (userId: string, tenant: Tenant) => {
       profilePicture: user.profilePicture || null,
       roleId: user.roleId,
       requiredPasswordChange: user.requiredPasswordChange,
+      role: user.role,
     };
 
     return userData;

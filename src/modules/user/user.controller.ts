@@ -205,7 +205,7 @@ const changePassword = async (req: Request, res: Response) => {
 };
 const resetUserPassword = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const tenantId = req.user?.tenantId;
+  const tenantId = 'f7150cc7-7be7-4b83-9e47-98e1b13034f9';
   const tenantCode = req.user?.tenantCode;
   const userId = req.user?.id;
 
