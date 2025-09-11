@@ -13,7 +13,7 @@ model User {
   requiredPasswordChange Boolean         @default(true)
   lastChanged            DateTime?
   email                  String?         @unique
-  profilePicture          String?         @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
+  profilePicture          String          @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
   show                   Boolean?        @default(false)
 
   isDeleted              Boolean         @default(false)

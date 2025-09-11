@@ -162,16 +162,6 @@ const updateUser = async (
   userId: string,
 ) => {
   try {
-    const emailExists = await prisma.user.findUnique({
-      where: {
-        email: data.email,
-      },
-    });
-
-    if (emailExists) {
-      throw new Error('Email already exists');
-    }
-
     const username = await generator.generateUserName(
       data.firstName,
       data.lastName,
@@ -186,7 +176,19 @@ const updateUser = async (
         email: data.email,
         firstName: data.firstName,
         lastName: data.lastName,
+        profilePicture: data.profilePicture,
         username,
+      },
+      include: {
+        role: {
+          include: {
+            rolePermission: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -205,6 +207,7 @@ const updateUser = async (
       profilePicture: user.profilePicture,
       roleId: user.roleId,
       requiredPasswordChange: user.requiredPasswordChange,
+      role: user.role,
     };
 
     return userData;
