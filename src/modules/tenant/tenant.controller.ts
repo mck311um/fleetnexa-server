@@ -54,6 +54,7 @@ const createTenant = async (req: Request, res: Response) => {
       email: tenantDto.email,
       tenantName: tenantDto.tenantName,
     });
+    return res.status(500).json({ message: 'Failed to create tenant' });
   }
 };
 

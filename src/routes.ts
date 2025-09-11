@@ -4,7 +4,7 @@ import bookingRoutes from './modules/booking/booking.routes';
 import emailRoutes from './modules/email/email.routes';
 import transactionRoutes from './modules/transaction/transaction.routes';
 import userRoutes from './modules/user/user.routes';
-import tenantRoutes from './routes/tenant.routes';
+import tenantRoutes from './modules/tenant/tenant.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
