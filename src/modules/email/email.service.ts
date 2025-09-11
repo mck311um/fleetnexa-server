@@ -1,10 +1,41 @@
 import { TxClient } from '../../config/prisma.config';
-import { BookingConfirmationEmailParams } from '../../types/email';
+import {
+  BookingConfirmationEmailParams,
+  WelcomeEmailParams,
+} from '../../types/email';
 import formatter from '../../utils/formatter';
 import ses from '../../services/ses.service';
 import { logger } from '../../config/logger';
 import customerService from '../customer/customer.service';
 import { Tenant } from '@prisma/client';
+
+const sendWelcomeEmail = async (
+  tenant: Tenant,
+  username: string,
+  password: string,
+  name: string,
+) => {
+  try {
+    const templateData: WelcomeEmailParams = {
+      tenantName: tenant.tenantName,
+      username,
+      password,
+      name,
+    };
+
+    await ses.sendEmail({
+      to: [tenant.email || ''],
+      template: 'WelcomeTemplate',
+      templateData,
+    });
+  } catch (error) {
+    logger.e(error, 'Error sending welcome email', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+    });
+    throw error;
+  }
+};
 
 const sendConfirmationEmail = async (
   bookingId: string,
@@ -162,4 +193,5 @@ export default {
   sendConfirmationEmail,
   newUserEmail,
   resetPasswordEmail,
+  sendWelcomeEmail,
 };

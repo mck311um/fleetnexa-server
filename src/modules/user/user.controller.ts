@@ -3,11 +3,13 @@ import service from './user.service';
 import { logger } from '../../config/logger';
 import { tenantRepo } from '../../repository/tenant.repository';
 import prisma from '../../config/prisma.config';
-import { CreateUserSchema } from './dto/create-user.dto';
 import emailService from '../email/email.service';
 import { userRepo } from './user.repository';
-import { ChangePasswordSchema } from './dto/change-password.dto';
-import { UpdateUserSchema } from './dto/update-user.dto';
+import {
+  ChangePasswordSchema,
+  CreateUserSchema,
+  UpdateUserSchema,
+} from './user.dto';
 
 const getCurrentUser = async (req: Request, res: Response) => {
   const userId = req.user?.id;

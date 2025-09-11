@@ -10,6 +10,13 @@ class TenantRepository {
     });
   }
 
+  async getTenantByEmail(email: string, tx: TxClient) {
+    return tx.tenant.findFirst({
+      where: { email: email },
+      include: this.getTenantIncludeOptions(),
+    });
+  }
+
   private getTenantIncludeOptions(): Prisma.TenantInclude {
     return {
       address: {

@@ -1,11 +1,11 @@
 import { Tenant } from '@prisma/client';
-import { CreateUserDto } from './dto/create-user.dto';
 import prisma, { TxClient } from '../../config/prisma.config';
 import generator from '../../services/generator.service';
 import bcrypt from 'bcrypt';
 import { logger } from '../../config/logger';
-import { ChangePasswordDto } from './dto/change-password.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto, ChangePasswordDto } from './user.dto';
+import roleService from '../role/role.service';
+import { CreateRoleDto } from '../role/role.dto';
 
 const getCurrentUser = async (userId: string, tenant: Tenant) => {
   try {
@@ -75,7 +75,6 @@ const getCurrentUser = async (userId: string, tenant: Tenant) => {
     throw new Error('Error fetching current user');
   }
 };
-
 const createUser = async (
   data: CreateUserDto,
   tenant: Tenant,
@@ -121,6 +120,39 @@ const createUser = async (
       tenantCode: tenant.tenantCode,
     });
     throw new Error('Error creating user');
+  }
+};
+const createOwner = async (
+  data: CreateUserDto,
+  tenant: Tenant,
+  tx: TxClient,
+) => {
+  try {
+    const owner: CreateRoleDto = {
+      name: 'Owner',
+      description: 'Owner role with full access',
+      show: true,
+    };
+
+    const role = await roleService.createRole(owner, tenant, tx);
+
+    if (!role) {
+      throw new Error('Error creating owner role');
+    }
+
+    await roleService.assignAllPermissions(role, tx);
+
+    data.roleId = role.id;
+
+    const { user, password } = await createUser(data, tenant, tx);
+
+    return { user, password, role };
+  } catch (error) {
+    logger.e(error, 'Error creating owner role', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+    });
+    throw new Error('Error creating owner role');
   }
 };
 const updateUser = async (
@@ -183,7 +215,6 @@ const updateUser = async (
     throw new Error('Error creating user');
   }
 };
-
 const deleteUser = async (id: string, tenant: Tenant, tx: TxClient) => {
   try {
     const user = await tx.user.findUnique({
@@ -259,7 +290,6 @@ const changePassword = async (
     });
   }
 };
-
 const resetPassword = async (id: string, tenant: Tenant, tx: TxClient) => {
   try {
     const user = await tx.user.findUnique({
@@ -300,6 +330,7 @@ const resetPassword = async (id: string, tenant: Tenant, tx: TxClient) => {
 
 export default {
   createUser,
+  createOwner,
   updateUser,
   deleteUser,
   getCurrentUser,

@@ -17,7 +17,7 @@ router.get('/notifications', auth, controller.getTenantNotifications);
 router.get('/roles/:id', auth, controller.getTenantRolesById);
 router.get('/:id', auth, controller.getTenantById);
 
-router.post('/', controller.createTenant);
+// router.post('/', controller.createTenant);
 router.post('/location', auth, controller.createTenantLocation);
 router.post('/location/initialize', auth, controller.initializeTenantLocations);
 router.post('/service', auth, controller.addService);

@@ -1,7 +1,11 @@
 import { logger } from '../../config/logger';
 import { TxClient } from '../../config/prisma.config';
 import { TenantExtra } from '../../types/tenant';
+import { CreateTenantDto } from './dto/create-tenant.dto';
 import { repo } from './tenant.repository';
+import generator from '../../services/generator.service';
+import userService from '../user/user.service';
+import { CreateUserDto } from '../user/user.dto';
 
 const getTenantById = async (tenantId: string, tx: TxClient) => {
   try {
@@ -11,6 +15,50 @@ const getTenantById = async (tenantId: string, tx: TxClient) => {
       tenantId,
     });
     throw new Error('Failed to get tenant by ID');
+  }
+};
+const createTenant = async (data: CreateTenantDto, tx: TxClient) => {
+  try {
+    const existingTenant = await repo.getTenantByEmail(data.email, tx);
+
+    if (existingTenant) {
+      throw new Error('Tenant with this email already exists');
+    }
+
+    const tenantCode = await generator.generateTenantCode(data.tenantName);
+    const slug = await generator.generateTenantSlug(data.tenantName);
+
+    const tenant = await tx.tenant.create({
+      data: {
+        tenantCode,
+        tenantName: data.tenantName,
+        slug,
+        email: data.email,
+        number: data.number,
+        logo: 'https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/placeholder_tenant.jpg',
+      },
+    });
+
+    const userDetails: CreateUserDto = {
+      email: '',
+      firstName: data.firstName,
+      lastName: data.lastName,
+      roleId: '',
+    };
+
+    const { user, password } = await userService.createOwner(
+      userDetails,
+      tenant,
+      tx,
+    );
+
+    return { tenant, user, password };
+  } catch (error) {
+    logger.e(error, 'Failed to create tenant', {
+      email: data.email,
+      tenantName: data.tenantName,
+    });
+    throw new Error('Failed to create tenant');
   }
 };
 
@@ -65,6 +113,7 @@ const getTenantExtras = async (tenantId: string, tx: TxClient) => {
 };
 
 export default {
+  createTenant,
   getTenantById,
   getTenantExtras,
 };
