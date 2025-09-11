@@ -74,7 +74,7 @@ model UserRole {
   updatedAt       DateTime?       @updatedAt
   isDeleted       Boolean         @default(false)
   updatedBy       String?
-  show            Boolean?        @default(false)
+  show            Boolean?        @default(true)
 
 
   users           User[]
