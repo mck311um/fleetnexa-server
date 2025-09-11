@@ -12,13 +12,22 @@ const transport =
   process.env.NODE_ENV === 'development'
     ? pino.transport({
         target: 'pino-pretty',
-        options: { colorize: true },
+        options: { colorize: true, translateTime: 'SYS:standard' },
       })
     : undefined;
 
 const pinoLogger = transport
-  ? pino({ level: process.env.LOG_LEVEL || 'info' }, transport)
-  : pino({ level: process.env.LOG_LEVEL || 'info' });
+  ? pino(
+      {
+        level: process.env.LOG_LEVEL || 'info',
+        timestamp: pino.stdTimeFunctions.isoTime,
+      },
+      transport,
+    )
+  : pino({
+      level: process.env.LOG_LEVEL || 'info',
+      timestamp: pino.stdTimeFunctions.isoTime,
+    });
 
 export const logger = {
   i: (message: string, meta?: Record<string, unknown>) => {

@@ -43,6 +43,7 @@ const getCurrentUser = async (req: Request, res: Response) => {
       tenantId,
       tenantCode,
     });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 const getSystemUsers = async (req: Request, res: Response) => {
@@ -58,7 +59,7 @@ const getSystemUsers = async (req: Request, res: Response) => {
     res.status(200).json(users);
   } catch (error) {
     logger.e(error, 'Error fetching users', { tenantId });
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 const createSystemUser = async (req: Request, res: Response) => {
@@ -104,7 +105,7 @@ const createSystemUser = async (req: Request, res: Response) => {
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
     logger.e(error, 'Error creating user', { tenantId, userId, tenantCode });
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: 'Error creating user' });
   }
 };
 const updateSystemUser = async (req: Request, res: Response) => {
@@ -199,6 +200,7 @@ const changePassword = async (req: Request, res: Response) => {
       tenantId,
       tenantCode,
     });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 const resetUserPassword = async (req: Request, res: Response) => {
@@ -286,6 +288,7 @@ const deleteUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     logger.e(error, 'Error deleting user', { tenantId, userId, tenantCode });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 

@@ -75,8 +75,6 @@ const assignAllPermissions = async (role: UserRole, tx: TxClient) => {
       data: permissions.map((perm) => ({
         roleId: role.id,
         permissionId: perm.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       })),
     });
   } catch (error) {
