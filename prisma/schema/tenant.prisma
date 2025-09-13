@@ -62,6 +62,7 @@ model Tenant {
   notifications          TenantNotification[]
   charges               RentalCharge[]
   violations            TenantViolation[]
+  customerViolations    CustomerViolation[]
 }
 
 model PaymentMethod {
@@ -262,4 +263,5 @@ model TenantViolation {
   deletedAt           DateTime?
 
   tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  customerViolations  CustomerViolation[]
 }

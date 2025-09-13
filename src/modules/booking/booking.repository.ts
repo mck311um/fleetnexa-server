@@ -126,6 +126,11 @@ class BookingRepository {
                   state: true,
                 },
               },
+              violations: {
+                include: {
+                  violation: true,
+                },
+              },
             },
           },
         },

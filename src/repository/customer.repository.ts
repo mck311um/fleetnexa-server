@@ -77,6 +77,11 @@ class CustomerRepository {
         },
       },
       apps: true,
+      violations: {
+        include: {
+          violation: true,
+        },
+      },
     };
   }
 }

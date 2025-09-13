@@ -29,6 +29,7 @@ model Customer {
   refunds           Refund[]
   payments          Payment[]
   charges           RentalCharge[]
+  violations        CustomerViolation[]
 
   tenant            Tenant    @relation(fields: [tenantId], references: [id])
 }
@@ -94,14 +95,19 @@ model DriverLicense {
   customer         Customer @relation(fields: [customerId], references: [id])
 }
 
-model Violation {
+model CustomerViolation {
   id               String    @id @default(dbgenerated("gen_random_uuid()"))
-  violation        String
+  violationId      String
+  tenantId         String
+  customerId       String
   description      String
-  amount           Float
   createdAt        DateTime  @default(now())
   updatedAt        DateTime? @updatedAt
   createdBy        String?
   updatedBy        String?
+
+  violation       TenantViolation @relation(fields: [violationId], references: [id])
+  customer        Customer       @relation(fields: [customerId], references: [id])
+  tenant          Tenant         @relation(fields: [tenantId], references: [id])
 
 }

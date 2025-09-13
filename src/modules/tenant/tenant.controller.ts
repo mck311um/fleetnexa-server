@@ -4,7 +4,6 @@ import { logger } from '../../config/logger';
 import { CreateTenantSchema } from './dto/create-tenant.dto';
 import prisma from '../../config/prisma.config';
 import emailService from '../email/email.service';
-import { CreateViolationSchema } from './dto/tenant-create-dtos';
 import { TenantViolationSchema } from './dto/tenant.dto';
 
 const createTenant = async (req: Request, res: Response) => {
