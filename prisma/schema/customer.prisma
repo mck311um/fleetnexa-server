@@ -93,3 +93,15 @@ model DriverLicense {
   country          Country? @relation(fields: [countryId], references: [id])
   customer         Customer @relation(fields: [customerId], references: [id])
 }
+
+model Violation {
+  id               String    @id @default(dbgenerated("gen_random_uuid()"))
+  violation        String
+  description      String
+  amount           Float
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime? @updatedAt
+  createdBy        String?
+  updatedBy        String?
+
+}

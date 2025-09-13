@@ -1,11 +1,14 @@
 import { logger } from '../../config/logger';
-import { TxClient } from '../../config/prisma.config';
+import prisma, { TxClient } from '../../config/prisma.config';
 import { TenantExtra } from '../../types/tenant';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { repo } from './tenant.repository';
 import generator from '../../services/generator.service';
 import userService from '../user/user.service';
 import { CreateUserDto } from '../user/user.dto';
+import { CreateViolationDto } from './dto/tenant-create-dtos';
+import { Tenant } from '@prisma/client';
+import { TenantViolationDto } from './dto/tenant.dto';
 
 const getTenantById = async (tenantId: string, tx: TxClient) => {
   try {
@@ -112,8 +115,85 @@ const getTenantExtras = async (tenantId: string, tx: TxClient) => {
   }
 };
 
+const createViolation = async (data: TenantViolationDto, tenant: Tenant) => {
+  try {
+    const violations = await prisma.$transaction(async (tx) => {
+      const existingViolation = await tx.tenantViolation.findFirst({
+        where: { tenantId: tenant.id, violation: data.violation },
+      });
+
+      if (existingViolation) {
+        throw new Error('Violation with this name already exists');
+      }
+
+      await tx.tenantViolation.create({
+        data: {
+          id: data.id,
+          tenantId: tenant.id,
+          violation: data.violation,
+          description: data.description,
+          amount: data.amount,
+          createdAt: new Date(),
+        },
+      });
+
+      return await tx.tenantViolation.findMany({
+        where: { tenantId: tenant.id, isDeleted: false },
+      });
+    });
+
+    return violations;
+  } catch (error) {
+    logger.e(error, 'Failed to create violation', {
+      tenantId: tenant.id,
+      violation: data.violation,
+    });
+  }
+};
+const updateViolation = async (data: TenantViolationDto, tenant: Tenant) => {
+  try {
+    const violations = await prisma.$transaction(async (tx) => {
+      logger.i(`Updating violation ${data.id} for tenant ${tenant.id}`);
+
+      const existingViolation = await tx.tenantViolation.findUnique({
+        where: {
+          id: data.id,
+        },
+      });
+
+      if (!existingViolation) {
+        throw new Error('Violation not found');
+      }
+
+      await tx.tenantViolation.update({
+        where: { id: data.id },
+        data: {
+          violation: data.violation,
+          description: data.description,
+          amount: data.amount,
+          updatedAt: new Date(),
+        },
+      });
+
+      return await tx.tenantViolation.findMany({
+        where: { tenantId: tenant.id, isDeleted: false },
+      });
+    });
+
+    return violations;
+  } catch (error) {
+    logger.e(error, 'Failed to update violation', {
+      tenantId: tenant.id,
+      violation: data.violation,
+    });
+    throw new Error('Failed to update violation');
+  }
+};
+
 export default {
   createTenant,
   getTenantById,
   getTenantExtras,
+  createViolation,
+  updateViolation,
 };
