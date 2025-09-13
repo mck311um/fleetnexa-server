@@ -5,6 +5,7 @@ import { auth } from '../../middleware/auth.middleware';
 const router = express.Router();
 
 router.get('/', auth, controller.getBookings);
+router.get('/code/:bookingCode', auth, controller.getBookingByCode);
 router.get('/:id', auth, controller.getBookingById);
 
 router.post('/', auth, controller.createSystemBooking);

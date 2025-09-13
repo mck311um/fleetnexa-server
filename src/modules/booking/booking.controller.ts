@@ -55,6 +55,44 @@ const getBookingById = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+const getBookingByCode = async (req: Request, res: Response) => {
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+  const { bookingCode } = req.params;
+
+  if (!tenantId) {
+    logger.w('Tenant ID is missing', { tenantId });
+    return res.status(400).json({ error: 'Tenant ID is required' });
+  }
+
+  if (!bookingCode) {
+    logger.w('Booking code is missing', { tenantId });
+    return res.status(400).json({ error: 'Booking code is required' });
+  }
+
+  try {
+    logger.i('Fetching booking by code', { tenantId, bookingCode });
+
+    const booking = await repo.getRentalByCode(bookingCode, tenantId);
+
+    if (!booking) {
+      logger.w('Booking not found', { tenantId, bookingCode });
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    return res.status(200).json({
+      message: `Booking #${booking.bookingCode} fetched successfully`,
+      booking,
+    });
+  } catch (error) {
+    logger.e(error, 'Failed to fetch booking', {
+      tenantId,
+      tenantCode,
+      bookingCode,
+    });
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
 //#endregion
 
 const createSystemBooking = async (req: Request, res: Response) => {
@@ -764,4 +802,5 @@ export default {
   getBookings,
   startBooking,
   updateBooking,
+  getBookingByCode,
 };

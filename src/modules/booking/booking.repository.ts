@@ -23,6 +23,13 @@ class BookingRepository {
     });
   }
 
+  async getRentalByCode(bookingCode: string, tenantId: string) {
+    return prisma.rental.findUnique({
+      where: { bookingCode, tenantId, isDeleted: false },
+      include: this.getRentalIncludeOptions(),
+    });
+  }
+
   async getRentalsByCustomerId(
     customerId: string,
     tenantId: string,
