@@ -33,6 +33,41 @@ const getCustomerViolations = async (req: Request, res: Response) => {
       .json({ message: 'Failed to fetch customer violations' });
   }
 };
+const getCustomerViolationById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+
+  if (!tenantId) {
+    return res.status(400).json({ message: 'Tenant ID is required' });
+  }
+
+  if (!id) {
+    return res
+      .status(400)
+      .json({ message: 'Customer violation ID is required' });
+  }
+
+  try {
+    const violations = await prisma.customerViolation.findFirst({
+      where: { customerId: id, tenantId, isDeleted: false },
+      include: {
+        violation: true,
+        customer: { select: { id: true, firstName: true, lastName: true } },
+      },
+    });
+
+    return res.status(200).json({ violations });
+  } catch (error) {
+    logger.e(error, 'Failed to fetch customer violation', {
+      tenantId,
+      tenantCode,
+    });
+    return res
+      .status(500)
+      .json({ message: 'Failed to fetch customer violation' });
+  }
+};
 const addCustomerViolation = async (req: Request, res: Response) => {
   const { data } = req.body;
   const tenantId = req.user?.tenantId;
@@ -187,6 +222,7 @@ const deleteCustomerViolation = async (req: Request, res: Response) => {
 
 export default {
   getCustomerViolations,
+  getCustomerViolationById,
   addCustomerViolation,
   updateCustomerViolation,
   deleteCustomerViolation,
