@@ -100,11 +100,15 @@ model CustomerViolation {
   violationId      String
   tenantId         String
   customerId       String
-  description      String
+  violationDate    DateTime
+  notes            String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime? @updatedAt
   createdBy        String?
   updatedBy        String?
+
+  isDeleted      Boolean   @default(false)
+  deletedAt     DateTime?
 
   violation       TenantViolation @relation(fields: [violationId], references: [id])
   customer        Customer       @relation(fields: [customerId], references: [id])

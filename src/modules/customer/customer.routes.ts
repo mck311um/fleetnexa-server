@@ -6,4 +6,10 @@ const router = express.Router();
 
 router.get('/violations', auth, controller.getCustomerViolations);
 
+router.post('/violation', auth, controller.addCustomerViolation);
+
+router.put('/violation', auth, controller.updateCustomerViolation);
+
+router.delete('/violation/:id', auth, controller.deleteCustomerViolation);
+
 export default router;
