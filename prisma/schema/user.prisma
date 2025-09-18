@@ -57,6 +57,7 @@ model StorefrontUser {
 
 model AdminUser {
   id                     String          @id @default(dbgenerated("gen_random_uuid()"))
+  username               String          @unique
   password               String
   firstName               String
   lastName               String

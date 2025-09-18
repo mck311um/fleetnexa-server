@@ -16,21 +16,19 @@ import documentService from '../../services/document.service';
 import customerService from '../customer/customer.service';
 import { TxClient } from '../../config/prisma.config';
 import transactionService from '../transaction/transaction.service';
+import { error } from 'console';
 
 const createBooking = async (
   tenant: Tenant,
   data: CreateBookingDto,
-  tx: Omit<
-    PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-    '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
-  >,
+  tx: TxClient,
   userId?: string,
 ) => {
   try {
     const bookingNumber = await generator.generateRentalNumber(tenant.id);
 
     if (!bookingNumber) {
-      throw new Error('Failed to generate booking number');
+      throw error;
     }
 
     const bookingCode = generator.generateBookingCode(
@@ -39,7 +37,7 @@ const createBooking = async (
     );
 
     if (!bookingCode) {
-      throw new Error('Failed to generate booking code');
+      throw error;
     }
 
     const newBooking = await tx.rental.create({
@@ -119,7 +117,7 @@ const createBooking = async (
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
     });
-    throw new Error('Failed to create booking');
+    throw error;
   }
 };
 

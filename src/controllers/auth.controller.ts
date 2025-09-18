@@ -158,10 +158,6 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       },
     });
 
-    logger.i('User login attempt', { username });
-
-    console.log(user);
-
     if (!user) {
       return res.status(400).json({ message: 'Invalid username or password' });
     }
