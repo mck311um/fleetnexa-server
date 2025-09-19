@@ -9,6 +9,7 @@ router.get('/violations', auth, controller.getViolations);
 router.post('/', controller.createTenant);
 router.post('/violation', auth, controller.createViolation);
 
+router.put('/', auth, controller.updateTenant);
 router.put('/violation', auth, controller.updateViolation);
 
 export default router;

@@ -239,7 +239,6 @@ const updateTenant = async (
         where: { tenantId: tenantId },
         update: {
           street: body.address.street,
-          zipCode: body.address.zipCode.toString(),
           village: { connect: { id: body.address.villageId } },
           state: { connect: { id: body.address.stateId } },
           country: { connect: { id: body.address.countryId } },
@@ -247,7 +246,6 @@ const updateTenant = async (
         create: {
           tenant: { connect: { id: tenantId } },
           street: body.address.street,
-          zipCode: body.address.zipCode.toString(),
           village: { connect: { id: body.address.villageId } },
           state: { connect: { id: body.address.stateId } },
           country: { connect: { id: body.address.countryId } },

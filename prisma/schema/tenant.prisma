@@ -78,7 +78,6 @@ model PaymentMethod {
 model Address {
   id                  String    @id @default(dbgenerated("gen_random_uuid()"))
   street              String
-  zipCode             String
   countryId           String
   tenantId            String    @unique
   stateId             String
@@ -235,7 +234,7 @@ model CancellationPolicy {
   minimumDays           Int
   bookingMinimumDays    Int  
   policy                String
-  amount                Decimal  @db.Decimal(10, 2)
+  amount                Float
   tenantId              String   @unique
   updatedBy             String?
   tenant                Tenant?
@@ -243,8 +242,8 @@ model CancellationPolicy {
 
 model LatePolicy {
   id                    String   @id @default(dbgenerated("gen_random_uuid()"))
-  tenantId             String    @unique
-  amount                Decimal  @db.Decimal(10, 2)
+  tenantId              String    @unique
+  amount                Float
   maxHours              Int
   updatedBy             String?
   tenant                Tenant?

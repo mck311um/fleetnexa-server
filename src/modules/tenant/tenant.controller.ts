@@ -4,7 +4,8 @@ import { logger } from '../../config/logger';
 import { CreateTenantSchema } from './dto/create-tenant.dto';
 import prisma from '../../config/prisma.config';
 import emailService from '../email/email.service';
-import { TenantViolationSchema } from './dto/tenant.dto';
+import { TenantViolationSchema, UpdateTenantDtoSchema } from './dto/tenant.dto';
+import { tenantRepo } from '../../repository/tenant.repository';
 
 const createTenant = async (req: Request, res: Response) => {
   const { data } = req.body;
@@ -56,6 +57,58 @@ const createTenant = async (req: Request, res: Response) => {
       tenantName: tenantDto.tenantName,
     });
     return res.status(500).json({ message: 'Failed to create tenant' });
+  }
+};
+const updateTenant = async (req: Request, res: Response) => {
+  const { data } = req.body;
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+
+  if (!tenantId) {
+    logger.w('Tenant ID is missing');
+    return res.status(400).json({ message: 'Tenant ID is required' });
+  }
+
+  if (!data) {
+    logger.w('Tenant data is missing', { tenantCode, tenantId });
+    return res.status(400).json({ message: 'Tenant data is required' });
+  }
+
+  const parseResult = UpdateTenantDtoSchema.safeParse(data);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: 'Invalid tenant data',
+      details: parseResult.error.issues,
+    });
+  }
+
+  const tenantDto = parseResult.data;
+
+  try {
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: tenantId },
+    });
+
+    if (!tenant) {
+      logger.w('Tenant not found', { tenantCode, tenantId });
+      return res.status(404).json({ message: 'Tenant not found' });
+    }
+
+    await service.updateTenant(tenantDto, tenant);
+
+    const updatedTenant = await tenantRepo.getTenantById(tenantId);
+
+    return res.status(200).json({
+      message: 'Settings updated successfully',
+      tenant: updatedTenant,
+    });
+  } catch (error) {
+    logger.e(error, 'Failed to update tenant', {
+      tenantCode,
+      tenantId,
+      data,
+    });
+    return res.status(500).json({ message: 'Failed to update settings' });
   }
 };
 
@@ -189,4 +242,5 @@ export default {
   createViolation,
   getViolations,
   updateViolation,
+  updateTenant,
 };

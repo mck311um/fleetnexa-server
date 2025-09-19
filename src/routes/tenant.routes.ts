@@ -26,7 +26,6 @@ router.post('/insurance', auth, controller.addInsurance);
 router.post('/role', auth, controller.addTenantRole);
 router.post('/reminder', auth, controller.addTenantReminder);
 
-router.put('/', auth, controller.updateTenant);
 router.put('/location', auth, controller.updateTenantLocation);
 router.put('/service', auth, controller.updateService);
 router.put('/equipment', auth, controller.updateEquipment);
