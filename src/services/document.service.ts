@@ -465,7 +465,7 @@ const generateAgreementData = async (
       cancellationText: getPolicyText(
         tenant?.cancellationPolicy?.policy || 'fixed_amount',
       ),
-      lateAmount: tenant?.latePolicy?.amount?.toNumber() ?? 0,
+      lateAmount: tenant?.latePolicy?.amount ?? 0,
       maxHours: tenant?.latePolicy?.maxHours || 0,
       dailyRate: parseFloat((booking?.vehicle?.dayPrice || 0).toFixed(2)),
     };
