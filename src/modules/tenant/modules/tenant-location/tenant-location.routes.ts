@@ -6,4 +6,10 @@ const router = express.Router();
 
 router.get('/', auth, controller.getAllLocations);
 
+router.post('/', auth, controller.addTenantLocation);
+
+router.put('/', auth, controller.updateTenantLocation);
+
+router.delete('/', auth, controller.deleteTenantLocation);
+
 export default router;

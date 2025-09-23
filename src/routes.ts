@@ -24,6 +24,6 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/customer', customerRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/tenant-extras', tenantExtraRoutes);
-  app.use('/api/tenant-locations', tenantLocationRoutes);
+  app.use('/api/tenant-location', tenantLocationRoutes);
   app.use('/api/vehicles', vehicleRoutes);
 };

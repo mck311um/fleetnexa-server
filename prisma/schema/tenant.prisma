@@ -103,8 +103,10 @@ model TenantLocation {
   tenantId            String
   minimumRentalPeriod Int       @default(1)
   isDeleted           Boolean   @default(false)
-  updatedBy           String?
+  
+  createdAt           DateTime  @default(now())
   updatedAt           DateTime? @updatedAt
+  updatedBy           String?
 
   pickups            Rental[]  @relation("PickupLocation")
   returns            Rental[]  @relation("ReturnLocation")

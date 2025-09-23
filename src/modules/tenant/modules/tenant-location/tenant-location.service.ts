@@ -1,5 +1,7 @@
 import { Tenant } from '@prisma/client';
 import prisma from '../../../../config/prisma.config';
+import { TenantLocationDto } from './tenant-location.dto';
+import { logger } from '../../../../config/logger';
 
 class TenantLocationService {
   async getAllLocations(tenant: Tenant) {
@@ -15,7 +17,111 @@ class TenantLocationService {
 
       return locations;
     } catch (error) {
+      logger.e(error, 'Failed to get tenant locations', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
       throw new Error('Failed to get tenant locations');
+    }
+  }
+
+  async addLocation(data: TenantLocationDto, tenant: Tenant) {
+    try {
+      const existingLocation = await prisma.tenantLocation.findFirst({
+        where: {
+          tenantId: tenant.id,
+          location: {
+            equals: data.location,
+            mode: 'insensitive',
+          },
+          isDeleted: false,
+        },
+      });
+
+      if (existingLocation) {
+        throw new Error('Location already exists');
+      }
+
+      await prisma.tenantLocation.create({
+        data: {
+          id: data.id,
+          tenantId: tenant.id,
+          location: data.location,
+          pickupEnabled: data.pickupEnabled,
+          returnEnabled: data.returnEnabled,
+          storefrontEnabled: data.storefrontEnabled,
+          deliveryFee: data.deliveryFee ?? 0,
+          collectionFee: data.collectionFee ?? 0,
+          minimumRentalPeriod: data.minimumRentalPeriod ?? 0,
+          createdAt: new Date(),
+        },
+      });
+    } catch (error) {
+      logger.e(error, 'Failed to add tenant location', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to add tenant location');
+    }
+  }
+
+  async updateLocation(
+    data: TenantLocationDto,
+    tenant: Tenant,
+    userId: string,
+  ) {
+    try {
+      const location = await prisma.tenantLocation.findUnique({
+        where: { id: data.id },
+      });
+
+      if (!location || location.tenantId !== tenant.id || location.isDeleted) {
+        throw new Error('Location not found');
+      }
+
+      await prisma.tenantLocation.update({
+        where: { id: data.id, tenantId: tenant.id },
+        data: {
+          location: data.location,
+          pickupEnabled: data.pickupEnabled,
+          returnEnabled: data.returnEnabled,
+          storefrontEnabled: data.storefrontEnabled,
+          deliveryFee: data.deliveryFee ?? 0,
+          collectionFee: data.collectionFee ?? 0,
+          minimumRentalPeriod: data.minimumRentalPeriod ?? 0,
+          updatedAt: new Date(),
+          updatedBy: userId,
+        },
+      });
+    } catch (error) {
+      logger.e(error, 'Failed to update tenant location', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to update tenant location');
+    }
+  }
+
+  async deleteLocation(locationId: string, tenant: Tenant, userId: string) {
+    try {
+      const location = await prisma.tenantLocation.findUnique({
+        where: { id: locationId },
+      });
+
+      if (!location || location.tenantId !== tenant.id || location.isDeleted) {
+        throw new Error('Location not found');
+      }
+
+      await prisma.tenantLocation.update({
+        where: { id: locationId, tenantId: tenant.id },
+        data: { isDeleted: true, updatedAt: new Date(), updatedBy: userId },
+      });
+    } catch (error) {
+      logger.e(error, 'Failed to delete tenant location', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to delete tenant location');
     }
   }
 }
