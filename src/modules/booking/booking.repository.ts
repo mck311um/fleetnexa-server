@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import prisma from '../../config/prisma.config';
 
 class BookingRepository {
-  async getRentals(
+  async getBookings(
     tenantId: string,
     additionalWhere?: Prisma.RentalWhereInput,
   ) {
@@ -150,4 +150,4 @@ class BookingRepository {
   }
 }
 
-export const repo = new BookingRepository();
+export const bookingRepo = new BookingRepository();

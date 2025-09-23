@@ -17,6 +17,23 @@ import customerService from '../customer/customer.service';
 import { TxClient } from '../../config/prisma.config';
 import transactionService from '../transaction/transaction.service';
 import { error } from 'console';
+import { bookingRepo } from './booking.repository';
+
+class BookingService {
+  async getTenantBookings(tenant: Tenant) {
+    try {
+      return await bookingRepo.getBookings(tenant.id);
+    } catch (error) {
+      logger.e(error, 'Failed to get bookings', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to get bookings');
+    }
+  }
+}
+
+export const bookingService = new BookingService();
 
 const createBooking = async (
   tenant: Tenant,

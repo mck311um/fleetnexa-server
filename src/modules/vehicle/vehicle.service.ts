@@ -1,6 +1,25 @@
 import { Tenant } from '@prisma/client';
 import { logger } from '../../config/logger';
 import { TxClient } from '../../config/prisma.config';
+import { vehicleRepo } from './vehicle.repository';
+
+class VehicleService {
+  async getTenantVehicles(tenant: Tenant) {
+    try {
+      const vehicles = await vehicleRepo.getVehicles(tenant.id);
+
+      return vehicles;
+    } catch (error) {
+      logger.e(error, 'Failed to get vehicles', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to get vehicles');
+    }
+  }
+}
+
+export const vehicleService = new VehicleService();
 
 const updateVehicleStatus = async (
   vehicleId: string,

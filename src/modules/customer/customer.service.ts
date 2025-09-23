@@ -2,6 +2,25 @@ import { Tenant } from '@prisma/client';
 import { logger } from '../../config/logger';
 import prisma, { TxClient } from '../../config/prisma.config';
 import { CustomerViolationDto } from './customer.dto';
+import { customerRepo } from './customer.repository';
+
+class CustomerService {
+  async getTenantCustomers(tenant: Tenant) {
+    try {
+      const customers = customerRepo.getCustomers(tenant.id);
+
+      return customers;
+    } catch (error) {
+      logger.e(error, 'Failed to get customers', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to get customers');
+    }
+  }
+}
+
+export const customerService = new CustomerService();
 
 const getPrimaryDriver = async (bookingId: string, tx: TxClient) => {
   try {

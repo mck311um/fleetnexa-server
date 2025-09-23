@@ -4,7 +4,6 @@ import { auth } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
-router.get('/', auth, controller.getVehicles);
 router.get('/damages/:id', auth, controller.getVehicleDamages);
 router.get('/:id', auth, controller.getVehicleById);
 

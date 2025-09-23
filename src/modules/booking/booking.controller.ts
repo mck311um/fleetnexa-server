@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { repo } from './booking.repository';
-import service from './booking.service';
+import service, { bookingService } from './booking.service';
 import emailService from '../email/email.service';
 import vehicleService from '../vehicle/vehicle.service';
 import { logger } from '../../config/logger';
@@ -9,6 +8,8 @@ import { CreateBookingDtoSchema } from './dto/create-booking.dto';
 import { UpdateBookingDtoSchema } from './dto/update-booking.dto';
 import { ActionBookingDtoSchema } from './dto/action-booking.dto';
 import { Rental, RentalStatus, Tenant } from '@prisma/client';
+import { tenantRepo } from '../../repository/tenant.repository';
+import { bookingRepo } from './booking.repository';
 
 //#region Get Bookings
 const getBookings = async (req: Request, res: Response) => {
@@ -19,7 +20,14 @@ const getBookings = async (req: Request, res: Response) => {
   }
 
   try {
-    const bookings = await repo.getRentals(tenantId);
+    const tenant = await tenantRepo.getTenantById(tenantId);
+
+    if (!tenant) {
+      logger.w('Tenant not found', { tenantId });
+      return res.status(404).json({ error: 'Tenant not found' });
+    }
+
+    const bookings = await bookingService.getTenantBookings(tenant);
 
     return res.status(200).json(bookings);
   } catch (error) {
@@ -42,7 +50,7 @@ const getBookingById = async (req: Request, res: Response) => {
   }
 
   try {
-    const booking = await repo.getRentalById(tenantId, id);
+    const booking = await bookingRepo.getRentalById(tenantId, id);
 
     if (!booking) {
       logger.w('Booking not found', { tenantId, id });
@@ -73,7 +81,7 @@ const getBookingByCode = async (req: Request, res: Response) => {
   try {
     logger.i('Fetching booking by code', { tenantId, bookingCode });
 
-    const booking = await repo.getRentalByCode(bookingCode, tenantId);
+    const booking = await bookingRepo.getRentalByCode(bookingCode, tenantId);
 
     if (!booking) {
       logger.w('Booking not found', { tenantId, bookingCode });
@@ -139,8 +147,11 @@ const createSystemBooking = async (req: Request, res: Response) => {
       bookingCode: booking.bookingCode,
     });
 
-    const updatedBooking = await repo.getRentalById(booking.id, tenantId);
-    const bookings = await repo.getRentals(tenantId);
+    const updatedBooking = await bookingRepo.getRentalById(
+      booking.id,
+      tenantId,
+    );
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     return res.status(201).json({
       message: `Booking #${booking.rentalNumber} created successfully`,
@@ -214,8 +225,11 @@ const updateBooking = async (req: Request, res: Response) => {
       bookingCode: booking.bookingCode,
     });
 
-    const updatedBooking = await repo.getRentalById(booking.id, tenantId);
-    const bookings = await repo.getRentals(tenantId);
+    const updatedBooking = await bookingRepo.getRentalById(
+      booking.id,
+      tenantId,
+    );
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     return res.status(200).json({
       message: `Booking #${booking.rentalNumber} updated successfully`,
@@ -261,7 +275,7 @@ const deleteBooking = async (req: Request, res: Response) => {
       bookingId: id,
     });
 
-    const bookings = await repo.getRentals(tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     return res.status(200).json({
       message: `Booking  deleted successfully`,
@@ -339,7 +353,10 @@ const confirmBooking = async (req: Request, res: Response) => {
 
       await service.createRentalActivity(bookingDto, tenant, tx, userId!);
 
-      updatedBooking = await repo.getRentalById(bookingDto.bookingId, tenantId);
+      updatedBooking = await bookingRepo.getRentalById(
+        bookingDto.bookingId,
+        tenantId,
+      );
     });
 
     (async () => {
@@ -369,7 +386,7 @@ const confirmBooking = async (req: Request, res: Response) => {
       }
     })();
 
-    const bookings = await repo.getRentals(tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     logger.i('Booking confirmed successfully', {
       tenantId,
@@ -430,8 +447,8 @@ const declineBooking = async (req: Request, res: Response) => {
       );
     });
 
-    const updatedBooking = await repo.getRentalById(id, tenantId);
-    const bookings = await repo.getRentals(tenantId);
+    const updatedBooking = await bookingRepo.getRentalById(id, tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     return res.status(200).json({
       message: `Booking #${updatedBooking!.rentalNumber} declined successfully`,
@@ -485,8 +502,8 @@ const cancelBooking = async (req: Request, res: Response) => {
       );
     });
 
-    const updatedBooking = await repo.getRentalById(id, tenantId);
-    const bookings = await repo.getRentals(tenantId);
+    const updatedBooking = await bookingRepo.getRentalById(id, tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     return res.status(200).json({
       message: `Booking #${updatedBooking!.rentalNumber} cancelled successfully`,
@@ -569,11 +586,11 @@ const startBooking = async (req: Request, res: Response) => {
       await service.createRentalActivity(bookingDto, tenant, tx, userId!);
     });
 
-    const updatedBooking = await repo.getRentalById(
+    const updatedBooking = await bookingRepo.getRentalById(
       bookingDto.bookingId,
       tenantId,
     );
-    const bookings = await repo.getRentals(tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     return res.status(200).json({
       message: `Booking #${updatedBooking!.rentalNumber} started successfully`,
@@ -666,11 +683,11 @@ const endBooking = async (req: Request, res: Response) => {
       );
     });
 
-    const updatedBooking = await repo.getRentalById(
+    const updatedBooking = await bookingRepo.getRentalById(
       bookingDto.bookingId,
       tenantId,
     );
-    const bookings = await repo.getRentals(tenantId);
+    const bookings = await bookingRepo.getBookings(tenantId);
 
     return res.status(200).json({
       message: `Booking #${updatedBooking!.rentalNumber} ended successfully`,

@@ -8,14 +8,12 @@ router.get('/locations', auth, controller.getTenantLocations);
 router.get('/services', auth, controller.getServices);
 router.get('/equipment', auth, controller.getEquipment);
 router.get('/insurance', auth, controller.getInsurance);
-router.get('/extras', auth, controller.getTenantExtras);
 router.get('/activity', auth, controller.getTenantRentalActivity);
 router.get('/reminders', auth, controller.getTenantReminders);
 router.get('/roles', auth, controller.getTenantRoles);
 router.get('/currency-rates', auth, controller.getTenantCurrencyRates);
 router.get('/notifications', auth, controller.getTenantNotifications);
 router.get('/roles/:id', auth, controller.getTenantRolesById);
-router.get('/:id', auth, controller.getTenantById);
 
 // router.post('/', controller.createTenant);
 router.post('/location', auth, controller.createTenantLocation);

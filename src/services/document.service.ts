@@ -1,6 +1,7 @@
 import { logger } from '../config/logger';
 import { TxClient } from '../config/prisma.config';
 import customerService from '../modules/customer/customer.service';
+import { tenantExtraService } from '../modules/tenant/modules/tenant-extras/tenant-extras.service';
 import tenantService from '../modules/tenant/tenant.service';
 import {
   InvoiceData,
@@ -17,7 +18,7 @@ const generateInvoiceData = async (
   tx: TxClient,
 ) => {
   try {
-    const tenantExtras = await tenantService.getTenantExtras(tenantId, tx);
+    const tenantExtras = await tenantExtraService.getTenantExtras(tenantId);
 
     const getExtra = (id: string) => ({
       ...tenantExtras?.find((extra) => extra.id === id),
@@ -210,7 +211,7 @@ const generateAgreementData = async (
   tx: TxClient,
 ) => {
   try {
-    const tenantExtras = await tenantService.getTenantExtras(tenantId, tx);
+    const tenantExtras = await tenantExtraService.getTenantExtras(tenantId);
 
     const getExtra = (id: string) => ({
       ...tenantExtras?.find((extra) => extra.id === id),

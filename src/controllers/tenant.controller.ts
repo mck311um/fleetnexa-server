@@ -9,25 +9,6 @@ import emailService from '../services/ses.service';
 import { WelcomeEmailParams } from '../types/email';
 import { logger } from '../config/logger';
 
-const getTenantById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { id } = req.params;
-
-  try {
-    const tenant = await tenantRepo.getTenantById(id);
-
-    if (!tenant) {
-      return res.status(404).json({ message: 'Tenant not found' });
-    }
-
-    res.json(tenant);
-  } catch (error: any) {
-    next(error);
-  }
-};
 const getTenantExtras = async (
   req: Request,
   res: Response,
@@ -1267,7 +1248,6 @@ const deleteNotification = async (
 //#endregion
 
 export default {
-  getTenantById,
   getTenantExtras,
   createTenant,
   updateTenant,

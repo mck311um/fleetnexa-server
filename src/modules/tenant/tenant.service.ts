@@ -179,56 +179,6 @@ const updateTenant = async (data: UpdateTenantDto, tenant: Tenant) => {
   }
 };
 
-const getTenantExtras = async (tenantId: string, tx: TxClient) => {
-  try {
-    const [tenantServices, tenantEquipments, tenantInsurances] =
-      await Promise.all([
-        tx.tenantService.findMany({
-          where: { tenantId: tenantId, isDeleted: false },
-          include: { service: true },
-        }),
-        tx.tenantEquipment.findMany({
-          where: { tenantId: tenantId, isDeleted: false },
-          include: { equipment: true },
-        }),
-        tx.tenantInsurance.findMany({
-          where: { tenantId: tenantId, isDeleted: false },
-        }),
-      ]);
-
-    const combined: TenantExtra[] = [
-      ...tenantServices.map((item) => ({
-        ...item,
-        type: 'Service' as const,
-        name: item.service.service,
-        icon: item.service.icon,
-        description: item.service.description,
-      })),
-      ...tenantInsurances.map((item) => ({
-        ...item,
-        type: 'Insurance' as const,
-        name: item.insurance,
-        icon: 'FaShieldAlt',
-        description: item.description,
-      })),
-      ...tenantEquipments.map((item) => ({
-        ...item,
-        type: 'Equipment' as const,
-        name: item.equipment.equipment,
-        icon: item.equipment.icon,
-        description: item.equipment.description,
-      })),
-    ];
-
-    return combined;
-  } catch (error) {
-    logger.e(error, 'Failed to get tenant extras', {
-      tenantId,
-    });
-    throw new Error('Failed to get tenant extras');
-  }
-};
-
 const createViolation = async (data: TenantViolationDto, tenant: Tenant) => {
   try {
     const violations = await prisma.$transaction(async (tx) => {
@@ -307,7 +257,6 @@ const updateViolation = async (data: TenantViolationDto, tenant: Tenant) => {
 export default {
   createTenant,
   getTenantById,
-  getTenantExtras,
   createViolation,
   updateViolation,
   updateTenant,

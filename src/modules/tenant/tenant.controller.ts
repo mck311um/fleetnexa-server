@@ -6,6 +6,78 @@ import prisma from '../../config/prisma.config';
 import emailService from '../email/email.service';
 import { TenantViolationSchema, UpdateTenantDtoSchema } from './dto/tenant.dto';
 import { tenantRepo } from '../../repository/tenant.repository';
+import { tenantExtraService } from './modules/tenant-extras/tenant-extras.service';
+import { tenantLocationService } from './modules/tenant-location/tenant-location.service';
+import { vehicleService } from '../vehicle/vehicle.service';
+import { customerService } from '../customer/customer.service';
+import { bookingService } from '../booking/booking.service';
+import { tenantActivityService } from './modules/tenant-activity/tenant-activity.service';
+
+const getCurrentTenant = async (req: Request, res: Response) => {
+  const tenantId = req.user?.tenantId;
+  const tenantCode = req.user?.tenantCode;
+
+  if (!tenantId) {
+    logger.w('Tenant ID is missing');
+    return res.status(400).json({ message: 'Tenant ID is required' });
+  }
+
+  try {
+    const tenant = await tenantRepo.getTenantById(tenantId);
+
+    if (!tenant) {
+      logger.w('Tenant not found', { tenantCode, tenantId });
+      return res.status(404).json({ message: 'Tenant not found' });
+    }
+
+    const extras = await tenantExtraService.getTenantExtras(tenantId);
+    const locations = await tenantLocationService.getAllLocations(tenant);
+    const vehicles = await vehicleService.getTenantVehicles(tenant);
+    const customers = await customerService.getTenantCustomers(tenant);
+    const bookings = await bookingService.getTenantBookings(tenant);
+    const activity = await tenantActivityService.getTenantActivities(tenant);
+
+    return res
+      .status(200)
+      .json({
+        tenant,
+        extras,
+        locations,
+        vehicles,
+        customers,
+        bookings,
+        activity,
+      });
+  } catch (error) {
+    logger.e(error, 'Failed to get tenant', {
+      tenantCode,
+      tenantId,
+    });
+    return res.status(500).json({ message: 'Failed to get tenant' });
+  }
+};
+const getTenantById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    logger.w('Tenant ID is missing');
+    return res.status(400).json({ message: 'Tenant ID is required' });
+  }
+
+  try {
+    const tenant = await tenantRepo.getTenantById(id);
+
+    if (!tenant) {
+      logger.w('Tenant not found', { id });
+      return res.status(404).json({ message: 'Tenant not found' });
+    }
+
+    return res.status(200).json(tenant);
+  } catch (error) {
+    logger.e(error, 'Failed to get tenant', { id });
+    return res.status(500).json({ message: 'Failed to get tenant' });
+  }
+};
 
 const createTenant = async (req: Request, res: Response) => {
   const { data } = req.body;
@@ -238,6 +310,8 @@ const updateViolation = async (req: Request, res: Response) => {
 //#endregion
 
 export default {
+  getCurrentTenant,
+  getTenantById,
   createTenant,
   createViolation,
   getViolations,
