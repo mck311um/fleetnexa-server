@@ -8,8 +8,8 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
-import logUtil from '../config/logger.config';
 import { s3Client } from '../config/aws.config';
+import { logger } from '../config/logger';
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -78,7 +78,8 @@ const uploadFile = async (req: Request, res: Response) => {
       });
     });
   } catch (error: any) {
-    logUtil.handleError(res, error, 'uploading file');
+    logger.e(error, 'Error uploading file');
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -99,7 +100,8 @@ const getFileUrl = async (req: Request, res: Response) => {
 
     res.json({ url });
   } catch (error: any) {
-    logUtil.handleError(res, error, 'getting file URL');
+    logger.e(error, 'Error generating file URL');
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -120,7 +122,8 @@ const deleteFile = async (req: Request, res: Response) => {
 
     res.json({ message: 'File deleted successfully' });
   } catch (error: any) {
-    logUtil.handleError(res, error, 'deleting file');
+    logger.e(error, 'Error deleting file');
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 

@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { logger } from '../config/logger.config';
+import { logger } from '../config/logger';
 
 const TEMPLATES_DIR = join(__dirname, '../templates');
 
@@ -10,7 +10,7 @@ export const readTemplateFile = (templateName: string): string => {
     const templateContent = readFileSync(filePath, 'utf-8');
     return templateContent;
   } catch (error) {
-    logger.error(`Failed to read template file: ${templateName}`, error);
+    logger.e(error, `Failed to read template file: ${templateName}`);
     throw new Error(`Template file not found: ${templateName}`);
   }
 };

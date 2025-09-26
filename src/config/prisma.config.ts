@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { DefaultArgs } from '@prisma/client/runtime/library';
-import logger from './logger.config';
+import { logger } from './logger';
 
 const prisma = new PrismaClient({
   log: [
@@ -16,11 +16,11 @@ const prisma = new PrismaClient({
 });
 
 prisma.$on('error', (e) => {
-  logger.logger.error(`Prisma Error: ${e.message}`, { target: e.target });
+  logger.e({ target: e.target }, `Prisma Error: ${e.message}`);
 });
 
 prisma.$on('warn', (e) => {
-  logger.logger.warn(`Prisma Warning: ${e.message}`, { target: e.target });
+  logger.w(`Prisma Warning: ${e.message}`, { target: e.target });
 });
 
 export default prisma;

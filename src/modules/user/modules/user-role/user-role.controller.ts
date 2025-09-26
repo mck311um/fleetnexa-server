@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { userRepo } from '../../user.repository';
 import { logger } from '../../../../config/logger';
 import { userRoleService } from './user-role.service';
 import { UserRoleSchema } from './role.dto';
+import { userRepo } from '../../user.repository';
 
 const getRoles = async (req: Request, res: Response) => {
   const { tenant } = req.context!;
