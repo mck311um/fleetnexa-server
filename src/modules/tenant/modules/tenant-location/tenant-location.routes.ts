@@ -10,6 +10,6 @@ router.post('/', auth, controller.addTenantLocation);
 
 router.put('/', auth, controller.updateTenantLocation);
 
-router.delete('/', auth, controller.deleteTenantLocation);
+router.delete('/:id', auth, controller.deleteTenantLocation);
 
 export default router;

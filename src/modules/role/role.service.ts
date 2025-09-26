@@ -3,6 +3,36 @@ import prisma, { TxClient } from '../../config/prisma.config';
 import { logger } from '../../config/logger';
 import { CreateRoleDto } from './role.dto';
 
+class UserRoleService {
+  async getTenantRoles(tenant: Tenant) {
+    try {
+      if (!tenant) {
+        throw new Error('Tenant information is required to fetch roles');
+      }
+
+      const roles = await prisma.userRole.findMany({
+        where: { tenantId: tenant.id, show: true, isDeleted: false },
+        include: {
+          rolePermission: {
+            include: {
+              permission: true,
+            },
+          },
+        },
+      });
+
+      return roles;
+    } catch (error) {
+      logger.e(error, 'Error fetching tenant roles', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+    }
+  }
+}
+
+export const userRoleService = new UserRoleService();
+
 const getTenantRoles = async (tenant: Tenant) => {
   try {
     if (!tenant) {

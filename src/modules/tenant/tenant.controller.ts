@@ -12,6 +12,9 @@ import { vehicleService } from '../vehicle/vehicle.service';
 import { customerService } from '../customer/customer.service';
 import { bookingService } from '../booking/booking.service';
 import { tenantActivityService } from './modules/tenant-activity/tenant-activity.service';
+import { userRepo } from '../user/user.repository';
+import { userRoleService } from '../role/role.service';
+import { tenantViolationsService } from './modules/tenant-violation/tenant-violation.service';
 
 const getCurrentTenant = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -36,18 +39,23 @@ const getCurrentTenant = async (req: Request, res: Response) => {
     const customers = await customerService.getTenantCustomers(tenant);
     const bookings = await bookingService.getTenantBookings(tenant);
     const activity = await tenantActivityService.getTenantActivities(tenant);
+    const users = await userRepo.getUsers(tenantId);
+    const roles = await userRoleService.getTenantRoles(tenant);
+    const violations =
+      await tenantViolationsService.getTenantViolations(tenant);
 
-    return res
-      .status(200)
-      .json({
-        tenant,
-        extras,
-        locations,
-        vehicles,
-        customers,
-        bookings,
-        activity,
-      });
+    return res.status(200).json({
+      tenant,
+      extras,
+      locations,
+      vehicles,
+      customers,
+      bookings,
+      activity,
+      users,
+      roles,
+      violations,
+    });
   } catch (error) {
     logger.e(error, 'Failed to get tenant', {
       tenantCode,
@@ -184,137 +192,10 @@ const updateTenant = async (req: Request, res: Response) => {
   }
 };
 
-//#region Tenant Violation Management
-const getViolations = async (req: Request, res: Response) => {
-  const tenantId = req.user?.tenantId;
-  const tenantCode = req.user?.tenantCode;
-
-  try {
-    const violations = await prisma.tenantViolation.findMany({
-      where: {
-        tenantId,
-        isDeleted: false,
-      },
-    });
-
-    return res
-      .status(200)
-      .json({ message: 'Violations retrieved successfully', violations });
-  } catch (error) {
-    logger.e(error, 'Failed to get violations', {
-      tenantCode,
-      tenantId,
-    });
-    return res.status(500).json({ message: 'Failed to get violations' });
-  }
-};
-const createViolation = async (req: Request, res: Response) => {
-  const { data } = req.body;
-  const tenantId = req.user?.tenantId;
-  const tenantCode = req.user?.tenantCode;
-
-  if (!tenantId) {
-    logger.w('Tenant ID is missing');
-    return res.status(400).json({ message: 'Tenant ID is required' });
-  }
-
-  if (!data) {
-    logger.w('Violation data is missing', { tenantCode, tenantId });
-    return res.status(400).json({ message: 'Violation data is required' });
-  }
-
-  const parseResult = TenantViolationSchema.safeParse(data);
-  if (!parseResult.success) {
-    return res.status(400).json({
-      error: 'Invalid user data',
-      details: parseResult.error.issues,
-    });
-  }
-
-  const violationDto = parseResult.data;
-
-  try {
-    const tenant = await prisma.tenant.findUnique({
-      where: { id: tenantId },
-    });
-
-    if (!tenant) {
-      logger.w('Tenant not found', { tenantCode, tenantId });
-      return res.status(404).json({ message: 'Tenant not found' });
-    }
-
-    const violations = await service.createViolation(violationDto, tenant);
-
-    return res
-      .status(201)
-      .json({ message: 'Violation created successfully', violations });
-  } catch (error) {
-    logger.e(error, 'Failed to create violation', {
-      tenantCode,
-      tenantId,
-      violation: data.violation,
-    });
-    return res.status(500).json({ message: 'Failed to create violation' });
-  }
-};
-const updateViolation = async (req: Request, res: Response) => {
-  const { data } = req.body;
-  const tenantId = req.user?.tenantId;
-  const tenantCode = req.user?.tenantCode;
-
-  if (!tenantId) {
-    logger.w('Tenant ID is missing');
-    return res.status(400).json({ message: 'Tenant ID is required' });
-  }
-
-  if (!data) {
-    logger.w('Violation data is missing', { tenantCode, tenantId });
-    return res.status(400).json({ message: 'Violation data is required' });
-  }
-
-  const parseResult = TenantViolationSchema.safeParse(data);
-  if (!parseResult.success) {
-    return res.status(400).json({
-      error: 'Invalid user data',
-      details: parseResult.error.issues,
-    });
-  }
-
-  const violationDto = parseResult.data;
-
-  try {
-    const tenant = await prisma.tenant.findUnique({
-      where: { id: tenantId },
-    });
-
-    if (!tenant) {
-      logger.w('Tenant not found', { tenantCode, tenantId });
-      return res.status(404).json({ message: 'Tenant not found' });
-    }
-
-    const violations = await service.updateViolation(violationDto, tenant);
-
-    return res
-      .status(200)
-      .json({ message: 'Violation updated successfully', violations });
-  } catch (error) {
-    logger.e(error, 'Failed to update violation', {
-      tenantCode,
-      tenantId,
-      violation: data.violation,
-    });
-    return res.status(500).json({ message: 'Failed to update violation' });
-  }
-};
-
-//#endregion
-
 export default {
   getCurrentTenant,
   getTenantById,
   createTenant,
-  createViolation,
-  getViolations,
-  updateViolation,
+
   updateTenant,
 };

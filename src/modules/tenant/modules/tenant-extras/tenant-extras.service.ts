@@ -23,21 +23,24 @@ class TenantExtraService {
       const combined: TenantExtra[] = [
         ...tenantServices.map((item) => ({
           ...item,
-          type: 'Service' as const,
+          type: 'service' as const,
+          item: item.service.id,
           name: item.service.service,
           icon: item.service.icon,
           description: item.service.description,
         })),
         ...tenantInsurances.map((item) => ({
           ...item,
-          type: 'Insurance' as const,
+          type: 'insurance' as const,
+          item: item.insurance,
           name: item.insurance,
           icon: 'FaShieldAlt',
           description: item.description,
         })),
         ...tenantEquipments.map((item) => ({
           ...item,
-          type: 'Equipment' as const,
+          type: 'equipment' as const,
+          item: item.equipment.id,
           name: item.equipment.equipment,
           icon: item.equipment.icon,
           description: item.equipment.description,

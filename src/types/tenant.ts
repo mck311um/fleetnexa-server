@@ -4,6 +4,6 @@ export interface TenantExtra {
   price?: number;
   coverageAmount?: number;
   quantity?: number;
-  type: 'Insurance' | 'Service' | 'Equipment';
+  type: 'insurance' | 'service' | 'equipment';
   [key: string]: unknown;
 }

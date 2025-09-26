@@ -11,6 +11,7 @@ import customerRoutes from './modules/customer/customer.routes';
 import authRoutes from './modules/auth/auth.routes';
 import tenantExtraRoutes from './modules/tenant/modules/tenant-extras/tenant-extra.routes';
 import tenantLocationRoutes from './modules/tenant/modules/tenant-location/tenant-location.routes';
+import tenantViolationRoutes from './modules/tenant/modules/tenant-violation/tenant-violation.routes';
 import vehicleRoutes from './routes/vehicle.routes';
 
 export const registerRoutes = (app: Application) => {
@@ -23,7 +24,8 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/storage', storageRoutes);
   app.use('/api/customer', customerRoutes);
   app.use('/api/auth', authRoutes);
-  app.use('/api/tenant-extras', tenantExtraRoutes);
+  app.use('/api/tenant-extra', tenantExtraRoutes);
   app.use('/api/tenant-location', tenantLocationRoutes);
+  app.use('/api/tenant-violation', tenantViolationRoutes);
   app.use('/api/vehicles', vehicleRoutes);
 };
