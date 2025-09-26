@@ -62,8 +62,17 @@ class UserRoleService {
 
   async createUserRole(data: UserRoleDto, tenant: Tenant, user: User) {
     try {
-      if (!tenant) {
-        throw new Error('Tenant information is required to create a role');
+      const existingRole = await prisma.userRole.findFirst({
+        where: { name: data.name, tenantId: tenant.id },
+      });
+
+      if (existingRole) {
+        if (existingRole.isDeleted) {
+          throw new Error(
+            'Role with this name was previously deleted. Please choose a different name.',
+          );
+        }
+        throw new Error('Role with this name already exists');
       }
 
       const role = await prisma.userRole.create({
@@ -83,7 +92,7 @@ class UserRoleService {
       logger.e(error, 'Error creating role', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
-        roleName: name,
+        roleName: data.name,
       });
       throw new Error('Error creating role');
     }
@@ -156,6 +165,45 @@ class UserRoleService {
         roleId,
       });
       throw new Error('Error deleting role');
+    }
+  }
+
+  async assignPermissionsToRole(
+    roleId: string,
+    permissions: string[],
+    tenant: Tenant,
+    user: User,
+  ) {
+    try {
+      await prisma.$transaction(async (tx) => {
+        const role = await tx.userRole.findUnique({
+          where: { id: roleId, tenantId: tenant.id },
+        });
+
+        if (!role) {
+          throw new Error('Role not found');
+        }
+
+        await tx.userRolePermission.deleteMany({
+          where: { roleId: role.id },
+        });
+
+        await tx.userRolePermission.createMany({
+          data: permissions.map((permId) => ({
+            roleId: role.id,
+            permissionId: permId,
+            assignedBy: user.username,
+            assignedAt: new Date(),
+          })),
+        });
+      });
+    } catch (error) {
+      logger.e(error, 'Error assigning permissions to role', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        roleId,
+      });
+      throw new Error('Error assigning permissions to role');
     }
   }
 }

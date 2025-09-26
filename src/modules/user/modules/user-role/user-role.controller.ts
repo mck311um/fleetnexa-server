@@ -3,7 +3,6 @@ import { userRepo } from '../../user.repository';
 import { logger } from '../../../../config/logger';
 import { userRoleService } from './user-role.service';
 import { UserRoleSchema } from './role.dto';
-import { id } from 'zod/v4/locales/index.cjs';
 
 const getRoles = async (req: Request, res: Response) => {
   const { tenant } = req.context!;
@@ -45,6 +44,7 @@ const getUserRole = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 const addUserRole = async (req: Request, res: Response) => {
   const { data } = req.body;
   const { tenant, user } = req.context!;
@@ -73,13 +73,15 @@ const addUserRole = async (req: Request, res: Response) => {
       message: 'Role added successfully',
       roles,
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.e(error, 'Failed to add user role', {
       tenantId: tenant.id,
       userId: user.id,
       data: userDto,
     });
-    return res.status(500).json({ message: 'Failed to add user role' });
+    return res.status(500).json({
+      message: error?.response?.data?.message || 'Failed to add user role',
+    });
   }
 };
 
@@ -146,10 +148,44 @@ const deleteRole = async (req: Request, res: Response) => {
   }
 };
 
+const assignPermissions = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { data } = req.body;
+  const { tenant, user } = req.context!;
+
+  if (!id) {
+    logger.w('Role ID is missing in request', { id });
+    return res.status(400).json({ error: 'Role ID is required' });
+  }
+
+  if (!data) {
+    logger.w('Permissions data is missing');
+    return res.status(400).json({ message: 'Permissions data is required' });
+  }
+
+  try {
+    await userRoleService.assignPermissionsToRole(id, data, tenant, user);
+
+    const roles = await userRoleService.getTenantRoles(tenant);
+
+    return res
+      .status(200)
+      .json({ message: 'Permissions assigned successfully', roles });
+  } catch (error) {
+    logger.e(error, 'Error assigning permissions to role', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+      roleId: id,
+    });
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export default {
   getRoles,
   getUserRole,
   deleteRole,
   addUserRole,
   updateRole,
+  assignPermissions,
 };
