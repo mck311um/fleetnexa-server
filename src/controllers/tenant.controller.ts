@@ -9,58 +9,6 @@ import emailService from '../services/ses.service';
 import { WelcomeEmailParams } from '../types/email';
 import { logger } from '../config/logger';
 
-const getTenantExtras = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const tenantId = req.user?.tenantId;
-  try {
-    const [tenantServices, tenantEquipments, tenantInsurances] =
-      await Promise.all([
-        prisma.tenantService.findMany({
-          where: { tenantId: tenantId, isDeleted: false },
-          include: { service: true },
-        }),
-        prisma.tenantEquipment.findMany({
-          where: { tenantId: tenantId, isDeleted: false },
-          include: { equipment: true },
-        }),
-        prisma.tenantInsurance.findMany({
-          where: { tenantId: tenantId, isDeleted: false },
-        }),
-      ]);
-
-    const combined: any[] = [
-      ...tenantServices.map((item) => ({
-        ...item,
-        type: 'Service',
-        name: item.service.service,
-        icon: item.service.icon,
-        description: item.service.description,
-      })),
-      ...tenantInsurances.map((item) => ({
-        ...item,
-        type: 'Insurance',
-        name: item.insurance,
-        icon: 'FaShieldAlt',
-        description: item.description,
-      })),
-      ...tenantEquipments.map((item) => ({
-        ...item,
-        type: 'Equipment',
-        name: item.equipment.equipment,
-        icon: item.equipment.icon,
-        description: item.equipment.description,
-      })),
-    ];
-
-    res.status(200).json(combined);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-};
 const getTenantRentalActivity = async (
   req: Request,
   res: Response,
@@ -394,140 +342,6 @@ const initializeTenantLocations = async (
 
     res.status(201).json(tenantLocations);
   } catch (error) {
-    next(error);
-  }
-};
-const getTenantLocations = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const tenantId = req.user?.tenantId;
-
-  try {
-    const tenantLocations = await prisma.tenantLocation.findMany({
-      where: { tenantId, isDeleted: false },
-      include: {
-        vehicles: true,
-        _count: {
-          select: { vehicles: true },
-        },
-      },
-    });
-
-    res.json(tenantLocations);
-  } catch (error: any) {
-    next(error);
-  }
-};
-const createTenantLocation = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { location } = req.body;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    await prisma.tenantLocation.create({
-      data: {
-        id: location.id,
-        location: location.location,
-        tenantId: tenantId ?? '',
-        pickupEnabled: location.pickupEnabled ?? false,
-        returnEnabled: location.returnEnabled ?? false,
-        storefrontEnabled: location.storefrontEnabled ?? false,
-        deliveryFee: location.deliveryFee ?? 0,
-        collectionFee: location.collectionFee ?? 0,
-        minimumRentalPeriod: location.minimumRentalPeriod ?? 0,
-        updatedAt: new Date(),
-        updatedBy: userId,
-      },
-    });
-
-    const tenantLocations = await prisma.tenantLocation.findMany({
-      where: { tenantId: tenantId },
-    });
-
-    res.status(201).json({ ...tenantLocations });
-  } catch (error: any) {
-    console.error(error);
-    next(error);
-  }
-};
-const updateTenantLocation = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { location } = req.body;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    loggerConfig.logger.info(location.storefrontEnabled);
-    await prisma.tenantLocation.update({
-      where: { id: location.id },
-      data: {
-        location: location.location,
-        tenantId: tenantId ?? '',
-        pickupEnabled: location.pickupEnabled ?? false,
-        returnEnabled: location.returnEnabled ?? false,
-        storefrontEnabled: location.storefrontEnabled,
-        deliveryFee: location.deliveryFee ?? 0,
-        collectionFee: location.collectionFee ?? 0,
-        minimumRentalPeriod: location.minimumRentalPeriod ?? 0,
-        updatedAt: new Date(),
-        updatedBy: userId,
-      },
-    });
-
-    const tenantLocations = await prisma.tenantLocation.findMany({
-      where: { tenantId: tenantId },
-      include: {
-        _count: {
-          select: { vehicles: true },
-        },
-      },
-    });
-
-    res.status(201).json(tenantLocations);
-  } catch (error: any) {
-    next(error);
-  }
-};
-const deleteTenantLocation = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { id } = req.params;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    await prisma.tenantLocation.update({
-      where: { id },
-      data: {
-        isDeleted: true,
-        updatedAt: new Date(),
-        updatedBy: userId,
-      },
-    });
-
-    const tenantLocations = await prisma.tenantLocation.findMany({
-      where: { tenantId: tenantId, isDeleted: false },
-      include: {
-        _count: {
-          select: { vehicles: true },
-        },
-      },
-    });
-
-    res.status(200).json(tenantLocations);
-  } catch (error: any) {
-    console.error(error);
     next(error);
   }
 };
@@ -1248,7 +1062,6 @@ const deleteNotification = async (
 //#endregion
 
 export default {
-  getTenantExtras,
   createTenant,
   updateTenant,
   getTenantLocations,

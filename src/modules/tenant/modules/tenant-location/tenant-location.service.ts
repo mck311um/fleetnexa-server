@@ -1,9 +1,72 @@
-import { Tenant } from '@prisma/client';
+import { Country, Tenant, User } from '@prisma/client';
 import prisma from '../../../../config/prisma.config';
 import { TenantLocationDto } from './tenant-location.dto';
 import { logger } from '../../../../config/logger';
 
 class TenantLocationService {
+  async initializeTenantLocations(country: Country, tenant: Tenant) {
+    try {
+      const locations = await prisma.$transaction(async (tx) => {
+        const presetLocations = await tx.presetLocation.findMany({
+          where: { countryId: country.id },
+        });
+
+        await tx.tenantLocation.create({
+          data: {
+            id: crypto.randomUUID(),
+            location: 'Main Office',
+            tenantId: tenant.id,
+            pickupEnabled: true,
+            returnEnabled: true,
+            deliveryFee: 0,
+            collectionFee: 0,
+            minimumRentalPeriod: 1,
+            updatedAt: new Date(),
+            updatedBy: 'SYSTEM',
+            isDeleted: false,
+          },
+        });
+
+        for (const location of presetLocations) {
+          await tx.tenantLocation.create({
+            data: {
+              id: crypto.randomUUID(),
+              location: location.location,
+              tenantId: tenant.id,
+              pickupEnabled: true,
+              returnEnabled: true,
+              deliveryFee: 0,
+              collectionFee: 0,
+              minimumRentalPeriod: 1,
+              updatedAt: new Date(),
+              updatedBy: 'SYSTEM',
+              isDeleted: false,
+            },
+          });
+        }
+
+        return await tx.tenantLocation.findMany({
+          where: { tenantId: tenant.id },
+          include: {
+            _count: {
+              select: { vehicles: true },
+            },
+          },
+        });
+      });
+
+      return locations;
+    } catch (error) {
+      logger.e(error, 'Failed to initialize tenant locations', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        countryId: country.id,
+        countryCode: country.code,
+      });
+      throw new Error('Failed to initialize tenant locations');
+    }
+  }
+
   async getAllLocations(tenant: Tenant) {
     try {
       const locations = await prisma.tenantLocation.findMany({

@@ -7,6 +7,7 @@ const router = express.Router();
 router.get('/', auth, controller.getAllLocations);
 
 router.post('/', auth, controller.addTenantLocation);
+router.post('/:id', auth, controller.initializeTenantLocations);
 
 router.put('/', auth, controller.updateTenantLocation);
 
