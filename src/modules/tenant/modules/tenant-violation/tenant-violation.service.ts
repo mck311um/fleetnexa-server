@@ -114,7 +114,6 @@ class TenantViolationsService {
           where: {
             tenantId: tenant.id,
             isDeleted: false,
-            updatedAt: new Date(),
           },
         });
       });
