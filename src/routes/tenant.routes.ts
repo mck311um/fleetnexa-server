@@ -4,7 +4,6 @@ import { auth } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
-router.get('/locations', auth, controller.getTenantLocations);
 router.get('/services', auth, controller.getServices);
 router.get('/equipment', auth, controller.getEquipment);
 router.get('/insurance', auth, controller.getInsurance);
@@ -16,15 +15,12 @@ router.get('/notifications', auth, controller.getTenantNotifications);
 router.get('/roles/:id', auth, controller.getTenantRolesById);
 
 // router.post('/', controller.createTenant);
-router.post('/location', auth, controller.createTenantLocation);
-router.post('/location/initialize', auth, controller.initializeTenantLocations);
 router.post('/service', auth, controller.addService);
 router.post('/equipment', auth, controller.addEquipment);
 router.post('/insurance', auth, controller.addInsurance);
 router.post('/role', auth, controller.addTenantRole);
 router.post('/reminder', auth, controller.addTenantReminder);
 
-router.put('/location', auth, controller.updateTenantLocation);
 router.put('/service', auth, controller.updateService);
 router.put('/equipment', auth, controller.updateEquipment);
 router.put('/insurance', auth, controller.updateInsurance);
@@ -40,7 +36,6 @@ router.patch(
 );
 router.patch('/notification/:id', auth, controller.markNotificationAsRead);
 
-router.delete('/location/:id', auth, controller.deleteTenantLocation);
 router.delete('/service/:id', auth, controller.deleteService);
 router.delete('/equipment/:id', auth, controller.deleteEquipment);
 router.delete('/insurance/:id', auth, controller.deleteInsurance);

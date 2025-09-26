@@ -13,6 +13,7 @@ import tenantExtraRoutes from './modules/tenant/modules/tenant-extras/tenant-ext
 import tenantLocationRoutes from './modules/tenant/modules/tenant-location/tenant-location.routes';
 import tenantViolationRoutes from './modules/tenant/modules/tenant-violation/tenant-violation.routes';
 import vehicleRoutes from './routes/vehicle.routes';
+import currencyRatesRoutes from './modules/tenant/modules/currency-rates/currency-rates.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
@@ -28,4 +29,5 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/tenant-location', tenantLocationRoutes);
   app.use('/api/tenant-violation', tenantViolationRoutes);
   app.use('/api/vehicles', vehicleRoutes);
+  app.use('/api/currency-rate', currencyRatesRoutes);
 };

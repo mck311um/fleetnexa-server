@@ -283,70 +283,6 @@ const updateTenant = async (
   }
 };
 
-// #region Tenant Location
-const initializeTenantLocations = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { country } = req.body;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-
-  try {
-    await prisma.$transaction(async (tx) => {
-      console.log('Initializing tenant locations for country:', country);
-
-      const presetLocations = await tx.presetLocation.findMany({
-        where: { countryId: country },
-      });
-
-      await tx.tenantLocation.create({
-        data: {
-          id: crypto.randomUUID(),
-          location: 'Main Office',
-          tenantId: tenantId!,
-          pickupEnabled: true,
-          returnEnabled: true,
-          deliveryFee: 0,
-          collectionFee: 0,
-          minimumRentalPeriod: 1,
-          updatedAt: new Date(),
-          updatedBy: userId,
-          isDeleted: false,
-        },
-      });
-
-      for (const location of presetLocations) {
-        await tx.tenantLocation.create({
-          data: {
-            id: crypto.randomUUID(),
-            location: location.location,
-            tenantId: tenantId!,
-            pickupEnabled: true,
-            returnEnabled: true,
-            deliveryFee: 0,
-            collectionFee: 0,
-            minimumRentalPeriod: 1,
-            updatedAt: new Date(),
-            updatedBy: userId,
-            isDeleted: false,
-          },
-        });
-      }
-    });
-
-    const tenantLocations = await prisma.tenantLocation.findMany({
-      where: { tenantId: tenantId },
-    });
-
-    res.status(201).json(tenantLocations);
-  } catch (error) {
-    next(error);
-  }
-};
-// #endregion
-
 // #region Tenant Services
 const getServices = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -1064,11 +1000,7 @@ const deleteNotification = async (
 export default {
   createTenant,
   updateTenant,
-  getTenantLocations,
-  initializeTenantLocations,
-  createTenantLocation,
-  updateTenantLocation,
-  deleteTenantLocation,
+
   getServices,
   addService,
   updateService,
