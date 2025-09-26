@@ -837,63 +837,6 @@ const updateTenantReminder = async (req: Request, res: Response) => {
 };
 // #endregion
 
-// #region Tenant Currency Rates
-const getTenantCurrencyRates = async (req: Request, res: Response) => {
-  const tenantId = req.user?.tenantId;
-  try {
-    const currencyRates = await prisma.tenantCurrencyRate.findMany({
-      where: { tenantId },
-      include: {
-        currency: true,
-      },
-    });
-
-    res.status(200).json(currencyRates);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error fetching tenant currency rates' });
-  }
-};
-const updateTenantCurrencyRate = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { rate } = req.body;
-  const tenantId = req.user?.tenantId;
-  try {
-    const existingRate = await prisma.tenantCurrencyRate.findUnique({
-      where: { id: rate.id },
-    });
-
-    if (!existingRate) {
-      return res.status(404).json({ message: 'Currency rate not found' });
-    }
-
-    await prisma.tenantCurrencyRate.update({
-      where: { id: rate.id },
-      data: {
-        fromRate: rate.fromRate,
-        toRate: rate.toRate,
-        enabled: rate.enabled,
-        updatedAt: new Date(),
-      },
-    });
-
-    const currencyRates = await prisma.tenantCurrencyRate.findMany({
-      where: { tenantId },
-      include: {
-        currency: true,
-      },
-    });
-
-    res.status(200).json(currencyRates);
-  } catch (error) {
-    next(error);
-  }
-};
-// #endregion
-
 // #region Tenant Notifications
 const getTenantNotifications = async (
   req: Request,
@@ -1022,8 +965,6 @@ export default {
   updateTenantRole,
   addTenantReminder,
   updateTenantReminder,
-  getTenantCurrencyRates,
-  updateTenantCurrencyRate,
   getTenantNotifications,
   markNotificationAsRead,
   markAllNotificationsAsRead,
