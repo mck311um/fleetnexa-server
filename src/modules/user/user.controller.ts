@@ -90,16 +90,13 @@ const createSystemUser = async (req: Request, res: Response) => {
 
   try {
     await prisma.$transaction(async (tx) => {
-      const tenant = await tenantRepo.getTenantById(tenantId);
-
-      if (!tenant) {
-        logger.w('Tenant not found', { tenantId });
-        return res.status(404).json({ error: 'Tenant not found' });
-      }
-
-      const { user, password } = await service.createUser(userDto, tenant, tx);
-
-      await emailService.newUserEmail(tenant, user.id, password, tx);
+      // const tenant = await tenantRepo.getTenantById(tenantId);
+      // if (!tenant) {
+      //   logger.w('Tenant not found', { tenantId });
+      //   return res.status(404).json({ error: 'Tenant not found' });
+      // }
+      // const { user, password } = await service.createUser(userDto, tenant, tx);
+      // await emailService.newUserEmail(tenant, user.id, password, tx);
     });
 
     res.status(201).json({ message: 'User created successfully' });

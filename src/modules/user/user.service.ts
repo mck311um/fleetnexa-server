@@ -4,8 +4,7 @@ import generator from '../../services/generator.service';
 import bcrypt from 'bcrypt';
 import { logger } from '../../config/logger';
 import { CreateUserDto, UpdateUserDto, ChangePasswordDto } from './user.dto';
-import roleService from '../role/role.service';
-import { CreateRoleDto } from '../role/role.dto';
+import { User } from '@sentry/node';
 
 const getCurrentUser = async (userId: string, tenant: Tenant) => {
   try {
@@ -76,6 +75,7 @@ const createUser = async (
   data: CreateUserDto,
   tenant: Tenant,
   tx: TxClient,
+  user: User,
 ) => {
   try {
     const emailExists = await tx.user.findUnique({
@@ -125,25 +125,19 @@ const createOwner = async (
   tx: TxClient,
 ) => {
   try {
-    const owner: CreateRoleDto = {
-      name: 'Owner',
-      description: 'Owner role with full access',
-      show: true,
-    };
-
-    const role = await roleService.createRole(owner, tenant, tx);
-
-    if (!role) {
-      throw new Error('Error creating owner role');
-    }
-
-    await roleService.assignAllPermissions(role, tx);
-
-    data.roleId = role.id;
-
-    const { user, password } = await createUser(data, tenant, tx);
-
-    return { user, password, role };
+    // const owner: CreateRoleDto = {
+    //   name: 'Owner',
+    //   description: 'Owner role with full access',
+    //   show: true,
+    // };
+    // const role = await userRoleService.createUserRole(owner, tenant, user);
+    // if (!role) {
+    //   throw new Error('Error creating owner role');
+    // }
+    // await roleService.assignAllPermissions(role, tx);
+    // data.roleId = role.id;
+    // const { user, password } = await createUser(data, tenant, tx);
+    // return { user, password, role };
   } catch (error) {
     logger.e(error, 'Error creating owner role', {
       tenantId: tenant.id,

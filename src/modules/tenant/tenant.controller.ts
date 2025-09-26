@@ -13,7 +13,7 @@ import { customerService } from '../customer/customer.service';
 import { bookingService } from '../booking/booking.service';
 import { tenantActivityService } from './modules/tenant-activity/tenant-activity.service';
 import { userRepo } from '../user/user.repository';
-import { userRoleService } from '../role/role.service';
+import { userRoleService } from '../user/modules/user-role/user-role.service';
 import { tenantViolationsService } from './modules/tenant-violation/tenant-violation.service';
 import { tenantCurrencyRatesService } from './modules/currency-rates/currency-rates.service';
 
@@ -110,31 +110,28 @@ const createTenant = async (req: Request, res: Response) => {
   const tenantDto = parseResult.data;
 
   try {
-    const tenant = await prisma.$transaction(
-      async (tx) => {
-        const { tenant, user, password } = await service.createTenant(
-          tenantDto,
-          tx,
-        );
-
-        await emailService.sendWelcomeEmail(
-          tenant,
-          user.username,
-          password,
-          `${tenantDto.firstName} ${tenantDto.lastName}`,
-        );
-
-        return tenant;
-      },
-      { timeout: 20000 },
-    );
-
-    return res.status(201).json({
-      message: 'Tenant created successfully',
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-      tenantName: tenant.tenantName,
-    });
+    // const tenant = await prisma.$transaction(
+    //   async (tx) => {
+    //     const { tenant, user, password } = await service.createTenant(
+    //       tenantDto,
+    //       tx,
+    //     );
+    //     await emailService.sendWelcomeEmail(
+    //       tenant,
+    //       user.username,
+    //       password,
+    //       `${tenantDto.firstName} ${tenantDto.lastName}`,
+    //     );
+    //     return tenant;
+    //   },
+    //   { timeout: 20000 },
+    // );
+    // return res.status(201).json({
+    //   message: 'Tenant created successfully',
+    //   tenantId: tenant.id,
+    //   tenantCode: tenant.tenantCode,
+    //   tenantName: tenant.tenantName,
+    // });
   } catch (error) {
     logger.e(error, 'Failed to create tenant', {
       email: tenantDto.email,

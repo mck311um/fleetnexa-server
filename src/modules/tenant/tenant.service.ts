@@ -48,13 +48,13 @@ const createTenant = async (data: CreateTenantDto, tx: TxClient) => {
       roleId: '',
     };
 
-    const { user, password } = await userService.createOwner(
-      userDetails,
-      tenant,
-      tx,
-    );
+    // const { user, password } = await userService.createOwner(
+    //   userDetails,
+    //   tenant,
+    //   tx,
+    // );
 
-    return { tenant, user, password };
+    // return { tenant, user, password };
   } catch (error) {
     logger.e(error, 'Failed to create tenant', {
       email: data.email,
