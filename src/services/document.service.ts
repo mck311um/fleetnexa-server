@@ -450,7 +450,7 @@ const generateAgreementData = async (
       returnTime: `${formatter.formatDateToFriendlyTime(booking?.endDate || '')}`,
       drivers,
       numberOfUnits: numberOfUnits() || 0,
-      unit: booking?.chargeType?.unit?.toString() || '',
+      unit: booking?.chargeType?.unit?.toString() || 'day',
       unitPlural: unitPlural(),
       basePrice: parseFloat((booking?.values?.basePrice || 0).toFixed(2)),
       rentalAmount: parseFloat((booking?.values?.totalCost || 0).toFixed(2)),

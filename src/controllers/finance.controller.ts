@@ -32,13 +32,13 @@ const getTransactions = async (
             },
           },
         },
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
-            username: true,
-          },
-        },
+        // user: {
+        //   select: {
+        //     firstName: true,
+        //     lastName: true,
+        //     username: true,
+        //   },
+        // },
       },
     });
 

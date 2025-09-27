@@ -746,6 +746,7 @@ const generateInvoice = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: `${invoice.invoiceNumber} generated successfully`,
+      invoice,
     });
   } catch (error) {
     logger.e(error, 'Failed to generate rental invoice', { tenantId });
@@ -798,6 +799,7 @@ const generateBookingAgreement = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: `${agreement.number} generated successfully`,
+      agreement,
     });
   } catch (error) {
     logger.e(error, 'Failed to generate rental agreement', { tenantId });

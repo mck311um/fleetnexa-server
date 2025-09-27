@@ -74,13 +74,13 @@ class RentalRepository {
             },
           },
           refund: true,
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              username: true,
-            },
-          },
+          // user: {
+          //   select: {
+          //     firstName: true,
+          //     lastName: true,
+          //     username: true,
+          //   },
+          // },
         },
         orderBy: {
           transactionDate: 'desc',

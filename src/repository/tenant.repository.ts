@@ -83,13 +83,13 @@ class TenantRepository {
               paymentType: true,
             },
           },
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              username: true,
-            },
-          },
+          // user: {
+          //   select: {
+          //     firstName: true,
+          //     lastName: true,
+          //     username: true,
+          //   },
+          // },
         },
       },
       rentalActivity: {
