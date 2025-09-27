@@ -98,6 +98,8 @@ interface RentalAgreementData {
   maxHours: number;
   dailyRate: number;
   drivers?: RentalAgreementDriver[];
+  discount: number;
+  discountAmount: number;
 }
 
 interface AgreementData {
