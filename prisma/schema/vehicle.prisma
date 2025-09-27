@@ -39,6 +39,9 @@ model Vehicle {
   dayPrice           Float                    @default(0)
   monthPrice         Float                    @default(0)
   weekPrice          Float                    @default(0)
+  storefrontEnabled  Boolean                  @default(true)
+
+
   rentals            Rental[]
   rentalActivity     RentalActivity[]
   brand              VehicleBrand             @relation(fields: [brandId], references: [id])

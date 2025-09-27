@@ -5,12 +5,9 @@ import { auth } from '../middleware/auth.middleware';
 const router = express.Router();
 
 router.get('/damages/:id', auth, controller.getVehicleDamages);
-router.get('/:id', auth, controller.getVehicleById);
 
 router.post('/', auth, controller.addVehicle);
 router.post('/damage', auth, controller.addVehicleDamage);
-
-router.patch('/:id/status', auth, controller.updateVehicleStatus);
 
 router.put('/', auth, controller.updateVehicle);
 router.put('/damage', auth, controller.updateVehicleDamage);

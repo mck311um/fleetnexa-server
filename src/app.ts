@@ -57,7 +57,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tenant', tenantRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/vehicle', vehicleRoutes);
+// app.use('/api/vehicle', vehicleRoutes);
 app.use('/api/customer', customerRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/whatsapp', twillioRoutes);

@@ -3,88 +3,7 @@ import { vehicleRepo } from '../repository/vehicle.repository';
 import prisma from '../config/prisma.config';
 
 // #region Vehicle
-const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
-  const tenantId = req.user?.tenantId;
 
-  try {
-    const vehicles = await vehicleRepo.getVehicles(tenantId!);
-    res.status(200).json(vehicles);
-  } catch (error) {
-    console.error(error);
-    next(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-const getVehicleById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { id } = req.params;
-
-  try {
-    const vehicle = await vehicleRepo.getVehicleById(id, req.user?.tenantId!);
-
-    if (!vehicle) {
-      return res.status(404).json({ message: 'Vehicle not found' });
-    }
-
-    res.status(200).json(vehicle);
-  } catch (error) {
-    next(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-const getVehicleByLicensePlate = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { licensePlate } = req.params;
-
-  try {
-    const vehicle = await vehicleRepo.getVehicleByLicensePlate(
-      licensePlate,
-      req.user?.tenantId!,
-    );
-
-    if (!vehicle) {
-      return res.status(404).json({ message: 'Vehicle not found' });
-    }
-
-    res.status(200).json(vehicle);
-  } catch (error) {
-    next(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-const updateVehicleStatus = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { id } = req.params;
-  const { status } = req.body;
-  const userId = req.user?.id;
-  const tenantId = req.user?.tenantId;
-  try {
-    await prisma.vehicle.update({
-      where: { id },
-      data: {
-        vehicleStatus: { connect: { id: status } },
-        updatedAt: new Date(),
-        updatedBy: userId,
-      },
-    });
-
-    const vehicle = await vehicleRepo.getVehicleById(id, tenantId!);
-    const vehicles = await vehicleRepo.getVehicles(tenantId!);
-
-    res.status(200).json({ vehicle, vehicles });
-  } catch (error) {
-    next(error);
-  }
-};
 const addVehicle = async (req: Request, res: Response, next: NextFunction) => {
   const { vehicle } = req.body;
   const userId = req.user?.id;
@@ -469,8 +388,6 @@ const deleteVehicleDamage = async (
 // #endregion
 
 export default {
-  getVehicles,
-  getVehicleById,
   addVehicle,
   updateVehicle,
   deleteVehicle,
@@ -478,6 +395,4 @@ export default {
   addVehicleDamage,
   updateVehicleDamage,
   deleteVehicleDamage,
-  updateVehicleStatus,
-  getVehicleByLicensePlate,
 };
