@@ -8,4 +8,8 @@ router.get('/', auth, controller.getTransactions);
 
 router.post('/payment', auth, controller.createPayment);
 
+router.put('/payment', auth, controller.updatePayment);
+
+router.delete('/payment/:id', auth, controller.deletePayment);
+
 export default router;

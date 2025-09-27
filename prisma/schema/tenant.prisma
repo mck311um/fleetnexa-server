@@ -1,95 +1,89 @@
 model Tenant {
-  tenantCode            String                @unique
-  id                    String                @id @default(dbgenerated("gen_random_uuid()"))
-  tenantName            String
-  slug                  String?               @unique
-  email                 String                @unique
-  number                String                @unique
-  currencyId            String?
-  logo                  String?
-  setupCompleted        Boolean   @default(false)
-  financialYearStart     String    @default("January")
-  invoiceSequenceId     String?
-  invoiceFootNotes      String    @default("")
-  subscriptionId        String?
-  storefrontEnabled     Boolean   @default(false)
-  securityDeposit       Float     @default(0)
-  rating                Float     @default(0)
-  description           String?   @default("")
-  cancellationPolicyId  String?   @unique
-  latePolicyId          String?   @unique
-  additionalDriverFee   Float     @default(0)
-  daysInMonth           Int       @default(28)
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime? @updatedAt
-  merchantId            String?
-
-  address               Address?
-  subscription          TenantSubscription? 
-  currency              Currency?             @relation(fields: [currencyId], references: [id])
-  invoiceSequence       InvoiceSequence?      @relation(fields: [invoiceSequenceId], references: [id])
-  cancellationPolicy    CancellationPolicy?   @relation(fields: [cancellationPolicyId], references: [id])
-  latePolicy            LatePolicy?           @relation(fields: [latePolicyId], references: [id])
-  merchant              ShopDMMerchant?
-
-
-  paymentMethods        PaymentMethod[]
-  users                 User[]
-  customers             Customer[]
-  vehicles              Vehicle[]
-  tenantLocations       TenantLocation[]
-  additions             Addition[]
-  rentals               Rental[]
-  invoices              Invoice[]
-  payments              Payment[]
-  services              TenantService[]
-  forms                 Form[]
-  equipment             TenantEquipment[]
-  insurance             TenantInsurance[]
-  rentalActivity        RentalActivity[]
-  contacts              TenantContact[]
-  weeklyStats           TenantWeeklyStats[]
-  agreements            RentalAgreement[]
-  monthlyStats          TenantMonthlyStats[]
-  monthlyRentalStats    TenantMonthlyRentalStats[]
-  reminders             TenantReminders[]
-  transactions          Transactions[]
-  ratings               TenantRatings[]
-  userRoles             UserRole[]
-  yearlyStats           TenantYearlyStats[]
-  refunds               Refund[]
-  currencyRates         TenantCurrencyRate[]
-  notifications          TenantNotification[]
-  charges               RentalCharge[]
-  violations            TenantViolation[]
-  customerViolations    CustomerViolation[]
+  id                   String                     @id @default(dbgenerated("gen_random_uuid()"))
+  tenantCode           String                     @unique
+  tenantName           String
+  email                String                     @unique
+  number               String                     @unique
+  currencyId           String?
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime?                  @updatedAt
+  logo                 String?
+  setupCompleted       Boolean                    @default(false)
+  financialYearStart   String                     @default("January")
+  invoiceSequenceId    String?
+  invoiceFootNotes     String                     @default("")
+  storefrontEnabled    Boolean                    @default(false)
+  subscriptionId       String?
+  securityDeposit      Float                      @default(0)
+  rating               Float                      @default(0)
+  description          String?                    @default("")
+  cancellationPolicyId String?                    @unique
+  latePolicyId         String?                    @unique
+  additionalDriverFee  Float                      @default(0)
+  daysInMonth          Int                        @default(28)
+  slug                 String?                    @unique
+  merchantId           String?
+  additions            Addition[]
+  address              Address?
+  customers            Customer[]
+  customerViolations   CustomerViolation[]
+  forms                Form[]
+  invoices             Invoice[]
+  payments             Payment[]
+  refunds              Refund[]
+  rentals              Rental[]
+  rentalActivity       RentalActivity[]
+  agreements           RentalAgreement[]
+  charges              RentalCharge[]
+  merchant             ShopDMMerchant?
+  cancellationPolicy   CancellationPolicy?        @relation(fields: [cancellationPolicyId], references: [id])
+  currency             Currency?                  @relation(fields: [currencyId], references: [id])
+  invoiceSequence      InvoiceSequence?           @relation(fields: [invoiceSequenceId], references: [id])
+  latePolicy           LatePolicy?                @relation(fields: [latePolicyId], references: [id])
+  contacts             TenantContact[]
+  currencyRates        TenantCurrencyRate[]
+  equipment            TenantEquipment[]
+  insurance            TenantInsurance[]
+  tenantLocations      TenantLocation[]
+  monthlyRentalStats   TenantMonthlyRentalStats[]
+  monthlyStats         TenantMonthlyStats[]
+  notifications        TenantNotification[]
+  ratings              TenantRatings[]
+  reminders            TenantReminders[]
+  services             TenantService[]
+  subscription         TenantSubscription?
+  violations           TenantViolation[]
+  weeklyStats          TenantWeeklyStats[]
+  yearlyStats          TenantYearlyStats[]
+  transactions         Transactions[]
+  users                User[]
+  userRoles            UserRole[]
+  vehicles             Vehicle[]
+  paymentMethods       PaymentMethod[]            @relation("PaymentMethodToTenant")
 }
 
 model PaymentMethod {
-  id                  String                @id @default(dbgenerated("gen_random_uuid()"))
-  method              String
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime?             @updatedAt
-
-  Tenant              Tenant[]
-  payments            Payment[]
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  method    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  payments  Payment[]
+  Tenant    Tenant[]  @relation("PaymentMethodToTenant")
 }
 
 model Address {
-  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
-  street              String
-  countryId           String
-  tenantId            String    @unique
-  stateId             String
-  villageId           String
-
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime? @updatedAt
-
-  country             Country   @relation(fields: [countryId], references: [id])
-  state               State     @relation(fields: [stateId], references: [id])
-  tenant              Tenant    @relation(fields: [tenantId], references: [id])
-  village             Village   @relation(fields: [villageId], references: [id])
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  street    String
+  countryId String
+  tenantId  String    @unique
+  stateId   String
+  villageId String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  country   Country   @relation(fields: [countryId], references: [id])
+  state     State     @relation(fields: [stateId], references: [id])
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  village   Village   @relation(fields: [villageId], references: [id])
 }
 
 model TenantLocation {
@@ -97,172 +91,152 @@ model TenantLocation {
   location            String
   pickupEnabled       Boolean
   returnEnabled       Boolean
-  storefrontEnabled   Boolean   @default(false)
   deliveryFee         Float
   collectionFee       Float
   tenantId            String
   minimumRentalPeriod Int       @default(1)
   isDeleted           Boolean   @default(false)
-  
-  createdAt           DateTime  @default(now())
   updatedAt           DateTime? @updatedAt
   updatedBy           String?
-
-  pickups            Rental[]  @relation("PickupLocation")
-  returns            Rental[]  @relation("ReturnLocation")
-  vehicles            Vehicle[]
+  storefrontEnabled   Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  pickups             Rental[]  @relation("PickupLocation")
+  returns             Rental[]  @relation("ReturnLocation")
   tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  vehicles            Vehicle[]
 }
 
-
 model TenantInsurance {
-  id               String    @id @default(dbgenerated("gen_random_uuid()"))
-  insurance        String
-  description      String
-  pricePolicy      PricePolicy
-  price            Float
-  tenantId         String
-  isActive         Boolean  @default(true)
-  isDeleted        Boolean  @default(false)
-
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime? @updatedAt
-  updatedBy        String?
-
-  tenant           Tenant      @relation(fields: [tenantId], references: [id])
+  id          String      @id @default(dbgenerated("gen_random_uuid()"))
+  insurance   String
+  description String
+  pricePolicy PricePolicy
+  price       Float
+  tenantId    String
+  isActive    Boolean     @default(true)
+  isDeleted   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime?   @updatedAt
+  updatedBy   String?
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
 }
 
 model TenantEquipment {
-  id               String    @id @default(dbgenerated("gen_random_uuid()"))
-  equipmentId      String
-  pricePolicy      PricePolicy
-  price            Float
-  tenantId         String
-  isActive         Boolean  @default(true)
-  isDeleted        Boolean  @default(false)
-
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime? @updatedAt
-  updatedBy         String?
-
-  equipment        Equipment   @relation(fields: [equipmentId], references: [id])
-  tenant           Tenant      @relation(fields: [tenantId], references: [id])
+  id          String      @id @default(dbgenerated("gen_random_uuid()"))
+  equipmentId String
+  pricePolicy PricePolicy
+  price       Float
+  tenantId    String
+  isActive    Boolean     @default(true)
+  isDeleted   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime?   @updatedAt
+  updatedBy   String?
+  equipment   Equipment   @relation(fields: [equipmentId], references: [id])
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
 }
 
 model TenantService {
-  id                    String          @id @default(dbgenerated("gen_random_uuid()"))
-  serviceId             String
-  tenantId              String
-  price                 Float     
-  pricePolicy           PricePolicy    
-  isActive              Boolean   @default(false)
-  isDeleted             Boolean   @default(false)
-
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime? @updatedAt
-  updatedBy             String?
-
-  service               Service   @relation(fields: [serviceId], references: [id])
-  tenant                Tenant    @relation(fields: [tenantId], references: [id])
+  id          String      @id @default(dbgenerated("gen_random_uuid()"))
+  serviceId   String
+  tenantId    String
+  price       Float
+  pricePolicy PricePolicy
+  isActive    Boolean     @default(false)
+  isDeleted   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime?   @updatedAt
+  updatedBy   String?
+  service     Service     @relation(fields: [serviceId], references: [id])
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
 }
 
 model TenantSubscription {
-  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
-  tenantId            String    @unique
-  dodoCustomerId      String    @unique
-  productId           String?
-  status              SubscriptionStatus @default(TRIAL)
-  startDate           DateTime?
-  endDate             DateTime?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime? @updatedAt
-
-  plan                SubscriptionPlan? @relation(fields: [productId], references: [productId])
-  tenant              Tenant @relation(fields: [tenantId], references: [id])
-  payments            SubscriptionPayment[]
+  id             String                @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId       String                @unique
+  status         SubscriptionStatus    @default(TRIAL)
+  startDate      DateTime?
+  endDate        DateTime?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime?             @updatedAt
+  dodoCustomerId String                @unique
+  productId      String?
+  payments       SubscriptionPayment[]
+  plan           SubscriptionPlan?     @relation(fields: [productId], references: [productId])
+  tenant         Tenant                @relation(fields: [tenantId], references: [id])
 }
 
 model TenantContact {
-  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
-  name                String
-  email               String
-  phone               String
-  tenantId            String
-  contactTypeId       String
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime? @updatedAt
-
-  serviceLog          VehicleServiceLog[]
-
-
-  tenant              Tenant    @relation(fields: [tenantId], references: [id])
-  contactType         ContactType @relation(fields: [contactTypeId], references: [id])
-
+  id            String              @id @default(dbgenerated("gen_random_uuid()"))
+  name          String
+  email         String
+  phone         String
+  tenantId      String
+  contactTypeId String
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime?           @updatedAt
+  contactType   ContactType         @relation(fields: [contactTypeId], references: [id])
+  tenant        Tenant              @relation(fields: [tenantId], references: [id])
+  serviceLog    VehicleServiceLog[]
 }
 
 model TenantReminders {
-  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
-  reminder            String
-  date                DateTime
-  tenantId            String
-  completed           Boolean  @default(false)
-  completedAt         DateTime?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime? @updatedAt
-  updatedBy           String?
-
-  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  id          String    @id @default(dbgenerated("gen_random_uuid()"))
+  reminder    String
+  date        DateTime
+  tenantId    String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  updatedBy   String?
+  tenant      Tenant    @relation(fields: [tenantId], references: [id])
 }
 
 model TenantNotification {
-  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
-  title               String
-  type                NotificationType
-  priority            NotificationPriority
-  message             String
-  tenantId            String
-  actionUrl           String?
-  read                Boolean   @default(false)
-  isDeleted           Boolean   @default(false)
-  createdAt           DateTime  @default(now())
-
-  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  id        String               @id @default(dbgenerated("gen_random_uuid()"))
+  title     String
+  type      NotificationType
+  priority  NotificationPriority
+  message   String
+  tenantId  String
+  actionUrl String?
+  read      Boolean              @default(false)
+  createdAt DateTime             @default(now())
+  isDeleted Boolean              @default(false)
+  tenant    Tenant               @relation(fields: [tenantId], references: [id])
 }
 
-
-
 model CancellationPolicy {
-  id                    String   @id @default(dbgenerated("gen_random_uuid()"))
-  minimumDays           Int
-  bookingMinimumDays    Int  
-  policy                String
-  amount                Float
-  tenantId              String   @unique
-  updatedBy             String?
-  tenant                Tenant?
+  id                 String  @id @default(dbgenerated("gen_random_uuid()"))
+  minimumDays        Int
+  policy             String
+  amount             Float
+  tenantId           String  @unique
+  updatedBy          String?
+  bookingMinimumDays Int
+  tenant             Tenant?
 }
 
 model LatePolicy {
-  id                    String   @id @default(dbgenerated("gen_random_uuid()"))
-  tenantId              String    @unique
-  amount                Float
-  maxHours              Int
-  updatedBy             String?
-  tenant                Tenant?
+  id        String  @id @default(dbgenerated("gen_random_uuid()"))
+  amount    Float
+  maxHours  Int
+  updatedBy String?
+  tenantId  String  @unique
+  tenant    Tenant?
 }
 
 model TenantViolation {
-  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
-  violation           String    @unique
-  tenantId            String
-  description         String?
-  amount              Float     @default(0)
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime? @updatedAt
-
-  isDeleted           Boolean   @default(false)
-  deletedAt           DateTime?
-
-  tenant              Tenant    @relation(fields: [tenantId], references: [id])
-  customerViolations  CustomerViolation[]
+  id                 String              @id @default(dbgenerated("gen_random_uuid()"))
+  violation          String              @unique
+  tenantId           String
+  description        String?
+  amount             Float               @default(0)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime?           @updatedAt
+  isDeleted          Boolean             @default(false)
+  deletedAt          DateTime?
+  customerViolations CustomerViolation[]
+  tenant             Tenant              @relation(fields: [tenantId], references: [id])
 }

@@ -1,73 +1,66 @@
 model Payment {
-  id                String        @id @default(dbgenerated("gen_random_uuid()"))
-  amount            Float
-  paymentMethodId   String
-  paymentTypeId     String
-  tenantId          String
-  rentalId          String
-  notes             String?
-  paymentDate       DateTime
-  customerId        String?
-  currencyId        String?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime?     @updatedAt
-  updatedBy         String?
-  
-  transaction       Transactions?
-  paymentType       PaymentType   @relation(fields: [paymentTypeId], references: [id])
-  paymentMethod     PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-  tenant            Tenant        @relation(fields: [tenantId], references: [id])
-  rental            Rental        @relation(fields: [rentalId], references: [id])
-  customer          Customer?     @relation(fields: [customerId], references: [id])
-  currency          Currency?     @relation(fields: [currencyId], references: [id])
-  
-  isDeleted         Boolean   @default(false)
-  deletedAt         DateTime? @updatedAt
-
+  id              String        @id @default(dbgenerated("gen_random_uuid()"))
+  amount          Float
+  paymentMethodId String
+  paymentTypeId   String
+  tenantId        String
+  rentalId        String
+  notes           String?
+  isDeleted       Boolean       @default(false)
+  paymentDate     DateTime
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime?     @updatedAt
+  updatedBy       String?
+  customerId      String?
+  currencyId      String?
+  deletedAt       DateTime?     @updatedAt
+  currency        Currency?     @relation(fields: [currencyId], references: [id])
+  customer        Customer?     @relation(fields: [customerId], references: [id])
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  paymentType     PaymentType   @relation(fields: [paymentTypeId], references: [id])
+  rental          Rental        @relation(fields: [rentalId], references: [id])
+  tenant          Tenant        @relation(fields: [tenantId], references: [id])
+  transaction     Transactions?
 }
 
 model Transactions {
-  id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  amount            Float
-  type              TransactionType
-  tenantId          String
-  transactionDate   DateTime  @default(now())
-  customerId        String?
-  rentalId          String?
-  createdBy         String?
-  createdAt         DateTime  @default(now())
-  paymentId         String?   @unique
-  refundId          String?   @unique
-  details           String?
-  customer          Customer? @relation(fields: [customerId], references: [id])
-  tenant            Tenant   @relation(fields: [tenantId], references: [id])
-  payment           Payment? @relation(fields: [paymentId], references: [id])
-  user              User?    @relation(fields: [createdBy], references: [id])
-  rental            Rental?  @relation(fields: [rentalId], references: [id])
-  refund            Refund?  @relation(fields: [refundId], references: [id])
-
-  isDeleted         Boolean   @default(false)
-  deletedAt         DateTime? @updatedAt
-
+  id              String          @id @default(dbgenerated("gen_random_uuid()"))
+  amount          Float
+  type            TransactionType
+  customerId      String?
+  isDeleted       Boolean         @default(false)
+  transactionDate DateTime        @default(now())
+  createdAt       DateTime        @default(now())
+  createdBy       String?
+  paymentId       String?         @unique
+  tenantId        String
+  rentalId        String?
+  details         String?
+  refundId        String?         @unique
+  deletedAt       DateTime?       @updatedAt
+  user            User?           @relation(fields: [createdBy], references: [id])
+  customer        Customer?       @relation(fields: [customerId], references: [id])
+  payment         Payment?        @relation(fields: [paymentId], references: [id])
+  refund          Refund?         @relation(fields: [refundId], references: [id])
+  rental          Rental?         @relation(fields: [rentalId], references: [id])
+  tenant          Tenant          @relation(fields: [tenantId], references: [id])
 }
 
 model Refund {
-  id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  amount            Float
-  tenantId          String
-  rentalId          String?
-  reason            String?
-  refundDate        DateTime  @default(now())
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime? @updatedAt
-  customerId        String?
-  createdBy         String?
-  transaction       Transactions?
-  tenant            Tenant    @relation(fields: [tenantId], references: [id])
-  rental            Rental?   @relation(fields: [rentalId], references: [id])
-  customer          Customer? @relation(fields: [customerId], references: [id])
-  
-  isDeleted         Boolean   @default(false)
-  deletedAt         DateTime? @updatedAt
-
+  id          String        @id @default(dbgenerated("gen_random_uuid()"))
+  amount      Float
+  tenantId    String
+  rentalId    String?
+  reason      String?
+  isDeleted   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?     @updatedAt
+  refundDate  DateTime      @default(now())
+  createdBy   String?
+  customerId  String?
+  deletedAt   DateTime?     @updatedAt
+  customer    Customer?     @relation(fields: [customerId], references: [id])
+  rental      Rental?       @relation(fields: [rentalId], references: [id])
+  tenant      Tenant        @relation(fields: [tenantId], references: [id])
+  transaction Transactions?
 }

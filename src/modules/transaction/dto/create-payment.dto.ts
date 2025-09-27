@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CreatePaymentSchema = z.object({
+export const PaymentSchema = z.object({
   id: z.uuid(),
   amount: z.float64().min(0),
   paymentDate: z.string(),
@@ -11,4 +11,4 @@ export const CreatePaymentSchema = z.object({
   customerId: z.uuid(),
 });
 
-export type CreatePaymentDto = z.infer<typeof CreatePaymentSchema>;
+export type PaymentDto = z.infer<typeof PaymentSchema>;

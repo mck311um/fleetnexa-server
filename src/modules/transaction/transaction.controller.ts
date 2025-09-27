@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { transactionRepo } from './transaction.repository';
 import { logger } from '../../config/logger';
-import { CreatePaymentSchema } from './dto/create-payment.dto';
-import service from './transaction.service';
+import service, { transactionService } from './transaction.service';
 import prisma from '../../config/prisma.config';
 import { tenantRepo } from '../../repository/tenant.repository';
 import { rentalRepo } from '../../repository/rental.repository';
+import { PaymentSchema } from './dto/create-payment.dto';
 
 const getTransactions = async (req: Request, res: Response) => {
   const tenantId = req.params.tenantId;
@@ -19,30 +19,21 @@ const getTransactions = async (req: Request, res: Response) => {
 };
 
 const createPayment = async (req: Request, res: Response) => {
-  const tenantId = req.user?.tenantId;
-  const tenantCode = req.user?.tenantCode;
-  const userId = req.user?.id;
+  const { tenant, user } = req.context!;
   const { data } = req.body;
 
-  if (!tenantId) {
-    logger.w('Tenant ID is missing', { tenantId });
-    return res.status(400).json({ error: 'Tenant ID is required' });
-  }
-
-  if (!userId) {
-    logger.w('User ID is missing', { tenantId });
-    return res.status(400).json({ error: 'User ID is required' });
-  }
-
   if (!data) {
-    logger.w('User data is missing', { tenantId });
+    logger.w('User data is missing', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+    });
     return res.status(400).json({ error: 'User data is required' });
   }
 
-  const parseResult = CreatePaymentSchema.safeParse(data);
+  const parseResult = PaymentSchema.safeParse(data);
   if (!parseResult.success) {
     return res.status(400).json({
-      error: 'Invalid password data',
+      error: 'Invalid transaction data',
       details: parseResult.error.issues,
     });
   }
@@ -50,22 +41,13 @@ const createPayment = async (req: Request, res: Response) => {
   const paymentDto = parseResult.data;
 
   try {
-    await prisma.$transaction(async (tx) => {
-      const tenant = await tenantRepo.getTenantById(tenantId);
-
-      if (!tenant) {
-        logger.w('Tenant not found', { tenantId });
-        return res.status(404).json({ error: 'Tenant not found' });
-      }
-
-      await service.createPayment(paymentDto, tenant, tx, userId!);
-    });
+    await transactionService.createPayment(paymentDto, tenant, user);
 
     const updatedBooking = await rentalRepo.getRentalById(
       data.bookingId,
-      tenantId,
+      tenant.id,
     );
-    const bookings = await rentalRepo.getRentals(tenantId);
+    const bookings = await rentalRepo.getRentals(tenant.id);
 
     res.status(201).json({
       updatedBooking,
@@ -74,9 +56,79 @@ const createPayment = async (req: Request, res: Response) => {
     });
   } catch (error) {
     logger.e(error, 'Failed to create payment', {
-      tenantId,
-      tenantCode,
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
       bookingId: data.bookingId,
+    });
+  }
+};
+
+const updatePayment = async (req: Request, res: Response) => {
+  const { tenant, user } = req.context!;
+  const { data } = req.body;
+
+  if (!data) {
+    logger.w('User data is missing', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+    });
+    return res.status(400).json({ error: 'User data is required' });
+  }
+
+  const parseResult = PaymentSchema.safeParse(data);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: 'Invalid transaction data',
+      details: parseResult.error.issues,
+    });
+  }
+
+  const paymentDto = parseResult.data;
+
+  try {
+    await transactionService.updatePayment(paymentDto, tenant, user);
+
+    const updatedBooking = await rentalRepo.getRentalById(
+      data.bookingId,
+      tenant.id,
+    );
+    const bookings = await rentalRepo.getRentals(tenant.id);
+
+    res.status(200).json({
+      updatedBooking,
+      bookings,
+      message: 'Transaction updated successfully',
+    });
+  } catch (error) {
+    logger.e(error, 'Failed to update payment', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+      bookingId: data.bookingId,
+    });
+  }
+};
+
+const deletePayment = async (req: Request, res: Response) => {
+  const { tenant, user } = req.context!;
+  const { id } = req.params;
+
+  if (!id) {
+    logger.w('Payment ID is missing', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+    });
+    return res.status(400).json({ error: 'Payment ID is required' });
+  }
+
+  try {
+    await transactionService.deletePayment(id, tenant, user);
+
+    res.status(200).json({ message: 'Payment deleted successfully' });
+  } catch (error) {
+    logger.e(error, 'Failed to delete payment', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+      id,
     });
   }
 };
@@ -84,4 +136,6 @@ const createPayment = async (req: Request, res: Response) => {
 export default {
   getTransactions,
   createPayment,
+  updatePayment,
+  deletePayment,
 };
