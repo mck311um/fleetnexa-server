@@ -37,7 +37,7 @@ class TransactionService {
             type: TransactionType.PAYMENT,
             transactionDate: data.paymentDate,
             customerId: data.customerId,
-            createdBy: user.username,
+            createdBy: user.id,
             paymentId: data.id,
             tenantId: tenant.id,
             rentalId: data.bookingId,
