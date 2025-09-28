@@ -98,9 +98,44 @@ const updateVehicleStatus = async (req: Request, res: Response) => {
   }
 };
 
+const updateVehicleStorefrontStatus = async (req: Request, res: Response) => {
+  const { tenant, user } = req.context!;
+  const { id } = req.params;
+
+  if (!id) {
+    logger.w('Vehicle ID is missing');
+    return res.status(400).json({ message: 'Vehicle ID is required' });
+  }
+
+  try {
+    await vehicleService.updateVehicleStorefrontStatus(id, tenant, user);
+
+    const vehicle = await vehicleService.getVehicleById(id, tenant);
+    const vehicles = await vehicleService.getTenantVehicles(tenant);
+
+    return res
+      .status(200)
+      .json({
+        message: 'Vehicle storefront status updated',
+        vehicle,
+        vehicles,
+      });
+  } catch (error) {
+    logger.e(error, 'Failed to update vehicle storefront status', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+      vehicleId: id,
+    });
+    return res
+      .status(500)
+      .json({ message: 'Failed to update vehicle storefront status' });
+  }
+};
+
 export default {
   getAllTenantVehicles,
   getVehicleById,
   getVehicleByLicensePlate,
   updateVehicleStatus,
+  updateVehicleStorefrontStatus,
 };

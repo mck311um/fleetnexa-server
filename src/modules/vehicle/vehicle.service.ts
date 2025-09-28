@@ -105,6 +105,47 @@ class VehicleService {
       throw new Error('Failed to update vehicle status');
     }
   }
+
+  async updateVehicleStorefrontStatus(
+    vehicleId: string,
+    tenant: Tenant,
+    user: User,
+  ) {
+    try {
+      await prisma.$transaction(async (tx) => {
+        if (!tenant.storefrontEnabled) {
+          throw new Error('Storefront is not enabled for this tenant');
+        }
+
+        const vehicle = await tx.vehicle.findUnique({
+          where: { id: vehicleId },
+        });
+
+        if (!vehicle) {
+          logger.w('Vehicle not found', {
+            vehicleId,
+            tenantId: tenant.id,
+          });
+          throw new Error('Vehicle not found');
+        }
+
+        await tx.vehicle.update({
+          where: { id: vehicleId },
+          data: {
+            storefrontEnabled: !vehicle.storefrontEnabled,
+            updatedBy: user.username,
+          },
+        });
+      });
+    } catch (error) {
+      logger.e(error, 'Failed to update vehicle storefront status', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        vehicleId,
+      });
+      throw new Error('Failed to update vehicle storefront status');
+    }
+  }
 }
 
 export const vehicleService = new VehicleService();

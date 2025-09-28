@@ -9,5 +9,6 @@ router.get('/plate/:plate', auth, controller.getVehicleByLicensePlate);
 router.get('/:id', auth, controller.getVehicleById);
 
 router.patch('/status', auth, controller.updateVehicleStatus);
+router.patch('/:id/storefront', auth, controller.updateVehicleStorefrontStatus);
 
 export default router;
