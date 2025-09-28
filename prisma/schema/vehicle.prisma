@@ -13,10 +13,6 @@ model Vehicle {
   steering           String                   @default("left")
   featuredImage      String
   images             String[]
-  insurance          String
-  insuranceExpiry    DateTime
-  registrationNumber String
-  registrationExpiry DateTime
   numberOfSeats      Int
   numberOfDoors      Int
   vin                String

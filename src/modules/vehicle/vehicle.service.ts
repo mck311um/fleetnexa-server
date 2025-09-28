@@ -2,9 +2,30 @@ import { Tenant, User } from '@prisma/client';
 import { logger } from '../../config/logger';
 import prisma, { TxClient } from '../../config/prisma.config';
 import { vehicleRepo } from './vehicle.repository';
-import { UpdateVehicleStatusDto } from './vehicle.dto';
+import {
+  UpdateVehicleStatusDto,
+  VehicleDto,
+  VehicleSchema,
+} from './vehicle.dto';
 
 class VehicleService {
+  validateVehicle(data: any) {
+    if (!data) {
+      throw new Error('No data provided');
+    }
+
+    const safeParse = VehicleSchema.safeParse(data);
+    if (!safeParse.success) {
+      logger.w('Invalid vehicle data', {
+        errors: safeParse.error.issues,
+        data,
+      });
+      throw new Error('Invalid vehicle data');
+    }
+
+    return safeParse.data;
+  }
+
   async getTenantVehicles(tenant: Tenant) {
     try {
       const vehicles = await vehicleRepo.getVehicles(tenant.id);
@@ -36,6 +57,68 @@ class VehicleService {
       });
       throw new Error('Failed to get vehicle by ID');
     }
+  }
+
+  async addVehicle(data: VehicleDto, tenant: Tenant, user: User) {
+    try {
+      await prisma.$transaction(async (tx) => {
+        const existingPlate = await tx.vehicle.findFirst({
+          where: {
+            licensePlate: data.licensePlate,
+          },
+        });
+
+        if (existingPlate) {
+          throw new Error('A vehicle with this license plate already exists');
+        }
+
+        await tx.vehicle.create({
+          data: {
+            id: data.id,
+            tenantId: tenant.id,
+            color: data.color,
+            engineVolume: data.engineVolume,
+            featuredImage: data.featuredImage,
+            features:
+              data.features && data.features.length > 0
+                ? {
+                    connect: data.features.map((featureId) => ({
+                      id: featureId,
+                    })),
+                  }
+                : undefined,
+            fuelLevel: data.fuelLevel,
+            images: data.images || [],
+            licensePlate: data.licensePlate,
+            brandId: data.brandId,
+            modelId: data.modelId,
+            numberOfSeats: data.numberOfSeats,
+            numberOfDoors: data.numberOfDoors,
+            odometer: data.odometer || 0,
+            steering: data.steering,
+            vin: data.vin || '',
+            year: data.year,
+            transmissionId: data.transmissionId,
+            vehicleStatusId: data.vehicleStatusId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            updatedBy: user.username,
+            wheelDriveId: data.wheelDriveId,
+            fuelTypeId: data.fuelTypeId,
+            isDeleted: false,
+            dayPrice: data.dayPrice,
+            weekPrice: data.weekPrice,
+            monthPrice: data.monthPrice,
+            timeBetweenRentals: data.timeBetweenRentals,
+            minimumAge: data.minimumAge,
+            minimumRental: data.minimumRental,
+            fuelPolicyId: data.fuelPolicyId,
+            locationId: data.locationId,
+            drivingExperience: data.drivingExperience,
+          },
+        });
+      });
+    } catch (error) {}
   }
 
   async getVehicleByLicensePlate(licensePlate: string, tenant: Tenant) {
