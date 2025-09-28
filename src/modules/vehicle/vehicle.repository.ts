@@ -113,6 +113,17 @@ class VehicleRepository {
           maintenanceService: true,
         },
       },
+      _count: {
+        select: {
+          rentals: {
+            where: { isDeleted: false },
+          },
+          damages: {
+            where: { isDeleted: false },
+          },
+          serviceLogs: true,
+        },
+      },
     };
   }
 }
