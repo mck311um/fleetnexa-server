@@ -14,20 +14,27 @@ import tenantLocationRoutes from './modules/tenant/modules/tenant-location/tenan
 import tenantViolationRoutes from './modules/tenant/modules/tenant-violation/tenant-violation.routes';
 import currencyRatesRoutes from './modules/tenant/modules/currency-rates/currency-rates.routes';
 import vehicleRoutes from './modules/vehicle/vehicle.routes';
+import vehicleDamageRoutes from './modules/vehicle/modules/vehicle-damage/damage.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
+
   app.use('/api/email', emailRoutes);
   app.use('/api/transaction', transactionRoutes);
-  app.use('/api/user', userRoutes);
-  app.use('/api/tenant', tenantRoutes);
-  app.use('/api/user-role', roleRoutes);
   app.use('/api/storage', storageRoutes);
-  app.use('/api/customer', customerRoutes);
   app.use('/api/auth', authRoutes);
+
+  app.use('/api/user', userRoutes);
+  app.use('/api/user-role', roleRoutes);
+
+  app.use('/api/customer', customerRoutes);
+
+  app.use('/api/tenant', tenantRoutes);
   app.use('/api/tenant-extra', tenantExtraRoutes);
   app.use('/api/tenant-location', tenantLocationRoutes);
   app.use('/api/tenant-violation', tenantViolationRoutes);
-  app.use('/api/vehicle', vehicleRoutes);
   app.use('/api/currency-rate', currencyRatesRoutes);
+
+  app.use('/api/vehicle', vehicleRoutes);
+  app.use('/api/vehicle-damage', vehicleDamageRoutes);
 };
