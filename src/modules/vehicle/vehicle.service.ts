@@ -9,7 +9,7 @@ import {
 } from './vehicle.dto';
 
 class VehicleService {
-  validateVehicle(data: any) {
+  validateVehicleData(data: any) {
     if (!data) {
       throw new Error('No data provided');
     }
@@ -82,8 +82,8 @@ class VehicleService {
             features:
               data.features && data.features.length > 0
                 ? {
-                    connect: data.features.map((featureId) => ({
-                      id: featureId,
+                    connect: data.features.map((feature) => ({
+                      id: feature.id,
                     })),
                   }
                 : undefined,
@@ -117,8 +117,137 @@ class VehicleService {
             drivingExperience: data.drivingExperience,
           },
         });
+
+        if (data.discounts && data.discounts.length > 0) {
+          await Promise.all(
+            data.discounts.map((discount) =>
+              tx.vehicleDiscount.upsert({
+                where: { id: discount.id },
+                create: {
+                  id: discount.id,
+                  vehicleId: data.id,
+                  periodMin: discount.periodMin,
+                  periodMax: discount.periodMax,
+                  amount: discount.amount,
+                  discountPolicy: discount.discountPolicy,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                },
+                update: {
+                  periodMin: discount.periodMin,
+                  periodMax: discount.periodMax,
+                  amount: discount.amount,
+                  discountPolicy: discount.discountPolicy,
+                  updatedAt: new Date(),
+                },
+              }),
+            ),
+          );
+        }
       });
     } catch (error) {}
+  }
+
+  async updateVehicle(data: VehicleDto, tenant: Tenant, user: User) {
+    try {
+      await prisma.$transaction(async (tx) => {
+        const vehicle = await tx.vehicle.findUnique({
+          where: { id: data.id },
+        });
+
+        if (!vehicle) {
+          throw new Error('Vehicle not found');
+        }
+
+        await tx.vehicle.update({
+          where: { id: data.id },
+          data: {
+            color: data.color,
+            engineVolume: data.engineVolume,
+            featuredImage: data.featuredImage,
+            features:
+              data.features && data.features.length > 0
+                ? {
+                    set: data.features.map((feature) => ({
+                      id: feature.id,
+                    })),
+                  }
+                : { set: [] },
+            fuelLevel: data.fuelLevel,
+            images: data.images || [],
+            licensePlate: data.licensePlate,
+            brandId: data.brandId,
+            modelId: data.modelId,
+            numberOfSeats: data.numberOfSeats,
+            numberOfDoors: data.numberOfDoors,
+            odometer: data.odometer || 0,
+            steering: data.steering,
+            vin: data.vin || '',
+            year: data.year,
+            transmissionId: data.transmissionId,
+            vehicleStatusId: data.vehicleStatusId,
+            updatedAt: new Date(),
+            updatedBy: user.username,
+            wheelDriveId: data.wheelDriveId,
+            fuelTypeId: data.fuelTypeId,
+            dayPrice: data.dayPrice,
+            weekPrice: data.weekPrice,
+            monthPrice: data.monthPrice,
+            timeBetweenRentals: data.timeBetweenRentals,
+            minimumAge: data.minimumAge,
+            minimumRental: data.minimumRental,
+            fuelPolicyId: data.fuelPolicyId,
+            locationId: data.locationId,
+            drivingExperience: data.drivingExperience,
+          },
+        });
+
+        if (data.discounts && data.discounts.length > 0) {
+          const newDiscountIds = data.discounts
+            .map((discount: any) => discount.id)
+            .filter(Boolean);
+
+          await tx.vehicleDiscount.deleteMany({
+            where: {
+              vehicleId: vehicle.id,
+              NOT: { id: { in: newDiscountIds } },
+            },
+          });
+
+          await Promise.all(
+            data.discounts.map((discount) =>
+              tx.vehicleDiscount.upsert({
+                where: { id: discount.id },
+                create: {
+                  id: discount.id,
+                  vehicleId: data.id,
+                  periodMin: discount.periodMin,
+                  periodMax: discount.periodMax,
+                  amount: discount.amount,
+                  discountPolicy: discount.discountPolicy,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                },
+                update: {
+                  periodMin: discount.periodMin,
+                  periodMax: discount.periodMax,
+                  amount: discount.amount,
+                  discountPolicy: discount.discountPolicy,
+                  updatedAt: new Date(),
+                },
+              }),
+            ),
+          );
+        }
+      });
+    } catch (error) {
+      logger.e(error, 'Failed to  update vehicle', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        data,
+      });
+      throw new Error('Failed to update vehicle');
+    }
   }
 
   async getVehicleByLicensePlate(licensePlate: string, tenant: Tenant) {
@@ -186,6 +315,40 @@ class VehicleService {
         data,
       });
       throw new Error('Failed to update vehicle status');
+    }
+  }
+
+  async deleteVehicle(vehicleId: string, tenant: Tenant, user: User) {
+    try {
+      await prisma.$transaction(async (tx) => {
+        const vehicle = await tx.vehicle.findUnique({
+          where: { id: vehicleId },
+        });
+
+        if (!vehicle) {
+          logger.w('Vehicle not found', {
+            vehicleId,
+            tenantId: tenant.id,
+          });
+          throw new Error('Vehicle not found');
+        }
+
+        await tx.vehicle.update({
+          where: { id: vehicleId },
+          data: {
+            isDeleted: true,
+            updatedBy: user.username,
+            updatedAt: new Date(),
+          },
+        });
+      });
+    } catch (error) {
+      logger.e(error, 'Failed to delete vehicle', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        vehicleId,
+      });
+      throw new Error('Failed to delete vehicle');
     }
   }
 

@@ -9,7 +9,6 @@ import authRoutes from './routes/auth.routes';
 import tenantRoutes from './routes/tenant.routes';
 import fileRoutes from './routes/file.routes';
 import adminRoutes from './routes/admin.routes';
-import vehicleRoutes from './routes/vehicle.routes';
 import customerRoutes from './routes/customer.routes';
 import emailRoutes from './routes/email.routes';
 import twillioRoutes from './routes/twillio.routes';

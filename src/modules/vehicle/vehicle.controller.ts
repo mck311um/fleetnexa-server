@@ -60,6 +60,89 @@ const getVehicleByLicensePlate = async (req: Request, res: Response) => {
   }
 };
 
+const addVehicle = async (req: Request, res: Response) => {
+  const { tenant, user } = req.context!;
+  const data = req.body;
+
+  if (!data) {
+    logger.w('Vehicle data is missing');
+    return res.status(400).json({ message: 'Vehicle data is required' });
+  }
+
+  try {
+    const vehicleDto = vehicleService.validateVehicleData(data);
+    await vehicleService.addVehicle(vehicleDto, tenant, user);
+
+    const vehicles = await vehicleService.getTenantVehicles(tenant);
+
+    return res
+      .status(201)
+      .json({ message: 'Vehicle added successfully', vehicles });
+  } catch (error) {
+    logger.e(error, 'Failed to add vehicle', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+      data,
+    });
+    return res.status(500).json({ message: 'Failed to add vehicle' });
+  }
+};
+
+const updateVehicle = async (req: Request, res: Response) => {
+  const { tenant, user } = req.context!;
+  const data = req.body;
+
+  if (!data) {
+    return res.status(400).json({ message: 'Vehicle data is required' });
+  }
+
+  try {
+    const vehicleDto = vehicleService.validateVehicleData(data);
+
+    await vehicleService.updateVehicle(vehicleDto, tenant, user);
+
+    const vehicles = await vehicleService.getTenantVehicles(tenant);
+    const vehicle = await vehicleService.getVehicleById(vehicleDto.id, tenant);
+
+    return res
+      .status(200)
+      .json({ message: 'Vehicle updated successfully', vehicle, vehicles });
+  } catch (error) {
+    logger.e(error, 'Failed to update vehicle', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+      data,
+    });
+    return res.status(500).json({ message: 'Failed to update vehicle' });
+  }
+};
+
+const deleteVehicle = async (req: Request, res: Response) => {
+  const { tenant, user } = req.context!;
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: 'Vehicle ID is required' });
+  }
+
+  try {
+    await vehicleService.deleteVehicle(id, tenant, user);
+
+    const vehicles = await vehicleService.getTenantVehicles(tenant);
+
+    return res
+      .status(200)
+      .json({ message: 'Vehicle deleted successfully', vehicles });
+  } catch (error) {
+    logger.e(error, 'Failed to delete vehicle', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+      vehicleId: id,
+    });
+    return res.status(500).json({ message: 'Failed to delete vehicle' });
+  }
+};
+
 const updateVehicleStatus = async (req: Request, res: Response) => {
   const { tenant, user } = req.context!;
   const data = req.body;
@@ -113,13 +196,11 @@ const updateVehicleStorefrontStatus = async (req: Request, res: Response) => {
     const vehicle = await vehicleService.getVehicleById(id, tenant);
     const vehicles = await vehicleService.getTenantVehicles(tenant);
 
-    return res
-      .status(200)
-      .json({
-        message: 'Vehicle storefront status updated',
-        vehicle,
-        vehicles,
-      });
+    return res.status(200).json({
+      message: 'Vehicle storefront status updated',
+      vehicle,
+      vehicles,
+    });
   } catch (error) {
     logger.e(error, 'Failed to update vehicle storefront status', {
       tenantId: tenant.id,
@@ -138,4 +219,7 @@ export default {
   getVehicleByLicensePlate,
   updateVehicleStatus,
   updateVehicleStorefrontStatus,
+  addVehicle,
+  updateVehicle,
+  deleteVehicle,
 };
