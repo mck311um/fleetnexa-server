@@ -1,0 +1,25 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const rental_controller_1 = __importDefault(require("../controllers/rental.controller"));
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const api_middleware_1 = require("../middleware/api.middleware");
+const router = express_1.default.Router();
+router.get('/', auth_middleware_1.auth, rental_controller_1.default.getRentals);
+router.get('/:id', auth_middleware_1.auth, rental_controller_1.default.getRentalById);
+router.post('/', auth_middleware_1.auth, rental_controller_1.default.handleRental);
+router.post('/storefront', api_middleware_1.api, rental_controller_1.default.handleStorefrontRental);
+router.post('/invoice/:rentalId', auth_middleware_1.auth, rental_controller_1.default.generateInvoice);
+router.post('/agreement/:rentalId', auth_middleware_1.auth, rental_controller_1.default.generateRentalAgreement);
+router.post('/decline', auth_middleware_1.auth, rental_controller_1.default.declineRental);
+router.post('/confirm', auth_middleware_1.auth, rental_controller_1.default.confirmRental);
+router.post('/decline', auth_middleware_1.auth, rental_controller_1.default.declineRental);
+router.post('/cancel', auth_middleware_1.auth, rental_controller_1.default.cancelRental);
+router.post('/start', auth_middleware_1.auth, rental_controller_1.default.startRental);
+router.post('/end', auth_middleware_1.auth, rental_controller_1.default.endRental);
+router.post('/charge', auth_middleware_1.auth, rental_controller_1.default.addRentalCharge);
+router.delete('/:id', auth_middleware_1.auth, rental_controller_1.default.deleteRental);
+exports.default = router;
