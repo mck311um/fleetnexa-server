@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "ts-node --max-old-space-size=8192 src/server.ts",
     "dev": "nodemon src/server.ts",
     "build": "node --max-old-space-size=8192 ./node_modules/.bin/tsc",
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
