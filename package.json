@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
-    "build": "tsc",
+    "build": "node --max-old-space-size=8192 ./node_modules/.bin/tsc",
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx,json,css,md}'"
