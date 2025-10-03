@@ -19,7 +19,6 @@ import zohoRoutes from './routes/zoho.routes';
 
 import './cron/maintenance.cron';
 import './cron/stat.cron';
-import './cron/plans.cron';
 import './cron/notification.cron';
 import devvizeRoutes from './routes/devvize.routes';
 import sitemapRoutes from './routes/sitemap.routes';
