@@ -15,7 +15,7 @@ model Customer {
   createdAt      DateTime               @default(now())
   updatedAt      DateTime?              @updatedAt
   updatedBy      String?
-  tenant         Tenant                 @relation(fields: [tenantId], references: [id])
+  tenant         Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   address        CustomerAddress?
   documents      CustomerDocument?
   apps           CustomerMessengerApp[]
@@ -103,6 +103,6 @@ model CustomerViolation {
   deletedAt     DateTime?
   isDeleted     Boolean         @default(false)
   customer      Customer        @relation(fields: [customerId], references: [id])
-  tenant        Tenant          @relation(fields: [tenantId], references: [id])
+  tenant        Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   violation     TenantViolation @relation(fields: [violationId], references: [id])
 }

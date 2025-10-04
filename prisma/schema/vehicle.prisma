@@ -45,7 +45,7 @@ model Vehicle {
   fuelType           FuelType                 @relation(fields: [fuelTypeId], references: [id])
   location           TenantLocation?          @relation(fields: [locationId], references: [id])
   model              VehicleModel             @relation(fields: [modelId], references: [id])
-  tenant             Tenant?                  @relation(fields: [tenantId], references: [id])
+  tenant             Tenant?                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   transmission       Transmission             @relation(fields: [transmissionId], references: [id])
   vehicleStatus      VehicleStatus            @relation(fields: [vehicleStatusId], references: [id])
   wheelDrive         WheelDrive               @relation(fields: [wheelDriveId], references: [id])

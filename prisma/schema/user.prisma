@@ -10,7 +10,7 @@ model User {
   roleId                String?
   lastChanged           DateTime?
   email                 String?          @unique
-  profilePicture        String           @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
+  profilePicture         String           @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
   show                  Boolean          @default(true)
   deletedAt             DateTime?
   isDeleted             Boolean          @default(false)
@@ -18,8 +18,8 @@ model User {
   rentals               Rental[]
   rentalActivity        RentalActivity[]
   transactions          Transactions[]
-  role                  UserRole?        @relation(fields: [roleId], references: [id])
-  tenant                Tenant?          @relation(fields: [tenantId], references: [id])
+  role                  UserRole?        @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  tenant                Tenant?          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([username, tenantId])
 }
@@ -71,10 +71,8 @@ model UserRole {
   updatedBy      String?
   show           Boolean?             @default(true)
   users          User[]
-  tenant         Tenant               @relation(fields: [tenantId], references: [id])
+  tenant         Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   rolePermission UserRolePermission[]
-
-  @@unique([name, tenantId])
 }
 
 model AppPermission {
@@ -93,8 +91,8 @@ model UserRolePermission {
   permissionId String
   assignedBy   String?
   assignedAt   DateTime      @default(now())
-  permission   AppPermission @relation(fields: [permissionId], references: [id])
-  role         UserRole      @relation(fields: [roleId], references: [id])
+  permission   AppPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role         UserRole      @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@unique([roleId, permissionId])
 }

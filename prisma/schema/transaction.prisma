@@ -19,7 +19,7 @@ model Payment {
   paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   paymentType     PaymentType   @relation(fields: [paymentTypeId], references: [id])
   rental          Rental        @relation(fields: [rentalId], references: [id])
-  tenant          Tenant        @relation(fields: [tenantId], references: [id])
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   transaction     Transactions?
 }
 

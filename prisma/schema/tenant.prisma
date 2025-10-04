@@ -9,7 +9,7 @@ model Tenant {
   updatedAt            DateTime?                  @updatedAt
   logo                 String?
   setupCompleted       Boolean                    @default(false)
-  financialYearStart   String                     @default("January")
+  financialYearStart    String                     @default("January")
   invoiceSequenceId    String?
   invoiceFootNotes     String                     @default("")
   storefrontEnabled    Boolean                    @default(false)
@@ -23,7 +23,6 @@ model Tenant {
   daysInMonth          Int                        @default(28)
   slug                 String?                    @unique
   merchantId           String?
-  additions            Addition[]
   address              Address?
   customers            Customer[]
   customerViolations   CustomerViolation[]
@@ -36,10 +35,10 @@ model Tenant {
   agreements           RentalAgreement[]
   charges              RentalCharge[]
   merchant             ShopDMMerchant?
-  cancellationPolicy   CancellationPolicy?        @relation(fields: [cancellationPolicyId], references: [id])
-  currency             Currency?                  @relation(fields: [currencyId], references: [id])
-  invoiceSequence      InvoiceSequence?           @relation(fields: [invoiceSequenceId], references: [id])
-  latePolicy           LatePolicy?                @relation(fields: [latePolicyId], references: [id])
+  cancellationPolicy   CancellationPolicy?        @relation(fields: [cancellationPolicyId], references: [id], onDelete: Cascade)
+  currency             Currency?                  @relation(fields: [currencyId], references: [id], onDelete: Cascade)
+  invoiceSequence      InvoiceSequence?           @relation(fields: [invoiceSequenceId], references: [id], onDelete: Cascade)
+  latePolicy           LatePolicy?                @relation(fields: [latePolicyId], references: [id], onDelete: Cascade)
   contacts             TenantContact[]
   currencyRates        TenantCurrencyRate[]
   equipment            TenantEquipment[]
@@ -82,7 +81,7 @@ model Address {
   updatedAt DateTime? @updatedAt
   country   Country   @relation(fields: [countryId], references: [id])
   state     State     @relation(fields: [stateId], references: [id])
-  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   village   Village   @relation(fields: [villageId], references: [id])
 }
 
@@ -102,7 +101,7 @@ model TenantLocation {
   createdAt           DateTime  @default(now())
   pickups             Rental[]  @relation("PickupLocation")
   returns             Rental[]  @relation("ReturnLocation")
-  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   vehicles            Vehicle[]
 }
 
@@ -118,7 +117,7 @@ model TenantInsurance {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime?   @updatedAt
   updatedBy   String?
-  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model TenantEquipment {
@@ -133,7 +132,7 @@ model TenantEquipment {
   updatedAt   DateTime?   @updatedAt
   updatedBy   String?
   equipment   Equipment   @relation(fields: [equipmentId], references: [id])
-  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model TenantService {
@@ -148,7 +147,7 @@ model TenantService {
   updatedAt   DateTime?   @updatedAt
   updatedBy   String?
   service     Service     @relation(fields: [serviceId], references: [id])
-  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model TenantSubscription {
@@ -163,7 +162,7 @@ model TenantSubscription {
   productId      String?
   payments       SubscriptionPayment[]
   plan           SubscriptionPlan?     @relation(fields: [productId], references: [productId])
-  tenant         Tenant                @relation(fields: [tenantId], references: [id])
+  tenant         Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model TenantContact {
@@ -176,7 +175,7 @@ model TenantContact {
   createdAt     DateTime            @default(now())
   updatedAt     DateTime?           @updatedAt
   contactType   ContactType         @relation(fields: [contactTypeId], references: [id])
-  tenant        Tenant              @relation(fields: [tenantId], references: [id])
+  tenant        Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   serviceLog    VehicleServiceLog[]
 }
 
@@ -190,7 +189,7 @@ model TenantReminders {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
   updatedBy   String?
-  tenant      Tenant    @relation(fields: [tenantId], references: [id])
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model TenantNotification {
@@ -204,7 +203,7 @@ model TenantNotification {
   read      Boolean              @default(false)
   createdAt DateTime             @default(now())
   isDeleted Boolean              @default(false)
-  tenant    Tenant               @relation(fields: [tenantId], references: [id])
+  tenant    Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model CancellationPolicy {
@@ -238,5 +237,5 @@ model TenantViolation {
   isDeleted          Boolean             @default(false)
   deletedAt          DateTime?
   customerViolations CustomerViolation[]
-  tenant             Tenant              @relation(fields: [tenantId], references: [id])
+  tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }

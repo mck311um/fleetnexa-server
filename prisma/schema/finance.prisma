@@ -3,7 +3,7 @@ model ShopDMMerchant {
   tenantId        String @unique
   merchant_handle String
   merchant_secret String
-  tenant          Tenant @relation(fields: [tenantId], references: [id])
+  tenant          Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model Currency {
@@ -28,7 +28,7 @@ model TenantCurrencyRate {
   fromRate   Float?    @default(0.0)
   toRate     Float?    @default(0.0)
   currency   Currency  @relation(fields: [currencyId], references: [id])
-  tenant     Tenant    @relation(fields: [tenantId], references: [id])
+  tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, currencyId])
 }
