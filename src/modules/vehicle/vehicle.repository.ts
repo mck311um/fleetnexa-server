@@ -90,6 +90,34 @@ class VehicleRepository {
               username: true,
             },
           },
+          transactions: {
+            include: {
+              customer: true,
+              payment: {
+                include: {
+                  paymentMethod: true,
+                  paymentType: true,
+                },
+              },
+              refund: true,
+              // user: {
+              //   select: {
+              //     firstName: true,
+              //     lastName: true,
+              //     username: true,
+              //   },
+              // },
+            },
+            orderBy: {
+              transactionDate: 'desc',
+            },
+          },
+          payments: {
+            include: {
+              paymentMethod: true,
+              paymentType: true,
+            },
+          },
         },
       },
       fuelType: true,
