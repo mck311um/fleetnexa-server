@@ -16,6 +16,7 @@ import { userRoleService } from '../user/modules/user-role/user-role.service';
 import { tenantViolationsService } from './modules/tenant-violation/tenant-violation.service';
 import { tenantCurrencyRatesService } from './modules/currency-rates/currency-rates.service';
 import { emailService } from '../email/email.service';
+import { tenantVendorService } from './modules/tenant-vendor/tenant-vendor.service';
 
 const getCurrentTenant = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -46,6 +47,7 @@ const getCurrentTenant = async (req: Request, res: Response) => {
       await tenantViolationsService.getTenantViolations(tenant);
     const currencyRates =
       await tenantCurrencyRatesService.getTenantCurrencyRates(tenant);
+    const vendors = await tenantVendorService.getTenantVendors(tenant);
 
     return res.status(200).json({
       tenant,
@@ -59,6 +61,7 @@ const getCurrentTenant = async (req: Request, res: Response) => {
       roles,
       violations,
       currencyRates,
+      vendors,
     });
   } catch (error) {
     logger.e(error, 'Failed to get tenant', {

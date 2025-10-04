@@ -116,11 +116,11 @@ model Village {
 }
 
 model MaintenanceService {
-  id              String                   @id @default(dbgenerated("gen_random_uuid()"))
-  service         String
-  description     String
-  serviceLog      VehicleServiceLog[]
-  serviceSchedule VehicleServiceSchedule[]
+  id                String                   @id @default(dbgenerated("gen_random_uuid()"))
+  service           String
+  description       String
+  serviceLog        VehicleServiceLog[]
+  serviceSchedule   VehicleServiceSchedule[]
 }
 
 model DocumentType {
@@ -178,4 +178,10 @@ model PaymentType {
   type        String
   description String
   payments    Payment[]
+}
+
+model VendorType {
+  id      String    @id @default(dbgenerated("gen_random_uuid()"))
+  type    String
+
 }

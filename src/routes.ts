@@ -15,9 +15,13 @@ import tenantViolationRoutes from './modules/tenant/modules/tenant-violation/ten
 import currencyRatesRoutes from './modules/tenant/modules/currency-rates/currency-rates.routes';
 import vehicleRoutes from './modules/vehicle/vehicle.routes';
 import vehicleDamageRoutes from './modules/vehicle/modules/vehicle-damage/damage.routes';
+import adminRoutes from './modules/admin/admin.routes';
+import tenantVendorRoutes from './modules/tenant/modules/tenant-vendor/tenant-vendor.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
+
+  app.use('/api/admin', adminRoutes);
 
   app.use('/api/email', emailRoutes);
   app.use('/api/transaction', transactionRoutes);
@@ -33,6 +37,7 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/tenant-extra', tenantExtraRoutes);
   app.use('/api/tenant-location', tenantLocationRoutes);
   app.use('/api/tenant-violation', tenantViolationRoutes);
+  app.use('/api/tenant-vendor', tenantVendorRoutes);
   app.use('/api/currency-rate', currencyRatesRoutes);
 
   app.use('/api/vehicle', vehicleRoutes);
