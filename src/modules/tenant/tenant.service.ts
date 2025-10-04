@@ -141,6 +141,7 @@ const updateTenant = async (data: UpdateTenantDto, tenant: Tenant) => {
           amount: data.cancellationPolicy?.amount || 0,
           policy: data.cancellationPolicy?.policy || 'fixed_amount',
           minimumDays: data.cancellationPolicy?.minimumDays || 0,
+          bookingMinimumDays: data.cancellationPolicy?.bookingMinimumDays || 0,
         },
         create: {
           tenantId: tenant.id,

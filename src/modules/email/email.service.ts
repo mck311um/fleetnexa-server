@@ -1,4 +1,4 @@
-import { TxClient } from '../../config/prisma.config';
+import prisma, { TxClient } from '../../config/prisma.config';
 import {
   BookingConfirmationEmailParams,
   VerifyBusinessEmailParams,
@@ -150,10 +150,9 @@ const newUserEmail = async (
   tenant: Tenant,
   userId: string,
   password: string,
-  tx: TxClient,
 ) => {
   try {
-    const user = await tx.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: userId },
     });
 
@@ -187,10 +186,9 @@ const resetPasswordEmail = async (
   tenant: Tenant,
   userId: string,
   password: string,
-  tx: TxClient,
 ) => {
   try {
-    const user = await tx.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: userId },
     });
 

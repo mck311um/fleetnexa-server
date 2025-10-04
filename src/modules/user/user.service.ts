@@ -7,44 +7,57 @@ import { CreateUserDto, UpdateUserDto, ChangePasswordDto } from './user.dto';
 import { UserRoleDto } from './modules/user-role/role.dto';
 import { v4 } from 'uuid';
 import { userRoleService } from './modules/user-role/user-role.service';
+import { User } from '@sentry/node';
 
 class UserService {
-  async createUser(data: CreateUserDto, tenant: Tenant, tx: TxClient) {
+  async createUser(data: CreateUserDto, tenant: Tenant) {
     try {
-      const emailExists = await tx.user.findUnique({
-        where: {
-          email: data.email,
-          tenantId: tenant.id,
-        },
+      const { user, password } = await prisma.$transaction(async (tx) => {
+        const emailExists = await tx.user.findUnique({
+          where: {
+            email: data.email,
+            tenantId: tenant.id,
+          },
+        });
+
+        if (emailExists) {
+          throw new Error('User email already exists');
+        }
+
+        const username = await generator.generateUserName(
+          data.firstName,
+          data.lastName,
+        );
+
+        const salt = await bcrypt.genSalt(10);
+        let hashedPassword = '';
+        let password = data.password;
+
+        if (data.password) {
+          hashedPassword = await bcrypt.hash(data.password, salt);
+        } else {
+          password = await generator.generateTempPassword(12);
+          hashedPassword = await bcrypt.hash(password, salt);
+        }
+
+        const user = await tx.user.create({
+          data: {
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            username,
+            password: hashedPassword,
+            tenantId: tenant.id,
+            requirePasswordChange: true,
+            roleId: data.roleId,
+            createdAt: new Date(),
+          },
+        });
+
+        return { user, password };
       });
 
-      if (emailExists) {
-        throw new Error('User email already exists');
-      }
-
-      const username = await generator.generateUserName(
-        data.firstName,
-        data.lastName,
-      );
-
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(data.password, salt);
-
-      const user = await tx.user.create({
-        data: {
-          email: data.email,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          username,
-          password: hashedPassword,
-          tenantId: tenant.id,
-          requirePasswordChange: true,
-          roleId: data.roleId,
-          createdAt: new Date(),
-        },
-      });
-
-      return { user };
+      return { user, password };
     } catch (error) {
       logger.e(error, 'Error creating user', {
         tenantId: tenant.id,
@@ -55,7 +68,59 @@ class UserService {
     }
   }
 
-  createOwner = async (data: CreateUserDto, tenant: Tenant) => {
+  updateUser = async (data: UpdateUserDto, tenant: Tenant) => {
+    try {
+      const user = await prisma.user.update({
+        where: {
+          id: data.id,
+          tenantId: tenant.id,
+        },
+        data: {
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          profilePicture: data.profilePicture,
+        },
+        include: {
+          role: {
+            include: {
+              rolePermission: {
+                include: {
+                  permission: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const userData = {
+        id: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        initials: `${user.firstName[0]}${user.lastName[0]}`,
+        fullName: `${user.firstName} ${user.lastName}`,
+        tenantId: user.tenantId,
+        createdAt: user.createdAt,
+        email: user.email,
+        profilePicture: user.profilePicture,
+        roleId: user.roleId,
+        requirePasswordChange: user.requirePasswordChange,
+        role: user.role,
+      };
+
+      return userData;
+    } catch (error) {
+      logger.e(error, 'Error creating user', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Error creating user');
+    }
+  };
+
+  async createOwner(data: CreateUserDto, tenant: Tenant) {
     try {
       const owner: UserRoleDto = {
         id: v4(),
@@ -74,7 +139,7 @@ class UserService {
         await userRoleService.assignAllPermissions(role, tx);
         data.roleId = role.id;
 
-        const { user } = await this.createUser(data, tenant, tx);
+        const { user } = await this.createUser(data, tenant);
         return { user, role };
       });
     } catch (error) {
@@ -84,7 +149,45 @@ class UserService {
       });
       throw new Error('Error creating owner role');
     }
-  };
+  }
+
+  async resetPassword(id: string, tenant: Tenant) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id,
+          tenantId: tenant.id,
+        },
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const password = await generator.generateTempPassword(12);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const updatedUser = await prisma.user.update({
+        where: {
+          id,
+          tenantId: tenant.id,
+        },
+        data: {
+          password: hashedPassword,
+        },
+      });
+
+      return { updatedUser, password };
+    } catch (error) {
+      logger.e(error, 'Error resetting password', {
+        userId: id,
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Error resetting password');
+    }
+  }
 }
 
 export const userService = new UserService();
@@ -155,67 +258,6 @@ const getCurrentUser = async (userId: string, tenant: Tenant) => {
   }
 };
 
-const updateUser = async (
-  data: UpdateUserDto,
-  tenant: Tenant,
-  userId: string,
-) => {
-  try {
-    const username = await generator.generateUserName(
-      data.firstName,
-      data.lastName,
-    );
-
-    const user = await prisma.user.update({
-      where: {
-        id: userId,
-        tenantId: tenant.id,
-      },
-      data: {
-        email: data.email,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        profilePicture: data.profilePicture,
-        username,
-      },
-      include: {
-        role: {
-          include: {
-            rolePermission: {
-              include: {
-                permission: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    const userData = {
-      id: user.id,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      initials: `${user.firstName[0]}${user.lastName[0]}`,
-      fullName: `${user.firstName} ${user.lastName}`,
-      tenantId: user.tenantId,
-      createdAt: user.createdAt,
-      email: user.email,
-      profilePicture: user.profilePicture,
-      roleId: user.roleId,
-      requirePasswordChange: user.requirePasswordChange,
-      role: user.role,
-    };
-
-    return userData;
-  } catch (error) {
-    logger.e(error, 'Error creating user', {
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-    throw new Error('Error creating user');
-  }
-};
 const deleteUser = async (id: string, tenant: Tenant, tx: TxClient) => {
   try {
     const user = await tx.user.findUnique({
@@ -291,48 +333,9 @@ const changePassword = async (
     });
   }
 };
-const resetPassword = async (id: string, tenant: Tenant, tx: TxClient) => {
-  try {
-    const user = await tx.user.findUnique({
-      where: {
-        id,
-        tenantId: tenant.id,
-      },
-    });
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const password = await generator.generateTempPassword(12);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const updatedUser = await tx.user.update({
-      where: {
-        id,
-        tenantId: tenant.id,
-      },
-      data: {
-        password: hashedPassword,
-      },
-    });
-
-    return { updatedUser, password };
-  } catch (error) {
-    logger.e(error, 'Error resetting password', {
-      userId: id,
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-    throw new Error('Error resetting password');
-  }
-};
 
 export default {
-  updateUser,
   deleteUser,
   getCurrentUser,
   changePassword,
-  resetPassword,
 };
