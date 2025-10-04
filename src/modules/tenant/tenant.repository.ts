@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { getISOWeek, getYear } from 'date-fns';
-import { TxClient } from '../../config/prisma.config';
+import prisma, { TxClient } from '../../config/prisma.config';
 
 class TenantRepository {
   async getTenantById(tenantId: string, tx: TxClient) {
@@ -10,8 +10,8 @@ class TenantRepository {
     });
   }
 
-  async getTenantByEmail(email: string, tx: TxClient) {
-    return tx.tenant.findFirst({
+  async getTenantByEmail(email: string) {
+    return prisma.tenant.findFirst({
       where: { email: email },
       include: this.getTenantIncludeOptions(),
     });

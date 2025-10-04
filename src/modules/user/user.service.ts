@@ -4,7 +4,90 @@ import generator from '../../services/generator.service';
 import bcrypt from 'bcrypt';
 import { logger } from '../../config/logger';
 import { CreateUserDto, UpdateUserDto, ChangePasswordDto } from './user.dto';
-import { User } from '@sentry/node';
+import { UserRoleDto } from './modules/user-role/role.dto';
+import { v4 } from 'uuid';
+import { userRoleService } from './modules/user-role/user-role.service';
+
+class UserService {
+  async createUser(data: CreateUserDto, tenant: Tenant, tx: TxClient) {
+    try {
+      const emailExists = await tx.user.findUnique({
+        where: {
+          email: data.email,
+          tenantId: tenant.id,
+        },
+      });
+
+      if (emailExists) {
+        throw new Error('User email already exists');
+      }
+
+      const username = await generator.generateUserName(
+        data.firstName,
+        data.lastName,
+      );
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(data.password, salt);
+
+      const user = await tx.user.create({
+        data: {
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          username,
+          password: hashedPassword,
+          tenantId: tenant.id,
+          requirePasswordChange: true,
+          roleId: data.roleId,
+          createdAt: new Date(),
+        },
+      });
+
+      return { user };
+    } catch (error) {
+      logger.e(error, 'Error creating user', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        email: data.email,
+      });
+      throw new Error('Error creating user');
+    }
+  }
+
+  createOwner = async (data: CreateUserDto, tenant: Tenant) => {
+    try {
+      const owner: UserRoleDto = {
+        id: v4(),
+        name: `Owner`,
+        description: 'Owner role with full access',
+        show: true,
+      };
+
+      return await prisma.$transaction(async (tx) => {
+        const role = await userRoleService.createUserRole(owner, tenant);
+
+        if (!role) {
+          throw new Error('Error creating owner role');
+        }
+
+        await userRoleService.assignAllPermissions(role, tx);
+        data.roleId = role.id;
+
+        const { user } = await this.createUser(data, tenant, tx);
+        return { user, role };
+      });
+    } catch (error) {
+      logger.e(error, 'Error creating owner role', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Error creating owner role');
+    }
+  };
+}
+
+export const userService = new UserService();
 
 const getCurrentUser = async (userId: string, tenant: Tenant) => {
   try {
@@ -71,81 +154,7 @@ const getCurrentUser = async (userId: string, tenant: Tenant) => {
     throw new Error('Error fetching current user');
   }
 };
-const createUser = async (
-  data: CreateUserDto,
-  tenant: Tenant,
-  tx: TxClient,
-  user: User,
-) => {
-  try {
-    const emailExists = await tx.user.findUnique({
-      where: {
-        email: data.email,
-      },
-    });
 
-    if (emailExists) {
-      throw new Error('Email already exists');
-    }
-
-    const username = await generator.generateUserName(
-      data.firstName,
-      data.lastName,
-    );
-
-    const salt = await bcrypt.genSalt(10);
-    const password = await generator.generateTempPassword(12);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await tx.user.create({
-      data: {
-        email: data.email,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        username,
-        password: hashedPassword,
-        tenantId: tenant.id,
-        requirePasswordChange: true,
-        roleId: data.roleId,
-      },
-    });
-
-    return { user, password };
-  } catch (error) {
-    logger.e(error, 'Error creating user', {
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-    throw new Error('Error creating user');
-  }
-};
-const createOwner = async (
-  data: CreateUserDto,
-  tenant: Tenant,
-  tx: TxClient,
-) => {
-  try {
-    // const owner: CreateRoleDto = {
-    //   name: 'Owner',
-    //   description: 'Owner role with full access',
-    //   show: true,
-    // };
-    // const role = await userRoleService.createUserRole(owner, tenant, user);
-    // if (!role) {
-    //   throw new Error('Error creating owner role');
-    // }
-    // await roleService.assignAllPermissions(role, tx);
-    // data.roleId = role.id;
-    // const { user, password } = await createUser(data, tenant, tx);
-    // return { user, password, role };
-  } catch (error) {
-    logger.e(error, 'Error creating owner role', {
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-    throw new Error('Error creating owner role');
-  }
-};
 const updateUser = async (
   data: UpdateUserDto,
   tenant: Tenant,
@@ -321,8 +330,6 @@ const resetPassword = async (id: string, tenant: Tenant, tx: TxClient) => {
 };
 
 export default {
-  createUser,
-  createOwner,
   updateUser,
   deleteUser,
   getCurrentUser,

@@ -27,7 +27,9 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('x-auth-token');
 
   if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
+    return res
+      .status(401)
+      .json({ message: 'No auth token, authorization denied' });
   }
 
   try {

@@ -1,13 +1,44 @@
 import { TxClient } from '../../config/prisma.config';
 import {
   BookingConfirmationEmailParams,
+  VerifyBusinessEmailParams,
   WelcomeEmailParams,
 } from '../../types/email';
 import formatter from '../../utils/formatter';
 import ses from '../../services/ses.service';
 import { logger } from '../../config/logger';
 import customerService from '../customer/customer.service';
-import { Tenant } from '@prisma/client';
+import { EmailVerification, Tenant } from '@prisma/client';
+
+class EmailService {
+  async sendBusinessVerificationEmail(
+    tenant: Tenant,
+    token: EmailVerification,
+  ) {
+    try {
+      const templateData: VerifyBusinessEmailParams = {
+        tenantName: tenant.tenantName,
+        email: tenant.email,
+        verificationCode: token.token,
+        timestamp: formatter.formatDateToFriendlyWithTime(token.expiresAt),
+      };
+
+      await ses.sendEmail({
+        to: [tenant.email || ''],
+        template: 'VerifyBusinessEmail',
+        templateData,
+      });
+    } catch (error) {
+      logger.e(error, 'Error sending business verification email', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw error;
+    }
+  }
+}
+
+export const emailService = new EmailService();
 
 const sendWelcomeEmail = async (
   tenant: Tenant,

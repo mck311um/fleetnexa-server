@@ -96,6 +96,15 @@ const generateTenantSlug = async (tenantName: string): Promise<string> => {
   let slug = '';
   slug = slugify(tenantName, { lower: true, strict: true });
 
+  const existingTenant = await prisma.tenant.findUnique({
+    where: { slug },
+  });
+
+  if (existingTenant) {
+    const randomSuffix = crypto.randomBytes(2).toString('hex');
+    slug = `${slug}-${randomSuffix}`;
+  }
+
   return slug;
 };
 
@@ -170,6 +179,11 @@ const generateTempPassword = (length = 12) => {
   return crypto.randomBytes(length).toString('base64').slice(0, length);
 };
 
+const generateVerificationCode = (): string => {
+  const code = Math.floor(100000 + Math.random() * 900000);
+  return code.toString();
+};
+
 export default {
   generateInvoiceNumber,
   generateRentalAgreementNumber,
@@ -179,4 +193,5 @@ export default {
   generateTenantCode,
   generateUserName,
   generateTempPassword,
+  generateVerificationCode,
 };

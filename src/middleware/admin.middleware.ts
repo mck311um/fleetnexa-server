@@ -19,7 +19,9 @@ export const admin = (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('x-auth-token');
 
   if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
+    return res
+      .status(401)
+      .json({ message: 'No admin token, authorization denied' });
   }
 
   try {

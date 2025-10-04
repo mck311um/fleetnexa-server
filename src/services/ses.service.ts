@@ -12,6 +12,7 @@ import {
   BookingConfirmationEmailParams,
   EmailTemplateParams,
   SendEmailParams,
+  VerifyBusinessEmailParams,
   WelcomeEmailParams,
 } from '../types/email';
 import {
@@ -25,7 +26,8 @@ const testRenderEmailTemplate = async (
   templateData:
     | WelcomeEmailParams
     | BookingConfirmationEmailParams
-    | BookingCompletedEmailParams,
+    | BookingCompletedEmailParams
+    | VerifyBusinessEmailParams,
 ) => {
   try {
     const command = new TestRenderTemplateCommand({
@@ -139,17 +141,18 @@ const createOrUpdateEmailTemplate = async (
       logger.i(`Template ${name} updated successfully`);
       return true;
     }
-
-    logger.i(`Template ${name} doesn't exist, creating it...`);
-    return await createEmailTemplate(templateParams);
-  } catch (error) {
-    logger.e(
-      error,
-      `Failed to create or update template ${templateParams.name}:`,
-    );
-
+  } catch (error: any) {
+    if (
+      error.name === 'TemplateDoesNotExistException' ||
+      error.Error?.Code === 'TemplateDoesNotExist'
+    ) {
+      logger.i(`Template ${name} doesn't exist, creating it...`);
+      return await createEmailTemplate(templateParams);
+    }
     throw error;
   }
+
+  return await createEmailTemplate(templateParams);
 };
 
 export default {

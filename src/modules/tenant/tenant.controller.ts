@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
-import service from './tenant.service';
+import service, { tenantService } from './tenant.service';
 import { logger } from '../../config/logger';
 import { CreateTenantSchema } from './dto/create-tenant.dto';
 import prisma from '../../config/prisma.config';
-import emailService from '../email/email.service';
-import { TenantViolationSchema, UpdateTenantDtoSchema } from './dto/tenant.dto';
+import { UpdateTenantDtoSchema } from './dto/tenant.dto';
 import { tenantRepo } from '../../repository/tenant.repository';
 import { tenantExtraService } from './modules/tenant-extras/tenant-extras.service';
 import { tenantLocationService } from './modules/tenant-location/tenant-location.service';
@@ -16,6 +15,7 @@ import { userRepo } from '../user/user.repository';
 import { userRoleService } from '../user/modules/user-role/user-role.service';
 import { tenantViolationsService } from './modules/tenant-violation/tenant-violation.service';
 import { tenantCurrencyRatesService } from './modules/currency-rates/currency-rates.service';
+import { emailService } from '../email/email.service';
 
 const getCurrentTenant = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -92,7 +92,7 @@ const getTenantById = async (req: Request, res: Response) => {
 };
 
 const createTenant = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
 
   if (!data) {
     logger.w('Tenant data is missing');
@@ -110,28 +110,18 @@ const createTenant = async (req: Request, res: Response) => {
   const tenantDto = parseResult.data;
 
   try {
-    // const tenant = await prisma.$transaction(
-    //   async (tx) => {
-    //     const { tenant, user, password } = await service.createTenant(
-    //       tenantDto,
-    //       tx,
-    //     );
-    //     await emailService.sendWelcomeEmail(
-    //       tenant,
-    //       user.username,
-    //       password,
-    //       `${tenantDto.firstName} ${tenantDto.lastName}`,
-    //     );
-    //     return tenant;
-    //   },
-    //   { timeout: 20000 },
-    // );
-    // return res.status(201).json({
-    //   message: 'Tenant created successfully',
-    //   tenantId: tenant.id,
-    //   tenantCode: tenant.tenantCode,
-    //   tenantName: tenant.tenantName,
-    // });
+    const { tenant, token } = await tenantService.createTenant(tenantDto);
+
+    if (typeof token !== 'string') {
+      await emailService.sendBusinessVerificationEmail(tenant, token);
+    }
+
+    return res.status(201).json({
+      message: 'Tenant created successfully',
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+      tenantName: tenant.tenantName,
+    });
   } catch (error) {
     logger.e(error, 'Failed to create tenant', {
       email: tenantDto.email,
@@ -140,6 +130,7 @@ const createTenant = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Failed to create tenant' });
   }
 };
+
 const updateTenant = async (req: Request, res: Response) => {
   const { data } = req.body;
   const tenantId = req.user?.tenantId;
@@ -197,6 +188,5 @@ export default {
   getCurrentTenant,
   getTenantById,
   createTenant,
-
   updateTenant,
 };

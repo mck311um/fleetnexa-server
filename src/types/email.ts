@@ -3,7 +3,8 @@ type EmailTemplate =
   | 'BookingConfirmation'
   | 'BookingCompleted'
   | 'NewUser'
-  | 'PasswordReset';
+  | 'PasswordReset'
+  | 'VerifyBusinessEmail';
 
 export interface SendEmailParams {
   to: string[];
@@ -12,7 +13,8 @@ export interface SendEmailParams {
   templateData:
     | WelcomeEmailParams
     | BookingConfirmationEmailParams
-    | BookingCompletedEmailParams;
+    | BookingCompletedEmailParams
+    | VerifyBusinessEmailParams;
   from?: string;
 }
 
@@ -55,4 +57,11 @@ export interface BookingCompletedEmailParams {
   phone: string;
   vehicle: string;
   email: string;
+}
+
+export interface VerifyBusinessEmailParams {
+  tenantName: string;
+  email: string;
+  verificationCode: string;
+  timestamp: string;
 }

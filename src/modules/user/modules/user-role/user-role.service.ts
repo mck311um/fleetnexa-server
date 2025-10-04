@@ -60,18 +60,17 @@ class UserRoleService {
     }
   }
 
-  async createUserRole(data: UserRoleDto, tenant: Tenant, user: User) {
+  async createUserRole(data: UserRoleDto, tenant: Tenant) {
     try {
       const existingRole = await prisma.userRole.findFirst({
         where: { name: data.name, tenantId: tenant.id },
       });
 
       if (existingRole) {
-        if (existingRole.isDeleted) {
-          throw new Error(
-            'Role with this name was previously deleted. Please choose a different name.',
-          );
-        }
+        logger.i('Role with this name already exists', {
+          tenantId: existingRole.tenantId,
+          roleName: existingRole.name,
+        });
         throw new Error('Role with this name already exists');
       }
 
@@ -83,7 +82,6 @@ class UserRoleService {
           tenantId: tenant.id,
           createdAt: new Date(),
           updatedAt: new Date(),
-          updatedBy: user.username,
         },
       });
 
@@ -206,6 +204,26 @@ class UserRoleService {
       throw new Error('Error assigning permissions to role');
     }
   }
+
+  async assignAllPermissions(role: UserRole, tx: TxClient) {
+    try {
+      if (!role) {
+        throw new Error('Role  is required to assign permissions');
+      }
+
+      const permissions = await tx.appPermission.findMany();
+
+      await tx.userRolePermission.createMany({
+        data: permissions.map((perm) => ({
+          roleId: role.id,
+          permissionId: perm.id,
+        })),
+      });
+    } catch (error) {
+      logger.e(error, 'Error assigning permissions to role', { role });
+      throw new Error('Error assigning permissions to role');
+    }
+  }
 }
 
 export const userRoleService = new UserRoleService();
@@ -288,29 +306,8 @@ const createSuperAdminRole = async (tenant: Tenant, tx: TxClient) => {
   }
 };
 
-const assignAllPermissions = async (role: UserRole, tx: TxClient) => {
-  try {
-    if (!role) {
-      throw new Error('Role  is required to assign permissions');
-    }
-
-    const permissions = await tx.appPermission.findMany();
-
-    await tx.userRolePermission.createMany({
-      data: permissions.map((perm) => ({
-        roleId: role.id,
-        permissionId: perm.id,
-      })),
-    });
-  } catch (error) {
-    logger.e(error, 'Error assigning permissions to role', { role });
-    throw new Error('Error assigning permissions to role');
-  }
-};
-
 export default {
   deleteRole,
   getTenantRoles,
   createSuperAdminRole,
-  assignAllPermissions,
 };
