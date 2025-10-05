@@ -14,7 +14,6 @@ const getTransactions = async (
         tenantId: tenantId,
       },
       include: {
-        customer: true,
         rental: {
           select: {
             rentalNumber: true,
@@ -22,6 +21,7 @@ const getTransactions = async (
         },
         payment: {
           include: {
+            customer: true,
             paymentMethod: true,
             paymentType: true,
             rental: {
@@ -150,7 +150,6 @@ const addRentalPayment = async (
           amount: payment.amount,
           type: 'PAYMENT',
           transactionDate: payment.paymentDate,
-          customerId: payment.customerId,
           createdBy: userId,
           createdAt: new Date(),
           paymentId: payment.id,
@@ -264,7 +263,6 @@ const addRefundPayment = async (
           amount: -refund.amount,
           type: 'REFUND',
           transactionDate: refund.paymentDate,
-          customerId: refund.customerId,
           createdBy: userId,
           createdAt: new Date(),
           tenantId: tenantId,

@@ -73,9 +73,9 @@ class BookingRepository {
       },
       transactions: {
         include: {
-          customer: true,
           payment: {
             include: {
+              customer: true,
               paymentMethod: true,
               paymentType: true,
             },

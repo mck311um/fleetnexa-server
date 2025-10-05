@@ -2,124 +2,104 @@ import { Tenant, TransactionType, User } from '@prisma/client';
 import { logger } from '../../config/logger';
 import prisma, { TxClient } from '../../config/prisma.config';
 import { PaymentDto } from './dto/create-payment.dto';
+import { TransactionDto } from './transaction.dto';
+import { transactionRepo } from './transaction.repository';
 
 class TransactionService {
-  async createPayment(data: PaymentDto, tenant: Tenant, user: User) {
+  async getTenantTransactions(tenant: Tenant) {
     try {
-      await prisma.$transaction(async (tx) => {
-        const existingBooking = await tx.rental.findUnique({
-          where: { id: data.bookingId },
-        });
+      const transactions = await transactionRepo.getTransactions(tenant.id);
+      return transactions;
+    } catch (error) {
+      logger.e(error, 'Failed to fetch tenant transactions', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw error;
+    }
+  }
 
-        if (!existingBooking) {
-          throw new Error('Booking not found');
-        }
-
-        await tx.payment.create({
+  async createTransaction(data: TransactionDto, tenant: Tenant, user: User) {
+    try {
+      await prisma.$transaction(async (tx: TxClient) => {
+        await tx.transactions.create({
           data: {
             id: data.id,
             amount: data.amount,
-            tenantId: tenant.id,
-            rentalId: data.bookingId,
-            paymentDate: data.paymentDate,
-            notes: data.notes,
-            paymentTypeId: data.paymentTypeId,
-            paymentMethodId: data.paymentMethodId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            customerId: data.customerId,
-          },
-        });
-
-        await tx.transactions.create({
-          data: {
-            amount: data.amount,
-            type: TransactionType.PAYMENT,
-            transactionDate: data.paymentDate,
-            customerId: data.customerId,
+            type: data.type,
+            transactionDate: data.transactionDate,
             createdBy: user.id,
-            paymentId: data.id,
+            paymentId: data.paymentId,
+            refundId: data.refundId,
+            expenseId: data.expenseId,
             tenantId: tenant.id,
-            rentalId: data.bookingId,
           },
         });
       });
     } catch (error) {
-      logger.e(error, 'Failed to create payment transaction', {
+      logger.e(error, 'Failed to create transaction', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
-        bookingId: data.bookingId,
+        type: data.type,
         amount: data.amount,
       });
       throw error;
     }
   }
 
-  async updatePayment(data: PaymentDto, tenant: Tenant, user: User) {
+  async updateTransaction(data: TransactionDto, tenant: Tenant, user: User) {
     try {
-      await prisma.$transaction(async (tx) => {
-        const existingPayment = await tx.payment.findUnique({
+      await prisma.$transaction(async (tx: TxClient) => {
+        const existingTransaction = await tx.transactions.findUnique({
           where: { id: data.id },
         });
-
-        if (!existingPayment) {
-          throw new Error('Payment not found');
+        if (!existingTransaction) {
+          throw new Error('Transaction not found');
         }
-
-        await tx.payment.update({
+        await tx.transactions.update({
           where: { id: data.id },
           data: {
             amount: data.amount,
-            paymentDate: data.paymentDate,
-            notes: data.notes,
-            paymentTypeId: data.paymentTypeId,
-            paymentMethodId: data.paymentMethodId,
+            transactionDate: data.transactionDate,
             updatedAt: new Date(),
+            updatedBy: user.username,
           },
-        });
-
-        await tx.transactions.updateMany({
-          where: { paymentId: data.id },
-          data: { amount: data.amount },
         });
       });
     } catch (error) {
-      logger.e(error, 'Failed to update payment transaction', {
+      logger.e(error, 'Failed to update transaction', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
-        bookingId: data.bookingId,
+        transactionId: data.id,
         amount: data.amount,
       });
       throw error;
     }
   }
 
-  async deletePayment(paymentId: string, tenant: Tenant, user: User) {
+  async deleteTransaction(transactionId: string, tenant: Tenant, user: User) {
     try {
-      await prisma.$transaction(async (tx) => {
-        const existingPayment = await tx.payment.findUnique({
-          where: { id: paymentId },
+      await prisma.$transaction(async (tx: TxClient) => {
+        const existingTransaction = await tx.transactions.findUnique({
+          where: { id: transactionId },
         });
-
-        if (!existingPayment) {
-          throw new Error('Payment not found');
+        if (!existingTransaction) {
+          throw new Error('Transaction not found');
         }
-
-        await tx.payment.update({
-          where: { id: paymentId },
-          data: { isDeleted: true, deletedAt: new Date() },
-        });
-
-        await tx.transactions.updateMany({
-          where: { paymentId },
-          data: { isDeleted: true, deletedAt: new Date() },
+        await tx.transactions.update({
+          where: { id: transactionId },
+          data: {
+            isDeleted: true,
+            updatedAt: new Date(),
+            updatedBy: user.username,
+          },
         });
       });
     } catch (error) {
-      logger.e(error, 'Failed to delete payment transaction', {
+      logger.e(error, 'Failed to delete transaction', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
-        paymentId,
+        transactionId,
       });
       throw error;
     }
@@ -129,36 +109,32 @@ class TransactionService {
 export const transactionService = new TransactionService();
 
 const deleteBookingTransaction = async (bookingId: string, tx: TxClient) => {
-  try {
-    const booking = await tx.rental.findUnique({
-      where: { id: bookingId },
-    });
-
-    if (!booking) {
-      logger.e('Booking not found', 'Failed to delete booking');
-      return;
-    }
-
-    await tx.transactions.updateMany({
-      where: { rentalId: bookingId },
-      data: { isDeleted: true, deletedAt: new Date() },
-    });
-
-    await tx.payment.updateMany({
-      where: { rentalId: bookingId },
-      data: { isDeleted: true, deletedAt: new Date() },
-    });
-
-    await tx.refund.updateMany({
-      where: { rentalId: bookingId },
-      data: { isDeleted: true, deletedAt: new Date() },
-    });
-  } catch (error) {
-    logger.e(error, 'Failed to delete booking', {
-      bookingId,
-    });
-    throw error;
-  }
+  // try {
+  //   const booking = await tx.rental.findUnique({
+  //     where: { id: bookingId },
+  //   });
+  //   if (!booking) {
+  //     logger.e('Booking not found', 'Failed to delete booking');
+  //     return;
+  //   }
+  //   await tx.transactions.updateMany({
+  //     where: { rentalId: bookingId },
+  //     data: { isDeleted: true, deletedAt: new Date() },
+  //   });
+  //   await tx.payment.updateMany({
+  //     where: { rentalId: bookingId },
+  //     data: { isDeleted: true, deletedAt: new Date() },
+  //   });
+  //   await tx.refund.updateMany({
+  //     where: { rentalId: bookingId },
+  //     data: { isDeleted: true, deletedAt: new Date() },
+  //   });
+  // } catch (error) {
+  //   logger.e(error, 'Failed to delete booking', {
+  //     bookingId,
+  //   });
+  //   throw error;
+  // }
 };
 
 export default {

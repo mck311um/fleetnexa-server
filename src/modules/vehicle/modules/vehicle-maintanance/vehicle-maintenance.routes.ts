@@ -8,6 +8,7 @@ router.get('/', auth, controller.getScheduledMaintenances);
 router.get('/:id', auth, controller.getVehicleMaintenances);
 
 router.post('/', auth, controller.addVehicleMaintenance);
+router.post('/complete', auth, controller.completeVehicleMaintenance);
 
 router.put('/', auth, controller.updateVehicleMaintenance);
 

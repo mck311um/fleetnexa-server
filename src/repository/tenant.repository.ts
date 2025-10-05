@@ -76,9 +76,9 @@ class TenantRepository {
       transactions: {
         where: { isDeleted: false },
         include: {
-          customer: true,
           payment: {
             include: {
+              customer: true,
               paymentMethod: true,
               paymentType: true,
             },

@@ -18,7 +18,6 @@ class TransactionRepository {
 
   private getTransactionIncludeOptions(): Prisma.TransactionsInclude {
     return {
-      customer: true,
       rental: {
         select: {
           rentalNumber: true,
@@ -26,6 +25,7 @@ class TransactionRepository {
       },
       payment: {
         include: {
+          customer: true,
           paymentMethod: true,
           paymentType: true,
           rental: {

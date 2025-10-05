@@ -54,8 +54,8 @@ model Vehicle {
   serviceLogs        VehicleServiceLog[]
   scheduledServices  VehicleServiceSchedule[]
   features           VehicleFeature[]         @relation("VehicleToVehicleFeature")
-
   scheduledMaintenance VehicleMaintenance[]
+  expenses            Expense[]
 }
 
 model VehicleDiscount {

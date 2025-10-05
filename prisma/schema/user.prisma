@@ -17,9 +17,10 @@ model User {
   requirePasswordChange Boolean          @default(true)
   rentals               Rental[]
   rentalActivity        RentalActivity[]
-  transactions          Transactions[]
   role                  UserRole?        @relation(fields: [roleId], references: [id], onDelete: Cascade)
   tenant                Tenant?          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  expenses              Expense[]
+
 
   @@unique([username, tenantId])
 }

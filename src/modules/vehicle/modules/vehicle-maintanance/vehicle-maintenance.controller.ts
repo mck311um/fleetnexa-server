@@ -150,10 +150,45 @@ const deleteVehicleMaintenance = async (req: Request, res: Response) => {
   }
 };
 
+const completeVehicleMaintenance = async (req: Request, res: Response) => {
+  const data = req.body;
+  const { tenant, user } = req.context!;
+
+  const maintenanceDto =
+    await vehicleMaintenanceService.validateMaintenanceData(data);
+
+  try {
+    await vehicleMaintenanceService.completeVehicleMaintenance(
+      maintenanceDto,
+      tenant,
+      user,
+    );
+
+    const vehicle = await vehicleRepo.getVehicleById(data.vehicleId, tenant.id);
+    const vehicles = await vehicleRepo.getVehicles(tenant.id);
+    const scheduledMaintenances =
+      await vehicleMaintenanceService.getTenantMaintenanceServices(tenant);
+
+    res.status(200).json({
+      message: 'Vehicle maintenance completed successfully',
+      vehicles,
+      vehicle,
+      scheduledMaintenances,
+    });
+  } catch (error) {
+    logger.e(error, 'Failed to complete vehicle maintenance', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+    });
+    res.status(500).json({ error: 'Failed to complete vehicle maintenance' });
+  }
+};
+
 export default {
   getScheduledMaintenances,
   getVehicleMaintenances,
   addVehicleMaintenance,
   updateVehicleMaintenance,
   deleteVehicleMaintenance,
+  completeVehicleMaintenance,
 };

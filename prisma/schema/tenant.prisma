@@ -64,6 +64,7 @@ model Tenant {
   emailTokens          EmailVerification[]
   vendors              TenantVendor[]
   maintenance          VehicleMaintenance[]
+  expenses              Expense[]
 }
 
 model EmailVerification {
@@ -273,4 +274,5 @@ model TenantVendor {
 
   tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   vehicleMaintenance  VehicleMaintenance[]
+  expenses            Expense[]
 }

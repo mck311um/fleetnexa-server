@@ -18,6 +18,7 @@ model Customer {
   tenant         Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   address        CustomerAddress?
   documents      CustomerDocument?
+
   apps           CustomerMessengerApp[]
   violations     CustomerViolation[]
   license        DriverLicense?
@@ -28,7 +29,6 @@ model Customer {
   agreements     RentalAgreement[]
   charges        RentalCharge[]
   drivers        RentalDriver[]
-  transactions   Transactions[]
   damages        VehicleDamage[]
 }
 

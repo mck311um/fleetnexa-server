@@ -17,7 +17,9 @@ import vehicleRoutes from './modules/vehicle/vehicle.routes';
 import vehicleDamageRoutes from './modules/vehicle/modules/vehicle-damage/damage.routes';
 import adminRoutes from './modules/admin/admin.routes';
 import tenantVendorRoutes from './modules/tenant/modules/tenant-vendor/tenant-vendor.routes';
+import paymentRoutes from './modules/transaction/modules/payment/payment.routes';
 import vehicleMaintenanceRoutes from './modules/vehicle/modules/vehicle-maintanance/vehicle-maintenance.routes';
+import expenseRoutes from './modules/transaction/modules/expense/expense.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
@@ -25,9 +27,12 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/admin', adminRoutes);
 
   app.use('/api/email', emailRoutes);
-  app.use('/api/transaction', transactionRoutes);
   app.use('/api/storage', storageRoutes);
   app.use('/api/auth', authRoutes);
+
+  app.use('/api/transaction', transactionRoutes);
+  app.use('/api/payment', paymentRoutes);
+  app.use('/api/expense', expenseRoutes);
 
   app.use('/api/user', userRoutes);
   app.use('/api/user-role', roleRoutes);

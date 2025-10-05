@@ -93,6 +93,7 @@ enum TransactionType {
   RENTAL
   REFUND
   PAYMENT
+  EXPENSE
 }
 
 enum NotificationPriority {

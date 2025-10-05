@@ -5,6 +5,8 @@ import {
   VehicleMaintenanceSchema,
 } from './vehicle-maintenance.dto';
 import prisma from '../../../../config/prisma.config';
+import { ExpenseDto } from '../../../transaction/modules/expense/expense.dto';
+import { expenseService } from '../../../transaction/modules/expense/expense.service';
 
 class VehicleMaintenanceService {
   async validateMaintenanceData(data: any) {
@@ -165,6 +167,53 @@ class VehicleMaintenanceService {
         tenantCode: tenant.tenantCode,
       });
       throw new Error('Could not delete vehicle maintenance');
+    }
+  }
+
+  async completeVehicleMaintenance(
+    data: VehicleMaintenanceDto,
+    tenant: Tenant,
+    user: User,
+  ) {
+    try {
+      const existingRecord = await prisma.vehicleMaintenance.findUnique({
+        where: { id: data.id },
+      });
+
+      if (!existingRecord) {
+        throw new Error('Vehicle maintenance record not found');
+      }
+
+      await prisma.vehicleMaintenance.update({
+        where: { id: data.id },
+        data: {
+          status: 'COMPLETED',
+          endDate: new Date(data.endDate),
+          cost: data.cost,
+          updatedAt: new Date(),
+          updatedBy: user.username,
+        },
+      });
+
+      if (data.recordExpense) {
+        const expense: ExpenseDto = {
+          id: data.id,
+          vehicleId: data.vehicleId,
+          vendorId: data.vendorId,
+          amount: data.cost,
+          expenseDate: data.expenseDate
+            ? new Date(data.expenseDate).toISOString()
+            : new Date().toISOString(),
+        };
+
+        await expenseService.createExpense(expense, tenant, user);
+      }
+    } catch (error) {
+      logger.e(error, 'Error completing vehicle maintenance', {
+        teatId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Could not complete vehicle maintenance');
     }
   }
 }
