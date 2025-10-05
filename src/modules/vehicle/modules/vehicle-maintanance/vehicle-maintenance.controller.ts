@@ -57,10 +57,13 @@ const addVehicleMaintenance = async (req: Request, res: Response) => {
       user,
     );
 
+    const scheduledMaintenances =
+      await vehicleMaintenanceService.getTenantMaintenanceServices(tenant);
     const vehicle = await vehicleRepo.getVehicleById(data.vehicleId, tenant.id);
     const vehicles = await vehicleRepo.getVehicles(tenant.id);
     res.status(201).json({
       message: 'Vehicle maintenance added successfully',
+      scheduledMaintenances,
       vehicle,
       vehicles,
     });
@@ -89,11 +92,14 @@ const updateVehicleMaintenance = async (req: Request, res: Response) => {
 
     const vehicle = await vehicleRepo.getVehicleById(data.vehicleId, tenant.id);
     const vehicles = await vehicleRepo.getVehicles(tenant.id);
+    const scheduledMaintenances =
+      await vehicleMaintenanceService.getTenantMaintenanceServices(tenant);
 
     res.status(200).json({
       message: 'Vehicle maintenance updated successfully',
       vehicles,
       vehicle,
+      scheduledMaintenances,
     });
   } catch (error) {
     logger.e(error, 'Failed to update vehicle maintenance', {
@@ -125,11 +131,14 @@ const deleteVehicleMaintenance = async (req: Request, res: Response) => {
 
     const vehicle = await vehicleRepo.getVehicleById(vehicleId, tenant.id);
     const vehicles = await vehicleRepo.getVehicles(tenant.id);
+    const scheduledMaintenances =
+      await vehicleMaintenanceService.getTenantMaintenanceServices(tenant);
 
     res.status(200).json({
       message: 'Vehicle maintenance deleted successfully',
       vehicles,
       vehicle,
+      scheduledMaintenances,
     });
   } catch (error) {
     logger.e(error, 'Failed to delete vehicle maintenance', {
