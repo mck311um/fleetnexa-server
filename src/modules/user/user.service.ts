@@ -5,9 +5,8 @@ import bcrypt from 'bcrypt';
 import { logger } from '../../config/logger';
 import { CreateUserDto, UpdateUserDto, ChangePasswordDto } from './user.dto';
 import { UserRoleDto } from './modules/user-role/role.dto';
-import { v4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { userRoleService } from './modules/user-role/user-role.service';
-import { User } from '@sentry/node';
 
 class UserService {
   async createUser(data: CreateUserDto, tenant: Tenant) {
@@ -123,7 +122,7 @@ class UserService {
   async createOwner(data: CreateUserDto, tenant: Tenant) {
     try {
       const owner: UserRoleDto = {
-        id: v4(),
+        id: uuidv4(),
         name: `Owner`,
         description: 'Owner role with full access',
         show: true,

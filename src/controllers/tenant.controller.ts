@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { tenantRepo } from '../repository/tenant.repository';
 import prisma from '../config/prisma.config';
-import crypto from 'crypto';
 import generator from '../services/generator.service';
 import bcrypt from 'bcrypt';
 import emailService from '../services/ses.service';
 import { WelcomeEmailParams } from '../types/email';
 import { logger } from '../config/logger';
-import { v4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 const getTenantRentalActivity = async (
   req: Request,
@@ -250,7 +249,7 @@ const updateTenant = async (
           if (currency.id === body.currencyId) {
             await tx.tenantCurrencyRate.create({
               data: {
-                id: v4(),
+                id: uuidv4(),
                 tenantId: tenantId!,
                 currencyId: currency.id,
                 enabled: true,
@@ -262,7 +261,7 @@ const updateTenant = async (
           } else {
             await tx.tenantCurrencyRate.create({
               data: {
-                id: v4(),
+                id: uuidv4(),
                 tenantId: tenantId!,
                 currencyId: currency.id,
                 enabled: false,

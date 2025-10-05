@@ -41,7 +41,7 @@ const pino_1 = __importDefault(require("pino"));
 const Sentry = __importStar(require("@sentry/node"));
 Sentry.init({
     dsn: process.env.SENTRY_DSN,
-    environment: process.env.NODE_ENV || 'development',
+    environment: process.env.ENVIRONMENT || 'development',
     tracesSampleRate: 1.0,
     sendDefaultPii: true,
 });

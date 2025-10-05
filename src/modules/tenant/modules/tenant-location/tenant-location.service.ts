@@ -2,7 +2,7 @@ import { Country, Tenant, User } from '@prisma/client';
 import prisma from '../../../../config/prisma.config';
 import { TenantLocationDto } from './tenant-location.dto';
 import { logger } from '../../../../config/logger';
-import v4 from 'uuid/dist/cjs/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 class TenantLocationService {
   async initializeTenantLocations(country: Country, tenant: Tenant) {
@@ -14,7 +14,7 @@ class TenantLocationService {
 
         await tx.tenantLocation.create({
           data: {
-            id: v4(),
+            id: uuidv4(),
             location: 'Main Office',
             tenantId: tenant.id,
             pickupEnabled: true,
@@ -31,7 +31,7 @@ class TenantLocationService {
         for (const location of presetLocations) {
           await tx.tenantLocation.create({
             data: {
-              id: v4(),
+              id: uuidv4(),
               location: location.location,
               tenantId: tenant.id,
               pickupEnabled: true,
