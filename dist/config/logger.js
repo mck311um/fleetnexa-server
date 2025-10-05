@@ -45,12 +45,10 @@ Sentry.init({
     tracesSampleRate: 1.0,
     sendDefaultPii: true,
 });
-const transport = process.env.NODE_ENV === 'development'
-    ? pino_1.default.transport({
-        target: 'pino-pretty',
-        options: { colorize: true, translateTime: 'SYS:standard' },
-    })
-    : undefined;
+const transport = pino_1.default.transport({
+    target: 'pino-pretty',
+    options: { colorize: true, translateTime: 'SYS:standard' },
+});
 const pinoLogger = transport
     ? (0, pino_1.default)({
         level: process.env.LOG_LEVEL || 'info',
@@ -69,8 +67,6 @@ exports.logger = {
     },
     e: (error, message = 'Error occurred', meta) => {
         pinoLogger.error({ err: error, ...meta }, message);
-        if (process.env.NODE_ENV === 'production') {
-            Sentry.captureException(error instanceof Error ? error : new Error(String(error)), { extra: meta });
-        }
+        Sentry.captureException(error instanceof Error ? error : new Error(String(error)), { extra: meta });
     },
 };
