@@ -141,7 +141,9 @@ model VehicleMaintenance {
   startDate          DateTime
   endDate            DateTime
   cost               Float
+  status             MaintenanceStatus   @default(SCHEDULED)
   isDeleted          Boolean             @default(false)
+  tenantId           String?
  
   createdAt          DateTime            @default(now())
   updatedAt          DateTime?           @updatedAt
@@ -151,6 +153,7 @@ model VehicleMaintenance {
   maintenance        MaintenanceService  @relation(fields: [serviceId], references: [id])
   vehicle            Vehicle             @relation(fields: [vehicleId], references: [id])
   vendor             TenantVendor?       @relation(fields: [vendorId], references: [id])
+  tenant             Tenant?             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 

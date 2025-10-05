@@ -3,6 +3,25 @@ import { logger } from '../../../../config/logger';
 import { vehicleMaintenanceService } from './vehicle-maintenance.service';
 import { vehicleRepo } from '../../vehicle.repository';
 
+const getScheduledMaintenances = async (req: Request, res: Response) => {
+  const { tenant } = req.context!;
+
+  try {
+    const maintenances =
+      await vehicleMaintenanceService.getTenantMaintenanceServices(tenant);
+
+    return res.status(200).json(maintenances);
+  } catch (error) {
+    logger.e(error, 'Failed to get scheduled maintenances', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+    });
+    return res
+      .status(500)
+      .json({ message: 'Failed to get scheduled maintenances' });
+  }
+};
+
 const getVehicleMaintenances = async (req: Request, res: Response) => {
   const { tenant } = req.context!;
   const { id } = req.params;
@@ -123,6 +142,7 @@ const deleteVehicleMaintenance = async (req: Request, res: Response) => {
 };
 
 export default {
+  getScheduledMaintenances,
   getVehicleMaintenances,
   addVehicleMaintenance,
   updateVehicleMaintenance,

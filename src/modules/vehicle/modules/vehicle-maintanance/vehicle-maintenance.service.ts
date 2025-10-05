@@ -20,6 +20,33 @@ class VehicleMaintenanceService {
     return safeParse.data;
   }
 
+  async getTenantMaintenanceServices(tenant: Tenant) {
+    try {
+      const services = await prisma.vehicleMaintenance.findMany({
+        where: { tenantId: tenant.id },
+        include: {
+          maintenance: true,
+          vendor: true,
+          vehicle: {
+            select: {
+              id: true,
+              brand: true,
+              model: true,
+              year: true,
+              licensePlate: true,
+            },
+          },
+        },
+      });
+      return services;
+    } catch (error) {
+      logger.e(error, 'Error fetching tenant maintenance services', {
+        tenantId: tenant.id,
+      });
+      throw new Error('Could not fetch tenant maintenance services');
+    }
+  }
+
   async getVehicleMaintenances(vehicleId: string) {
     try {
       const maintenances = await prisma.vehicleMaintenance.findMany({
@@ -27,6 +54,15 @@ class VehicleMaintenanceService {
         include: {
           maintenance: true,
           vendor: true,
+          vehicle: {
+            select: {
+              id: true,
+              brand: true,
+              model: true,
+              year: true,
+              licensePlate: true,
+            },
+          },
         },
         orderBy: { startDate: 'desc' },
       });
@@ -52,6 +88,7 @@ class VehicleMaintenanceService {
           startDate: new Date(data.startDate),
           endDate: new Date(data.endDate),
           cost: data.cost,
+          tenantId: tenant.id,
         },
       });
     } catch (error) {
@@ -88,6 +125,8 @@ class VehicleMaintenanceService {
           cost: data.cost,
           updatedAt: new Date(),
           updatedBy: user.username,
+          status: data.status || existingRecord.status,
+          tenantId: tenant.id,
         },
       });
     } catch (error) {

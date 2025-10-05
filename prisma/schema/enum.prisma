@@ -58,6 +58,13 @@ enum RentalStatus {
   EXPIRED
 }
 
+enum MaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
 enum RentalAction {
   BOOKED
   CANCELED

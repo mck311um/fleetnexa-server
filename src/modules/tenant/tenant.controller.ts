@@ -17,6 +17,7 @@ import { tenantViolationsService } from './modules/tenant-violation/tenant-viola
 import { tenantCurrencyRatesService } from './modules/currency-rates/currency-rates.service';
 import { emailService } from '../email/email.service';
 import { tenantVendorService } from './modules/tenant-vendor/tenant-vendor.service';
+import { vehicleMaintenanceService } from '../vehicle/modules/vehicle-maintanance/vehicle-maintenance.service';
 
 const getCurrentTenant = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -48,6 +49,8 @@ const getCurrentTenant = async (req: Request, res: Response) => {
     const currencyRates =
       await tenantCurrencyRatesService.getTenantCurrencyRates(tenant);
     const vendors = await tenantVendorService.getTenantVendors(tenant);
+    const scheduledMaintenances =
+      await vehicleMaintenanceService.getTenantMaintenanceServices(tenant);
 
     return res.status(200).json({
       tenant,
@@ -57,6 +60,7 @@ const getCurrentTenant = async (req: Request, res: Response) => {
       customers,
       bookings,
       activity,
+      scheduledMaintenances,
       users,
       roles,
       violations,

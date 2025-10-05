@@ -63,6 +63,7 @@ model Tenant {
   paymentMethods       PaymentMethod[]            @relation("PaymentMethodToTenant")
   emailTokens          EmailVerification[]
   vendors              TenantVendor[]
+  maintenance          VehicleMaintenance[]
 }
 
 model EmailVerification {

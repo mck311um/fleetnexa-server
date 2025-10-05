@@ -4,6 +4,7 @@ import { auth } from '../../../../middleware/auth.middleware';
 
 const router = express.Router();
 
+router.get('/', auth, controller.getScheduledMaintenances);
 router.get('/:id', auth, controller.getVehicleMaintenances);
 
 router.post('/', auth, controller.addVehicleMaintenance);
