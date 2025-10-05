@@ -7,8 +7,10 @@ exports.CreateUserSchema = zod_1.z.object({
     firstName: zod_1.z.string().min(2).max(100),
     lastName: zod_1.z.string().min(2).max(100),
     roleId: zod_1.z.uuid(),
+    password: zod_1.z.string().min(6).max(100).optional(),
 });
 exports.UpdateUserSchema = zod_1.z.object({
+    id: zod_1.z.string().uuid(),
     email: zod_1.z.email(),
     firstName: zod_1.z.string().min(2).max(100),
     lastName: zod_1.z.string().min(2).max(100),

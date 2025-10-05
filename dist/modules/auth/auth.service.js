@@ -8,6 +8,7 @@ const logger_1 = require("../../config/logger");
 const prisma_config_1 = __importDefault(require("../../config/prisma.config"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const generator_service_1 = __importDefault(require("../../services/generator.service"));
 class AuthService {
     async validateAdminUser(data) {
         const user = await prisma_config_1.default.adminUser.findUnique({
@@ -83,6 +84,77 @@ class AuthService {
                 username: data.username,
             });
             throw new Error('Failed to validate user');
+        }
+    }
+    async generateVerificationToken(tenant) {
+        try {
+            const alreadyVerified = await prisma_config_1.default.emailVerification.findFirst({
+                where: {
+                    tenantId: tenant.id,
+                    verified: true,
+                    expiresAt: { gt: new Date() },
+                },
+            });
+            if (alreadyVerified) {
+                throw new Error('Email already verified');
+            }
+            const existingToken = await prisma_config_1.default.emailVerification.findFirst({
+                where: {
+                    tenantId: tenant.id,
+                    verified: false,
+                    expiresAt: { gt: new Date() },
+                },
+            });
+            if (existingToken) {
+                return existingToken.token;
+            }
+            const token = generator_service_1.default.generateVerificationCode();
+            const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+            return await prisma_config_1.default.emailVerification.create({
+                data: {
+                    email: tenant.email,
+                    token,
+                    expiresAt,
+                    tenantId: tenant.id,
+                },
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to generate email verification token', {
+                tenantId: tenant.id,
+            });
+            throw new Error('Failed to generate email verification token');
+        }
+    }
+    async verifyEmailToken(tenant, token) {
+        try {
+            const record = await prisma_config_1.default.emailVerification.findFirst({
+                where: {
+                    tenantId: tenant.id,
+                    token,
+                    verified: false,
+                    expiresAt: { gt: new Date() },
+                },
+            });
+            if (!record) {
+                throw new Error('Invalid or expired token');
+            }
+            await prisma_config_1.default.emailVerification.update({
+                where: { id: record.id },
+                data: { verified: true },
+            });
+            await prisma_config_1.default.tenant.update({
+                where: { id: tenant.id },
+                data: { emailVerified: true },
+            });
+            return true;
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to verify email token', {
+                tenantId: tenant.id,
+                token,
+            });
+            throw new Error('Failed to verify email token');
         }
     }
 }

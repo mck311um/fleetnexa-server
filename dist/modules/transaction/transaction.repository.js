@@ -18,7 +18,6 @@ class TransactionRepository {
     }
     getTransactionIncludeOptions() {
         return {
-            customer: true,
             rental: {
                 select: {
                     rentalNumber: true,
@@ -26,23 +25,45 @@ class TransactionRepository {
             },
             payment: {
                 include: {
+                    customer: true,
                     paymentMethod: true,
                     paymentType: true,
                     rental: {
                         select: {
                             id: true,
                             rentalNumber: true,
+                            bookingCode: true,
                         },
                     },
                 },
             },
-            // user: {
-            //   select: {
-            //     firstName: true,
-            //     lastName: true,
-            //     username: true,
-            //   },
-            // },
+            expense: {
+                include: {
+                    vendor: true,
+                    maintenance: {
+                        select: {
+                            id: true,
+                            maintenance: true,
+                        },
+                    },
+                    vehicle: {
+                        select: {
+                            id: true,
+                            licensePlate: true,
+                            brand: true,
+                            model: true,
+                            year: true,
+                        },
+                    },
+                },
+            },
+            user: {
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    username: true,
+                },
+            },
         };
     }
 }

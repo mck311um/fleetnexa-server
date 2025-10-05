@@ -13,7 +13,6 @@ const getTransactions = async (req, res, next) => {
                 tenantId: tenantId,
             },
             include: {
-                customer: true,
                 rental: {
                     select: {
                         rentalNumber: true,
@@ -21,6 +20,7 @@ const getTransactions = async (req, res, next) => {
                 },
                 payment: {
                     include: {
+                        customer: true,
                         paymentMethod: true,
                         paymentType: true,
                         rental: {
@@ -129,7 +129,6 @@ const addRentalPayment = async (req, res, next) => {
                     amount: payment.amount,
                     type: 'PAYMENT',
                     transactionDate: payment.paymentDate,
-                    customerId: payment.customerId,
                     createdBy: userId,
                     createdAt: new Date(),
                     paymentId: payment.id,
@@ -218,7 +217,6 @@ const addRefundPayment = async (req, res, next) => {
                     amount: -refund.amount,
                     type: 'REFUND',
                     transactionDate: refund.paymentDate,
-                    customerId: refund.customerId,
                     createdBy: userId,
                     createdAt: new Date(),
                     tenantId: tenantId,

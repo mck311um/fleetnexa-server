@@ -54,7 +54,7 @@ const addUserRole = async (req, res) => {
     }
     const userDto = parseResult.data;
     try {
-        await user_role_service_1.userRoleService.createUserRole(userDto, tenant, user);
+        await user_role_service_1.userRoleService.createUserRole(userDto, tenant);
         const roles = await user_role_service_1.userRoleService.getTenantRoles(tenant);
         return res.status(200).json({
             message: 'Role added successfully',

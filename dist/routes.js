@@ -19,12 +19,20 @@ const tenant_violation_routes_1 = __importDefault(require("./modules/tenant/modu
 const currency_rates_routes_1 = __importDefault(require("./modules/tenant/modules/currency-rates/currency-rates.routes"));
 const vehicle_routes_1 = __importDefault(require("./modules/vehicle/vehicle.routes"));
 const damage_routes_1 = __importDefault(require("./modules/vehicle/modules/vehicle-damage/damage.routes"));
+const admin_routes_1 = __importDefault(require("./modules/admin/admin.routes"));
+const tenant_vendor_routes_1 = __importDefault(require("./modules/tenant/modules/tenant-vendor/tenant-vendor.routes"));
+const payment_routes_1 = __importDefault(require("./modules/transaction/modules/payment/payment.routes"));
+const vehicle_maintenance_routes_1 = __importDefault(require("./modules/vehicle/modules/vehicle-maintanance/vehicle-maintenance.routes"));
+const expense_routes_1 = __importDefault(require("./modules/transaction/modules/expense/expense.routes"));
 const registerRoutes = (app) => {
     app.use('/api/booking', booking_routes_1.default);
+    app.use('/api/admin', admin_routes_1.default);
     app.use('/api/email', email_routes_1.default);
-    app.use('/api/transaction', transaction_routes_1.default);
     app.use('/api/storage', storage_routes_1.default);
     app.use('/api/auth', auth_routes_1.default);
+    app.use('/api/transaction', transaction_routes_1.default);
+    app.use('/api/payment', payment_routes_1.default);
+    app.use('/api/expense', expense_routes_1.default);
     app.use('/api/user', user_routes_1.default);
     app.use('/api/user-role', user_role_routes_1.default);
     app.use('/api/customer', customer_routes_1.default);
@@ -32,8 +40,10 @@ const registerRoutes = (app) => {
     app.use('/api/tenant-extra', tenant_extra_routes_1.default);
     app.use('/api/tenant-location', tenant_location_routes_1.default);
     app.use('/api/tenant-violation', tenant_violation_routes_1.default);
+    app.use('/api/tenant-vendor', tenant_vendor_routes_1.default);
     app.use('/api/currency-rate', currency_rates_routes_1.default);
     app.use('/api/vehicle', vehicle_routes_1.default);
     app.use('/api/vehicle-damage', damage_routes_1.default);
+    app.use('/api/vehicle-maintenance', vehicle_maintenance_routes_1.default);
 };
 exports.registerRoutes = registerRoutes;

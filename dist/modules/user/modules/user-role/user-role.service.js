@@ -58,15 +58,16 @@ class UserRoleService {
             logger_1.logger.e(error, 'Error fetching user role', { userId: user.id });
         }
     }
-    async createUserRole(data, tenant, user) {
+    async createUserRole(data, tenant) {
         try {
             const existingRole = await prisma_config_1.default.userRole.findFirst({
                 where: { name: data.name, tenantId: tenant.id },
             });
             if (existingRole) {
-                if (existingRole.isDeleted) {
-                    throw new Error('Role with this name was previously deleted. Please choose a different name.');
-                }
+                logger_1.logger.i('Role with this name already exists', {
+                    tenantId: existingRole.tenantId,
+                    roleName: existingRole.name,
+                });
                 throw new Error('Role with this name already exists');
             }
             const role = await prisma_config_1.default.userRole.create({
@@ -77,7 +78,6 @@ class UserRoleService {
                     tenantId: tenant.id,
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                    updatedBy: user.username,
                 },
             });
             return role;
@@ -185,6 +185,24 @@ class UserRoleService {
             throw new Error('Error assigning permissions to role');
         }
     }
+    async assignAllPermissions(role, tx) {
+        try {
+            if (!role) {
+                throw new Error('Role  is required to assign permissions');
+            }
+            const permissions = await tx.appPermission.findMany();
+            await tx.userRolePermission.createMany({
+                data: permissions.map((perm) => ({
+                    roleId: role.id,
+                    permissionId: perm.id,
+                })),
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error assigning permissions to role', { role });
+            throw new Error('Error assigning permissions to role');
+        }
+    }
 }
 exports.userRoleService = new UserRoleService();
 const getTenantRoles = async (tenant) => {
@@ -259,27 +277,8 @@ const createSuperAdminRole = async (tenant, tx) => {
         throw new Error('Error creating role');
     }
 };
-const assignAllPermissions = async (role, tx) => {
-    try {
-        if (!role) {
-            throw new Error('Role  is required to assign permissions');
-        }
-        const permissions = await tx.appPermission.findMany();
-        await tx.userRolePermission.createMany({
-            data: permissions.map((perm) => ({
-                roleId: role.id,
-                permissionId: perm.id,
-            })),
-        });
-    }
-    catch (error) {
-        logger_1.logger.e(error, 'Error assigning permissions to role', { role });
-        throw new Error('Error assigning permissions to role');
-    }
-};
 exports.default = {
     deleteRole,
     getTenantRoles,
     createSuperAdminRole,
-    assignAllPermissions,
 };

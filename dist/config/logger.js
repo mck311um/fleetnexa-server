@@ -39,14 +39,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.logger = void 0;
 const pino_1 = __importDefault(require("pino"));
 const Sentry = __importStar(require("@sentry/node"));
-if (process.env.NODE_ENV === 'production') {
-    Sentry.init({
-        dsn: process.env.SENTRY_DSN,
-        environment: 'production',
-        tracesSampleRate: 1.0,
-        sendDefaultPii: true,
-    });
-}
+Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || 'development',
+    tracesSampleRate: 1.0,
+    sendDefaultPii: true,
+});
 const transport = process.env.NODE_ENV === 'development'
     ? pino_1.default.transport({
         target: 'pino-pretty',

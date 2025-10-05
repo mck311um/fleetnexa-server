@@ -5,20 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = require("../../config/logger");
 const ses_service_1 = __importDefault(require("../../services/ses.service"));
-// interface Document {
-//   documentUrl: string;
-//   documentType: string;
-//   filename?: string;
-// }
-// interface SendDocumentBody {
-//   documents: Document[];
-//   recipientEmail: string;
-//   senderName: string;
-//   senderEmail?: string;
-//   rentalId: string;
-//   message?: string;
-// }
-const setupTemplates = async (req, res, next) => {
+const setupTemplates = async (req, res) => {
     try {
         const templates = [
             {
@@ -45,6 +32,11 @@ const setupTemplates = async (req, res, next) => {
                 name: 'PasswordReset',
                 subject: 'Your FleetNexa Password Has Been Reset',
                 text: "Password Reset Notification\n\nYour FleetNexa password has been reset as requested.\n\nLogin Details:\nUsername: {{username}}\nTemporary Password: {{password}}\n\nLogin URL: https://app.fleetnexa.com/login\n\nImportant Security Notice:\n- You must change this temporary password immediately after logging in\n- This temporary password will expire in 24 hours\n\nIf you didn't request this password reset, please contact our security team immediately at security@devvize.com\n\n© 2025 Devvize Services. All rights reserved.",
+            },
+            {
+                name: 'VerifyBusinessEmail',
+                subject: 'Verify Your Business Email Address',
+                text: 'Business Email Verification Required\n\nThank you for registering with FleetNexa!\n\nTo complete your business email verification, please use the verification code below:\n\nVerification Code: {{verificationCode}}\n\nThis code will expire in 30 minutes.\n\nAccount Details:\nCompany: {{tenantName}}\nEmail: {{email}}\nRequested: {{timestamp}}\n\nIf you did not request this verification, please ignore this email or contact our support team immediately.\n\nFor assistance, contact our support team at support@devvize.com\n\n© 2025 Devvize Services. All rights reserved.',
             },
         ];
         const results = [];
@@ -82,7 +74,6 @@ const setupTemplates = async (req, res, next) => {
     }
     catch (error) {
         logger_1.logger.e(error, 'Template setup endpoint failed:');
-        next(error);
     }
 };
 // const updateEmailTemplate = async (

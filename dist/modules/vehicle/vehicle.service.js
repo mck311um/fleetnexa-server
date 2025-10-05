@@ -132,7 +132,13 @@ class VehicleService {
                 }
             });
         }
-        catch (error) { }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to add vehicle', {
+                tenantId: tenant.id,
+                tenantCode: tenant.tenantCode,
+            });
+            throw new Error('Failed to add vehicle');
+        }
     }
     async updateVehicle(data, tenant, user) {
         try {
@@ -221,7 +227,6 @@ class VehicleService {
             logger_1.logger.e(error, 'Failed to  update vehicle', {
                 tenantId: tenant.id,
                 tenantCode: tenant.tenantCode,
-                data,
             });
             throw new Error('Failed to update vehicle');
         }

@@ -26,6 +26,23 @@ class BookingService {
             throw new Error('Failed to get bookings');
         }
     }
+    async getBookingById(tenant, bookingId) {
+        try {
+            const booking = await booking_repository_1.bookingRepo.getRentalById(bookingId, tenant.id);
+            if (!booking) {
+                throw new Error('Booking not found');
+            }
+            return booking;
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to get booking by ID', {
+                tenantId: tenant.id,
+                tenantCode: tenant.tenantCode,
+                bookingId,
+            });
+            throw new Error('Failed to get booking by ID');
+        }
+    }
 }
 exports.bookingService = new BookingService();
 const createBooking = async (tenant, data, tx, userId) => {

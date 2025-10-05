@@ -82,10 +82,45 @@ class VehicleRepository {
                             username: true,
                         },
                     },
+                    transactions: {
+                        include: {
+                            payment: {
+                                include: {
+                                    customer: true,
+                                    paymentMethod: true,
+                                    paymentType: true,
+                                },
+                            },
+                            refund: true,
+                            // user: {
+                            //   select: {
+                            //     firstName: true,
+                            //     lastName: true,
+                            //     username: true,
+                            //   },
+                            // },
+                        },
+                        orderBy: {
+                            transactionDate: 'desc',
+                        },
+                    },
+                    payments: {
+                        include: {
+                            paymentMethod: true,
+                            paymentType: true,
+                        },
+                    },
                 },
             },
             fuelType: true,
             features: true,
+            scheduledMaintenance: {
+                where: { isDeleted: false },
+                include: {
+                    maintenance: true,
+                    vendor: true,
+                },
+            },
             damages: {
                 where: { isDeleted: false },
                 include: {

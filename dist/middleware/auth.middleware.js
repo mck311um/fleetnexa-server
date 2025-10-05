@@ -11,7 +11,9 @@ const user_repository_1 = require("../modules/user/user.repository");
 const auth = async (req, res, next) => {
     const token = req.header('x-auth-token');
     if (!token) {
-        return res.status(401).json({ message: 'No token, authorization denied' });
+        return res
+            .status(401)
+            .json({ message: 'No auth token, authorization denied' });
     }
     try {
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);

@@ -93,13 +93,16 @@ const createOrUpdateEmailTemplate = async (templateParams) => {
             logger_1.logger.i(`Template ${name} updated successfully`);
             return true;
         }
-        logger_1.logger.i(`Template ${name} doesn't exist, creating it...`);
-        return await createEmailTemplate(templateParams);
     }
     catch (error) {
-        logger_1.logger.e(error, `Failed to create or update template ${templateParams.name}:`);
+        if (error.name === 'TemplateDoesNotExistException' ||
+            error.Error?.Code === 'TemplateDoesNotExist') {
+            logger_1.logger.i(`Template ${name} doesn't exist, creating it...`);
+            return await createEmailTemplate(templateParams);
+        }
         throw error;
     }
+    return await createEmailTemplate(templateParams);
 };
 exports.default = {
     sendEmail,

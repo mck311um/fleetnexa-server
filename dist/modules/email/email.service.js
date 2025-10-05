@@ -3,10 +3,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.emailService = void 0;
+const prisma_config_1 = __importDefault(require("../../config/prisma.config"));
 const formatter_1 = __importDefault(require("../../utils/formatter"));
 const ses_service_1 = __importDefault(require("../../services/ses.service"));
 const logger_1 = require("../../config/logger");
 const customer_service_1 = __importDefault(require("../customer/customer.service"));
+class EmailService {
+    async sendBusinessVerificationEmail(tenant, token) {
+        try {
+            const templateData = {
+                tenantName: tenant.tenantName,
+                email: tenant.email,
+                verificationCode: token.token,
+                timestamp: formatter_1.default.formatDateToFriendlyWithTime(token.expiresAt),
+            };
+            await ses_service_1.default.sendEmail({
+                to: [tenant.email || ''],
+                template: 'VerifyBusinessEmail',
+                templateData,
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error sending business verification email', {
+                tenantId: tenant.id,
+                tenantCode: tenant.tenantCode,
+            });
+            throw error;
+        }
+    }
+}
+exports.emailService = new EmailService();
 const sendWelcomeEmail = async (tenant, username, password, name) => {
     try {
         const templateData = {
@@ -91,9 +118,9 @@ const sendConfirmationEmail = async (bookingId, tenant, tx) => {
         throw error;
     }
 };
-const newUserEmail = async (tenant, userId, password, tx) => {
+const newUserEmail = async (tenant, userId, password) => {
     try {
-        const user = await tx.user.findUnique({
+        const user = await prisma_config_1.default.user.findUnique({
             where: { id: userId },
         });
         if (!user) {
@@ -120,9 +147,9 @@ const newUserEmail = async (tenant, userId, password, tx) => {
         throw error;
     }
 };
-const resetPasswordEmail = async (tenant, userId, password, tx) => {
+const resetPasswordEmail = async (tenant, userId, password) => {
     try {
-        const user = await tx.user.findUnique({
+        const user = await prisma_config_1.default.user.findUnique({
             where: { id: userId },
         });
         if (!user) {

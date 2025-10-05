@@ -60,9 +60,9 @@ class RentalRepository {
             },
             transactions: {
                 include: {
-                    customer: true,
                     payment: {
                         include: {
+                            customer: true,
                             paymentMethod: true,
                             paymentType: true,
                         },

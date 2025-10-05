@@ -3,10 +3,72 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.tenantService = void 0;
 const logger_1 = require("../../config/logger");
 const prisma_config_1 = __importDefault(require("../../config/prisma.config"));
 const tenant_repository_1 = require("./tenant.repository");
 const generator_service_1 = __importDefault(require("../../services/generator.service"));
+const user_service_1 = require("../user/user.service");
+const tenant_location_service_1 = require("./modules/tenant-location/tenant-location.service");
+const auth_service_1 = require("../auth/auth.service");
+class TenantService {
+    async createTenant(data) {
+        try {
+            const { tenant, country } = await prisma_config_1.default.$transaction(async (tx) => {
+                const existingTenant = await tenant_repository_1.repo.getTenantByEmail(data.companyEmail);
+                if (existingTenant) {
+                    throw new Error('Tenant with this email already exists');
+                }
+                const country = await tx.country.findUnique({
+                    where: { code: data.country },
+                });
+                if (!country) {
+                    throw new Error('Invalid country code');
+                }
+                const tenantCode = await generator_service_1.default.generateTenantCode(data.tenantName);
+                const slug = await generator_service_1.default.generateTenantSlug(data.tenantName);
+                const tenant = await tx.tenant.create({
+                    data: {
+                        tenantCode,
+                        tenantName: data.tenantName,
+                        slug,
+                        email: data.companyEmail,
+                        number: data.number,
+                        logo: 'https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/placeholder_tenant.jpg',
+                        storefrontEnabled: false,
+                        createdAt: new Date(),
+                    },
+                });
+                await tx.address.create({
+                    data: {
+                        tenantId: tenant.id,
+                        countryId: country.id,
+                    },
+                });
+                return { tenant, country };
+            });
+            await tenant_location_service_1.tenantLocationService.initializeTenantLocations(country, tenant);
+            const token = await auth_service_1.authService.generateVerificationToken(tenant);
+            const userDetails = {
+                email: data.email,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                password: data.password,
+                roleId: '',
+            };
+            await user_service_1.userService.createOwner(userDetails, tenant);
+            return { tenant, token };
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to create tenant', {
+                email: data.companyEmail,
+                tenantName: data.tenantName,
+            });
+            throw new Error('Failed to create tenant');
+        }
+    }
+}
+exports.tenantService = new TenantService();
 const getTenantById = async (tenantId, tx) => {
     try {
         return await tenant_repository_1.repo.getTenantById(tenantId, tx);
@@ -16,45 +78,6 @@ const getTenantById = async (tenantId, tx) => {
             tenantId,
         });
         throw new Error('Failed to get tenant by ID');
-    }
-};
-const createTenant = async (data, tx) => {
-    try {
-        const existingTenant = await tenant_repository_1.repo.getTenantByEmail(data.email, tx);
-        if (existingTenant) {
-            throw new Error('Tenant with this email already exists');
-        }
-        const tenantCode = await generator_service_1.default.generateTenantCode(data.tenantName);
-        const slug = await generator_service_1.default.generateTenantSlug(data.tenantName);
-        const tenant = await tx.tenant.create({
-            data: {
-                tenantCode,
-                tenantName: data.tenantName,
-                slug,
-                email: data.email,
-                number: data.number,
-                logo: 'https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/placeholder_tenant.jpg',
-            },
-        });
-        const userDetails = {
-            email: '',
-            firstName: data.firstName,
-            lastName: data.lastName,
-            roleId: '',
-        };
-        // const { user, password } = await userService.createOwner(
-        //   userDetails,
-        //   tenant,
-        //   tx,
-        // );
-        // return { tenant, user, password };
-    }
-    catch (error) {
-        logger_1.logger.e(error, 'Failed to create tenant', {
-            email: data.email,
-            tenantName: data.tenantName,
-        });
-        throw new Error('Failed to create tenant');
     }
 };
 const updateTenant = async (data, tenant) => {
@@ -105,6 +128,7 @@ const updateTenant = async (data, tenant) => {
                     amount: data.cancellationPolicy?.amount || 0,
                     policy: data.cancellationPolicy?.policy || 'fixed_amount',
                     minimumDays: data.cancellationPolicy?.minimumDays || 0,
+                    bookingMinimumDays: data.cancellationPolicy?.bookingMinimumDays || 0,
                 },
                 create: {
                     tenantId: tenant.id,
@@ -235,7 +259,6 @@ const updateViolation = async (data, tenant) => {
     }
 };
 exports.default = {
-    createTenant,
     getTenantById,
     createViolation,
     updateViolation,

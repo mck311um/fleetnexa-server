@@ -9,7 +9,9 @@ const logger_1 = require("../config/logger");
 const admin = (req, res, next) => {
     const token = req.header('x-auth-token');
     if (!token) {
-        return res.status(401).json({ message: 'No token, authorization denied' });
+        return res
+            .status(401)
+            .json({ message: 'No admin token, authorization denied' });
     }
     try {
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
