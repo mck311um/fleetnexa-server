@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import emailService from '../services/ses.service';
 import { WelcomeEmailParams } from '../types/email';
 import { logger } from '../config/logger';
+import { v4 } from 'uuid';
 
 const getTenantRentalActivity = async (
   req: Request,
@@ -249,7 +250,7 @@ const updateTenant = async (
           if (currency.id === body.currencyId) {
             await tx.tenantCurrencyRate.create({
               data: {
-                id: crypto.randomUUID(),
+                id: v4(),
                 tenantId: tenantId!,
                 currencyId: currency.id,
                 enabled: true,
@@ -261,7 +262,7 @@ const updateTenant = async (
           } else {
             await tx.tenantCurrencyRate.create({
               data: {
-                id: crypto.randomUUID(),
+                id: v4(),
                 tenantId: tenantId!,
                 currencyId: currency.id,
                 enabled: false,

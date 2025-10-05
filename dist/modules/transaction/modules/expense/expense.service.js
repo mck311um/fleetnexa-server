@@ -9,6 +9,7 @@ const logger_1 = require("../../../../config/logger");
 const prisma_config_1 = __importDefault(require("../../../../config/prisma.config"));
 const expense_dto_1 = require("./expense.dto");
 const transaction_service_1 = require("../../transaction.service");
+const uuid_1 = require("uuid");
 class ExpenseService {
     async validateExpenseData(data) {
         const safeParse = expense_dto_1.ExpenseSchema.safeParse(data);
@@ -54,7 +55,7 @@ class ExpenseService {
                 },
             });
             const transaction = {
-                id: crypto.randomUUID(),
+                id: (0, uuid_1.v4)(),
                 amount: data.amount,
                 type: client_1.TransactionType.EXPENSE,
                 transactionDate: data.expenseDate,

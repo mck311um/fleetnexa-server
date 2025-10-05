@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.tenantLocationService = void 0;
 const prisma_config_1 = __importDefault(require("../../../../config/prisma.config"));
 const logger_1 = require("../../../../config/logger");
+const v4_1 = __importDefault(require("uuid/dist/cjs/v4"));
 class TenantLocationService {
     async initializeTenantLocations(country, tenant) {
         try {
@@ -15,7 +16,7 @@ class TenantLocationService {
                 });
                 await tx.tenantLocation.create({
                     data: {
-                        id: crypto.randomUUID(),
+                        id: (0, v4_1.default)(),
                         location: 'Main Office',
                         tenantId: tenant.id,
                         pickupEnabled: true,
@@ -31,7 +32,7 @@ class TenantLocationService {
                 for (const location of presetLocations) {
                     await tx.tenantLocation.create({
                         data: {
-                            id: crypto.randomUUID(),
+                            id: (0, v4_1.default)(),
                             location: location.location,
                             tenantId: tenant.id,
                             pickupEnabled: true,

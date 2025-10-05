@@ -4,6 +4,7 @@ import prisma from '../../../../config/prisma.config';
 import { ExpenseDto, ExpenseSchema } from './expense.dto';
 import { TransactionDto } from '../../transaction.dto';
 import { transactionService } from '../../transaction.service';
+import { v4 } from 'uuid';
 
 class ExpenseService {
   async validateExpenseData(data: any) {
@@ -53,7 +54,7 @@ class ExpenseService {
       });
 
       const transaction: TransactionDto = {
-        id: crypto.randomUUID(),
+        id: v4(),
         amount: data.amount,
         type: TransactionType.EXPENSE,
         transactionDate: data.expenseDate,

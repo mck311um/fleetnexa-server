@@ -4,6 +4,7 @@ import { PaymentDto, PaymentSchema } from './payment.dto';
 import prisma from '../../../../config/prisma.config';
 import { TransactionDto } from '../../transaction.dto';
 import { transactionService } from '../../transaction.service';
+import { v4 } from 'uuid';
 
 class PaymentService {
   async validatePaymentData(data: any) {
@@ -97,7 +98,7 @@ class PaymentService {
       });
 
       const transaction: TransactionDto = {
-        id: crypto.randomUUID(),
+        id: v4(),
         amount: data.amount,
         type: TransactionType.PAYMENT,
         transactionDate: new Date().toISOString(),

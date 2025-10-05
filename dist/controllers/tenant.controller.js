@@ -5,11 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const tenant_repository_1 = require("../repository/tenant.repository");
 const prisma_config_1 = __importDefault(require("../config/prisma.config"));
-const crypto_1 = __importDefault(require("crypto"));
 const generator_service_1 = __importDefault(require("../services/generator.service"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const ses_service_1 = __importDefault(require("../services/ses.service"));
 const logger_1 = require("../config/logger");
+const uuid_1 = require("uuid");
 const getTenantRentalActivity = async (req, res, next) => {
     const tenantId = req.user?.tenantId;
     try {
@@ -214,7 +214,7 @@ const updateTenant = async (req, res, next) => {
                     if (currency.id === body.currencyId) {
                         await tx.tenantCurrencyRate.create({
                             data: {
-                                id: crypto_1.default.randomUUID(),
+                                id: (0, uuid_1.v4)(),
                                 tenantId: tenantId,
                                 currencyId: currency.id,
                                 enabled: true,
@@ -227,7 +227,7 @@ const updateTenant = async (req, res, next) => {
                     else {
                         await tx.tenantCurrencyRate.create({
                             data: {
-                                id: crypto_1.default.randomUUID(),
+                                id: (0, uuid_1.v4)(),
                                 tenantId: tenantId,
                                 currencyId: currency.id,
                                 enabled: false,

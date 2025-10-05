@@ -9,6 +9,7 @@ const logger_1 = require("../../../../config/logger");
 const payment_dto_1 = require("./payment.dto");
 const prisma_config_1 = __importDefault(require("../../../../config/prisma.config"));
 const transaction_service_1 = require("../../transaction.service");
+const uuid_1 = require("uuid");
 class PaymentService {
     async validatePaymentData(data) {
         const safeParse = payment_dto_1.PaymentSchema.safeParse(data);
@@ -91,7 +92,7 @@ class PaymentService {
                 return newPayment;
             });
             const transaction = {
-                id: crypto.randomUUID(),
+                id: (0, uuid_1.v4)(),
                 amount: data.amount,
                 type: client_1.TransactionType.PAYMENT,
                 transactionDate: new Date().toISOString(),
