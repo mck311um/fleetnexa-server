@@ -58,6 +58,22 @@ class PaymentService {
           throw new Error('Booking not found');
         }
 
+        const existingCustomer = await tx.customer.findUnique({
+          where: { id: data.customerId },
+        });
+
+        if (!existingCustomer) {
+          throw new Error('Customer not found');
+        }
+
+        const exitingBooking = await tx.rental.findUnique({
+          where: { id: data.bookingId },
+        });
+
+        if (!exitingBooking) {
+          throw new Error('Booking not found');
+        }
+
         const newPayment = await tx.payment.create({
           data: {
             id: data.id,
@@ -71,22 +87,25 @@ class PaymentService {
             createdAt: new Date(),
             updatedAt: new Date(),
             customerId: data.customerId,
+            payer: `${existingCustomer.firstName} ${existingCustomer.lastName}`,
+            payment: `Payment for booking #${exitingBooking.rentalNumber}`,
+            updatedBy: user.username,
           },
         });
 
-        const transaction: TransactionDto = {
-          id: crypto.randomUUID(),
-          amount: data.amount,
-          type: TransactionType.PAYMENT,
-          transactionDate: new Date().toISOString(),
-          paymentId: newPayment.id,
-          createdBy: user.username,
-        };
-
-        await transactionService.createTransaction(transaction, tenant, user);
-
         return newPayment;
       });
+
+      const transaction: TransactionDto = {
+        id: crypto.randomUUID(),
+        amount: data.amount,
+        type: TransactionType.PAYMENT,
+        transactionDate: new Date().toISOString(),
+        paymentId: payment.id,
+        createdBy: user.username,
+      };
+
+      await transactionService.createTransaction(transaction, tenant, user);
 
       return payment;
     } catch (error) {
@@ -101,13 +120,50 @@ class PaymentService {
 
   async updatePayment(data: PaymentDto, tenant: Tenant, user: User) {
     try {
-      const existingPayment = await prisma.payment.findUnique({
-        where: { id: data.id },
-      });
+      const payment = await prisma.$transaction(async (tx) => {
+        const existingPayment = await tx.payment.findUnique({
+          where: { id: data.id },
+        });
 
-      if (!existingPayment) {
-        throw new Error('Payment not found');
-      }
+        if (!existingPayment) {
+          throw new Error('Payment not found');
+        }
+
+        const existingCustomer = await tx.customer.findUnique({
+          where: { id: data.customerId },
+        });
+
+        if (!existingCustomer) {
+          throw new Error('Customer not found');
+        }
+
+        const exitingBooking = await tx.rental.findUnique({
+          where: { id: data.bookingId },
+        });
+
+        if (!exitingBooking) {
+          throw new Error('Booking not found');
+        }
+
+        const updatedPayment = await tx.payment.update({
+          where: { id: data.id },
+          data: {
+            amount: data.amount,
+            rentalId: data.bookingId,
+            paymentDate: data.paymentDate,
+            notes: data.notes,
+            paymentTypeId: data.paymentTypeId,
+            paymentMethodId: data.paymentMethodId,
+            updatedAt: new Date(),
+            customerId: data.customerId,
+            payer: `${existingCustomer.firstName} ${existingCustomer.lastName}`,
+            payment: `Payment for booking #${exitingBooking.rentalNumber}`,
+            updatedBy: user.username,
+          },
+        });
+
+        return updatedPayment;
+      });
 
       const existingTransaction = await prisma.transactions.findFirst({
         where: { paymentId: data.id },
@@ -116,20 +172,6 @@ class PaymentService {
       if (!existingTransaction) {
         throw new Error('Associated transaction not found');
       }
-
-      const updatedPayment = await prisma.payment.update({
-        where: { id: data.id },
-        data: {
-          amount: data.amount,
-          rentalId: data.bookingId,
-          paymentDate: data.paymentDate,
-          notes: data.notes,
-          paymentTypeId: data.paymentTypeId,
-          paymentMethodId: data.paymentMethodId,
-          updatedAt: new Date(),
-          customerId: data.customerId,
-        },
-      });
 
       const transaction: TransactionDto = {
         id: existingTransaction.id,
@@ -140,8 +182,6 @@ class PaymentService {
       };
 
       await transactionService.updateTransaction(transaction, tenant, user);
-
-      return updatedPayment;
     } catch (error) {
       logger.e(error, 'Error updating payment', {
         user: user.username,

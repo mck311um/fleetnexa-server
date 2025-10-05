@@ -184,7 +184,7 @@ class VehicleMaintenanceService {
         throw new Error('Vehicle maintenance record not found');
       }
 
-      await prisma.vehicleMaintenance.update({
+      const updatedRecord = await prisma.vehicleMaintenance.update({
         where: { id: data.id },
         data: {
           status: 'COMPLETED',
@@ -193,17 +193,32 @@ class VehicleMaintenanceService {
           updatedAt: new Date(),
           updatedBy: user.username,
         },
+        include: {
+          maintenance: true,
+          vehicle: {
+            include: { brand: true, model: true },
+          },
+          vendor: true,
+        },
       });
 
       if (data.recordExpense) {
+        const desc = `${updatedRecord.maintenance.service} - ${updatedRecord.vehicle.year} ${updatedRecord.vehicle.brand.brand} ${updatedRecord.vehicle.model.model} (${updatedRecord.vehicle.licensePlate})`;
+        const payee = updatedRecord.vendor
+          ? updatedRecord.vendor.vendor
+          : 'Unknown Vendor';
+
         const expense: ExpenseDto = {
           id: data.id,
           vehicleId: data.vehicleId,
           vendorId: data.vendorId,
           amount: data.cost,
+          maintenanceId: data.id,
           expenseDate: data.expenseDate
             ? new Date(data.expenseDate).toISOString()
             : new Date().toISOString(),
+          expense: desc,
+          payee,
         };
 
         await expenseService.createExpense(expense, tenant, user);

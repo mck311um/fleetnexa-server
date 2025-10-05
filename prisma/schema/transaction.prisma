@@ -17,6 +17,7 @@ model Transactions {
   updatedAt           DateTime?       @updatedAt
   updatedBy           String?
 
+  user                User?         @relation(fields: [createdBy], references: [username])
   payment             Payment?        @relation(fields: [paymentId], references: [id])
   refund              Refund?         @relation(fields: [refundId], references: [id])
   expense             Expense?        @relation(fields: [expenseId], references: [id])
@@ -35,6 +36,8 @@ model Payment {
   notes               String?
   isDeleted           Boolean       @default(false)
   paymentDate         DateTime
+  payment             String?
+  payer               String?
 
   customerId          String?
   currencyId          String?
@@ -42,7 +45,7 @@ model Payment {
   createdAt           DateTime      @default(now())
   updatedAt           DateTime?     @updatedAt
   updatedBy           String?
-    
+  
   currency            Currency?     @relation(fields: [currencyId], references: [id])
   customer            Customer?     @relation(fields: [customerId], references: [id])
   paymentMethod       PaymentMethod @relation(fields: [paymentMethodId], references: [id])
@@ -62,6 +65,8 @@ model Refund {
   reason              String?
   refundDate          DateTime      @default(now())
   customerId          String?
+  refund              String?
+  payee               String?
 
   isDeleted           Boolean       @default(false)
   createdAt           DateTime      @default(now())
@@ -83,6 +88,9 @@ model Expense {
   amount              Float
   expenseDate         DateTime
   notes               String?
+  maintenanceId       String?
+  payee               String?
+  expense             String? 
       
   isDeleted           Boolean   @default(false)
   createdAt           DateTime  @default(now())
@@ -93,6 +101,7 @@ model Expense {
   vendor              TenantVendor?   @relation(fields: [vendorId], references: [id])
   tenant              Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   user                User?           @relation(fields: [createdBy], references: [username])
+  maintenance         VehicleMaintenance? @relation(fields: [maintenanceId], references: [id])
 
   Transactions        Transactions[]
 }

@@ -39,12 +39,16 @@ class ExpenseService {
       await prisma.expense.create({
         data: {
           id: data.id,
-          amount: data.amount,
+          amount: -data.amount,
           expenseDate: data.expenseDate,
           notes: data.notes,
           vendorId: data.vendorId,
           vehicleId: data.vehicleId,
           tenantId: tenant.id,
+          maintenanceId: data.maintenanceId,
+          createdBy: user.username,
+          expense: data.expense,
+          payee: data.payee,
         },
       });
 
@@ -81,7 +85,7 @@ class ExpenseService {
         await tx.expense.update({
           where: { id: data.id },
           data: {
-            amount: data.amount,
+            amount: -data.amount,
             expenseDate: data.expenseDate,
             notes: data.notes,
             vendorId: data.vendorId,

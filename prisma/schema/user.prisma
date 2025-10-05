@@ -20,6 +20,8 @@ model User {
   role                  UserRole?        @relation(fields: [roleId], references: [id], onDelete: Cascade)
   tenant                Tenant?          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   expenses              Expense[]
+  transactions          Transactions[]
+
 
 
   @@unique([username, tenantId])

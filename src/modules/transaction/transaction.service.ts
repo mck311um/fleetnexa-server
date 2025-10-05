@@ -28,7 +28,7 @@ class TransactionService {
             amount: data.amount,
             type: data.type,
             transactionDate: data.transactionDate,
-            createdBy: user.id,
+            createdBy: user.username,
             paymentId: data.paymentId,
             refundId: data.refundId,
             expenseId: data.expenseId,
