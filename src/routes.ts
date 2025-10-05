@@ -17,6 +17,7 @@ import vehicleRoutes from './modules/vehicle/vehicle.routes';
 import vehicleDamageRoutes from './modules/vehicle/modules/vehicle-damage/damage.routes';
 import adminRoutes from './modules/admin/admin.routes';
 import tenantVendorRoutes from './modules/tenant/modules/tenant-vendor/tenant-vendor.routes';
+import vehicleMaintenanceRoutes from './modules/vehicle/modules/vehicle-maintanance/vehicle-maintenance.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
@@ -42,4 +43,5 @@ export const registerRoutes = (app: Application) => {
 
   app.use('/api/vehicle', vehicleRoutes);
   app.use('/api/vehicle-damage', vehicleDamageRoutes);
+  app.use('/api/vehicle-maintenance', vehicleMaintenanceRoutes);
 };

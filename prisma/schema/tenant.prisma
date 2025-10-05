@@ -271,4 +271,5 @@ model TenantVendor {
   isDeleted           Boolean   @default(false)
 
   tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  vehicleMaintenance  VehicleMaintenance[]
 }

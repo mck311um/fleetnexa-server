@@ -122,6 +122,13 @@ class VehicleRepository {
       },
       fuelType: true,
       features: true,
+      scheduledMaintenance: {
+        where: { isDeleted: false },
+        include: {
+          maintenance: true,
+          vendor: true,
+        },
+      },
       damages: {
         where: { isDeleted: false },
         include: {

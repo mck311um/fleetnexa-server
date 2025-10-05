@@ -54,6 +54,8 @@ model Vehicle {
   serviceLogs        VehicleServiceLog[]
   scheduledServices  VehicleServiceSchedule[]
   features           VehicleFeature[]         @relation("VehicleToVehicleFeature")
+
+  scheduledMaintenance VehicleMaintenance[]
 }
 
 model VehicleDiscount {
@@ -131,12 +133,34 @@ model VehicleServiceLog {
   vehicle            Vehicle                 @relation(fields: [vehicleId], references: [id])
 }
 
+model VehicleMaintenance {
+  id                 String              @id @default(dbgenerated("gen_random_uuid()"))
+  vehicleId          String
+  serviceId          String
+  vendorId           String?
+  startDate          DateTime
+  endDate            DateTime
+  cost               Float
+  isDeleted          Boolean             @default(false)
+ 
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime?           @updatedAt
+  createdBy          String?
+  updatedBy          String?
+
+  maintenance        MaintenanceService  @relation(fields: [serviceId], references: [id])
+  vehicle            Vehicle             @relation(fields: [vehicleId], references: [id])
+  vendor             TenantVendor?       @relation(fields: [vendorId], references: [id])
+}
+
+
 model VehicleServiceSchedule {
   id                 String              @id @default(dbgenerated("gen_random_uuid()"))
   vehicleId          String
   serviceId          String
   scheduledDate      DateTime
   isCompleted        Boolean             @default(false)
+
   serviceLogs        VehicleServiceLog[] @relation("ScheduleToLogs")
   maintenanceService MaintenanceService  @relation(fields: [serviceId], references: [id])
   vehicle            Vehicle             @relation(fields: [vehicleId], references: [id])

@@ -121,6 +121,8 @@ model MaintenanceService {
   description       String
   serviceLog        VehicleServiceLog[]
   serviceSchedule   VehicleServiceSchedule[]
+
+  scheduledMaintenance VehicleMaintenance[]
 }
 
 model DocumentType {
