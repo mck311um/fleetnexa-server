@@ -88,6 +88,25 @@ const getSystemUsers = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+const getCurrentAdminUser = async (req, res) => {
+    const userId = req.adminUser?.id;
+    if (!userId) {
+        logger_1.logger.w('Admin User ID is missing', { userId });
+        return res.status(400).json({ error: 'Admin User ID is required' });
+    }
+    try {
+        const user = await user_service_1.default.getCurrentAdminUser(userId);
+        if (!user) {
+            logger_1.logger.w('Admin User not found', { userId });
+            return res.status(404).json({ error: 'Admin User not found' });
+        }
+        res.status(200).json(user);
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Error fetching admin user', { userId });
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
 const createSystemUser = async (req, res) => {
     const data = req.body;
     const { user, tenant } = req.context;
@@ -256,4 +275,5 @@ exports.default = {
     updateSystemUser,
     changePassword,
     resetUserPassword,
+    getCurrentAdminUser,
 };

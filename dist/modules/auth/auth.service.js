@@ -6,10 +6,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authService = void 0;
 const logger_1 = require("../../config/logger");
 const prisma_config_1 = __importDefault(require("../../config/prisma.config"));
+const auth_dto_1 = require("./auth.dto");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generator_service_1 = __importDefault(require("../../services/generator.service"));
 class AuthService {
+    async validateAdminUserData(data) {
+        if (!data) {
+            throw new Error('Admin user data is required');
+        }
+        const safeParse = auth_dto_1.AdminUserSchema.safeParse(data);
+        if (!safeParse.success) {
+            logger_1.logger.w('Admin user data validation failed', {
+                details: safeParse.error.issues,
+            });
+            throw new Error('Admin user data validation failed');
+        }
+        return safeParse.data;
+    }
     async validateAdminUser(data) {
         const user = await prisma_config_1.default.adminUser.findUnique({
             where: { username: data.username },
@@ -32,6 +46,32 @@ class AuthService {
             expiresIn: data.rememberMe ? '30d' : '7d',
         });
         return { userData, token };
+    }
+    async createAdminUser(data) {
+        const existingUser = await prisma_config_1.default.adminUser.findUnique({
+            where: { username: data.username },
+        });
+        if (existingUser) {
+            throw new Error('Username already exists');
+        }
+        const hashedPassword = await bcrypt_1.default.hash(data.password, 10);
+        const newUser = await prisma_config_1.default.adminUser.create({
+            data: {
+                username: data.username,
+                password: hashedPassword,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+            },
+        });
+        return {
+            id: newUser.id,
+            username: newUser.username,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
+            initials: `${newUser.firstName[0]}${newUser.lastName[0]}`,
+            fullName: `${newUser.firstName} ${newUser.lastName}`,
+        };
     }
     async validateTenantUser(data) {
         try {

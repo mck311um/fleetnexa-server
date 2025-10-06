@@ -238,6 +238,41 @@ const getCurrentUser = async (userId, tenant) => {
         throw new Error('Error fetching current user');
     }
 };
+const getCurrentAdminUser = async (userId) => {
+    try {
+        const user = await prisma_config_1.default.adminUser.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                username: true,
+                firstName: true,
+                lastName: true,
+                createdAt: true,
+                email: true,
+            },
+        });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        const userData = {
+            id: user.id,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            initials: `${user.firstName[0]}${user.lastName[0]}`,
+            fullName: `${user.firstName} ${user.lastName}`,
+            createdAt: user.createdAt,
+            email: user.email,
+        };
+        return userData;
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Error fetching current admin user', {
+            userId,
+        });
+        throw new Error('Error fetching current admin user');
+    }
+};
 const deleteUser = async (id, tenant, tx) => {
     try {
         const user = await tx.user.findUnique({
@@ -308,4 +343,5 @@ exports.default = {
     deleteUser,
     getCurrentUser,
     changePassword,
+    getCurrentAdminUser,
 };
