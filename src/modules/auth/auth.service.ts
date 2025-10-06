@@ -1,13 +1,28 @@
 import { Tenant } from '@prisma/client';
 import { logger } from '../../config/logger';
 import prisma from '../../config/prisma.config';
-import { LoginDto } from './auth.dto';
+import { AdminUserDto, AdminUserSchema, LoginDto } from './auth.dto';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { th } from 'zod/v4/locales/index.cjs';
 import generatorService from '../../services/generator.service';
 
 class AuthService {
+  async validateAdminUserData(data: any) {
+    if (!data) {
+      throw new Error('Admin user data is required');
+    }
+
+    const safeParse = AdminUserSchema.safeParse(data);
+    if (!safeParse.success) {
+      logger.w('Admin user data validation failed', {
+        details: safeParse.error.issues,
+      });
+      throw new Error('Admin user data validation failed');
+    }
+
+    return safeParse.data;
+  }
+
   async validateAdminUser(data: LoginDto) {
     const user = await prisma.adminUser.findUnique({
       where: { username: data.username },
@@ -32,6 +47,36 @@ class AuthService {
     });
 
     return { userData, token };
+  }
+
+  async createAdminUser(data: AdminUserDto) {
+    const existingUser = await prisma.adminUser.findUnique({
+      where: { username: data.username },
+    });
+
+    if (existingUser) {
+      throw new Error('Username already exists');
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const newUser = await prisma.adminUser.create({
+      data: {
+        username: data.username,
+        password: hashedPassword,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+      },
+    });
+
+    return {
+      id: newUser.id,
+      username: newUser.username,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      initials: `${newUser.firstName[0]}${newUser.lastName[0]}`,
+      fullName: `${newUser.firstName} ${newUser.lastName}`,
+    };
   }
 
   async validateTenantUser(data: LoginDto) {

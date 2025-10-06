@@ -4,7 +4,7 @@ import { authService } from './auth.service';
 import { LoginDtoSchema } from './auth.dto';
 
 const adminUserLogin = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
 
   if (!data) {
     logger.w('Username/password are required');
@@ -38,7 +38,7 @@ const adminUserLogin = async (req: Request, res: Response) => {
   }
 };
 const tenantLogin = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
 
   if (!data) {
     logger.w('Username/password are required');
@@ -74,7 +74,24 @@ const tenantLogin = async (req: Request, res: Response) => {
   }
 };
 
+const createAdminUser = async (req: Request, res: Response) => {
+  const data = req.body;
+
+  const userDto = await authService.validateAdminUserData(data);
+
+  try {
+    const newUser = await authService.createAdminUser(userDto);
+    res.status(201).json(newUser);
+  } catch (error: any) {
+    logger.e(error, 'Error creating admin user', {
+      username: userDto.username,
+    });
+    res.status(500).json({ message: error.message || 'Internal server error' });
+  }
+};
+
 export default {
   adminUserLogin,
   tenantLogin,
+  createAdminUser,
 };

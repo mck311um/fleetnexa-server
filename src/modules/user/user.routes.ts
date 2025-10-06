@@ -1,11 +1,13 @@
 import express from 'express';
 import controller from './user.controller';
 import { auth } from '../../middleware/auth.middleware';
+import { admin } from '../../middleware/admin.middleware';
 
 const router = express.Router();
 
 router.get('/', auth, controller.getSystemUsers);
 router.get('/me', auth, controller.getCurrentUser);
+router.get('/admin/me', admin, controller.getCurrentAdminUser);
 
 router.post('/', auth, controller.createSystemUser);
 router.post('/reset/:id', controller.resetUserPassword);

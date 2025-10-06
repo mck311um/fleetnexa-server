@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../dashboard/src/types/admin.d.ts"],
   "exclude": ["node_modules"]
 }

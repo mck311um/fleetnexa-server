@@ -79,7 +79,12 @@ model Country {
   id                 String            @id @default(dbgenerated("gen_random_uuid()"))
   code               String            @unique
   country            String            @unique
-  geoNameId          Int?              @unique
+
+  updatedBy          String?
+  createdAt          DateTime          @default(now())
+
+  adminUser          AdminUser?        @relation(fields: [updatedBy], references: [username])
+
   addresses          Address[]
   caribbeanCountries CaribbeanCountry?
   customerAddresses  CustomerAddress[]
