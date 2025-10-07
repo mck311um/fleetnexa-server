@@ -15,7 +15,7 @@ const getTransactions = async (req, res) => {
 };
 // const createPayment = async (req: Request, res: Response) => {
 //   const { tenant, user } = req.context!;
-//   const { data } = req.body;
+//   const data = req.body;
 //   if (!data) {
 //     logger.w('User data is missing', {
 //       tenantId: tenant.id,
@@ -53,7 +53,7 @@ const getTransactions = async (req, res) => {
 // };
 // const updatePayment = async (req: Request, res: Response) => {
 //   const { tenant, user } = req.context!;
-//   const { data } = req.body;
+//   const data = req.body;
 //   if (!data) {
 //     logger.w('User data is missing', {
 //       tenantId: tenant.id,

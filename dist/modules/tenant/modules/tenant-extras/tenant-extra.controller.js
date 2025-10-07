@@ -19,7 +19,7 @@ const getTenantExtras = async (req, res) => {
     }
 };
 const addTenantExtra = async (req, res) => {
-    const { data } = req.body;
+    const data = req.body;
     const { tenant, user } = req.context;
     if (!data) {
         logger_1.logger.w('Tenant extra data is missing');
@@ -51,7 +51,7 @@ const addTenantExtra = async (req, res) => {
     }
 };
 const updateTenantExtra = async (req, res) => {
-    const { data } = req.body;
+    const data = req.body;
     const { tenant, user } = req.context;
     if (!data) {
         logger_1.logger.w('Tenant extra data is missing');

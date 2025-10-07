@@ -46,7 +46,7 @@ const getUserRole = async (req: Request, res: Response) => {
 };
 
 const addUserRole = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const { tenant, user } = req.context!;
 
   if (!data) {
@@ -86,7 +86,7 @@ const addUserRole = async (req: Request, res: Response) => {
 };
 
 const updateRole = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const { tenant, user } = req.context!;
 
   if (!data) {
@@ -150,7 +150,7 @@ const deleteRole = async (req: Request, res: Response) => {
 
 const assignPermissions = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { data } = req.body;
+  const data = req.body;
   const { tenant, user } = req.context!;
 
   if (!id) {

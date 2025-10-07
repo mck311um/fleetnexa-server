@@ -106,7 +106,7 @@ const getBookingByCode = async (req: Request, res: Response) => {
 const createSystemBooking = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
-  const { data } = req.body;
+  const data = req.body;
 
   if (!tenantId) {
     logger.w('Tenant ID is missing', { tenantId });
@@ -167,7 +167,7 @@ const updateBooking = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
   const { id } = req.params;
-  const { data } = req.body;
+  const data = req.body;
   const userId = req.user?.id;
 
   if (!tenantId) {
@@ -289,7 +289,7 @@ const deleteBooking = async (req: Request, res: Response) => {
 const confirmBooking = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
-  const { data } = req.body;
+  const data = req.body;
   const userId = req.user?.id;
 
   if (!tenantId) {
@@ -387,13 +387,6 @@ const confirmBooking = async (req: Request, res: Response) => {
     })();
 
     const bookings = await bookingRepo.getBookings(tenantId);
-
-    logger.i('Booking confirmed successfully', {
-      tenantId,
-      tenantCode,
-      bookingId: updatedBooking!.id,
-      bookingCode: updatedBooking!.bookingCode,
-    });
 
     return res.status(200).json({
       message: `Booking #${updatedBooking!.rentalNumber} confirmed successfully`,
@@ -518,7 +511,7 @@ const cancelBooking = async (req: Request, res: Response) => {
 const startBooking = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
-  const { data } = req.body;
+  const data = req.body;
   const userId = req.user?.id;
 
   if (!tenantId) {
@@ -609,7 +602,7 @@ const startBooking = async (req: Request, res: Response) => {
 const endBooking = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
-  const { data } = req.body;
+  const data = req.body;
   const userId = req.user?.id;
 
   if (!tenantId) {

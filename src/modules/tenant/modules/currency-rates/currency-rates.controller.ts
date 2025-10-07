@@ -30,7 +30,7 @@ const getTenantCurrencyRates = async (req: Request, res: Response) => {
 };
 
 const updateTenantCurrencyRate = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
 

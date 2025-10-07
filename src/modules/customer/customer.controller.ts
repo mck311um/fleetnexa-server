@@ -98,7 +98,7 @@ const getCustomerViolationById = async (req: Request, res: Response) => {
   }
 };
 const addCustomerViolation = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
 
@@ -156,7 +156,7 @@ const addCustomerViolation = async (req: Request, res: Response) => {
   }
 };
 const updateCustomerViolation = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
 

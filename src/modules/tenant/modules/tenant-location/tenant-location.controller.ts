@@ -89,7 +89,7 @@ const getAllLocations = async (req: Request, res: Response) => {
 };
 
 const addTenantLocation = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
 
@@ -135,7 +135,7 @@ const addTenantLocation = async (req: Request, res: Response) => {
 };
 
 const updateTenantLocation = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
   const userId = req.user?.id;

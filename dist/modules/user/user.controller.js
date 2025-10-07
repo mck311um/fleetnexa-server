@@ -168,7 +168,7 @@ const updateSystemUser = async (req, res) => {
     }
 };
 const changePassword = async (req, res) => {
-    const { data } = req.body;
+    const data = req.body;
     const tenantId = req.user?.tenantId;
     const tenantCode = req.user?.tenantCode;
     const userId = req.user?.id;

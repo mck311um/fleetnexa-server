@@ -26,7 +26,7 @@ const getTenantCurrencyRates = async (req, res) => {
     }
 };
 const updateTenantCurrencyRate = async (req, res) => {
-    const { data } = req.body;
+    const data = req.body;
     const tenantId = req.user?.tenantId;
     const tenantCode = req.user?.tenantCode;
     if (!tenantId) {

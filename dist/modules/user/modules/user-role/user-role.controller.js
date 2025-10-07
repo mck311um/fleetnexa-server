@@ -39,7 +39,7 @@ const getUserRole = async (req, res) => {
     }
 };
 const addUserRole = async (req, res) => {
-    const { data } = req.body;
+    const data = req.body;
     const { tenant, user } = req.context;
     if (!data) {
         logger_1.logger.w('Tenant extra data is missing');
@@ -73,7 +73,7 @@ const addUserRole = async (req, res) => {
     }
 };
 const updateRole = async (req, res) => {
-    const { data } = req.body;
+    const data = req.body;
     const { tenant, user } = req.context;
     if (!data) {
         logger_1.logger.w('Role data is missing');
@@ -127,7 +127,7 @@ const deleteRole = async (req, res) => {
 };
 const assignPermissions = async (req, res) => {
     const { id } = req.params;
-    const { data } = req.body;
+    const data = req.body;
     const { tenant, user } = req.context;
     if (!id) {
         logger_1.logger.w('Role ID is missing in request', { id });

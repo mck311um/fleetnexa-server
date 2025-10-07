@@ -14,7 +14,7 @@ class ExpenseService {
     async validateExpenseData(data) {
         const safeParse = expense_dto_1.ExpenseSchema.safeParse(data);
         if (!safeParse.success) {
-            logger_1.logger.e(safeParse.error, 'Invalid expense data', { data });
+            logger_1.logger.e(safeParse.error, 'Invalid expense data', data);
             throw new Error('Invalid expense data');
         }
         return safeParse.data;

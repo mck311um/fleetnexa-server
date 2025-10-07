@@ -128,7 +128,7 @@ const getBookingByCode = async (req, res) => {
 const createSystemBooking = async (req, res) => {
     const tenantId = req.user?.tenantId;
     const tenantCode = req.user?.tenantCode;
-    const { data } = req.body;
+    const data = req.body;
     if (!tenantId) {
         logger_1.logger.w('Tenant ID is missing', { tenantId });
         return res.status(400).json({ error: 'Tenant ID is required' });
@@ -177,7 +177,7 @@ const updateBooking = async (req, res) => {
     const tenantId = req.user?.tenantId;
     const tenantCode = req.user?.tenantCode;
     const { id } = req.params;
-    const { data } = req.body;
+    const data = req.body;
     const userId = req.user?.id;
     if (!tenantId) {
         logger_1.logger.w('Tenant ID is missing', { tenantId });
@@ -277,7 +277,7 @@ const deleteBooking = async (req, res) => {
 const confirmBooking = async (req, res) => {
     const tenantId = req.user?.tenantId;
     const tenantCode = req.user?.tenantCode;
-    const { data } = req.body;
+    const data = req.body;
     const userId = req.user?.id;
     if (!tenantId) {
         logger_1.logger.w('Tenant ID is missing', { tenantId });
@@ -338,12 +338,6 @@ const confirmBooking = async (req, res) => {
             }
         })();
         const bookings = await booking_repository_1.bookingRepo.getBookings(tenantId);
-        logger_1.logger.i('Booking confirmed successfully', {
-            tenantId,
-            tenantCode,
-            bookingId: updatedBooking.id,
-            bookingCode: updatedBooking.bookingCode,
-        });
         return res.status(200).json({
             message: `Booking #${updatedBooking.rentalNumber} confirmed successfully`,
             updatedBooking,
@@ -442,7 +436,7 @@ const cancelBooking = async (req, res) => {
 const startBooking = async (req, res) => {
     const tenantId = req.user?.tenantId;
     const tenantCode = req.user?.tenantCode;
-    const { data } = req.body;
+    const data = req.body;
     const userId = req.user?.id;
     if (!tenantId) {
         logger_1.logger.w('Tenant ID is missing', { tenantId });
@@ -506,7 +500,7 @@ const startBooking = async (req, res) => {
 const endBooking = async (req, res) => {
     const tenantId = req.user?.tenantId;
     const tenantCode = req.user?.tenantCode;
-    const { data } = req.body;
+    const data = req.body;
     const userId = req.user?.id;
     if (!tenantId) {
         logger_1.logger.w('Tenant ID is missing', { tenantId });

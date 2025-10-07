@@ -18,7 +18,7 @@ const getTransactions = async (req: Request, res: Response) => {
 
 // const createPayment = async (req: Request, res: Response) => {
 //   const { tenant, user } = req.context!;
-//   const { data } = req.body;
+//   const data = req.body;
 
 //   if (!data) {
 //     logger.w('User data is missing', {
@@ -63,7 +63,7 @@ const getTransactions = async (req: Request, res: Response) => {
 
 // const updatePayment = async (req: Request, res: Response) => {
 //   const { tenant, user } = req.context!;
-//   const { data } = req.body;
+//   const data = req.body;
 
 //   if (!data) {
 //     logger.w('User data is missing', {

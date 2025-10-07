@@ -139,7 +139,7 @@ const createTenant = async (req: Request, res: Response) => {
 };
 
 const updateTenant = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
 

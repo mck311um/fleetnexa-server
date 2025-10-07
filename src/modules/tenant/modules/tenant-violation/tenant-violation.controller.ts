@@ -36,7 +36,7 @@ const getAllTenantViolations = async (req: Request, res: Response) => {
 };
 
 const createViolation = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
 
@@ -91,7 +91,7 @@ const createViolation = async (req: Request, res: Response) => {
 };
 
 const updateViolation = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const tenantId = req.user?.tenantId;
   const tenantCode = req.user?.tenantCode;
 

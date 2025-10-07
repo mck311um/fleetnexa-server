@@ -21,7 +21,7 @@ const getTenantExtras = async (req: Request, res: Response) => {
 };
 
 const addTenantExtra = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const { tenant, user } = req.context!;
 
   if (!data) {
@@ -59,7 +59,7 @@ const addTenantExtra = async (req: Request, res: Response) => {
 };
 
 const updateTenantExtra = async (req: Request, res: Response) => {
-  const { data } = req.body;
+  const data = req.body;
   const { tenant, user } = req.context!;
 
   if (!data) {
