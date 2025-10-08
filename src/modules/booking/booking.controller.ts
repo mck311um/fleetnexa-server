@@ -359,32 +359,18 @@ const confirmBooking = async (req: Request, res: Response) => {
       );
     });
 
-    (async () => {
-      try {
-        await emailService.sendConfirmationEmail(
-          updatedBooking!.id,
-          tenant,
-          prisma,
-        );
-        await service.generateInvoice(
-          updatedBooking!.id,
-          tenant,
-          prisma,
-          userId!,
-        );
-        await service.generateBookingAgreement(
-          updatedBooking!.id,
-          tenant,
-          prisma,
-          userId!,
-        );
-      } catch (err) {
-        logger.e(err, 'Background document/email generation failed', {
-          tenantId,
-          bookingId: updatedBooking!.id,
-        });
-      }
-    })();
+    await service.generateInvoice(updatedBooking!.id, tenant, prisma, userId!);
+    await service.generateBookingAgreement(
+      updatedBooking!.id,
+      tenant,
+      prisma,
+      userId!,
+    );
+    await emailService.sendConfirmationEmail(
+      updatedBooking!.id,
+      tenant,
+      prisma,
+    );
 
     const bookings = await bookingRepo.getBookings(tenantId);
 
