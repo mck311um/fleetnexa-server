@@ -91,10 +91,31 @@
         font-weight: 600;
       }
 
+      .documents-section {
+        margin-bottom: 25px;
+      }
+
+      .documents-heading {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 12px;
+        color: #1580b5;
+      }
+
+      .document-item {
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
+        border-left: 3px solid #1580b5;
+      }
+
       .document-link {
         color: #1580b5;
         text-decoration: none;
         font-weight: 600;
+        display: block;
+        margin-top: 5px;
       }
 
       .document-link:hover {
@@ -135,7 +156,6 @@
       }
     </style>
   </head>
-
   <body>
     <div class="email-container">
       <div class="email-header">
@@ -159,7 +179,7 @@
           <div class="info-heading">Booking Summary</div>
           <div class="info-item">
             <span class="info-label">Booking ID:</span>
-            <span class="info-value">{{bookingId}}</span>
+            <span class="info-value booking-id">{{bookingId}}</span>
           </div>
           <div class="info-item">
             <span class="info-label">Vehicle:</span>
@@ -202,17 +222,17 @@
         <div class="info-card">
           <div class="info-heading">Your Documents</div>
           {{#if invoiceUrl}}
-          <div class="info-item">
-            <span class="info-label">Booking Invoice:</span>
+          <div class="document-item">
+            <div>Booking Invoice</div>
             <a href="{{invoiceUrl}}" class="document-link" target="_blank"
-              >Download</a
+              >Download invoice</a
             >
           </div>
           {{/if}} {{#if agreementUrl}}
-          <div class="info-item">
-            <span class="info-label">Rental Agreement:</span>
+          <div class="document-item">
+            <div>Rental Agreement</div>
             <a href="{{agreementUrl}}" class="document-link" target="_blank"
-              >Download</a
+              >Download agreement</a
             >
           </div>
           {{/if}}

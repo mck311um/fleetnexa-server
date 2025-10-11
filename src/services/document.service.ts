@@ -1,5 +1,5 @@
 import { logger } from '../config/logger';
-import { TxClient } from '../config/prisma.config';
+import prisma, { TxClient } from '../config/prisma.config';
 import customerService from '../modules/customer/customer.service';
 import { tenantExtraService } from '../modules/tenant/modules/tenant-extras/tenant-extras.service';
 import tenantService from '../modules/tenant/tenant.service';
@@ -12,11 +12,7 @@ import {
 } from '../types/pdf';
 import formatter from '../utils/formatter';
 
-const generateInvoiceData = async (
-  bookingId: string,
-  tenantId: string,
-  tx: TxClient,
-) => {
+const generateInvoiceData = async (bookingId: string, tenantId: string) => {
   try {
     const tenantExtras = await tenantExtraService.getTenantExtras(tenantId);
 
@@ -24,7 +20,7 @@ const generateInvoiceData = async (
       ...tenantExtras?.find((extra) => extra.id === id),
     });
 
-    const booking = await tx.rental.findUnique({
+    const booking = await prisma.rental.findUnique({
       where: { id: bookingId },
       include: {
         vehicle: {
@@ -47,7 +43,7 @@ const generateInvoiceData = async (
       throw new Error('Booking not found');
     }
 
-    const tenant = await tx.tenant.findUnique({
+    const tenant = await prisma.tenant.findUnique({
       where: { id: tenantId },
       include: {
         currency: true,
@@ -61,7 +57,7 @@ const generateInvoiceData = async (
       throw new Error('Tenant not found');
     }
 
-    const primaryDriver = await customerService.getPrimaryDriver(bookingId, tx);
+    const primaryDriver = await customerService.getPrimaryDriver(bookingId);
 
     const customerAddress = primaryDriver?.customer?.address
       ? [
@@ -205,11 +201,7 @@ const generateInvoiceData = async (
   }
 };
 
-const generateAgreementData = async (
-  bookingId: string,
-  tenantId: string,
-  tx: TxClient,
-) => {
+const generateAgreementData = async (bookingId: string, tenantId: string) => {
   try {
     const tenantExtras = await tenantExtraService.getTenantExtras(tenantId);
 
@@ -217,7 +209,7 @@ const generateAgreementData = async (
       ...tenantExtras?.find((extra) => extra.id === id),
     });
 
-    const booking = await tx.rental.findUnique({
+    const booking = await prisma.rental.findUnique({
       where: { id: bookingId },
       include: {
         vehicle: {
@@ -262,7 +254,7 @@ const generateAgreementData = async (
       throw new Error('Booking not found');
     }
 
-    const tenant = await tx.tenant.findUnique({
+    const tenant = await prisma.tenant.findUnique({
       where: { id: tenantId },
       include: {
         currency: true,
@@ -420,6 +412,20 @@ const generateAgreementData = async (
       }),
     );
 
+    const localStartTime = booking?.startDate
+      ? new Date(booking.startDate).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      : '';
+
+    const localEndTime = booking?.endDate
+      ? new Date(booking.endDate).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      : '';
+
     const data: RentalAgreementData = {
       tenantName: tenant?.tenantName || '',
       street: tenant?.address?.street || '',
@@ -444,10 +450,10 @@ const generateAgreementData = async (
       featuredImage: booking?.vehicle?.featuredImage || '',
       pickupDate: `${formatter.formatDateToFriendly(booking?.startDate || '')}`,
       pickupLocation: booking?.pickup?.location || '',
-      pickupTime: `${formatter.formatDateToFriendlyTime(booking?.startDate || '')}`,
+      pickupTime: `${localStartTime}`,
       returnDate: `${formatter.formatDateToFriendly(booking?.endDate || '')}`,
       returnLocation: booking?.return?.location || '',
-      returnTime: `${formatter.formatDateToFriendlyTime(booking?.endDate || '')}`,
+      returnTime: `${localEndTime}`,
       drivers,
       numberOfUnits: numberOfUnits() || 0,
       unit: booking?.chargeType?.unit?.toString() || 'day',

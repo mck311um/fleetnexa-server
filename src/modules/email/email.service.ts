@@ -70,14 +70,12 @@ const sendWelcomeEmail = async (
 
 const sendConfirmationEmail = async (
   bookingId: string,
-  tenant: Tenant | null,
+  includeInvoice: boolean,
+  includeAgreement: boolean,
+  tenant: Tenant,
   tx: TxClient,
 ) => {
   try {
-    if (!tenant) {
-      throw new Error('Tenant not found');
-    }
-
     const currency = await tx.currency.findUnique({
       where: { id: tenant.currencyId! },
     });
@@ -107,10 +105,7 @@ const sendConfirmationEmail = async (
       throw new Error('Booking not found');
     }
 
-    const primaryDriver = await customerService.getPrimaryDriver(
-      booking.id,
-      tx,
-    );
+    const primaryDriver = await customerService.getPrimaryDriver(booking.id);
 
     const templateData: BookingConfirmationEmailParams = {
       bookingId: booking?.bookingCode || '',
@@ -126,8 +121,12 @@ const sendConfirmationEmail = async (
       phone: tenant?.number || '',
       vehicle: formatter.formatVehicleToFriendly(booking?.vehicle) || '',
       email: tenant?.email || '',
-      invoiceUrl: booking?.invoice?.invoiceUrl || '',
-      agreementUrl: booking?.agreement?.agreementUrl || '',
+      invoiceUrl: includeInvoice
+        ? booking?.invoice?.invoiceUrl || ''
+        : undefined,
+      agreementUrl: includeAgreement
+        ? booking?.agreement?.agreementUrl || ''
+        : undefined,
     };
 
     await ses.sendEmail({

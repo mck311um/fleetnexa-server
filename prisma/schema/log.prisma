@@ -7,7 +7,7 @@ model RentalActivity {
   createdAt  DateTime     @default(now())
   createdBy  String?
   tenantId   String
-  user       User?        @relation(fields: [createdBy], references: [id])
+  
   customer   Customer     @relation(fields: [customerId], references: [id])
   rental     Rental       @relation(fields: [rentalId], references: [id])
   tenant     Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)

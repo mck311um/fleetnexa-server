@@ -19,7 +19,7 @@
     "@aws-sdk/client-ses": "^3.873.0",
     "@aws-sdk/s3-request-presigner": "^3.758.0",
     "@paddle/paddle-node-sdk": "^2.7.0",
-    "@prisma/client": "^6.13.0",
+    "@prisma/client": "^6.17.0",
     "@sentry/node": "^10.11.0",
     "@typescript-eslint/eslint-plugin": "^8.43.0",
     "@typescript-eslint/parser": "^8.43.0",
@@ -68,7 +68,7 @@
     "eslint": "^9.35.0",
     "nodemon": "^3.1.10",
     "pino-pretty": "^13.1.1",
-    "prisma": "^6.13.0",
+    "prisma": "^6.17.0",
     "prisma-merge": "^0.2.0",
     "tailwind-scrollbar": "^4.0.2",
     "typescript": "^5.8.2"

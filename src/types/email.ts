@@ -42,8 +42,8 @@ export interface BookingConfirmationEmailParams {
   phone: string;
   vehicle: string;
   email: string;
-  invoiceUrl: string;
-  agreementUrl: string;
+  invoiceUrl?: string;
+  agreementUrl?: string;
 }
 
 export interface BookingCompletedEmailParams {

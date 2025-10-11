@@ -1,7 +1,7 @@
 model User {
   id                    String           @id @default(dbgenerated("gen_random_uuid()"))
   password              String
-  firstName             String
+  firstName              String
   lastName              String
   username              String           @unique
   tenantId              String?
@@ -16,13 +16,10 @@ model User {
   isDeleted             Boolean          @default(false)
   requirePasswordChange Boolean          @default(true)
   rentals               Rental[]
-  rentalActivity        RentalActivity[]
   role                  UserRole?        @relation(fields: [roleId], references: [id], onDelete: Cascade)
   tenant                Tenant?          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   expenses              Expense[]
-transactions          Transactions[]
-
-
+  transactions          Transactions[]
 
   @@unique([username, tenantId])
 }
@@ -30,7 +27,7 @@ transactions          Transactions[]
 model StorefrontUser {
   id                  String              @id @default(dbgenerated("gen_random_uuid()"))
   password            String
-  firstName           String
+  firstName            String
   lastName            String
   dateOfBirth         DateTime
   gender              String
@@ -45,7 +42,7 @@ model StorefrontUser {
   countryId           String
   createdAt           DateTime            @default(now())
   updatedAt           DateTime?           @updatedAt
-  profilePicture      String?             @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
+  profilePicture       String?             @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
   bookings            StorefrontBooking[]
   country             Country             @relation(fields: [countryId], references: [id])
   state               State               @relation(fields: [stateId], references: [id])
@@ -55,7 +52,7 @@ model StorefrontUser {
 model AdminUser {
   id        String    @id @default(dbgenerated("gen_random_uuid()"))
   password  String
-  firstName String
+  firstName  String
   lastName  String
   email     String    @unique
   createdAt DateTime  @default(now())
@@ -80,15 +77,6 @@ model UserRole {
   rolePermission UserRolePermission[]
 }
 
-model AppPermission {
-  id              String               @id @default(dbgenerated("gen_random_uuid()"))
-  name            String               @unique
-  description     String?
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime?            @updatedAt
-  category        String
-  rolePermissions UserRolePermission[]
-}
 
 model UserRolePermission {
   id           String        @id @default(dbgenerated("gen_random_uuid()"))

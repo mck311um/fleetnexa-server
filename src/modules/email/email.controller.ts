@@ -1,42 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../config/logger';
 import ses from '../../services/ses.service';
+import { templates } from '../../config/templates';
 
 const setupTemplates = async (req: Request, res: Response) => {
   try {
-    const templates = [
-      {
-        name: 'WelcomeTemplate',
-        subject: 'Welcome to FleetNexa!',
-        text: 'Welcome {{name}}!\n\nThank you for joining FleetNexa.\n\nYour account:\nCompany: {{tenantName}}\nUsername: {{username}}\nPassword: {{password}}\n\nPlease change your password immediately after first login.\n\nBest regards,\nFleetNexa Team',
-      },
-      {
-        name: 'BookingConfirmation',
-        subject: 'Booking Confirmation',
-        text: "Booking Confirmed!\n\nYour reservation has been successfully completed.\n\nBooking Details:\nBooking ID: {{bookingId}}\nStart Date: {{startDate}}\nEnd Date: {{endDate}}\nPickup Location: {{pickupLocation}}\nTotal Price: {{totalPrice}}\n\nRental Company:\nCompany: {{tenantName}}\nPhone: {{phone}}\nEmail: {{email}}\n\nImportant Notes:\n- Please bring a valid driver's license\n- Arrive 15 minutes before your scheduled pickup time\n- Contact the rental company if you need to make any changes with your booking ID\n\n© 2025 Devvize Services. All rights reserved.\nNeed help? Contact our team at support@devvize.com",
-      },
-      {
-        name: 'BookingCompleted',
-        subject: 'Booking Completed',
-        text: "Booking Completed!\n\nYour reservation has been successfully completed.\n\nBooking Details:\nBooking ID: {{bookingId}}\nStart Date: {{startDate}}\nEnd Date: {{endDate}}\nPickup Location: {{pickupLocation}}\nTotal Price: {{totalPrice}}\n\nRental Company:\nCompany: {{tenantName}}\nPhone: {{phone}}\nEmail: {{email}}\n\nImportant Notes:\n- Please bring a valid driver's license\n- Arrive 15 minutes before your scheduled pickup time\n- Contact the rental company if you need to make any changes with your booking ID\n\n© 2025 Devvize Services. All rights reserved.\nNeed help? Contact our team at support@devvize.com",
-      },
-      {
-        name: 'NewUser',
-        subject: 'User Created',
-        text: 'New System User Account Created!\n\nA system user account has been created for you in FleetNexa.\n\nAccount Details:\nCompany: {{tenantName}}\nName: {{name}}\nUsername: {{username}}\nPassword: {{password}}\n\nLogin URL: https://app.fleetnexa.com/login\n\nSecurity Notice:\n- You must change your password immediately after first login\n- This account provides access to sensitive system functions\n- Protect your credentials and never share them with others\n\nFor technical support or access issues, contact our IT team at it-support@devvize.com\n\n© 2025 Devvize Services. All rights reserved.',
-      },
-      {
-        name: 'PasswordReset',
-        subject: 'Your FleetNexa Password Has Been Reset',
-        text: "Password Reset Notification\n\nYour FleetNexa password has been reset as requested.\n\nLogin Details:\nUsername: {{username}}\nTemporary Password: {{password}}\n\nLogin URL: https://app.fleetnexa.com/login\n\nImportant Security Notice:\n- You must change this temporary password immediately after logging in\n- This temporary password will expire in 24 hours\n\nIf you didn't request this password reset, please contact our security team immediately at security@devvize.com\n\n© 2025 Devvize Services. All rights reserved.",
-      },
-      {
-        name: 'VerifyBusinessEmail',
-        subject: 'Verify Your Business Email Address',
-        text: 'Business Email Verification Required\n\nThank you for registering with FleetNexa!\n\nTo complete your business email verification, please use the verification code below:\n\nVerification Code: {{verificationCode}}\n\nThis code will expire in 30 minutes.\n\nAccount Details:\nCompany: {{tenantName}}\nEmail: {{email}}\nRequested: {{timestamp}}\n\nIf you did not request this verification, please ignore this email or contact our support team immediately.\n\nFor assistance, contact our support team at support@devvize.com\n\n© 2025 Devvize Services. All rights reserved.',
-      },
-    ];
-
     const results = [];
 
     for (const template of templates) {
