@@ -112,6 +112,7 @@ class AuthService {
         tenantCode: user.tenant?.tenantCode,
         roleId: user.roleId,
         requirePasswordChange: user.requirePasswordChange,
+        role: user.role,
       };
 
       const payload = {

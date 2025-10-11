@@ -4,7 +4,8 @@ type EmailTemplate =
   | 'BookingCompleted'
   | 'NewUser'
   | 'PasswordReset'
-  | 'VerifyBusinessEmail';
+  | 'VerifyBusinessEmail'
+  | 'BookingDocuments';
 
 export interface SendEmailParams {
   to: string[];
@@ -14,6 +15,7 @@ export interface SendEmailParams {
     | WelcomeEmailParams
     | BookingConfirmationEmailParams
     | BookingCompletedEmailParams
+    | BookingDocumentsEmailParams
     | VerifyBusinessEmailParams;
   from?: string;
 }
@@ -32,6 +34,21 @@ export interface WelcomeEmailParams {
 }
 
 export interface BookingConfirmationEmailParams {
+  bookingId: string;
+  startDate: string;
+  endDate: string;
+  pickupTime: string;
+  pickupLocation: string;
+  totalPrice: string;
+  tenantName: string;
+  phone: string;
+  vehicle: string;
+  email: string;
+  invoiceUrl?: string;
+  agreementUrl?: string;
+}
+
+export interface BookingDocumentsEmailParams {
   bookingId: string;
   startDate: string;
   endDate: string;

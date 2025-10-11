@@ -32,6 +32,7 @@
 
       .email-header .logo {
         max-width: 50px;
+        max-height: 50px;
         margin-bottom: 10px;
       }
 
@@ -81,14 +82,13 @@
       }
 
       .info-item {
-        display: flex;
-        justify-content: space-between;
         padding: 5px 0;
         font-size: 14px;
       }
 
       .info-item .info-label {
         font-weight: 600;
+        margin-right: 8px;
       }
 
       .documents-section {
@@ -107,7 +107,6 @@
         border-radius: 6px;
         margin-bottom: 10px;
         background-color: #f8f9fa;
-        border-left: 3px solid #1580b5;
       }
 
       .document-link {
@@ -156,6 +155,7 @@
       }
     </style>
   </head>
+
   <body>
     <div class="email-container">
       <div class="email-header">
@@ -186,8 +186,12 @@
             <span class="info-value">{{vehicle}}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Rental Period:</span>
-            <span class="info-value">{{startDate}} to {{endDate}}</span>
+            <span class="info-label">Start Date:</span>
+            <span class="info-value">{{startDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">End Date:</span>
+            <span class="info-value">{{endDate}}</span>
           </div>
           <div class="info-item">
             <span class="info-label">Pickup Location:</span>

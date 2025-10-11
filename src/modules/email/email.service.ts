@@ -1,6 +1,7 @@
 import prisma, { TxClient } from '../../config/prisma.config';
 import {
   BookingConfirmationEmailParams,
+  BookingDocumentsEmailParams,
   VerifyBusinessEmailParams,
   WelcomeEmailParams,
 } from '../../types/email';
@@ -9,6 +10,7 @@ import ses from '../../services/ses.service';
 import { logger } from '../../config/logger';
 import customerService from '../customer/customer.service';
 import { EmailVerification, Tenant } from '@prisma/client';
+import { SendBookingDocumentsDto } from './email.dto';
 
 class EmailService {
   async sendBusinessVerificationEmail(
@@ -32,6 +34,84 @@ class EmailService {
       logger.e(error, 'Error sending business verification email', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
+      });
+      throw error;
+    }
+  }
+
+  async sendBookingDocumentsEmail(
+    data: SendBookingDocumentsDto,
+    tenant: Tenant,
+  ) {
+    try {
+      const currency = await prisma.currency.findUnique({
+        where: { id: tenant.currencyId! },
+      });
+
+      if (!currency) {
+        logger.w('Currency not found', { currencyId: tenant.currencyId });
+        throw new Error('Currency not found');
+      }
+
+      const booking = await prisma.rental.findUnique({
+        where: { id: data.bookingId },
+        include: {
+          pickup: true,
+          vehicle: {
+            include: {
+              brand: true,
+              model: {
+                include: {
+                  bodyType: true,
+                },
+              },
+              transmission: true,
+            },
+          },
+          invoice: true,
+          agreement: true,
+          values: true,
+        },
+      });
+
+      if (!booking) {
+        logger.w('Booking not found', { bookingId: data.bookingId });
+        throw new Error('Booking not found');
+      }
+
+      const templateData: BookingDocumentsEmailParams = {
+        bookingId: booking?.bookingCode || '',
+        startDate: formatter.formatDateToFriendlyDate(booking?.startDate) || '',
+        pickupTime:
+          formatter.formatDateToFriendlyTime(booking?.startDate) || '',
+        endDate: formatter.formatDateToFriendlyDate(booking?.endDate) || '',
+        pickupLocation: booking?.pickup.location || '',
+        totalPrice: formatter.formatNumberToTenantCurrency(
+          booking?.values?.netTotal || 0,
+          currency?.code || 'USD',
+        ),
+        tenantName: tenant?.tenantName || '',
+        phone: tenant?.number || '',
+        vehicle: formatter.formatVehicleToFriendly(booking?.vehicle) || '',
+        email: tenant?.email || '',
+        invoiceUrl: data.includeInvoice
+          ? booking?.invoice?.invoiceUrl || ''
+          : undefined,
+        agreementUrl: data.includeAgreement
+          ? booking?.agreement?.agreementUrl || ''
+          : undefined,
+      };
+
+      await ses.sendEmail({
+        to: [data.to],
+        template: 'BookingDocuments',
+        templateData,
+      });
+    } catch (error) {
+      logger.e(error, 'Error sending booking documents email', {
+        bookingId: data.bookingId,
+        tenantId: tenant?.id,
+        tenantCode: tenant?.tenantCode,
       });
       throw error;
     }

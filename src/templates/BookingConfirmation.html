@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Booking Documents</title>
+    <title>Booking Confirmed</title>
     <style>
       body {
         margin: 0;
@@ -11,7 +11,6 @@
         background-color: #f8f9fa;
         font-family: Arial, sans-serif;
         color: #495057;
-        line-height: 1.5;
       }
 
       .email-container {
@@ -32,6 +31,7 @@
 
       .email-header .logo {
         max-width: 50px;
+        max-height: 50px;
         margin-bottom: 10px;
       }
 
@@ -69,6 +69,7 @@
         border-radius: 6px;
         padding: 15px 20px;
         margin-bottom: 25px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       }
 
       .info-heading {
@@ -81,14 +82,65 @@
       }
 
       .info-item {
-        display: flex;
-        justify-content: space-between;
         padding: 5px 0;
         font-size: 14px;
       }
 
       .info-item .info-label {
         font-weight: 600;
+        margin-right: 8px;
+      }
+
+      .company-item {
+        margin-bottom: 12px;
+        font-size: 18px;
+      }
+
+      .password-value {
+        font-family: monospace;
+        background-color: #e9ecef;
+        padding: 2px 5px;
+        border-radius: 4px;
+      }
+
+      .notes-section {
+        background-color: #fff8e5;
+        border: 1px solid #ffe0a3;
+        border-radius: 6px;
+        padding: 15px 18px;
+        margin-bottom: 25px;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .notes-section strong {
+        color: #d48806;
+      }
+
+      .action-section {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+
+      .documents-section {
+        margin-bottom: 25px;
+      }
+
+      .documents-heading {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 12px;
+        color: #1580b5;
+      }
+
+      .document-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
       }
 
       .document-link {
@@ -101,19 +153,18 @@
         text-decoration: underline;
       }
 
-      .notes-section {
-        background-color: #fff8e5;
-        border: 1px solid #ffe0a3;
-        border-radius: 6px;
-        padding: 15px 18px;
-        margin-bottom: 25px;
+      .download-btn {
+        background-color: #4cd3e3;
+        color: #ffffff;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-weight: 600;
         font-size: 13px;
       }
 
-      .notes-section strong {
-        color: #d48806;
-        display: block;
-        margin-bottom: 8px;
+      .download-btn:hover {
+        background-color: #1580b5;
       }
 
       .footer {
@@ -149,33 +200,30 @@
       </div>
 
       <div class="email-body">
-        <h1 class="welcome-title">Your Booking Documents</h1>
+        <h1 class="welcome-title">Booking Confirmed!</h1>
         <p class="intro-text">
-          Your booking with {{tenantName}} is confirmed! Below you'll find your
-          booking details and important documents for your upcoming rental.
+          Great news — {{tenantName}} has confirmed your reservation! Your
+          booking details are listed below, and we’ve attached your invoice and
+          agreement for easy reference.
         </p>
 
         <div class="info-card">
-          <div class="info-heading">Booking Summary</div>
+          <div class="info-heading">Booking Details</div>
           <div class="info-item">
             <span class="info-label">Booking ID:</span>
-            <span class="info-value">{{bookingId}}</span>
+            <span class="info-value booking-id">{{bookingId}}</span>
           </div>
           <div class="info-item">
             <span class="info-label">Vehicle:</span>
             <span class="info-value">{{vehicle}}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Rental Period:</span>
-            <span class="info-value">{{startDate}} to {{endDate}}</span>
+            <span class="info-label">Start Date:</span>
+            <span class="info-value">{{startDate}}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Pickup Location:</span>
-            <span class="info-value">{{pickupLocation}}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Pickup Time:</span>
-            <span class="info-value">{{pickupTime}}</span>
+            <span class="info-label">End Date:</span>
+            <span class="info-value">{{endDate}}</span>
           </div>
           <div class="info-item">
             <span class="info-label">Total Price:</span>
@@ -184,7 +232,23 @@
         </div>
 
         <div class="info-card">
-          <div class="info-heading">Rental Company Contact</div>
+          <div class="info-heading">Pickup Details</div>
+          <div class="info-item">
+            <span class="info-label">Pickup Date:</span>
+            <span class="info-value">{{startDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Time:</span>
+            <span class="info-value">{{pickupTime}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Location:</span>
+            <span class="info-value">{{pickupLocation}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Rental Company</div>
           <div class="info-item">
             <span class="info-label">Company:</span>
             <span class="info-value">{{tenantName}}</span>
@@ -219,18 +283,14 @@
         </div>
 
         <div class="notes-section">
-          <strong>Important Reminders</strong>
+          <strong>Important Reminder</strong>
           <p>
-            • Save these documents for your records. You may need to present
-            them at pickup.
+            💡 Tip: Save these documents for your records. You may need to
+            present them at pickup
           </p>
           <p>
-            • Please bring your driver's license and payment method used for
+            Please bring your driver's license and payment method used for
             booking when you pick up your vehicle.
-          </p>
-          <p>
-            • Contact {{tenantName}} directly if you need to make any changes to
-            your booking.
           </p>
         </div>
       </div>
