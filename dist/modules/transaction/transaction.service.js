@@ -35,6 +35,7 @@ class TransactionService {
                         refundId: data.refundId,
                         expenseId: data.expenseId,
                         tenantId: tenant.id,
+                        rentalId: data.rentalId,
                     },
                 });
             });
@@ -65,6 +66,7 @@ class TransactionService {
                         transactionDate: data.transactionDate,
                         updatedAt: new Date(),
                         updatedBy: user.username,
+                        rentalId: data.rentalId,
                     },
                 });
             });

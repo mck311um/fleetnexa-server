@@ -37,6 +37,18 @@ class TransactionRepository {
                     },
                 },
             },
+            refund: {
+                include: {
+                    customer: true,
+                    rental: {
+                        select: {
+                            id: true,
+                            rentalNumber: true,
+                            bookingCode: true,
+                        },
+                    },
+                },
+            },
             expense: {
                 include: {
                     vendor: true,

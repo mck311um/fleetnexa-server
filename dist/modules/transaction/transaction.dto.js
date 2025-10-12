@@ -12,4 +12,5 @@ exports.TransactionSchema = zod_1.z.object({
     paymentId: zod_1.z.string().optional(),
     refundId: zod_1.z.string().optional(),
     expenseId: zod_1.z.string().optional(),
+    rentalId: zod_1.z.string().optional(),
 });

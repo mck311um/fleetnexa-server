@@ -1,7 +1,6 @@
-import { Tenant, TransactionType, User } from '@prisma/client';
+import { Tenant, User } from '@prisma/client';
 import { logger } from '../../config/logger';
 import prisma, { TxClient } from '../../config/prisma.config';
-import { PaymentDto } from './dto/create-payment.dto';
 import { TransactionDto } from './transaction.dto';
 import { transactionRepo } from './transaction.repository';
 
@@ -33,6 +32,7 @@ class TransactionService {
             refundId: data.refundId,
             expenseId: data.expenseId,
             tenantId: tenant.id,
+            rentalId: data.rentalId,
           },
         });
       });
@@ -63,6 +63,7 @@ class TransactionService {
             transactionDate: data.transactionDate,
             updatedAt: new Date(),
             updatedBy: user.username,
+            rentalId: data.rentalId,
           },
         });
       });

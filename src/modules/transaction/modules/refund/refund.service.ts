@@ -1,33 +1,31 @@
 import { Tenant, TransactionType, User } from '@prisma/client';
 import { logger } from '../../../../config/logger';
-import { PaymentDto, PaymentSchema } from './payment.dto';
+import { RefundDto, RefundSchema } from './refund.dto';
 import prisma from '../../../../config/prisma.config';
 import { TransactionDto } from '../../transaction.dto';
-import { transactionService } from '../../transaction.service';
 import { v4 as uuidv4 } from 'uuid';
+import { transactionService } from '../../transaction.service';
 
-class PaymentService {
-  async validatePaymentData(data: any) {
-    const safeParse = PaymentSchema.safeParse(data);
+class RefundService {
+  async validateRefundData(data: any) {
+    const safeParse = RefundSchema.safeParse(data);
     if (!safeParse.success) {
-      logger.e('Invalid payment data', 'Payment validation failed', {
+      logger.e('Invalid refund data', 'Refund validation failed', {
         errors: safeParse.error.issues,
         input: data,
       });
-      throw new Error('Invalid payment data');
+      throw new Error('Invalid refund data');
     }
 
     return safeParse.data;
   }
 
-  async getTenantPayments(tenant: Tenant) {
+  async getTenantRefunds(tenant: Tenant) {
     try {
-      const payments = await prisma.payment.findMany({
+      const refunds = await prisma.refund.findMany({
         where: { tenantId: tenant.id },
         include: {
           rental: true,
-          paymentMethod: true,
-          paymentType: true,
           customer: {
             select: {
               id: true,
@@ -39,18 +37,19 @@ class PaymentService {
           },
         },
       });
-      return payments;
+      return refunds;
     } catch (error) {
-      logger.e(error, 'Error fetching tenant payments', {
+      logger.e(error, 'Error fetching tenant refunds', {
         tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
       });
-      throw new Error('Could not fetch tenant payments');
+      throw error;
     }
   }
 
-  async createPayment(data: PaymentDto, tenant: Tenant, user: User) {
+  async createRefund(data: RefundDto, tenant: Tenant, user: any) {
     try {
-      const payment = await prisma.$transaction(async (tx) => {
+      const refund = await prisma.$transaction(async (tx) => {
         const existingBooking = await tx.rental.findUnique({
           where: { id: data.bookingId },
         });
@@ -67,43 +66,40 @@ class PaymentService {
           throw new Error('Customer not found');
         }
 
-        const newPayment = await tx.payment.create({
+        const newRefund = await tx.refund.create({
           data: {
             id: data.id,
             amount: data.amount,
-            tenantId: tenant.id,
+            refundDate: new Date(data.refundDate),
+            reason: data.reason,
             rentalId: data.bookingId,
-            paymentDate: data.paymentDate,
-            notes: data.notes,
-            paymentTypeId: data.paymentTypeId,
-            paymentMethodId: data.paymentMethodId,
+            tenantId: tenant.id,
+            customerId: data.customerId,
             createdAt: new Date(),
             updatedAt: new Date(),
-            customerId: data.customerId,
-            payer: `${existingCustomer.firstName} ${existingCustomer.lastName}`,
-            payment: `Payment for booking #${existingBooking.rentalNumber}`,
+            createdBy: user.username,
+            payee: `${existingCustomer.firstName} ${existingCustomer.lastName}`,
+            payment: `Refund for booking #${existingBooking.rentalNumber}`,
             updatedBy: user.username,
           },
         });
 
-        return newPayment;
+        return newRefund;
       });
 
       const transaction: TransactionDto = {
         id: uuidv4(),
         amount: data.amount,
-        type: TransactionType.PAYMENT,
+        type: TransactionType.REFUND,
         rentalId: data.bookingId,
         transactionDate: new Date().toISOString(),
-        paymentId: payment.id,
+        refundId: refund.id,
         createdBy: user.username,
       };
 
       await transactionService.createTransaction(transaction, tenant, user);
-
-      return payment;
     } catch (error) {
-      logger.e(error, 'Error creating payment', {
+      logger.e(error, 'Error creating refund', {
         user: user.username,
         tenant: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -112,15 +108,15 @@ class PaymentService {
     }
   }
 
-  async updatePayment(data: PaymentDto, tenant: Tenant, user: User) {
+  async updateRefund(data: RefundDto, tenant: Tenant, user: any) {
     try {
       await prisma.$transaction(async (tx) => {
-        const existingPayment = await tx.payment.findUnique({
+        const existingRefund = await tx.refund.findUnique({
           where: { id: data.id },
         });
 
-        if (!existingPayment) {
-          throw new Error('Payment not found');
+        if (!existingRefund) {
+          throw new Error('Refund not found');
         }
 
         const existingCustomer = await tx.customer.findUnique({
@@ -139,28 +135,26 @@ class PaymentService {
           throw new Error('Booking not found');
         }
 
-        const updatedPayment = await tx.payment.update({
+        const updatedRefund = await tx.refund.update({
           where: { id: data.id },
           data: {
             amount: data.amount,
+            refundDate: new Date(data.refundDate),
+            reason: data.reason,
             rentalId: data.bookingId,
-            paymentDate: data.paymentDate,
-            notes: data.notes,
-            paymentTypeId: data.paymentTypeId,
-            paymentMethodId: data.paymentMethodId,
-            updatedAt: new Date(),
             customerId: data.customerId,
-            payer: `${existingCustomer.firstName} ${existingCustomer.lastName}`,
-            payment: `Payment for booking #${exitingBooking.rentalNumber}`,
+            updatedAt: new Date(),
+            payee: `${existingCustomer.firstName} ${existingCustomer.lastName}`,
+            payment: `Refund for booking #${exitingBooking.rentalNumber}`,
             updatedBy: user.username,
           },
         });
 
-        return updatedPayment;
+        return updatedRefund;
       });
 
       const existingTransaction = await prisma.transactions.findFirst({
-        where: { paymentId: data.id },
+        where: { refundId: data.id },
       });
 
       if (!existingTransaction) {
@@ -170,15 +164,15 @@ class PaymentService {
       const transaction: TransactionDto = {
         id: existingTransaction.id,
         amount: data.amount,
-        type: TransactionType.PAYMENT,
         transactionDate: existingTransaction.transactionDate.toISOString(),
+        type: TransactionType.RENTAL,
         rentalId: data.bookingId,
         createdBy: user.username,
       };
 
       await transactionService.updateTransaction(transaction, tenant, user);
     } catch (error) {
-      logger.e(error, 'Error updating payment', {
+      logger.e(error, 'Error updating refund', {
         user: user.username,
         tenant: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -187,48 +181,49 @@ class PaymentService {
     }
   }
 
-  async deletePayment(paymentId: string, tenant: Tenant, user: User) {
+  async deleteRefund(refundId: string, tenant: Tenant, user: User) {
     try {
-      const existingPayment = await prisma.payment.findUnique({
-        where: { id: paymentId },
+      await prisma.$transaction(async (tx) => {
+        const existingRefund = await tx.refund.findUnique({
+          where: { id: refundId },
+        });
+
+        if (!existingRefund) {
+          throw new Error('Refund not found');
+        }
+
+        const existingTransaction = await tx.transactions.findFirst({
+          where: { refundId: refundId },
+        });
+
+        if (!existingTransaction) {
+          throw new Error('Associated transaction not found');
+        }
+
+        await tx.refund.update({
+          where: { id: refundId },
+          data: {
+            isDeleted: true,
+            updatedAt: new Date(),
+            updatedBy: user.username,
+          },
+        });
+
+        await transactionService.deleteTransaction(
+          existingTransaction.id,
+          tenant,
+          user,
+        );
       });
-
-      if (!existingPayment) {
-        throw new Error('Payment not found');
-      }
-
-      const existingTransaction = await prisma.transactions.findFirst({
-        where: { paymentId: paymentId },
-      });
-
-      if (!existingTransaction) {
-        throw new Error('Associated transaction not found');
-      }
-
-      await prisma.payment.update({
-        where: { id: paymentId },
-        data: {
-          isDeleted: true,
-          updatedAt: new Date(),
-          updatedBy: user.username,
-        },
-      });
-
-      await transactionService.deleteTransaction(
-        existingTransaction.id,
-        tenant,
-        user,
-      );
     } catch (error) {
-      logger.e(error, 'Error deleting payment', {
-        user: user.username,
+      logger.e(error, 'Error deleting refund', {
+        refundId: refundId,
         tenant: tenant.id,
         tenantCode: tenant.tenantCode,
-        paymentId: paymentId,
       });
       throw error;
     }
   }
 }
 
-export const paymentService = new PaymentService();
+export const refundService = new RefundService();

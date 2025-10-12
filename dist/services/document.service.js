@@ -4,16 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = require("../config/logger");
+const prisma_config_1 = __importDefault(require("../config/prisma.config"));
 const customer_service_1 = __importDefault(require("../modules/customer/customer.service"));
 const tenant_extras_service_1 = require("../modules/tenant/modules/tenant-extras/tenant-extras.service");
 const formatter_1 = __importDefault(require("../utils/formatter"));
-const generateInvoiceData = async (bookingId, tenantId, tx) => {
+const generateInvoiceData = async (bookingId, tenantId) => {
     try {
         const tenantExtras = await tenant_extras_service_1.tenantExtraService.getTenantExtras(tenantId);
         const getExtra = (id) => ({
             ...tenantExtras?.find((extra) => extra.id === id),
         });
-        const booking = await tx.rental.findUnique({
+        const booking = await prisma_config_1.default.rental.findUnique({
             where: { id: bookingId },
             include: {
                 vehicle: {
@@ -34,7 +35,7 @@ const generateInvoiceData = async (bookingId, tenantId, tx) => {
         if (!booking) {
             throw new Error('Booking not found');
         }
-        const tenant = await tx.tenant.findUnique({
+        const tenant = await prisma_config_1.default.tenant.findUnique({
             where: { id: tenantId },
             include: {
                 currency: true,
@@ -46,7 +47,7 @@ const generateInvoiceData = async (bookingId, tenantId, tx) => {
         if (!tenant) {
             throw new Error('Tenant not found');
         }
-        const primaryDriver = await customer_service_1.default.getPrimaryDriver(bookingId, tx);
+        const primaryDriver = await customer_service_1.default.getPrimaryDriver(bookingId);
         const customerAddress = primaryDriver?.customer?.address
             ? [
                 primaryDriver.customer.address.village?.village,
@@ -166,13 +167,13 @@ const generateInvoiceData = async (bookingId, tenantId, tx) => {
         throw new Error('Failed to generate invoice data');
     }
 };
-const generateAgreementData = async (bookingId, tenantId, tx) => {
+const generateAgreementData = async (bookingId, tenantId) => {
     try {
         const tenantExtras = await tenant_extras_service_1.tenantExtraService.getTenantExtras(tenantId);
         const getExtra = (id) => ({
             ...tenantExtras?.find((extra) => extra.id === id),
         });
-        const booking = await tx.rental.findUnique({
+        const booking = await prisma_config_1.default.rental.findUnique({
             where: { id: bookingId },
             include: {
                 vehicle: {
@@ -215,7 +216,7 @@ const generateAgreementData = async (bookingId, tenantId, tx) => {
         if (!booking) {
             throw new Error('Booking not found');
         }
-        const tenant = await tx.tenant.findUnique({
+        const tenant = await prisma_config_1.default.tenant.findUnique({
             where: { id: tenantId },
             include: {
                 currency: true,
@@ -331,6 +332,18 @@ const generateAgreementData = async (bookingId, tenantId, tx) => {
             country: el.customer?.address?.country?.country || '',
             primaryDriver: el.isPrimary || false,
         }));
+        const localStartTime = booking?.startDate
+            ? new Date(booking.startDate).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+            })
+            : '';
+        const localEndTime = booking?.endDate
+            ? new Date(booking.endDate).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+            })
+            : '';
         const data = {
             tenantName: tenant?.tenantName || '',
             street: tenant?.address?.street || '',
@@ -355,10 +368,10 @@ const generateAgreementData = async (bookingId, tenantId, tx) => {
             featuredImage: booking?.vehicle?.featuredImage || '',
             pickupDate: `${formatter_1.default.formatDateToFriendly(booking?.startDate || '')}`,
             pickupLocation: booking?.pickup?.location || '',
-            pickupTime: `${formatter_1.default.formatDateToFriendlyTime(booking?.startDate || '')}`,
+            pickupTime: `${localStartTime}`,
             returnDate: `${formatter_1.default.formatDateToFriendly(booking?.endDate || '')}`,
             returnLocation: booking?.return?.location || '',
-            returnTime: `${formatter_1.default.formatDateToFriendlyTime(booking?.endDate || '')}`,
+            returnTime: `${localEndTime}`,
             drivers,
             numberOfUnits: numberOfUnits() || 0,
             unit: booking?.chargeType?.unit?.toString() || 'day',

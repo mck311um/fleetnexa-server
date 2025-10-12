@@ -28,17 +28,17 @@ class TenantRepository {
             customers: true,
             subscription: {
                 include: {
-                    payments: {
-                        include: {
-                            plan: true,
-                        },
-                    },
-                    plan: {
-                        include: {
-                            details: true,
-                            features: true,
-                        },
-                    },
+                // payments: {
+                //   include: {
+                //     plan: true,
+                //   },
+                // },
+                // plan: {
+                //   include: {
+                //     details: true,
+                //     features: true,
+                //   },
+                // },
                 },
             },
             services: {

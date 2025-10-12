@@ -506,7 +506,6 @@ const startBooking = async (req: Request, res: Response) => {
         booking.vehicleId,
         bookingDto.vehicleStatus,
         tenant,
-        tx,
         user.id,
       );
 
@@ -555,42 +554,39 @@ const endBooking = async (req: Request, res: Response) => {
   const bookingDto = parseResult.data;
 
   try {
-    await prisma.$transaction(async (tx) => {
-      const booking = await tx.rental.findUnique({
-        where: { id: bookingDto.bookingId },
-      });
-
-      if (!booking) {
-        logger.w('Booking not found', {
-          tenantId: tenant.id,
-          tenantCode: tenant.tenantCode,
-          bookingId: bookingDto.bookingId,
-        });
-        throw new Error('Booking not found');
-      }
-
-      await bookingService.updateBookingStatus(
-        booking.id,
-        bookingDto.status,
-        tenant,
-        user,
-      );
-
-      await vehicleService.updateVehicleStatus(
-        booking.vehicleId,
-        bookingDto.vehicleStatus,
-        tenant,
-        tx,
-        user.id,
-      );
-
-      await bookingService.createRentalActivity(
-        bookingDto,
-        tenant,
-        user.id,
-        bookingDto.returnDate ? new Date(bookingDto.returnDate) : undefined,
-      );
+    const booking = await prisma.rental.findUnique({
+      where: { id: bookingDto.bookingId },
     });
+
+    if (!booking) {
+      logger.w('Booking not found', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        bookingId: bookingDto.bookingId,
+      });
+      throw new Error('Booking not found');
+    }
+
+    await bookingService.updateBookingStatus(
+      booking.id,
+      bookingDto.status,
+      tenant,
+      user,
+    );
+
+    await vehicleService.updateVehicleStatus(
+      booking.vehicleId,
+      bookingDto.vehicleStatus,
+      tenant,
+      user.id,
+    );
+
+    await bookingService.createRentalActivity(
+      bookingDto,
+      tenant,
+      user.id,
+      bookingDto.returnDate ? new Date(bookingDto.returnDate) : undefined,
+    );
 
     const updatedBooking = await bookingRepo.getRentalById(
       bookingDto.bookingId,

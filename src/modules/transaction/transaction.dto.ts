@@ -10,6 +10,7 @@ export const TransactionSchema = z.object({
   paymentId: z.string().optional(),
   refundId: z.string().optional(),
   expenseId: z.string().optional(),
+  rentalId: z.string().optional(),
 });
 
 export type TransactionDto = z.infer<typeof TransactionSchema>;

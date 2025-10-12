@@ -405,11 +405,10 @@ const updateVehicleStatus = async (
   vehicleId: string,
   status: string,
   tenant: Tenant,
-  tx: TxClient,
   userId: string,
 ) => {
   try {
-    const vehicle = await tx.vehicle.findUnique({
+    const vehicle = await prisma.vehicle.findUnique({
       where: { id: vehicleId },
     });
 
@@ -418,7 +417,7 @@ const updateVehicleStatus = async (
       throw new Error('Vehicle not found');
     }
 
-    const foundStatus = await tx.vehicleStatus.findUnique({
+    const foundStatus = await prisma.vehicleStatus.findUnique({
       where: { status: status },
     });
 
@@ -427,7 +426,7 @@ const updateVehicleStatus = async (
       throw new Error('Vehicle status not found');
     }
 
-    await tx.vehicle.update({
+    await prisma.vehicle.update({
       where: { id: vehicleId },
       data: { vehicleStatusId: foundStatus.id, updatedBy: userId },
     });

@@ -11,4 +11,7 @@ exports.ActionBookingDtoSchema = zod_1.z.object({
     returnDate: zod_1.z.string().optional(),
     lateFeeApplied: zod_1.z.boolean().default(false),
     lateFee: zod_1.z.float64().min(0).optional(),
+    sendEmail: zod_1.z.boolean().default(false),
+    includeAgreement: zod_1.z.boolean().default(false),
+    includeInvoice: zod_1.z.boolean().default(false),
 });

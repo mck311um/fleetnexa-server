@@ -163,9 +163,6 @@ class UserRoleService {
                 if (!role) {
                     throw new Error('Role not found');
                 }
-                await tx.userRolePermission.deleteMany({
-                    where: { roleId: role.id },
-                });
                 await tx.userRolePermission.createMany({
                     data: permissions.map((permId) => ({
                         roleId: role.id,
@@ -173,6 +170,7 @@ class UserRoleService {
                         assignedBy: user.username,
                         assignedAt: new Date(),
                     })),
+                    skipDuplicates: true,
                 });
             });
         }

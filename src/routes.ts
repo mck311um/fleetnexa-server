@@ -20,6 +20,8 @@ import tenantVendorRoutes from './modules/tenant/modules/tenant-vendor/tenant-ve
 import paymentRoutes from './modules/transaction/modules/payment/payment.routes';
 import vehicleMaintenanceRoutes from './modules/vehicle/modules/vehicle-maintanance/vehicle-maintenance.routes';
 import expenseRoutes from './modules/transaction/modules/expense/expense.routes';
+import tenantActivityRoutes from './modules/tenant/modules/tenant-activity/tenant-activity.routes';
+import refundRoutes from './modules/transaction/modules/refund/refund.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
@@ -33,6 +35,7 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/transaction', transactionRoutes);
   app.use('/api/payment', paymentRoutes);
   app.use('/api/expense', expenseRoutes);
+  app.use('/api/refund', refundRoutes);
 
   app.use('/api/user', userRoutes);
   app.use('/api/user-role', roleRoutes);
@@ -40,6 +43,7 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/customer', customerRoutes);
 
   app.use('/api/tenant', tenantRoutes);
+  app.use('/api/tenant-activity', tenantActivityRoutes);
   app.use('/api/tenant-extra', tenantExtraRoutes);
   app.use('/api/tenant-location', tenantLocationRoutes);
   app.use('/api/tenant-violation', tenantViolationRoutes);

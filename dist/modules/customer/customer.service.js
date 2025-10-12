@@ -23,9 +23,9 @@ class CustomerService {
     }
 }
 exports.customerService = new CustomerService();
-const getPrimaryDriver = async (bookingId, tx) => {
+const getPrimaryDriver = async (bookingId) => {
     try {
-        const driver = await tx.rentalDriver.findFirst({
+        const driver = await prisma_config_1.default.rentalDriver.findFirst({
             where: {
                 rentalId: bookingId,
                 isPrimary: true,

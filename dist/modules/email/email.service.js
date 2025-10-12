@@ -32,6 +32,72 @@ class EmailService {
             throw error;
         }
     }
+    async sendBookingDocumentsEmail(data, tenant) {
+        try {
+            const currency = await prisma_config_1.default.currency.findUnique({
+                where: { id: tenant.currencyId },
+            });
+            if (!currency) {
+                logger_1.logger.w('Currency not found', { currencyId: tenant.currencyId });
+                throw new Error('Currency not found');
+            }
+            const booking = await prisma_config_1.default.rental.findUnique({
+                where: { id: data.bookingId },
+                include: {
+                    pickup: true,
+                    vehicle: {
+                        include: {
+                            brand: true,
+                            model: {
+                                include: {
+                                    bodyType: true,
+                                },
+                            },
+                            transmission: true,
+                        },
+                    },
+                    invoice: true,
+                    agreement: true,
+                    values: true,
+                },
+            });
+            if (!booking) {
+                logger_1.logger.w('Booking not found', { bookingId: data.bookingId });
+                throw new Error('Booking not found');
+            }
+            const templateData = {
+                bookingId: booking?.bookingCode || '',
+                startDate: formatter_1.default.formatDateToFriendlyDate(booking?.startDate) || '',
+                pickupTime: formatter_1.default.formatDateToFriendlyTime(booking?.startDate) || '',
+                endDate: formatter_1.default.formatDateToFriendlyDate(booking?.endDate) || '',
+                pickupLocation: booking?.pickup.location || '',
+                totalPrice: formatter_1.default.formatNumberToTenantCurrency(booking?.values?.netTotal || 0, currency?.code || 'USD'),
+                tenantName: tenant?.tenantName || '',
+                phone: tenant?.number || '',
+                vehicle: formatter_1.default.formatVehicleToFriendly(booking?.vehicle) || '',
+                email: tenant?.email || '',
+                invoiceUrl: data.includeInvoice
+                    ? booking?.invoice?.invoiceUrl || ''
+                    : undefined,
+                agreementUrl: data.includeAgreement
+                    ? booking?.agreement?.agreementUrl || ''
+                    : undefined,
+            };
+            await ses_service_1.default.sendEmail({
+                to: [data.to],
+                template: 'BookingDocuments',
+                templateData,
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error sending booking documents email', {
+                bookingId: data.bookingId,
+                tenantId: tenant?.id,
+                tenantCode: tenant?.tenantCode,
+            });
+            throw error;
+        }
+    }
 }
 exports.emailService = new EmailService();
 const sendWelcomeEmail = async (tenant, username, password, name) => {
@@ -56,11 +122,8 @@ const sendWelcomeEmail = async (tenant, username, password, name) => {
         throw error;
     }
 };
-const sendConfirmationEmail = async (bookingId, tenant, tx) => {
+const sendConfirmationEmail = async (bookingId, includeInvoice, includeAgreement, tenant, tx) => {
     try {
-        if (!tenant) {
-            throw new Error('Tenant not found');
-        }
         const currency = await tx.currency.findUnique({
             where: { id: tenant.currencyId },
         });
@@ -87,7 +150,7 @@ const sendConfirmationEmail = async (bookingId, tenant, tx) => {
         if (!booking) {
             throw new Error('Booking not found');
         }
-        const primaryDriver = await customer_service_1.default.getPrimaryDriver(booking.id, tx);
+        const primaryDriver = await customer_service_1.default.getPrimaryDriver(booking.id);
         const templateData = {
             bookingId: booking?.bookingCode || '',
             startDate: formatter_1.default.formatDateToFriendlyDate(booking?.startDate) || '',
@@ -99,8 +162,12 @@ const sendConfirmationEmail = async (bookingId, tenant, tx) => {
             phone: tenant?.number || '',
             vehicle: formatter_1.default.formatVehicleToFriendly(booking?.vehicle) || '',
             email: tenant?.email || '',
-            invoiceUrl: booking?.invoice?.invoiceUrl || '',
-            agreementUrl: booking?.agreement?.agreementUrl || '',
+            invoiceUrl: includeInvoice
+                ? booking?.invoice?.invoiceUrl || ''
+                : undefined,
+            agreementUrl: includeAgreement
+                ? booking?.agreement?.agreementUrl || ''
+                : undefined,
         };
         await ses_service_1.default.sendEmail({
             to: [primaryDriver?.customer.email || ''],

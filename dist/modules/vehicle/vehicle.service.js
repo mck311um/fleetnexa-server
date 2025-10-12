@@ -354,23 +354,23 @@ class VehicleService {
     }
 }
 exports.vehicleService = new VehicleService();
-const updateVehicleStatus = async (vehicleId, status, tenant, tx, userId) => {
+const updateVehicleStatus = async (vehicleId, status, tenant, userId) => {
     try {
-        const vehicle = await tx.vehicle.findUnique({
+        const vehicle = await prisma_config_1.default.vehicle.findUnique({
             where: { id: vehicleId },
         });
         if (!vehicle) {
             logger_1.logger.w('Vehicle not found', { vehicleId, userId });
             throw new Error('Vehicle not found');
         }
-        const foundStatus = await tx.vehicleStatus.findUnique({
+        const foundStatus = await prisma_config_1.default.vehicleStatus.findUnique({
             where: { status: status },
         });
         if (!foundStatus) {
             logger_1.logger.w('Vehicle status not found', { status, userId });
             throw new Error('Vehicle status not found');
         }
-        await tx.vehicle.update({
+        await prisma_config_1.default.vehicle.update({
             where: { id: vehicleId },
             data: { vehicleStatusId: foundStatus.id, updatedBy: userId },
         });

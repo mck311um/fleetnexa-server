@@ -6,7 +6,7 @@ model Transactions {
   tenantId            String
   rentalId            String?
   details             String?
-
+  
   paymentId           String?         @unique
   refundId            String?         @unique
   expenseId           String?         @unique
@@ -67,11 +67,13 @@ model Refund {
   customerId          String?
   refund              String?
   payee               String?
+  payment             String?
 
   isDeleted           Boolean       @default(false)
   createdAt           DateTime      @default(now())
   updatedAt           DateTime?     @updatedAt
   createdBy           String?
+  updatedBy           String?
 
 
   customer            Customer?     @relation(fields: [customerId], references: [id])
