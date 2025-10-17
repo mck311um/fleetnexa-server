@@ -93,6 +93,7 @@ model Country {
   presetLocations    PresetLocation[]
   states             State[]
   storefrontUser     StorefrontUser[]
+  ports              Port[]
 }
 
 model State {
@@ -191,4 +192,14 @@ model VendorType {
   id      String    @id @default(dbgenerated("gen_random_uuid()"))
   type    String
 
+}
+
+model Port {
+  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  port       String
+  type       PortType
+  countryId  String
+
+  country    Country @relation(fields: [countryId], references: [id])
+  vessels    VesselInfo[]
 }

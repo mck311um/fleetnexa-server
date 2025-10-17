@@ -111,3 +111,19 @@ enum NotificationType {
   REFUND
   GENERAL
 }
+
+enum PortType {
+  SEA
+  AIR
+}
+
+enum DirectionType {
+  ARRIVAL
+  DEPARTURE
+}
+
+enum VesselType {
+  SHIP
+  PLANE
+  OTHER
+}

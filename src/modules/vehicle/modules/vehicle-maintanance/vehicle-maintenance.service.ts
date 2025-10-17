@@ -25,7 +25,7 @@ class VehicleMaintenanceService {
   async getTenantMaintenanceServices(tenant: Tenant) {
     try {
       const services = await prisma.vehicleMaintenance.findMany({
-        where: { tenantId: tenant.id },
+        where: { tenantId: tenant.id, isDeleted: false },
         include: {
           maintenance: true,
           vendor: true,

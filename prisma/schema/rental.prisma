@@ -34,6 +34,7 @@ model Rental {
   storefrontBooking StorefrontBooking?
   transactions      Transactions[]
   values            Values?
+  vessels           VesselInfo[]
 }
 
 model StorefrontBooking {
@@ -145,4 +146,20 @@ model RentalCharge {
   customer   Customer @relation(fields: [customerId], references: [id])
   rental     Rental   @relation(fields: [rentalId], references: [id])
   tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model VesselInfo {
+    id         String   @id @default(dbgenerated("gen_random_uuid()"))
+    bookingId  String
+    portId     String
+    direction  DirectionType
+    type       VesselType
+    carrier    String
+    number     String
+    arrival    DateTime?
+    departure  DateTime?
+    notes      String?
+
+    booking    Rental   @relation(fields: [bookingId], references: [id])
+    port       Port     @relation(fields: [portId], references: [id])
 }
