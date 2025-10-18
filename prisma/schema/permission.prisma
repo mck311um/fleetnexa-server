@@ -5,10 +5,9 @@ model AppPermission {
   createdAt       DateTime             @default(now())
   updatedAt       DateTime?            @updatedAt
   categoryId      String?
-  category        String
 
   rolePermissions   UserRolePermission[]
-  categoryInfo      PermissionCategory?   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category      PermissionCategory?   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
 model PermissionCategory {

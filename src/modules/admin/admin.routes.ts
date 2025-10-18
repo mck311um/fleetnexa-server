@@ -26,5 +26,11 @@ router.post(
   upload.single('file'),
   categoryController.bulkAddPermissionCategories,
 );
+router.post(
+  '/permissions/import',
+  admin,
+  upload.single('file'),
+  permissionsController.bulkAddPermissions,
+);
 
 export default router;

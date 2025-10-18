@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -6,14 +39,74 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.permissionsController = void 0;
 const prisma_config_1 = __importDefault(require("../../../config/prisma.config"));
 const logger_1 = require("../../../config/logger");
+const XLSX = __importStar(require("xlsx"));
+const validateExcelColumns_1 = require("../../../utils/validateExcelColumns");
+const formatName = (name) => {
+    return name.trim().toUpperCase().replace(/\s+/g, '_');
+};
 const getAppPermissions = async (req, res) => {
     try {
-        const permissions = await prisma_config_1.default.appPermission.findMany();
+        const permissions = await prisma_config_1.default.appPermission.findMany({
+            include: { category: true },
+        });
         res.status(200).json(permissions);
     }
     catch (error) {
         logger_1.logger.e(error, 'Error fetching app permissions');
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+const bulkAddPermissions = async (req, res) => {
+    try {
+        if (!req.file) {
+            logger_1.logger.w('No file uploaded for bulk permission import');
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+        const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(sheet);
+        const valid = (0, validateExcelColumns_1.validateExcelColumns)(data, ['permission', 'category', 'description'], res, logger_1.logger);
+        if (!valid)
+            return;
+        for (const item of data) {
+            const permission = item.permission;
+            const category = item.category;
+            const description = item.description;
+            if (!permission || !category || !description) {
+                logger_1.logger.w(`Skipping invalid row: ${JSON.stringify(item)}`);
+                continue;
+            }
+            const formattedName = formatName(permission);
+            const formattedCategory = formatName(category);
+            const permissionCategory = await prisma_config_1.default.permissionCategory.findUnique({
+                where: { name: formattedCategory },
+            });
+            if (!permissionCategory) {
+                logger_1.logger.w(`Permission category not found for permission: ${permission}, category: ${category}`);
+                continue;
+            }
+            await prisma_config_1.default.appPermission.upsert({
+                where: { name: formattedName },
+                update: {
+                    description,
+                    categoryId: permissionCategory.id,
+                },
+                create: {
+                    name: formattedName,
+                    description,
+                    categoryId: permissionCategory.id,
+                },
+            });
+        }
+        const permissions = await prisma_config_1.default.appPermission.findMany();
+        res
+            .status(201)
+            .json({ message: 'Permissions imported successfully', permissions });
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Error during bulk permission import');
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 const addAppPermission = async (req, res) => {
@@ -41,4 +134,5 @@ const addAppPermission = async (req, res) => {
 exports.permissionsController = {
     getAppPermissions,
     addAppPermission,
+    bulkAddPermissions,
 };

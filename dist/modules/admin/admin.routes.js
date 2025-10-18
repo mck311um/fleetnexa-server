@@ -22,4 +22,5 @@ router.get('/plans', admin_middleware_1.admin, plans_controller_1.plansControlle
 router.post('/permissions', admin_middleware_1.admin, permissions_controller_1.permissionsController.addAppPermission);
 router.post('/categories', admin_middleware_1.admin, category_controller_1.categoryController.addPermissionCategory);
 router.post('/categories/import', admin_middleware_1.admin, upload.single('file'), category_controller_1.categoryController.bulkAddPermissionCategories);
+router.post('/permissions/import', admin_middleware_1.admin, upload.single('file'), permissions_controller_1.permissionsController.bulkAddPermissions);
 exports.default = router;
