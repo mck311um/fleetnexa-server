@@ -10,7 +10,9 @@ const admin_middleware_1 = require("../../middleware/admin.middleware");
 const permissions_controller_1 = require("./modules/permissions.controller");
 const plans_controller_1 = require("./modules/plans.controller");
 const category_controller_1 = require("./modules/category.controller");
+const multer_1 = __importDefault(require("multer"));
 const router = express_1.default.Router();
+const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
 router.get('/', admin_controller_1.default.getAdminData);
 router.get('/dashboard', admin_middleware_1.admin, admin_controller_1.default.dashboardAdminData);
 router.get('/countries', admin_middleware_1.admin, countries_controller_1.countriesController.getCountries);
@@ -19,4 +21,5 @@ router.get('/categories', admin_middleware_1.admin, category_controller_1.catego
 router.get('/plans', admin_middleware_1.admin, plans_controller_1.plansController.getPlans);
 router.post('/permissions', admin_middleware_1.admin, permissions_controller_1.permissionsController.addAppPermission);
 router.post('/categories', admin_middleware_1.admin, category_controller_1.categoryController.addPermissionCategory);
+router.post('/categories/import', admin_middleware_1.admin, upload.single('file'), category_controller_1.categoryController.bulkAddPermissionCategories);
 exports.default = router;

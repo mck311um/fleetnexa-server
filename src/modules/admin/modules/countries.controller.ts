@@ -4,7 +4,11 @@ import { logger } from '../../../config/logger';
 
 const getCountries = async (req: Request, res: Response) => {
   try {
-    const countries = await prisma.country.findMany();
+    const countries = await prisma.country.findMany({
+      include: {
+        _count: true,
+      },
+    });
 
     res.status(200).json(countries);
   } catch (error) {

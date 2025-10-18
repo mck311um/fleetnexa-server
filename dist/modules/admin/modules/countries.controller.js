@@ -8,7 +8,11 @@ const prisma_config_1 = __importDefault(require("../../../config/prisma.config")
 const logger_1 = require("../../../config/logger");
 const getCountries = async (req, res) => {
     try {
-        const countries = await prisma_config_1.default.country.findMany();
+        const countries = await prisma_config_1.default.country.findMany({
+            include: {
+                _count: true,
+            },
+        });
         res.status(200).json(countries);
     }
     catch (error) {
