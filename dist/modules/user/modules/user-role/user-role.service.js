@@ -188,7 +188,9 @@ class UserRoleService {
             if (!role) {
                 throw new Error('Role  is required to assign permissions');
             }
-            const permissions = await tx.appPermission.findMany();
+            const permissions = await tx.appPermission.findMany({
+                include: { category: true },
+            });
             await tx.userRolePermission.createMany({
                 data: permissions.map((perm) => ({
                     roleId: role.id,

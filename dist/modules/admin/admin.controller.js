@@ -5,6 +5,7 @@ const admin_service_1 = require("./admin.service");
 const getAdminData = async (req, res) => {
     try {
         const data = await admin_service_1.adminService.getAdminData();
+        logger_1.logger.i(data.permissions);
         res.status(200).json(data);
     }
     catch (error) {

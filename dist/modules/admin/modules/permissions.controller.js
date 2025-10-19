@@ -99,7 +99,9 @@ const bulkAddPermissions = async (req, res) => {
                 },
             });
         }
-        const permissions = await prisma_config_1.default.appPermission.findMany();
+        const permissions = await prisma_config_1.default.appPermission.findMany({
+            include: { category: true },
+        });
         res
             .status(201)
             .json({ message: 'Permissions imported successfully', permissions });
@@ -123,7 +125,9 @@ const addAppPermission = async (req, res) => {
                 categoryId: data.category,
             },
         });
-        const permissions = await prisma_config_1.default.appPermission.findMany();
+        const permissions = await prisma_config_1.default.appPermission.findMany({
+            include: { category: true },
+        });
         res.status(201).json({ newPermission, permissions });
     }
     catch (error) {

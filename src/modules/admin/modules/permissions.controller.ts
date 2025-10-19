@@ -87,7 +87,9 @@ const bulkAddPermissions = async (req: Request, res: Response) => {
       });
     }
 
-    const permissions = await prisma.appPermission.findMany();
+    const permissions = await prisma.appPermission.findMany({
+      include: { category: true },
+    });
 
     res
       .status(201)
@@ -115,7 +117,9 @@ const addAppPermission = async (req: Request, res: Response) => {
       },
     });
 
-    const permissions = await prisma.appPermission.findMany();
+    const permissions = await prisma.appPermission.findMany({
+      include: { category: true },
+    });
 
     res.status(201).json({ newPermission, permissions });
   } catch (error) {

@@ -34,6 +34,7 @@ class AdminService {
         paymentTypes: prisma.paymentType,
         permissions: prisma.appPermission,
         vendorTypes: prisma.vendorType,
+        permissionCategories: prisma.permissionCategory,
       };
 
       const entries = await Promise.all(
@@ -43,6 +44,13 @@ class AdminService {
               key,
               await (model as any).findMany({ include: { features: true } }),
             ];
+
+          if (key === 'permissions')
+            return [
+              key,
+              await (model as any).findMany({ include: { category: true } }),
+            ];
+
           return [key, await (model as any).findMany()];
         }),
       );
@@ -98,6 +106,7 @@ class AdminService {
               key,
               await (model as any).findMany({ include: { features: true } }),
             ];
+
           return [key, await (model as any).findMany()];
         }),
       );
