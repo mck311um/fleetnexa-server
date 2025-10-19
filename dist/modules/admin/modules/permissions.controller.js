@@ -120,7 +120,7 @@ const addAppPermission = async (req, res) => {
             data: {
                 name: data.name,
                 description: data.description,
-                categoryId: data.categoryId,
+                categoryId: data.category,
             },
         });
         const permissions = await prisma_config_1.default.appPermission.findMany();

@@ -7,7 +7,7 @@ model AppPermission {
   categoryId      String?
 
   rolePermissions   UserRolePermission[]
-  category      PermissionCategory?   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category          PermissionCategory?   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
 model PermissionCategory {

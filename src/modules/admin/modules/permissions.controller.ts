@@ -111,7 +111,7 @@ const addAppPermission = async (req: Request, res: Response) => {
       data: {
         name: data.name,
         description: data.description,
-        categoryId: data.categoryId,
+        categoryId: data.category,
       },
     });
 
