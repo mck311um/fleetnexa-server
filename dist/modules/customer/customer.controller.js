@@ -41,6 +41,7 @@ const logger_1 = require("../../config/logger");
 const customer_dto_1 = require("./customer.dto");
 const tenant_repository_1 = require("../../repository/tenant.repository");
 const customer_service_1 = __importStar(require("./customer.service"));
+const customer_repository_1 = require("./customer.repository");
 const getCustomers = async (req, res) => {
     const tenantId = req.user?.tenantId;
     const tenantCode = req.user?.tenantCode;
@@ -125,14 +126,12 @@ const getCustomerViolationById = async (req, res) => {
 };
 const addCustomerViolation = async (req, res) => {
     const data = req.body;
-    const tenantId = req.user?.tenantId;
-    const tenantCode = req.user?.tenantCode;
-    if (!tenantId) {
-        logger_1.logger.w('Tenant ID is missing');
-        return res.status(400).json({ message: 'Tenant ID is required' });
-    }
+    const { tenant } = req.context;
     if (!data) {
-        logger_1.logger.w('Customer violation data is missing', { tenantCode, tenantId });
+        logger_1.logger.w('Customer violation data is missing', {
+            tenantCode: tenant.tenantCode,
+            tenantId: tenant.id,
+        });
         return res
             .status(400)
             .json({ message: 'Customer violation data is required' });
@@ -146,27 +145,25 @@ const addCustomerViolation = async (req, res) => {
     }
     const violationDto = parseResult.data;
     try {
-        const tenant = await tenant_repository_1.tenantRepo.getTenantById(tenantId);
-        if (!tenant) {
-            logger_1.logger.w('Tenant not found', { tenantCode, tenantId });
-            return res.status(404).json({ message: 'Tenant not found' });
-        }
         await customer_service_1.default.addCustomerViolation(violationDto, tenant);
         const violations = await prisma_config_1.default.customerViolation.findMany({
-            where: { tenantId },
+            where: { tenantId: tenant.id, isDeleted: false },
             include: {
                 violation: true,
                 customer: { select: { id: true, firstName: true, lastName: true } },
             },
         });
-        return res
-            .status(201)
-            .json({ message: 'Customer violation added successfully', violations });
+        const customer = await customer_repository_1.customerRepo.getCustomerById(violationDto.customerId, tenant.id);
+        return res.status(201).json({
+            message: 'Customer violation added successfully',
+            violations,
+            customer,
+        });
     }
     catch (error) {
         logger_1.logger.e(error, 'Failed to add customer violation', {
-            tenantId,
-            tenantCode,
+            tenantId: tenant.id,
+            tenantCode: tenant.tenantCode,
         });
         return res
             .status(500)
@@ -175,14 +172,12 @@ const addCustomerViolation = async (req, res) => {
 };
 const updateCustomerViolation = async (req, res) => {
     const data = req.body;
-    const tenantId = req.user?.tenantId;
-    const tenantCode = req.user?.tenantCode;
-    if (!tenantId) {
-        logger_1.logger.w('Tenant ID is missing');
-        return res.status(400).json({ message: 'Tenant ID is required' });
-    }
+    const { tenant } = req.context;
     if (!data) {
-        logger_1.logger.w('Customer violation data is missing', { tenantCode, tenantId });
+        logger_1.logger.w('Customer violation data is missing', {
+            tenantCode: tenant.tenantCode,
+            tenantId: tenant.id,
+        });
         return res
             .status(400)
             .json({ message: 'Customer violation data is required' });
@@ -196,20 +191,18 @@ const updateCustomerViolation = async (req, res) => {
     }
     const violationDto = parseResult.data;
     try {
-        const tenant = await tenant_repository_1.tenantRepo.getTenantById(tenantId);
-        if (!tenant) {
-            logger_1.logger.w('Tenant not found', { tenantCode, tenantId });
-            return res.status(404).json({ message: 'Tenant not found' });
-        }
         const violations = await customer_service_1.default.updateCustomerViolation(violationDto, tenant);
-        return res
-            .status(200)
-            .json({ message: 'Customer violation updated successfully', violations });
+        const customer = await customer_repository_1.customerRepo.getCustomerById(violationDto.customerId, tenant.id);
+        return res.status(200).json({
+            message: 'Customer violation updated successfully',
+            violations,
+            customer,
+        });
     }
     catch (error) {
         logger_1.logger.e(error, 'Failed to update customer violation', {
-            tenantId,
-            tenantCode,
+            tenantId: tenant.id,
+            tenantCode: tenant.tenantCode,
         });
         return res
             .status(500)
@@ -218,24 +211,17 @@ const updateCustomerViolation = async (req, res) => {
 };
 const deleteCustomerViolation = async (req, res) => {
     const { id } = req.params;
-    const tenantId = req.user?.tenantId;
-    const tenantCode = req.user?.tenantCode;
-    if (!tenantId) {
-        logger_1.logger.w('Tenant ID is missing');
-        return res.status(400).json({ message: 'Tenant ID is required' });
-    }
+    const { tenant } = req.context;
     if (!id) {
-        logger_1.logger.w('Customer violation ID is missing', { tenantCode, tenantId });
+        logger_1.logger.w('Customer violation ID is missing', {
+            tenantCode: tenant.tenantCode,
+            tenantId: tenant.id,
+        });
         return res
             .status(400)
             .json({ message: 'Customer violation ID is required' });
     }
     try {
-        const tenant = await tenant_repository_1.tenantRepo.getTenantById(tenantId);
-        if (!tenant) {
-            logger_1.logger.w('Tenant not found', { tenantCode, tenantId });
-            return res.status(404).json({ message: 'Tenant not found' });
-        }
         const violations = await customer_service_1.default.deleteCustomerViolation(id, tenant);
         return res
             .status(200)
@@ -243,8 +229,8 @@ const deleteCustomerViolation = async (req, res) => {
     }
     catch (error) {
         logger_1.logger.e(error, 'Failed to delete customer violation', {
-            tenantId,
-            tenantCode,
+            tenantId: tenant.id,
+            tenantCode: tenant.tenantCode,
         });
         return res
             .status(500)

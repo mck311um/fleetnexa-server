@@ -311,7 +311,7 @@ const confirmBooking = async (req, res) => {
         await booking_service_1.bookingService.generateInvoice(updatedBooking.id, tenant, user);
         await booking_service_1.bookingService.generateBookingAgreement(updatedBooking.id, tenant, user);
         if (bookingDto.sendEmail) {
-            await email_service_1.default.sendConfirmationEmail(updatedBooking.id, bookingDto.includeInvoice, bookingDto.includeAgreement, tenant, user);
+            await email_service_1.default.sendConfirmationEmail(updatedBooking.id, bookingDto.includeInvoice, bookingDto.includeAgreement, tenant);
         }
         const bookings = await booking_repository_1.bookingRepo.getBookings(tenant.id);
         return res.status(200).json({

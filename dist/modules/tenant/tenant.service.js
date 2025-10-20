@@ -67,6 +67,32 @@ class TenantService {
             throw new Error('Failed to create tenant');
         }
     }
+    async updateStorefrontSettings(data, tenant, user) {
+        try {
+            await prisma_config_1.default.tenant.update({
+                where: { id: tenant.id },
+                data: {
+                    storefrontEnabled: data.storefrontEnabled,
+                    description: data.description,
+                },
+            });
+            if (!data.storefrontEnabled) {
+                await prisma_config_1.default.vehicle.updateMany({
+                    where: { tenantId: tenant.id, storefrontEnabled: true },
+                    data: { storefrontEnabled: false },
+                });
+            }
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to update storefront settings', {
+                tenantCode: tenant.tenantCode,
+                tenantId: tenant.id,
+                userId: user.id,
+                data,
+            });
+            throw new Error('Failed to update storefront settings');
+        }
+    }
 }
 exports.tenantService = new TenantService();
 const getTenantById = async (tenantId, tx) => {
@@ -111,6 +137,7 @@ const updateTenant = async (data, tenant) => {
                     tenantName: data.tenantName,
                     financialYearStart: data.financialYearStart,
                     setupCompleted: true,
+                    storefrontEnabled: data.storefrontEnabled,
                     securityDeposit: data.securityDeposit,
                     additionalDriverFee: data.additionalDriverFee,
                     daysInMonth: data.daysInMonth,

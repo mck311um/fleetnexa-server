@@ -32,14 +32,10 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const tenant_service_1 = __importStar(require("./tenant.service"));
 const logger_1 = require("../../config/logger");
 const create_tenant_dto_1 = require("./dto/create-tenant.dto");
-const prisma_config_1 = __importDefault(require("../../config/prisma.config"));
 const tenant_dto_1 = require("./dto/tenant.dto");
 const tenant_repository_1 = require("../../repository/tenant.repository");
 const tenant_extras_service_1 = require("./modules/tenant-extras/tenant-extras.service");
@@ -159,14 +155,12 @@ const createTenant = async (req, res) => {
 };
 const updateTenant = async (req, res) => {
     const data = req.body;
-    const tenantId = req.user?.tenantId;
-    const tenantCode = req.user?.tenantCode;
-    if (!tenantId) {
-        logger_1.logger.w('Tenant ID is missing');
-        return res.status(400).json({ message: 'Tenant ID is required' });
-    }
+    const { tenant } = req.context;
     if (!data) {
-        logger_1.logger.w('Tenant data is missing', { tenantCode, tenantId });
+        logger_1.logger.w('Tenant data is missing', {
+            tenantCode: tenant.tenantCode,
+            tenantId: tenant.id,
+        });
         return res.status(400).json({ message: 'Tenant data is required' });
     }
     const parseResult = tenant_dto_1.UpdateTenantDtoSchema.safeParse(data);
@@ -178,15 +172,8 @@ const updateTenant = async (req, res) => {
     }
     const tenantDto = parseResult.data;
     try {
-        const tenant = await prisma_config_1.default.tenant.findUnique({
-            where: { id: tenantId },
-        });
-        if (!tenant) {
-            logger_1.logger.w('Tenant not found', { tenantCode, tenantId });
-            return res.status(404).json({ message: 'Tenant not found' });
-        }
         await tenant_service_1.default.updateTenant(tenantDto, tenant);
-        const updatedTenant = await tenant_repository_1.tenantRepo.getTenantById(tenantId);
+        const updatedTenant = await tenant_repository_1.tenantRepo.getTenantById(tenant.id);
         return res.status(200).json({
             message: 'Settings updated successfully',
             tenant: updatedTenant,
@@ -194,11 +181,34 @@ const updateTenant = async (req, res) => {
     }
     catch (error) {
         logger_1.logger.e(error, 'Failed to update tenant', {
-            tenantCode,
-            tenantId,
+            tenantCode: tenant.tenantCode,
+            tenantId: tenant.id,
             data,
         });
         return res.status(500).json({ message: 'Failed to update settings' });
+    }
+};
+const updateStorefrontSettings = async (req, res) => {
+    const data = req.body;
+    const { tenant, user } = req.context;
+    try {
+        await tenant_service_1.tenantService.updateStorefrontSettings(data, tenant, user);
+        const updatedTenant = await tenant_repository_1.tenantRepo.getTenantById(tenant.id);
+        return res.status(200).json({
+            message: 'Storefront settings updated successfully',
+            tenant: updatedTenant,
+        });
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Failed to update storefront settings', {
+            tenantCode: tenant.tenantCode,
+            tenantId: tenant.id,
+            userId: user.id,
+            data,
+        });
+        return res
+            .status(500)
+            .json({ message: 'Failed to update storefront settings' });
     }
 };
 exports.default = {
@@ -206,4 +216,5 @@ exports.default = {
     getTenantById,
     createTenant,
     updateTenant,
+    updateStorefrontSettings,
 };

@@ -11,4 +11,5 @@ router.get('/', auth_middleware_1.auth, tenant_controller_1.default.getCurrentTe
 router.get('/:id', auth_middleware_1.auth, tenant_controller_1.default.getTenantById);
 router.post('/', tenant_controller_1.default.createTenant);
 router.put('/', auth_middleware_1.auth, tenant_controller_1.default.updateTenant);
+router.patch('/storefront', auth_middleware_1.auth, tenant_controller_1.default.updateStorefrontSettings);
 exports.default = router;

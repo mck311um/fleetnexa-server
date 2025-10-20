@@ -9,7 +9,7 @@ exports.UpdateVehicleStatusSchema = zod_1.z.object({
 exports.VehicleDiscountSchema = zod_1.z.object({
     periodMin: zod_1.z.number().min(1),
     periodMax: zod_1.z.number().min(1),
-    amount: zod_1.z.string(),
+    amount: zod_1.z.number().min(0),
     discountPolicy: zod_1.z.string(),
     id: zod_1.z.uuid().optional(),
 });

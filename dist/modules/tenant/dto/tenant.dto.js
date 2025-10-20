@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateTenantDtoSchema = exports.TenantViolationSchema = void 0;
+exports.StorefrontSettingsDtoSchema = exports.UpdateTenantDtoSchema = exports.TenantViolationSchema = void 0;
 const zod_1 = require("zod");
 exports.TenantViolationSchema = zod_1.z.object({
     id: zod_1.z.uuid(),
@@ -45,4 +45,16 @@ exports.UpdateTenantDtoSchema = zod_1.z.object({
     daysInMonth: zod_1.z.number().min(0),
     cancellationPolicy: CancellationPolicySchema,
     latePolicy: LatePolicySchema,
+});
+exports.StorefrontSettingsDtoSchema = zod_1.z
+    .object({
+    storefrontEnabled: zod_1.z.boolean(),
+    description: zod_1.z.string().max(500).optional().nullable(),
+})
+    .refine((data) => !data.storefrontEnabled ||
+    (data.description !== null &&
+        data.description !== undefined &&
+        data.description.trim().length > 0), {
+    message: 'Description is required when storefront is enabled',
+    path: ['description'],
 });

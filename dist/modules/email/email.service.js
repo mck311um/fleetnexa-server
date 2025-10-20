@@ -122,12 +122,21 @@ const sendWelcomeEmail = async (tenant, username, password, name) => {
         throw error;
     }
 };
-const sendConfirmationEmail = async (bookingId, includeInvoice, includeAgreement, tenant, tx) => {
+const sendConfirmationEmail = async (bookingId, includeInvoice, includeAgreement, tenant) => {
     try {
-        const currency = await tx.currency.findUnique({
-            where: { id: tenant.currencyId },
-        });
-        const booking = await tx.rental.findUnique({
+        let currency;
+        logger_1.logger.i('Fetching currency', { tenantId: tenant.currencyId });
+        if (!tenant.currencyId) {
+            currency = await prisma_config_1.default.currency.findFirst({
+                where: { code: 'USD' },
+            });
+        }
+        else {
+            currency = await prisma_config_1.default.currency.findUnique({
+                where: { id: tenant.currencyId },
+            });
+        }
+        const booking = await prisma_config_1.default.rental.findUnique({
             where: { id: bookingId },
             include: {
                 pickup: true,
