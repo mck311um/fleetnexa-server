@@ -90,7 +90,7 @@ class PaymentService {
                 amount: data.amount,
                 type: client_1.TransactionType.PAYMENT,
                 rentalId: data.bookingId,
-                transactionDate: new Date().toISOString(),
+                transactionDate: data.paymentDate,
                 paymentId: payment.id,
                 createdBy: user.username,
             };
@@ -155,7 +155,7 @@ class PaymentService {
                 id: existingTransaction.id,
                 amount: data.amount,
                 type: client_1.TransactionType.PAYMENT,
-                transactionDate: existingTransaction.transactionDate.toISOString(),
+                transactionDate: data.paymentDate,
                 rentalId: data.bookingId,
                 createdBy: user.username,
             };

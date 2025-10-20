@@ -6,8 +6,6 @@ const getAdminData = async (req: Request, res: Response) => {
   try {
     const data = await adminService.getAdminData();
 
-    logger.i(data.permissions);
-
     res.status(200).json(data);
   } catch (error) {
     logger.e(error, 'Error fetching admin data');

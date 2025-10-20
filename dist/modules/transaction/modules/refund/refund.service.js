@@ -88,7 +88,7 @@ class RefundService {
                 amount: data.amount,
                 type: client_1.TransactionType.REFUND,
                 rentalId: data.bookingId,
-                transactionDate: new Date().toISOString(),
+                transactionDate: refund.refundDate.toISOString(),
                 refundId: refund.id,
                 createdBy: user.username,
             };
@@ -149,7 +149,7 @@ class RefundService {
             const transaction = {
                 id: existingTransaction.id,
                 amount: data.amount,
-                transactionDate: existingTransaction.transactionDate.toISOString(),
+                transactionDate: data.refundDate,
                 type: client_1.TransactionType.RENTAL,
                 rentalId: data.bookingId,
                 createdBy: user.username,
