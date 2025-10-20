@@ -153,14 +153,22 @@ const sendConfirmationEmail = async (
   includeInvoice: boolean,
   includeAgreement: boolean,
   tenant: Tenant,
-  tx: TxClient,
 ) => {
   try {
-    const currency = await tx.currency.findUnique({
-      where: { id: tenant.currencyId! },
-    });
+    let currency;
+    logger.i('Fetching currency', { tenantId: tenant.currencyId });
 
-    const booking = await tx.rental.findUnique({
+    if (!tenant.currencyId) {
+      currency = await prisma.currency.findFirst({
+        where: { code: 'USD' },
+      });
+    } else {
+      currency = await prisma.currency.findUnique({
+        where: { id: tenant.currencyId },
+      });
+    }
+
+    const booking = await prisma.rental.findUnique({
       where: { id: bookingId },
       include: {
         pickup: true,

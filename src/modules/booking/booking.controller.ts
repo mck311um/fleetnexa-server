@@ -351,7 +351,6 @@ const confirmBooking = async (req: Request, res: Response) => {
         bookingDto.includeInvoice,
         bookingDto.includeAgreement,
         tenant,
-        user,
       );
     }
 
