@@ -52,3 +52,22 @@ export const UpdateTenantDtoSchema = z.object({
 });
 
 export type UpdateTenantDto = z.infer<typeof UpdateTenantDtoSchema>;
+
+export const StorefrontSettingsDtoSchema = z
+  .object({
+    storefrontEnabled: z.boolean(),
+    description: z.string().max(500).optional().nullable(),
+  })
+  .refine(
+    (data) =>
+      !data.storefrontEnabled ||
+      (data.description !== null &&
+        data.description !== undefined &&
+        data.description.trim().length > 0),
+    {
+      message: 'Description is required when storefront is enabled',
+      path: ['description'],
+    },
+  );
+
+export type StorefrontSettingsDto = z.infer<typeof StorefrontSettingsDtoSchema>;

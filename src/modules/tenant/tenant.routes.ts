@@ -11,4 +11,6 @@ router.post('/', controller.createTenant);
 
 router.put('/', auth, controller.updateTenant);
 
+router.patch('/storefront', auth, controller.updateStorefrontSettings);
+
 export default router;

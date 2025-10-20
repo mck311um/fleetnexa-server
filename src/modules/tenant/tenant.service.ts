@@ -4,8 +4,12 @@ import { CreateTenantDto } from './dto/create-tenant.dto';
 import { repo } from './tenant.repository';
 import generator from '../../services/generator.service';
 import { CreateUserDto } from '../user/user.dto';
-import { Tenant } from '@prisma/client';
-import { TenantViolationDto, UpdateTenantDto } from './dto/tenant.dto';
+import { Tenant, User } from '@prisma/client';
+import {
+  StorefrontSettingsDto,
+  TenantViolationDto,
+  UpdateTenantDto,
+} from './dto/tenant.dto';
 import { userService } from '../user/user.service';
 import { tenantLocationService } from './modules/tenant-location/tenant-location.service';
 import { authService } from '../auth/auth.service';
@@ -76,6 +80,37 @@ class TenantService {
       throw new Error('Failed to create tenant');
     }
   }
+
+  async updateStorefrontSettings(
+    data: StorefrontSettingsDto,
+    tenant: Tenant,
+    user: User,
+  ) {
+    try {
+      await prisma.tenant.update({
+        where: { id: tenant.id },
+        data: {
+          storefrontEnabled: data.storefrontEnabled,
+          description: data.description,
+        },
+      });
+
+      if (!data.storefrontEnabled) {
+        await prisma.vehicle.updateMany({
+          where: { tenantId: tenant.id, storefrontEnabled: true },
+          data: { storefrontEnabled: false },
+        });
+      }
+    } catch (error) {
+      logger.e(error, 'Failed to update storefront settings', {
+        tenantCode: tenant.tenantCode,
+        tenantId: tenant.id,
+        userId: user.id,
+        data,
+      });
+      throw new Error('Failed to update storefront settings');
+    }
+  }
 }
 
 export const tenantService = new TenantService();
@@ -123,6 +158,7 @@ const updateTenant = async (data: UpdateTenantDto, tenant: Tenant) => {
           tenantName: data.tenantName,
           financialYearStart: data.financialYearStart,
           setupCompleted: true,
+          storefrontEnabled: data.storefrontEnabled,
           securityDeposit: data.securityDeposit,
           additionalDriverFee: data.additionalDriverFee,
           daysInMonth: data.daysInMonth,
