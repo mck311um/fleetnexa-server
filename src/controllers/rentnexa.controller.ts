@@ -91,6 +91,7 @@ const getFeaturedData = async (req: Request, res: Response) => {
 
       const vehicles = await tx.vehicle.findMany({
         where: {
+          storefrontEnabled: true,
           tenant: {
             storefrontEnabled: true,
           },

@@ -19,6 +19,7 @@ import prisma, { TxClient } from '../../config/prisma.config';
 import transactionService from '../transaction/transaction.service';
 import { error } from 'console';
 import { bookingRepo } from './booking.repository';
+import { StorefrontBooking } from './booking.dto';
 
 class BookingService {
   async getTenantBookings(tenant: Tenant) {
@@ -282,6 +283,93 @@ class BookingService {
         tenantCode: tenant.tenantCode,
       });
       throw new Error('Failed to generate booking agreement');
+    }
+  }
+
+  async createStorefrontBooking(data: StorefrontBooking, tenant: Tenant) {
+    try {
+      const bookingNumber = await generator.generateRentalNumber(tenant.id);
+
+      if (!bookingNumber) {
+        throw error;
+      }
+
+      const bookingCode = generator.generateBookingCode(
+        tenant.tenantCode,
+        bookingNumber,
+      );
+
+      if (!bookingCode) {
+        throw error;
+      }
+
+      const booking = await prisma.$transaction(async (tx) => {
+        const newBooking = await tx.rental.create({
+          data: {
+            id: data.id,
+            startDate: new Date(data.startDate),
+            endDate: new Date(data.endDate),
+            pickupLocationId: data.pickupLocationId,
+            returnLocationId: data.returnLocationId,
+            vehicleId: data.vehicleId,
+            chargeTypeId: data.chargeTypeId,
+            bookingCode,
+            createdAt: new Date(),
+            createdBy: 'SYSTEM',
+            rentalNumber: bookingNumber,
+            tenantId: tenant.id,
+            status: RentalStatus.PENDING,
+            agent: Agent.SYSTEM,
+          },
+        });
+
+        await tx.values.create({
+          data: {
+            id: data.values.id,
+            numberOfDays: data.values.numberOfDays,
+            basePrice: data.values.basePrice,
+            customBasePrice: data.values.customBasePrice,
+            totalCost: data.values.totalCost,
+            customTotalCost: data.values.customTotalCost,
+            discount: data.values.discount,
+            customDiscount: data.values.customDiscount,
+            deliveryFee: data.values.deliveryFee,
+            customDeliveryFee: data.values.customDeliveryFee,
+            collectionFee: data.values.collectionFee,
+            customCollectionFee: data.values.customCollectionFee,
+            deposit: data.values.deposit,
+            customDeposit: data.values.customDeposit,
+            totalExtras: data.values.totalExtras,
+            subTotal: data.values.subTotal,
+            netTotal: data.values.netTotal,
+            discountMin: data.values.discountMin,
+            discountMax: data.values.discountMax,
+            discountAmount: data.values.discountAmount,
+            discountPolicy: data.values.discountPolicy || '',
+            rentalId: newBooking.id,
+          },
+        });
+
+        await Promise.all(
+          data.values.extras.map((extra: any) =>
+            tx.rentalExtra.create({
+              data: {
+                id: extra.id,
+                extraId: extra.extraId,
+                amount: extra.amount,
+                customAmount: extra.customAmount,
+                valuesId: extra.valuesId,
+              },
+            }),
+          ),
+        );
+      });
+    } catch (error) {
+      logger.e(error, 'Failed to create storefront booking', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw error;
     }
   }
 }

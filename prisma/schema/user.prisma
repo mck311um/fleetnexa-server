@@ -35,18 +35,21 @@ model StorefrontUser {
   phone               String              @unique
   driverLicenseNumber String              @unique
   licenseExpiry       DateTime
-  licenseIssued       String
-  street              String
-  villageId           String
-  stateId             String
-  countryId           String
+  licenseIssued       DateTime
+  license             String?
+  street              String?
+  villageId           String?
+  stateId             String?
+  countryId           String?
+
   createdAt           DateTime            @default(now())
   updatedAt           DateTime?           @updatedAt
   profilePicture       String?             @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
   bookings            StorefrontBooking[]
-  country             Country             @relation(fields: [countryId], references: [id])
-  state               State               @relation(fields: [stateId], references: [id])
-  village             Village             @relation(fields: [villageId], references: [id])
+
+  country             Country?             @relation(fields: [countryId], references: [id])
+  state               State?               @relation(fields: [stateId], references: [id])
+  village             Village?             @relation(fields: [villageId], references: [id])
 }
 
 model AdminUser {

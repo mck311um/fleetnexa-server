@@ -23,8 +23,10 @@ model Tenant {
   daysInMonth          Int                        @default(28)
   slug                 String?                    @unique
   emailVerified         Boolean                    @default(false)
-  businessVerified     Boolean                    @default(false)
+  businessVerified      Boolean                    @default(false)
   merchantId           String?
+  isDeleted            Boolean                    @default(false)
+
   address              Address?
   customers            Customer[]
   customerViolations   CustomerViolation[]

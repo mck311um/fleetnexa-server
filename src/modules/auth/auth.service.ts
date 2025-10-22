@@ -1,7 +1,13 @@
 import { Tenant } from '@prisma/client';
 import { logger } from '../../config/logger';
 import prisma from '../../config/prisma.config';
-import { AdminUserDto, AdminUserSchema, LoginDto } from './auth.dto';
+import {
+  AdminUserDto,
+  AdminUserSchema,
+  LoginDto,
+  StorefrontUserDto,
+  StorefrontUserSchema,
+} from './auth.dto';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import generatorService from '../../services/generator.service';
@@ -18,6 +24,22 @@ class AuthService {
         details: safeParse.error.issues,
       });
       throw new Error('Admin user data validation failed');
+    }
+
+    return safeParse.data;
+  }
+
+  async validateStorefrontUserData(data: StorefrontUserDto) {
+    if (!data) {
+      throw new Error('Storefront user data is required');
+    }
+
+    const safeParse = StorefrontUserSchema.safeParse(data);
+    if (!safeParse.success) {
+      logger.w('Storefront user data validation failed', {
+        details: safeParse.error.issues,
+      });
+      throw new Error('Storefront user data validation failed');
     }
 
     return safeParse.data;
@@ -77,6 +99,94 @@ class AuthService {
       initials: `${newUser.firstName[0]}${newUser.lastName[0]}`,
       fullName: `${newUser.firstName} ${newUser.lastName}`,
     };
+  }
+
+  async createStorefrontUser(data: StorefrontUserDto) {
+    try {
+      const existingUser = await prisma.storefrontUser.findUnique({
+        where: { email: data.email },
+      });
+
+      if (existingUser) {
+        throw new Error('Email already in use, please login in');
+      }
+
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+      const newUser = await prisma.storefrontUser.create({
+        data: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          gender: data.gender || 'male',
+          phone: data.phone || '',
+          password: hashedPassword,
+          driverLicenseNumber: data.driversLicenseNumber,
+          licenseExpiry: new Date(data.licenseExpiry),
+          licenseIssued: new Date(data.licenseIssued),
+          license: data.license,
+          dateOfBirth: new Date(data.dateOfBirth),
+          street: data.street,
+          countryId: data.countryId || null,
+          stateId: data.stateId,
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          phone: true,
+          driverLicenseNumber: true,
+          licenseExpiry: true,
+          licenseIssued: true,
+          dateOfBirth: true,
+        },
+      });
+
+      return newUser;
+    } catch (error) {
+      logger.e(error, 'Failed to create storefront user', {
+        email: data.email,
+      });
+      throw error;
+    }
+  }
+
+  async validateStorefrontUser(data: LoginDto) {
+    try {
+      const user = await prisma.storefrontUser.findUnique({
+        where: { email: data.username },
+      });
+      if (!user) {
+        logger.w('Invalid email or password', { email: data.username });
+        throw new Error('Invalid email or password');
+      }
+
+      const isMatch = await bcrypt.compare(data.password, user.password);
+      if (!isMatch) {
+        logger.w('Invalid email or password', { email: data.username });
+        throw new Error('Invalid email or password');
+      }
+
+      const userData = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        initials: `${user.firstName[0]}${user.lastName[0]}`,
+        fullName: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        driverLicenseNumber: user.driverLicenseNumber,
+        licenseExpiry: user.licenseExpiry,
+        licenseIssued: user.licenseIssued,
+        dateOfBirth: user.dateOfBirth,
+      };
+
+      return userData;
+    } catch (error) {
+      logger.e(error, 'Failed to validate storefront user', {
+        email: data.username,
+      });
+      throw new Error('Failed to validate storefront user');
+    }
   }
 
   async validateTenantUser(data: LoginDto) {

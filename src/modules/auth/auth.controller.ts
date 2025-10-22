@@ -90,8 +90,56 @@ const createAdminUser = async (req: Request, res: Response) => {
   }
 };
 
+const createStorefrontUser = async (req: Request, res: Response) => {
+  const data = req.body;
+
+  const userDto = await authService.validateStorefrontUserData(data);
+
+  try {
+    const newUser = await authService.createStorefrontUser(userDto);
+    res.status(201).json(newUser);
+  } catch (error: any) {
+    logger.e(error, 'Error creating storefront user', {
+      email: userDto.email,
+    });
+    res.status(500).json({ message: error.message || 'Internal server error' });
+  }
+};
+
+const loginStorefrontUser = async (req: Request, res: Response) => {
+  const data = req.body;
+
+  if (!data) {
+    logger.w('Email/password are required');
+    return res.status(400).json({ error: 'Email/password are required' });
+  }
+
+  const parseResult = LoginDtoSchema.safeParse(data);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: 'Email/password validation failed',
+      details: parseResult.error.issues,
+    });
+  }
+
+  const userDto = parseResult.data;
+
+  try {
+    const result = await authService.validateStorefrontUser(userDto);
+
+    res.status(200).json(result);
+  } catch (error) {
+    logger.e(error, 'Error during storefront user login', {
+      email: userDto.username,
+    });
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export default {
   adminUserLogin,
   tenantLogin,
   createAdminUser,
+  createStorefrontUser,
+  loginStorefrontUser,
 };

@@ -22,11 +22,14 @@ import vehicleMaintenanceRoutes from './modules/vehicle/modules/vehicle-maintana
 import expenseRoutes from './modules/transaction/modules/expense/expense.routes';
 import tenantActivityRoutes from './modules/tenant/modules/tenant-activity/tenant-activity.routes';
 import refundRoutes from './modules/transaction/modules/refund/refund.routes';
+import storefrontRoutes from './modules/storefront/storefront.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
 
   app.use('/api/admin', adminRoutes);
+
+  app.use('/api/storefront', storefrontRoutes);
 
   app.use('/api/email', emailRoutes);
   app.use('/api/storage', storageRoutes);
