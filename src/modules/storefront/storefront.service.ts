@@ -1,11 +1,20 @@
 import { logger } from '../../config/logger';
 import prisma from '../../config/prisma.config';
+import { tenantExtraService } from '../tenant/modules/tenant-extras/tenant-extras.service';
 
 class StorefrontService {
   async getTenants() {
     try {
       const tenants = await prisma.tenant.findMany({
-        where: { storefrontEnabled: true },
+        where: {
+          storefrontEnabled: true,
+          vehicles: {
+            some: {
+              storefrontEnabled: true,
+              isDeleted: false,
+            },
+          },
+        },
         select: {
           id: true,
           tenantName: true,
@@ -17,7 +26,9 @@ class StorefrontService {
           number: true,
           _count: {
             select: {
-              vehicles: true,
+              vehicles: {
+                where: { storefrontEnabled: true, isDeleted: false },
+              },
               ratings: true,
             },
           },
@@ -54,7 +65,9 @@ class StorefrontService {
           number: true,
           _count: {
             select: {
-              vehicles: true,
+              vehicles: {
+                where: { storefrontEnabled: true, isDeleted: false },
+              },
               ratings: true,
             },
           },
@@ -201,6 +214,9 @@ class StorefrontService {
               currency: true,
               logo: true,
               securityDeposit: true,
+              tenantLocations: {
+                where: { storefrontEnabled: true, isDeleted: false },
+              },
               currencyRates: {
                 include: {
                   currency: true,
@@ -218,7 +234,28 @@ class StorefrontService {
         },
       });
 
-      return vehicles;
+      const tenantIds = [
+        ...new Set(vehicles.map((v) => v.tenant?.id).filter(Boolean)),
+      ];
+
+      const tenantExtrasPromises = tenantIds.map((id) =>
+        tenantExtraService.getTenantExtras(id || ''),
+      );
+      const tenantExtrasResults = await Promise.all(tenantExtrasPromises);
+
+      const tenantExtras = tenantExtrasResults.flat();
+
+      const vehiclesWithExtras = vehicles.map((vehicle) => ({
+        ...vehicle,
+        tenant: {
+          ...vehicle.tenant,
+          extras: tenantExtras.filter(
+            (extra) => extra.tenantId === vehicle?.tenant?.id,
+          ),
+        },
+      }));
+
+      return vehiclesWithExtras;
     } catch (error) {
       logger.e(error, 'Error fetching vehicles for storefront');
       throw error;
@@ -287,6 +324,9 @@ class StorefrontService {
                   currency: true,
                 },
               },
+              tenantLocations: {
+                where: { storefrontEnabled: true, isDeleted: false },
+              },
               address: {
                 include: {
                   country: true,
@@ -299,7 +339,21 @@ class StorefrontService {
         },
       });
 
-      return vehicle;
+      const tenantExtras = await tenantExtraService.getTenantExtras(
+        vehicle?.tenant?.id || '',
+      );
+
+      const vehicleWithExtras = vehicle
+        ? {
+            ...vehicle,
+            tenant: {
+              ...vehicle.tenant,
+              extras: tenantExtras,
+            },
+          }
+        : null;
+
+      return vehicleWithExtras;
     } catch (error) {
       logger.e(error, 'Error fetching vehicle by ID for storefront');
       throw error;

@@ -36,15 +36,17 @@ const RentalValuesSchema = z.object({
   extras: RentalExtrasSchema,
 });
 
-export const StorefrontBookingSchema = z.object({
-  id: z.uuid(),
-  startDate: z.date(),
-  endDate: z.date(),
+export const StorefrontUserBookingSchema = z.object({
+  userId: z.uuid(),
+  startDate: z.string(),
+  endDate: z.string(),
   pickupLocationId: z.uuid(),
   returnLocationId: z.uuid(),
   vehicleId: z.uuid(),
-  chargeTypeId: z.uuid(),
+  tenantId: z.uuid(),
   values: RentalValuesSchema,
 });
 
-export type StorefrontBooking = z.infer<typeof StorefrontBookingSchema>;
+export type StorefrontUserBookingDto = z.infer<
+  typeof StorefrontUserBookingSchema
+>;

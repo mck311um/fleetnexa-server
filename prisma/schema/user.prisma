@@ -50,6 +50,8 @@ model StorefrontUser {
   country             Country?             @relation(fields: [countryId], references: [id])
   state               State?               @relation(fields: [stateId], references: [id])
   village             Village?             @relation(fields: [villageId], references: [id])
+
+  Customer Customer[]
 }
 
 model AdminUser {

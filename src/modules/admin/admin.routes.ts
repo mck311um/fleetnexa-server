@@ -6,12 +6,14 @@ import { permissionsController } from './modules/permissions.controller';
 import { plansController } from './modules/plans.controller';
 import { categoryController } from './modules/category.controller';
 import multer from 'multer';
+import { api } from '../../middleware/api.middleware';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/', controller.getAdminData);
 router.get('/dashboard', admin, controller.dashboardAdminData);
+router.get('/storefront', api, controller.getStorefrontAdminData);
 router.get('/countries', admin, countriesController.getCountries);
 router.get('/permissions', admin, permissionsController.getAppPermissions);
 router.get('/categories', admin, categoryController.getPermissionCategories);
