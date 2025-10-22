@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { logger } from '../config/logger';
 import prisma, { TxClient } from '../config/prisma.config';
 import customerService from '../modules/customer/customer.service';
@@ -11,6 +12,7 @@ import {
   RentalService,
 } from '../types/pdf';
 import formatter from '../utils/formatter';
+import { toZonedTime } from 'date-fns-tz';
 
 const generateInvoiceData = async (bookingId: string, tenantId: string) => {
   try {
@@ -173,8 +175,8 @@ const generateInvoiceData = async (bookingId: string, tenantId: string) => {
       year: booking?.vehicle?.year || 0,
       color: booking?.vehicle?.color || '',
       licensePlate: booking?.vehicle?.licensePlate || '',
-      startDate: `${formatter.formatDateToFriendlyWithTime(booking?.startDate)}`,
-      endDate: `${formatter.formatDateToFriendlyWithTime(booking?.endDate)}`,
+      startDate: `${formatter.formatDateToFriendlyWithTime(toZonedTime(booking?.startDate, 'UTC'))}`,
+      endDate: `${formatter.formatDateToFriendlyWithTime(toZonedTime(booking?.endDate, 'UTC'))}`,
       pickupLocation: booking?.pickup?.location || '',
       returnLocation: booking?.return?.location || '',
       rentalAmount: parseFloat((booking?.values?.totalCost || 0).toFixed(2)),
@@ -412,19 +414,15 @@ const generateAgreementData = async (bookingId: string, tenantId: string) => {
       }),
     );
 
-    const localStartTime = booking?.startDate
-      ? new Date(booking.startDate).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
+    const localStartDate = booking?.startDate
+      ? toZonedTime(booking.startDate, 'America/Dominica')
       : '';
+    const localStartTime = format(localStartDate, 'hh:mm aa');
 
-    const localEndTime = booking?.endDate
-      ? new Date(booking.endDate).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
+    const localEndDate = booking?.endDate
+      ? toZonedTime(booking.endDate, 'America/Dominica')
       : '';
+    const localEndTime = format(localEndDate, 'hh:mm aa');
 
     const data: RentalAgreementData = {
       tenantName: tenant?.tenantName || '',
