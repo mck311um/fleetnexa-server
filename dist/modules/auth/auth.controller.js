@@ -77,8 +77,49 @@ const createAdminUser = async (req, res) => {
         res.status(500).json({ message: error.message || 'Internal server error' });
     }
 };
+const createStorefrontUser = async (req, res) => {
+    const data = req.body;
+    const userDto = await auth_service_1.authService.validateStorefrontUserData(data);
+    try {
+        const newUser = await auth_service_1.authService.createStorefrontUser(userDto);
+        res.status(201).json(newUser);
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Error creating storefront user', {
+            email: userDto.email,
+        });
+        res.status(500).json({ message: error.message || 'Internal server error' });
+    }
+};
+const loginStorefrontUser = async (req, res) => {
+    const data = req.body;
+    if (!data) {
+        logger_1.logger.w('Email/password are required');
+        return res.status(400).json({ error: 'Email/password are required' });
+    }
+    const parseResult = auth_dto_1.LoginDtoSchema.safeParse(data);
+    if (!parseResult.success) {
+        return res.status(400).json({
+            error: 'Email/password validation failed',
+            details: parseResult.error.issues,
+        });
+    }
+    const userDto = parseResult.data;
+    try {
+        const result = await auth_service_1.authService.validateStorefrontUser(userDto);
+        res.status(200).json(result);
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Error during storefront user login', {
+            email: userDto.username,
+        });
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 exports.default = {
     adminUserLogin,
     tenantLogin,
     createAdminUser,
+    createStorefrontUser,
+    loginStorefrontUser,
 };

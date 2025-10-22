@@ -3,11 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const date_fns_1 = require("date-fns");
 const logger_1 = require("../config/logger");
 const prisma_config_1 = __importDefault(require("../config/prisma.config"));
 const customer_service_1 = __importDefault(require("../modules/customer/customer.service"));
 const tenant_extras_service_1 = require("../modules/tenant/modules/tenant-extras/tenant-extras.service");
 const formatter_1 = __importDefault(require("../utils/formatter"));
+const date_fns_tz_1 = require("date-fns-tz");
 const generateInvoiceData = async (bookingId, tenantId) => {
     try {
         const tenantExtras = await tenant_extras_service_1.tenantExtraService.getTenantExtras(tenantId);
@@ -144,8 +146,8 @@ const generateInvoiceData = async (bookingId, tenantId) => {
             year: booking?.vehicle?.year || 0,
             color: booking?.vehicle?.color || '',
             licensePlate: booking?.vehicle?.licensePlate || '',
-            startDate: `${formatter_1.default.formatDateToFriendlyWithTime(booking?.startDate)}`,
-            endDate: `${formatter_1.default.formatDateToFriendlyWithTime(booking?.endDate)}`,
+            startDate: `${formatter_1.default.formatDateToFriendlyWithTime((0, date_fns_tz_1.toZonedTime)(booking?.startDate, 'UTC'))}`,
+            endDate: `${formatter_1.default.formatDateToFriendlyWithTime((0, date_fns_tz_1.toZonedTime)(booking?.endDate, 'UTC'))}`,
             pickupLocation: booking?.pickup?.location || '',
             returnLocation: booking?.return?.location || '',
             rentalAmount: parseFloat((booking?.values?.totalCost || 0).toFixed(2)),
@@ -332,18 +334,14 @@ const generateAgreementData = async (bookingId, tenantId) => {
             country: el.customer?.address?.country?.country || '',
             primaryDriver: el.isPrimary || false,
         }));
-        const localStartTime = booking?.startDate
-            ? new Date(booking.startDate).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-            })
+        const localStartDate = booking?.startDate
+            ? (0, date_fns_tz_1.toZonedTime)(booking.startDate, 'America/Dominica')
             : '';
-        const localEndTime = booking?.endDate
-            ? new Date(booking.endDate).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-            })
+        const localStartTime = (0, date_fns_1.format)(localStartDate, 'hh:mm aa');
+        const localEndDate = booking?.endDate
+            ? (0, date_fns_tz_1.toZonedTime)(booking.endDate, 'America/Dominica')
             : '';
+        const localEndTime = (0, date_fns_1.format)(localEndDate, 'hh:mm aa');
         const data = {
             tenantName: tenant?.tenantName || '',
             street: tenant?.address?.street || '',
