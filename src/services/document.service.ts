@@ -149,6 +149,19 @@ const generateInvoiceData = async (bookingId: string, tenantId: string) => {
           return booking?.values?.numberOfDays;
       }
     };
+    const localStartDate = booking?.startDate
+      ? toZonedTime(booking.startDate, 'America/Dominica')
+      : '';
+
+    const formattedStartDate = format(
+      localStartDate,
+      'EEE, MMM d, yyyy hh:mm aa',
+    );
+
+    const localEndDate = booking?.endDate
+      ? toZonedTime(booking.endDate, 'America/Dominica')
+      : '';
+    const formattedEndDate = format(localEndDate, 'EEE, MMM d, yyyy hh:mm aa');
 
     const data: InvoiceData = {
       companyName: tenant?.tenantName || '',
@@ -175,8 +188,8 @@ const generateInvoiceData = async (bookingId: string, tenantId: string) => {
       year: booking?.vehicle?.year || 0,
       color: booking?.vehicle?.color || '',
       licensePlate: booking?.vehicle?.licensePlate || '',
-      startDate: `${formatter.formatDateToFriendlyWithTime(toZonedTime(booking?.startDate, 'UTC'))}`,
-      endDate: `${formatter.formatDateToFriendlyWithTime(toZonedTime(booking?.endDate, 'UTC'))}`,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
       pickupLocation: booking?.pickup?.location || '',
       returnLocation: booking?.return?.location || '',
       rentalAmount: parseFloat((booking?.values?.totalCost || 0).toFixed(2)),
