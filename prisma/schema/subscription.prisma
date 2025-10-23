@@ -1,37 +1,32 @@
 model SubscriptionPlan {
-  id                String    @id @default(dbgenerated("gen_random_uuid()"))
-  productId         String    @unique
-  name              String
-  description       String?
-  price             Float
-  priceXCD          Float?
-  features          String[]
-  subscriptionTier  Int @default(1) 
+  id               String     @id @default(dbgenerated("gen_random_uuid()"))
+  description      String?
+  planId           String?    @unique
+  planCode         String?    @unique
+  name             String     @unique
+  priceMonthly     Float      @default(0)
+  priceYearly      Float      @default(0)
 
-  tenantSubscription TenantSubscription[]
-  details            PlanDetails[]
-  payments           SubscriptionPayment[]
+
+  details              PlanDetails?
+  features             PlanFeatures[]
+  tenantSubscription   TenantSubscription[]
+  permissionCategories PermissionCategory[] @relation("PlanPermissionCategories")
+}
+
+model PlanFeatures {
+  id      String           @id @default(dbgenerated("gen_random_uuid()"))
+  planId  String
+  feature String
+  plan    SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
 }
 
 model PlanDetails {
-  id                  String    @id @default(dbgenerated("gen_random_uuid()"))
-  subscriptionPlanId  String
-  numberOfUsers       Int
-  numberOfVehicles    Int
-  numberOfLocations   Int
-
-  plan                SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
+  id                String           @id @default(dbgenerated("gen_random_uuid()"))
+  numberOfUsers     Int
+  numberOfVehicles  Int
+  numberOfLocations Int
+  planId            String           @unique
+  plan              SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
 }
 
-model SubscriptionPayment {
-  id               String    @id @default(dbgenerated("gen_random_uuid()"))
-  paymentId        String    @unique
-  totalAmount      Float
-  customerId       String
-  status           String
-  productId        String?
-  paymentDate      DateTime @default(now())
-  
-  subscription     TenantSubscription @relation(fields: [customerId], references: [dodoCustomerId])
-  plan             SubscriptionPlan? @relation(fields: [productId], references: [productId])
-}

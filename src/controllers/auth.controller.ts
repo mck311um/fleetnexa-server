@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import prisma from "../config/prisma.config";
+import { NextFunction, Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import prisma from '../config/prisma.config';
+import { logger } from '../config/logger';
 
 const register = async (req: Request, res: Response) => {
   const { username, password, firstName, lastName, tenantId } = req.body;
@@ -17,7 +17,7 @@ const register = async (req: Request, res: Response) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: 'User already exists' });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -43,8 +43,6 @@ const register = async (req: Request, res: Response) => {
       fullName: `${user.firstName} ${user.lastName}`,
       tenantId: user.tenantId,
       tenant: tenant?.tenantCode,
-      theme: user.theme,
-      color: user.color,
     };
 
     const payload = {
@@ -55,7 +53,7 @@ const register = async (req: Request, res: Response) => {
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
-      expiresIn: "7d",
+      expiresIn: '7d',
     });
 
     res.status(201).json({ userData, token });
@@ -68,7 +66,7 @@ const register = async (req: Request, res: Response) => {
 const storefrontRegister = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { account } = req.body;
   try {
@@ -79,7 +77,7 @@ const storefrontRegister = async (
     if (emailExists) {
       return res
         .status(400)
-        .json({ message: "Account with this email already exists" });
+        .json({ message: 'Account with this email already exists' });
     }
 
     const phoneExists = await prisma.storefrontUser.findUnique({
@@ -89,7 +87,7 @@ const storefrontRegister = async (
     if (phoneExists) {
       return res
         .status(400)
-        .json({ message: "Account with this phone number already exists" });
+        .json({ message: 'Account with this phone number already exists' });
     }
 
     const licenseExists = await prisma.storefrontUser.findUnique({
@@ -98,7 +96,7 @@ const storefrontRegister = async (
 
     if (licenseExists) {
       return res.status(400).json({
-        message: "Account with this driver license number already exists",
+        message: 'Account with this driver license number already exists',
       });
     }
 
@@ -134,10 +132,16 @@ const storefrontRegister = async (
   }
 };
 
-const login = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+const login = async (req: Request, res: Response, next: NextFunction) => {
+  const { username, password, rememberMe } = req.body;
 
   try {
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ message: 'Username and password are required' });
+    }
+
     const user = await prisma.user.findUnique({
       where: { username },
       include: {
@@ -155,13 +159,13 @@ const login = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid Username" });
+      return res.status(400).json({ message: 'Invalid username or password' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid Password" });
+      return res.status(400).json({ message: 'Invalid username or password' });
     }
 
     const userData = {
@@ -172,35 +176,33 @@ const login = async (req: Request, res: Response) => {
       initials: `${user.firstName[0]}${user.lastName[0]}`,
       fullName: `${user.firstName} ${user.lastName}`,
       tenantId: user.tenantId,
-      tenant: user.tenant?.tenantCode,
-      theme: user.theme,
-      color: user.color,
+      tenantCode: user.tenant?.tenantCode,
       roleId: user.roleId,
-      role: user.role,
+      requirePasswordChange: user.requirePasswordChange,
     };
 
     const payload = {
       user: {
         id: user.id,
         tenantId: user.tenantId,
+        tenantCode: user.tenant?.tenantCode,
       },
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
-      expiresIn: "7d",
+      expiresIn: rememberMe ? '7d' : '30d',
     });
 
     res.status(200).json({ userData, token });
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 const storefrontLogin = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { email, password } = req.body;
   try {
@@ -211,13 +213,13 @@ const storefrontLogin = async (
     if (!user) {
       return res
         .status(400)
-        .json({ message: "An account with this email does not exist" });
+        .json({ message: 'An account with this email does not exist' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid Password" });
+      return res.status(400).json({ message: 'Invalid Password' });
     }
 
     res.status(200).json(user);

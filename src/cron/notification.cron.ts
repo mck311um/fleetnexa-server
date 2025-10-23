@@ -1,6 +1,6 @@
-import app from "../app";
-import prisma from "../config/prisma.config";
-import cron from "node-cron";
+import app from '../app';
+import prisma from '../config/prisma.config';
+import cron from 'node-cron';
 
 const runUnconfirmedRentalsCron = async () => {
   try {
@@ -16,7 +16,7 @@ const runUnconfirmedRentalsCron = async () => {
       const rentals = await prisma.rental.findMany({
         where: {
           tenantId: tenant.id,
-          status: "PENDING",
+          status: 'PENDING',
           startDate: {
             gte: threeDaysFromNow,
             lt: new Date(threeDaysFromNow.getTime() + 60 * 60 * 1000),
@@ -28,10 +28,10 @@ const runUnconfirmedRentalsCron = async () => {
         const primaryDriver = await prisma.rentalDriver.findFirst({
           where: {
             rentalId: rental.id,
-            primaryDriver: true,
+            isPrimary: true,
           },
           include: {
-            driver: {
+            customer: {
               select: {
                 id: true,
                 firstName: true,
@@ -42,20 +42,19 @@ const runUnconfirmedRentalsCron = async () => {
           },
         });
 
-        const bookingNumber = rental.rentalNumber;
         const actionUrl = `/app/bookings`;
-        const driverName = primaryDriver
-          ? `${primaryDriver.driver.firstName} ${primaryDriver.driver.lastName}`
-          : "Unknown Driver";
+        const customerName = primaryDriver
+          ? `${primaryDriver.customer.firstName} ${primaryDriver.customer.lastName}`
+          : 'Unknown Customer';
 
-        const message = `Booking #${rental.rentalNumber} by ${driverName} remains unconfirmed (2 days remaining)`;
+        const message = `Booking #${rental.rentalNumber} by ${customerName} remains unconfirmed (2 days remaining)`;
 
         const notification = await prisma.tenantNotification.create({
           data: {
             tenantId: tenant.id,
-            title: "Unconfirmed Rental Alert",
-            type: "UNCONFIRMED",
-            priority: "MEDIUM",
+            title: 'Unconfirmed Rental Alert',
+            type: 'UNCONFIRMED',
+            priority: 'MEDIUM',
             message,
             actionUrl,
             read: false,
@@ -63,12 +62,12 @@ const runUnconfirmedRentalsCron = async () => {
           },
         });
 
-        const io = app.get("io");
-        io.to(tenant.id).emit("tenant-notification", notification);
+        const io = app.get('io');
+        io.to(tenant.id).emit('tenant-notification', notification);
       }
     }
   } catch (error) {
-    console.error("Error in unconfirmedRentals:", error);
+    console.error('Error in unconfirmedRentals:', error);
     throw error;
   }
 };
@@ -88,7 +87,7 @@ const runUpcomingRentalsCron = async () => {
         where: {
           tenantId: tenant.id,
           status: {
-            in: ["CONFIRMED", "RESERVED"],
+            in: ['CONFIRMED', 'RESERVED'],
           },
           startDate: {
             gte: oneDayFromNow,
@@ -110,10 +109,10 @@ const runUpcomingRentalsCron = async () => {
         const primaryDriver = await prisma.rentalDriver.findFirst({
           where: {
             rentalId: rental.id,
-            primaryDriver: true,
+            isPrimary: true,
           },
           include: {
-            driver: {
+            customer: {
               select: {
                 id: true,
                 firstName: true,
@@ -126,27 +125,27 @@ const runUpcomingRentalsCron = async () => {
 
         const actionUrl = `/app/bookings`;
         const formattedTime = rental.startDate.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
+          hour: '2-digit',
+          minute: '2-digit',
           hour12: true,
         });
-        const driverName = primaryDriver
-          ? `${primaryDriver.driver.firstName} ${primaryDriver.driver.lastName}`
-          : "Unknown Driver";
+        const customerName = primaryDriver
+          ? `${primaryDriver.customer.firstName} ${primaryDriver.customer.lastName}`
+          : 'Unknown Customer';
         const vehicleName =
-          (rental.vehicle.brand?.brand ?? "Unknown Brand") +
-          " " +
-          (rental.vehicle.model?.model ?? "Unknown Model");
-        const pickupLocation = rental.pickup?.location ?? "Unknown Location";
+          (rental.vehicle.brand?.brand ?? 'Unknown Brand') +
+          ' ' +
+          (rental.vehicle.model?.model ?? 'Unknown Model');
+        const pickupLocation = rental.pickup?.location ?? 'Unknown Location';
 
-        const message = `Reminder: ${driverName} pickup scheduled for tomorrow at ${formattedTime} - ${vehicleName} at ${pickupLocation}`;
+        const message = `Reminder: ${customerName} pickup scheduled for tomorrow at ${formattedTime} - ${vehicleName} at ${pickupLocation}`;
 
         const notification = await prisma.tenantNotification.create({
           data: {
             tenantId: tenant.id,
-            title: "Vehicle Pickup",
-            type: "UPCOMING",
-            priority: "HIGH",
+            title: 'Vehicle Pickup',
+            type: 'UPCOMING',
+            priority: 'HIGH',
             message,
             actionUrl,
             read: false,
@@ -154,12 +153,12 @@ const runUpcomingRentalsCron = async () => {
           },
         });
 
-        const io = app.get("io");
-        io.to(tenant.id).emit("tenant-notification", notification);
+        const io = app.get('io');
+        io.to(tenant.id).emit('tenant-notification', notification);
       }
     }
   } catch (error) {
-    console.error("Error in upcomingRentals:", error);
+    console.error('Error in upcomingRentals:', error);
     throw error;
   }
 };
@@ -179,7 +178,7 @@ const runUpcomingReturnsCron = async () => {
         where: {
           tenantId: tenant.id,
           status: {
-            in: ["ACTIVE"],
+            in: ['ACTIVE'],
           },
           endDate: {
             gte: oneDayFromNow,
@@ -201,10 +200,10 @@ const runUpcomingReturnsCron = async () => {
         const primaryDriver = await prisma.rentalDriver.findFirst({
           where: {
             rentalId: rental.id,
-            primaryDriver: true,
+            isPrimary: true,
           },
           include: {
-            driver: {
+            customer: {
               select: {
                 id: true,
                 firstName: true,
@@ -217,27 +216,27 @@ const runUpcomingReturnsCron = async () => {
 
         const actionUrl = `/app/bookings`;
         const formattedTime = rental.startDate.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
+          hour: '2-digit',
+          minute: '2-digit',
           hour12: true,
         });
-        const driverName = primaryDriver
-          ? `${primaryDriver.driver.firstName} ${primaryDriver.driver.lastName}`
-          : "Unknown Driver";
+        const customerName = primaryDriver
+          ? `${primaryDriver.customer.firstName} ${primaryDriver.customer.lastName}`
+          : 'Unknown Customer';
         const vehicleName =
-          (rental.vehicle.brand?.brand ?? "Unknown Brand") +
-          " " +
-          (rental.vehicle.model?.model ?? "Unknown Model");
-        const returnLocation = rental.return?.location ?? "Unknown Location";
+          (rental.vehicle.brand?.brand ?? 'Unknown Brand') +
+          ' ' +
+          (rental.vehicle.model?.model ?? 'Unknown Model');
+        const returnLocation = rental.return?.location ?? 'Unknown Location';
 
-        const message = `Vehicle return  tomorrow: ${vehicleName} by ${driverName} to ${returnLocation} - ${formattedTime}`;
+        const message = `Vehicle return  tomorrow: ${vehicleName} by ${customerName} to ${returnLocation} - ${formattedTime}`;
 
         const notification = await prisma.tenantNotification.create({
           data: {
             tenantId: tenant.id,
-            title: "Vehicle Return",
-            type: "RETURN",
-            priority: "MEDIUM",
+            title: 'Vehicle Return',
+            type: 'RETURN',
+            priority: 'MEDIUM',
             message,
             actionUrl,
             read: false,
@@ -245,25 +244,25 @@ const runUpcomingReturnsCron = async () => {
           },
         });
 
-        const io = app.get("io");
-        io.to(tenant.id).emit("tenant-notification", notification);
+        const io = app.get('io');
+        io.to(tenant.id).emit('tenant-notification', notification);
       }
     }
   } catch (error) {
-    console.error("Error in upcomingRentals:", error);
+    console.error('Error in upcomingRentals:', error);
     throw error;
   }
 };
 
-cron.schedule("0 * * * *", async () => {
+cron.schedule('0 * * * *', async () => {
   try {
-    console.log("Running notifications cron job...");
+    console.log('Running notifications cron job...');
     await runUpcomingRentalsCron();
     await runUnconfirmedRentalsCron();
     await runUpcomingReturnsCron();
   } catch (error) {
-    console.error("Error running notifications cron job:", error);
+    console.error('Error running notifications cron job:', error);
   } finally {
-    console.log("Notifications cron job completed.");
+    console.log('Notifications cron job completed.');
   }
 });

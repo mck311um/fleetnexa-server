@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
-import { getISOWeek, getYear, subWeeks } from "date-fns";
-import prisma from "../config/prisma.config";
+import { Prisma } from '@prisma/client';
+import { getISOWeek, getYear } from 'date-fns';
+import prisma from '../config/prisma.config';
 
 class TenantRepository {
   async getTenantById(tenantId: string) {
@@ -25,16 +25,17 @@ class TenantRepository {
       customers: true,
       subscription: {
         include: {
-          payments: {
-            include: {
-              plan: true,
-            },
-          },
-          plan: {
-            include: {
-              details: true,
-            },
-          },
+          // payments: {
+          //   include: {
+          //     plan: true,
+          //   },
+          // },
+          // plan: {
+          //   include: {
+          //     details: true,
+          //     features: true,
+          //   },
+          // },
         },
       },
       services: {
@@ -75,20 +76,20 @@ class TenantRepository {
       transactions: {
         where: { isDeleted: false },
         include: {
-          customer: true,
           payment: {
             include: {
+              customer: true,
               paymentMethod: true,
               paymentType: true,
             },
           },
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              username: true,
-            },
-          },
+          // user: {
+          //   select: {
+          //     firstName: true,
+          //     lastName: true,
+          //     username: true,
+          //   },
+          // },
         },
       },
       rentalActivity: {

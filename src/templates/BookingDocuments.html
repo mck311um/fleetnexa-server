@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking Documents</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+        color: #495057;
+        line-height: 1.5;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .email-header {
+        color: #ffffff;
+        text-align: center;
+        padding: 25px;
+        background-color: #1e2a32;
+      }
+
+      .email-header .logo {
+        max-width: 50px;
+        max-height: 50px;
+        margin-bottom: 10px;
+      }
+
+      .email-header .brand-title {
+        font-size: 30px;
+        font-weight: 800;
+        margin: 0 0 5px 0;
+      }
+
+      .email-header .tagline {
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      .email-body {
+        padding: 30px 20px;
+      }
+
+      .welcome-title {
+        color: #1580b5;
+        font-size: 24px;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .intro-text {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+
+      .info-card {
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+      }
+
+      .info-heading {
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #1580b5;
+        border-bottom: 1px solid #dfe3e8;
+        padding-bottom: 8px;
+      }
+
+      .info-item {
+        padding: 5px 0;
+        font-size: 14px;
+      }
+
+      .info-item .info-label {
+        font-weight: 600;
+        margin-right: 8px;
+      }
+
+      .documents-section {
+        margin-bottom: 25px;
+      }
+
+      .documents-heading {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 12px;
+        color: #1580b5;
+      }
+
+      .document-item {
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
+      }
+
+      .document-link {
+        color: #1580b5;
+        text-decoration: none;
+        font-weight: 600;
+        display: block;
+        margin-top: 5px;
+      }
+
+      .document-link:hover {
+        text-decoration: underline;
+      }
+
+      .notes-section {
+        background-color: #fff8e5;
+        border: 1px solid #ffe0a3;
+        border-radius: 6px;
+        padding: 15px 18px;
+        margin-bottom: 25px;
+        font-size: 13px;
+      }
+
+      .notes-section strong {
+        color: #d48806;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .footer {
+        background-color: #f1f3f5;
+        color: #6c757d;
+        text-align: center;
+        padding: 18px 20px;
+        font-size: 12px;
+      }
+
+      .footer a {
+        color: #1580b5;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="email-container">
+      <div class="email-header">
+        <img
+          src="https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/Logos/fleenexa.png"
+          alt="FleetNexa Logo"
+          class="logo"
+        />
+        <h1 class="brand-title">FleetNexa</h1>
+        <div class="tagline">Caribbean Rental Management</div>
+      </div>
+
+      <div class="email-body">
+        <h1 class="welcome-title">Your Booking Documents</h1>
+        <p class="intro-text">
+          Your booking with {{tenantName}} is confirmed! Below you'll find your
+          booking details and important documents for your upcoming rental.
+        </p>
+
+        <div class="info-card">
+          <div class="info-heading">Booking Summary</div>
+          <div class="info-item">
+            <span class="info-label">Booking ID:</span>
+            <span class="info-value booking-id">{{bookingId}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Vehicle:</span>
+            <span class="info-value">{{vehicle}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Start Date:</span>
+            <span class="info-value">{{startDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">End Date:</span>
+            <span class="info-value">{{endDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Location:</span>
+            <span class="info-value">{{pickupLocation}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Time:</span>
+            <span class="info-value">{{pickupTime}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Total Price:</span>
+            <span class="info-value">{{totalPrice}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Rental Company Contact</div>
+          <div class="info-item">
+            <span class="info-label">Company:</span>
+            <span class="info-value">{{tenantName}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Phone:</span>
+            <span class="info-value">{{phone}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email:</span>
+            <span class="info-value">{{email}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Your Documents</div>
+          {{#if invoiceUrl}}
+          <div class="document-item">
+            <div>Booking Invoice</div>
+            <a href="{{invoiceUrl}}" class="document-link" target="_blank"
+              >Download invoice</a
+            >
+          </div>
+          {{/if}} {{#if agreementUrl}}
+          <div class="document-item">
+            <div>Rental Agreement</div>
+            <a href="{{agreementUrl}}" class="document-link" target="_blank"
+              >Download agreement</a
+            >
+          </div>
+          {{/if}}
+        </div>
+
+        <div class="notes-section">
+          <strong>Important Reminders</strong>
+          <p>
+            • Save these documents for your records. You may need to present
+            them at pickup.
+          </p>
+          <p>
+            • Please bring your driver's license and payment method used for
+            booking when you pick up your vehicle.
+          </p>
+          <p>
+            • Contact {{tenantName}} directly if you need to make any changes to
+            your booking.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>© 2025 Devvize Services. All rights reserved.</p>
+        <div class="contact-info">
+          Need assistance? Contact our support team at
+          <a href="mailto:support@devvize.com" class="contact-link"
+            >support@devvize.com</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

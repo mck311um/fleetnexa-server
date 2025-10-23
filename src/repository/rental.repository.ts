@@ -1,10 +1,10 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../config/prisma.config";
+import { Prisma } from '@prisma/client';
+import prisma from '../config/prisma.config';
 
 class RentalRepository {
   async getRentals(
     tenantId: string,
-    additionalWhere?: Prisma.RentalWhereInput
+    additionalWhere?: Prisma.RentalWhereInput,
   ) {
     return prisma.rental.findMany({
       where: {
@@ -26,7 +26,7 @@ class RentalRepository {
   async getRentalsByCustomerId(
     customerId: string,
     tenantId: string,
-    additionalWhere?: Prisma.RentalWhereInput
+    additionalWhere?: Prisma.RentalWhereInput,
   ) {
     return prisma.rental.findMany({
       where: {
@@ -66,24 +66,24 @@ class RentalRepository {
       },
       transactions: {
         include: {
-          customer: true,
           payment: {
             include: {
+              customer: true,
               paymentMethod: true,
               paymentType: true,
             },
           },
           refund: true,
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              username: true,
-            },
-          },
+          // user: {
+          //   select: {
+          //     firstName: true,
+          //     lastName: true,
+          //     username: true,
+          //   },
+          // },
         },
         orderBy: {
-          transactionDate: "desc",
+          transactionDate: 'desc',
         },
       },
       vehicle: {
@@ -109,7 +109,7 @@ class RentalRepository {
       },
       drivers: {
         include: {
-          driver: {
+          customer: {
             include: {
               license: true,
               address: {

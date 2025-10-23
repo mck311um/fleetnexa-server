@@ -1,0 +1,50 @@
+import pino from 'pino';
+import * as Sentry from '@sentry/node';
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.ENVIRONMENT || 'development',
+  tracesSampleRate: 1.0,
+  sendDefaultPii: true,
+});
+
+const transport = pino.transport({
+  target: 'pino-pretty',
+  options: { colorize: true, translateTime: 'SYS:standard' },
+});
+
+const pinoLogger = transport
+  ? pino(
+      {
+        level: process.env.LOG_LEVEL || 'info',
+        timestamp: pino.stdTimeFunctions.isoTime,
+      },
+      transport,
+    )
+  : pino({
+      level: process.env.LOG_LEVEL || 'info',
+      timestamp: pino.stdTimeFunctions.isoTime,
+    });
+
+export const logger = {
+  i: (message: string, meta?: Record<string, unknown>) => {
+    pinoLogger.info(meta || {}, message);
+  },
+
+  w: (message: string, meta?: Record<string, unknown>) => {
+    pinoLogger.warn(meta || {}, message);
+  },
+
+  e: (
+    error: unknown,
+    message = 'Error occurred',
+    meta?: Record<string, unknown>,
+  ) => {
+    pinoLogger.error({ err: error, ...meta }, message);
+
+    Sentry.captureException(
+      error instanceof Error ? error : new Error(String(error)),
+      { extra: meta },
+    );
+  },
+};

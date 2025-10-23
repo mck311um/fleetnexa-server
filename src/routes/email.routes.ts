@@ -1,19 +1,19 @@
-import express from "express";
-import controller from "../controllers/email.controller";
-import { auth } from "../middleware/auth.middleware";
-import { api } from "../middleware/api.middleware";
+import express from 'express';
+import controller from '../controllers/email.controller';
+import { auth } from '../middleware/auth.middleware';
+import { api } from '../middleware/api.middleware';
 
 const router = express.Router();
 
-router.post("/template", controller.setupTemplates);
+// router.post("/template", controller.setupTemplates);
 
 router.post(
-  "/booking/confirm/:bookingId",
+  '/booking/confirm/:bookingId',
   auth,
-  controller.sendConfirmationEmail
+  controller.sendConfirmationEmail,
 );
-router.post("/booking/complete", api, controller.sendCompletionEmail);
+router.post('/booking/complete', api, controller.sendCompletionEmail);
 
-router.put("/template", controller.updateEmailTemplate);
+router.put('/template', controller.updateEmailTemplate);
 
 export default router;

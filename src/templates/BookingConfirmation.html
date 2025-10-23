@@ -31,6 +31,7 @@
 
       .email-header .logo {
         max-width: 50px;
+        max-height: 50px;
         margin-bottom: 10px;
       }
 
@@ -81,16 +82,13 @@
       }
 
       .info-item {
-        display: flex;
-        justify-content: space-between;
         padding: 5px 0;
         font-size: 14px;
-        margin-right: 5px;
       }
 
       .info-item .info-label {
         font-weight: 600;
-        margin-right: 5px;
+        margin-right: 8px;
       }
 
       .company-item {
@@ -143,6 +141,16 @@
         border-radius: 6px;
         margin-bottom: 10px;
         background-color: #f8f9fa;
+      }
+
+      .document-link {
+        color: #1580b5;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .document-link:hover {
+        text-decoration: underline;
       }
 
       .download-btn {
@@ -258,15 +266,17 @@
         <div class="info-card">
           <div class="info-heading">Your Documents</div>
           {{#if invoiceUrl}}
-          <div class="document-item">
-            <a href="{{invoiceUrl}}" class="download-btn" target="_blank"
-              >Download Invoice</a
+          <div class="info-item">
+            <span class="info-label">Booking Invoice:</span>
+            <a href="{{invoiceUrl}}" class="document-link" target="_blank"
+              >Download</a
             >
           </div>
           {{/if}} {{#if agreementUrl}}
-          <div class="document-item">
-            <a href="{{agreementUrl}}" class="download-btn" target="_blank"
-              >Booking Agreement</a
+          <div class="info-item">
+            <span class="info-label">Rental Agreement:</span>
+            <a href="{{agreementUrl}}" class="document-link" target="_blank"
+              >Download</a
             >
           </div>
           {{/if}}

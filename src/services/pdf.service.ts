@@ -1,7 +1,7 @@
-import axios from "axios";
-import { AgreementData, InvoiceData } from "../types/pdf";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { PDFDocument } from "pdf-lib";
+import axios from 'axios';
+import { AgreementData, InvoiceData } from '../types/pdf';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { PDFDocument } from 'pdf-lib';
 
 const apiKey = process.env.PDFMONKEY_API_KEY!;
 const invoiceId = process.env.PDFMONKEY_INVOICE_ID!;
@@ -9,23 +9,23 @@ const agreementId = process.env.PDFMONKEY_AGREEMENT_ID!;
 const awsBucketName = process.env.AWS_BUCKET_NAME!;
 
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION || "us-east-1",
+  region: process.env.AWS_REGION || 'us-east-1',
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
   },
 });
 
 const pdfMonkeyApi = axios.create({
-  baseURL: "https://api.pdfmonkey.io/api/v1",
+  baseURL: 'https://api.pdfmonkey.io/api/v1',
   headers: {
     Authorization: `Bearer ${apiKey}`,
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
   timeout: 15000,
 });
 
-type DocumentType = "invoice" | "agreement";
+type DocumentType = 'invoice' | 'agreement';
 
 interface CreateDocumentParams {
   data: InvoiceData | AgreementData;
@@ -40,15 +40,15 @@ const createDocument = async ({
   documentNumber,
   tenantCode,
 }: CreateDocumentParams) => {
-  const templateId = documentType === "invoice" ? invoiceId : agreementId;
-  const folder = documentType === "invoice" ? "Invoices" : "Agreements";
+  const templateId = documentType === 'invoice' ? invoiceId : agreementId;
+  const folder = documentType === 'invoice' ? 'Invoices' : 'Agreements';
 
   try {
-    const res = await pdfMonkeyApi.post("/documents", {
+    const res = await pdfMonkeyApi.post('/documents', {
       document: {
         document_template_id: templateId,
         payload: data,
-        status: "pending",
+        status: 'pending',
         meta: {
           _filename: `${documentNumber}.pdf`,
         },
@@ -59,31 +59,31 @@ const createDocument = async ({
     const documentId = document.id;
 
     if (!documentId) {
-      throw new Error("Document ID not found in response");
+      throw new Error('Document ID not found in response');
     }
 
     const documentDetails = await waitForDocumentGeneration(documentId);
     const pdfBuffer = await downloadPdf(
-      documentDetails.data.document.download_url
+      documentDetails.data.document.download_url,
     );
 
     const s3Key = `Tenants/${tenantCode}/${folder}/${documentNumber}.pdf`;
     const publicUrl = await uploadToS3(pdfBuffer, s3Key);
 
-    if (documentType === "agreement") {
+    if (documentType === 'agreement') {
       const additionalPageUrl =
-        "https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/BookingAgreementPage.pdf";
+        'https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/BookingAgreementPage.pdf';
       const additionalPageBuffer = await downloadPdf(additionalPageUrl);
 
       const signablePdfBuffer = await replaceLastPage(
         pdfBuffer,
-        additionalPageBuffer
+        additionalPageBuffer,
       );
 
       const signableS3Key = `Tenants/${tenantCode}/${folder}/${documentNumber}_signable.pdf`;
       const signablePublicUrl = await uploadToS3(
         signablePdfBuffer,
-        signableS3Key
+        signableS3Key,
       );
 
       return {
@@ -104,7 +104,7 @@ const createDocument = async ({
 
 const waitForDocumentGeneration = async (
   documentId: string,
-  maxAttempts = 10
+  maxAttempts = 10,
 ) => {
   let attempts = 0;
 
@@ -115,18 +115,18 @@ const waitForDocumentGeneration = async (
     const documentDetails = await pdfMonkeyApi.get(`/documents/${documentId}`);
     const status = documentDetails.data.document.status;
 
-    if (status === "success") return documentDetails;
-    if (status === "failed") throw new Error("PDF generation failed");
+    if (status === 'success') return documentDetails;
+    if (status === 'failed') throw new Error('PDF generation failed');
   }
 
-  throw new Error("PDF generation timed out");
+  throw new Error('PDF generation timed out');
 };
 
 const downloadPdf = async (downloadUrl: string) => {
   const pdfResponse = await axios.get(downloadUrl, {
-    responseType: "arraybuffer",
+    responseType: 'arraybuffer',
   });
-  return Buffer.from(pdfResponse.data, "binary");
+  return Buffer.from(pdfResponse.data, 'binary');
 };
 
 const uploadToS3 = async (pdfBuffer: Buffer, s3Key: string) => {
@@ -134,7 +134,7 @@ const uploadToS3 = async (pdfBuffer: Buffer, s3Key: string) => {
     Bucket: awsBucketName,
     Key: s3Key,
     Body: pdfBuffer,
-    ContentType: "application/pdf",
+    ContentType: 'application/pdf',
   };
   await s3Client.send(new PutObjectCommand(uploadParams));
 
@@ -144,11 +144,11 @@ const uploadToS3 = async (pdfBuffer: Buffer, s3Key: string) => {
 const createInvoice = async (
   invoiceData: InvoiceData,
   invoiceNumber: string,
-  tenantCode: string
+  tenantCode: string,
 ) => {
   const { s3Key, documentId, publicUrl } = await createDocument({
     data: invoiceData,
-    documentType: "invoice",
+    documentType: 'invoice',
     documentNumber: invoiceNumber,
     tenantCode,
   });
@@ -158,12 +158,12 @@ const createInvoice = async (
 const createAgreement = async (
   agreementData: AgreementData,
   agreementNumber: string,
-  tenantCode: string
+  tenantCode: string,
 ) => {
   const { s3Key, documentId, publicUrl, signablePublicUrl } =
     await createDocument({
       data: agreementData,
-      documentType: "agreement",
+      documentType: 'agreement',
       documentNumber: agreementNumber,
       tenantCode,
     });
@@ -172,7 +172,7 @@ const createAgreement = async (
 
 const replaceLastPage = async (
   originalPdfBuffer: Buffer,
-  newPageBuffer: Buffer
+  newPageBuffer: Buffer,
 ) => {
   try {
     const originalPdfDoc = await PDFDocument.load(originalPdfBuffer);
@@ -180,7 +180,7 @@ const replaceLastPage = async (
 
     const pageIndices = Array.from(
       { length: originalPdfDoc.getPageCount() - 1 },
-      (_, i) => i
+      (_, i) => i,
     );
     const newPdfDoc = await PDFDocument.create();
 
@@ -193,35 +193,35 @@ const replaceLastPage = async (
     const mergedPdfBytes = await newPdfDoc.save();
     return Buffer.from(mergedPdfBytes);
   } catch (error) {
-    console.error("Error replacing last PDF page:", error);
-    throw new Error("Failed to replace last page");
+    console.error('Error replacing last PDF page:', error);
+    throw new Error('Failed to replace last page');
   }
 };
 
-const mergeDocuments = async (
-  mainPdfBuffer: Buffer,
-  additionalPdfBuffer: Buffer
-) => {
-  try {
-    const mainPdfDoc = await PDFDocument.load(mainPdfBuffer);
-    const additionalPdfDoc = await PDFDocument.load(additionalPdfBuffer);
+// const mergeDocuments = async (
+//   mainPdfBuffer: Buffer,
+//   additionalPdfBuffer: Buffer,
+// ) => {
+//   try {
+//     const mainPdfDoc = await PDFDocument.load(mainPdfBuffer);
+//     const additionalPdfDoc = await PDFDocument.load(additionalPdfBuffer);
 
-    const additionalPages = await mainPdfDoc.copyPages(
-      additionalPdfDoc,
-      additionalPdfDoc.getPageIndices()
-    );
+//     const additionalPages = await mainPdfDoc.copyPages(
+//       additionalPdfDoc,
+//       additionalPdfDoc.getPageIndices(),
+//     );
 
-    additionalPages.forEach((page) => {
-      mainPdfDoc.addPage(page);
-    });
+//     additionalPages.forEach((page) => {
+//       mainPdfDoc.addPage(page);
+//     });
 
-    const mergedPdfBytes = await mainPdfDoc.save();
-    return Buffer.from(mergedPdfBytes);
-  } catch (error) {
-    console.error("Error merging PDFs:", error);
-    throw new Error("Failed to merge PDFs");
-  }
-};
+//     const mergedPdfBytes = await mainPdfDoc.save();
+//     return Buffer.from(mergedPdfBytes);
+//   } catch (error) {
+//     console.error('Error merging PDFs:', error);
+//     throw new Error('Failed to merge PDFs');
+//   }
+// };
 
 export default {
   createInvoice,

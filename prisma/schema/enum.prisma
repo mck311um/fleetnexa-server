@@ -9,6 +9,8 @@ enum Agent {
   MANUAL
   RENTNEXA
   PARTNER
+  SYSTEM
+  STOREFRONT
 }
 
 enum CustomerStatus {
@@ -16,7 +18,6 @@ enum CustomerStatus {
   INACTIVE
   BANNED
   BLACKLISTED
-
 }
 
 enum DamageLocation {
@@ -50,11 +51,18 @@ enum RentalStatus {
   RESERVED
   ACTIVE
   COMPLETED
-  DECLINED  
+  DECLINED
   CANCELED
   NO_SHOW
   REFUNDED
   EXPIRED
+}
+
+enum MaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
 }
 
 enum RentalAction {
@@ -64,7 +72,6 @@ enum RentalAction {
   EXTENDED
   PICKED_UP
 }
-
 
 enum StatItem {
   TOTAL_REVENUE
@@ -83,9 +90,10 @@ enum StatItem {
 }
 
 enum TransactionType {
-  PAYMENT
   RENTAL
   REFUND
+  PAYMENT
+  EXPENSE
 }
 
 enum NotificationPriority {
@@ -102,4 +110,20 @@ enum NotificationType {
   PAYMENT
   REFUND
   GENERAL
+}
+
+enum PortType {
+  SEA
+  AIR
+}
+
+enum DirectionType {
+  ARRIVAL
+  DEPARTURE
+}
+
+enum VesselType {
+  SHIP
+  PLANE
+  OTHER
 }

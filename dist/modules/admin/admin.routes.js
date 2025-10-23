@@ -1,0 +1,26 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const admin_controller_1 = __importDefault(require("./admin.controller"));
+const countries_controller_1 = require("./modules/countries.controller");
+const admin_middleware_1 = require("../../middleware/admin.middleware");
+const permissions_controller_1 = require("./modules/permissions.controller");
+const plans_controller_1 = require("./modules/plans.controller");
+const category_controller_1 = require("./modules/category.controller");
+const multer_1 = __importDefault(require("multer"));
+const router = express_1.default.Router();
+const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
+router.get('/', admin_controller_1.default.getAdminData);
+router.get('/dashboard', admin_middleware_1.admin, admin_controller_1.default.dashboardAdminData);
+router.get('/countries', admin_middleware_1.admin, countries_controller_1.countriesController.getCountries);
+router.get('/permissions', admin_middleware_1.admin, permissions_controller_1.permissionsController.getAppPermissions);
+router.get('/categories', admin_middleware_1.admin, category_controller_1.categoryController.getPermissionCategories);
+router.get('/plans', admin_middleware_1.admin, plans_controller_1.plansController.getPlans);
+router.post('/permissions', admin_middleware_1.admin, permissions_controller_1.permissionsController.addAppPermission);
+router.post('/categories', admin_middleware_1.admin, category_controller_1.categoryController.addPermissionCategory);
+router.post('/categories/import', admin_middleware_1.admin, upload.single('file'), category_controller_1.categoryController.bulkAddPermissionCategories);
+router.post('/permissions/import', admin_middleware_1.admin, upload.single('file'), permissions_controller_1.permissionsController.bulkAddPermissions);
+exports.default = router;

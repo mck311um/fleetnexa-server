@@ -1,39 +1,34 @@
-import { NextFunction, Request, Response } from "express";
-import { getZohoAccessToken } from "../config/zoho";
-import axios from "axios";
-import prisma from "../config/prisma.config";
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import fs from "fs";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
-import { Readable } from "stream";
-import FormData from "form-data";
-import loggerConfig from "../config/logger.config";
+import { Request, Response } from 'express';
+import { getZohoAccessToken } from '../config/zoho';
+import axios from 'axios';
+import prisma from '../config/prisma.config';
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { Readable } from 'stream';
+import FormData from 'form-data';
+import loggerConfig from '../config/logger.config';
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 
-const sendForSignature = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const sendForSignature = async (req: Request, res: Response) => {
   const { rentalId, documentUrl, driverEmail, userId } = req.body;
   const tenantId = req.user?.tenantId;
 
   if (!rentalId || !documentUrl || !tenantId || !userId) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
     const accessToken = await getZohoAccessToken();
 
-    const [driver, user, tenant] = await Promise.all([
+    const [driver, user] = await Promise.all([
       prisma.rentalDriver.findFirst({
         where: { rentalId },
-        include: { driver: true },
+        include: { customer: true },
       }),
       prisma.user.findUnique({ where: { id: userId } }),
-      prisma.tenant.findUnique({ where: { id: tenantId } }),
     ]);
 
     const signatureResponse = await createDocument(
@@ -41,20 +36,20 @@ const sendForSignature = async (
       driver,
       driverEmail,
       user,
-      accessToken
+      accessToken,
     );
 
     const sendResponse = await sendForSigning(
       signatureResponse.requests,
-      accessToken
+      accessToken,
     );
 
     return res.status(200).json(sendResponse);
   } catch (error: any) {
-    console.error("Zoho Sign Error:", error.response?.data || error.message);
+    console.error('Zoho Sign Error:', error.response?.data || error.message);
 
     res.status(500).json({
-      error: "Failed to send document for signing",
+      error: 'Failed to send document for signing',
       details: error.message,
     });
   }
@@ -65,15 +60,15 @@ const createDocument = async (
   driver: any,
   driverEmail: string,
   user: any,
-  accessToken: string
+  accessToken: string,
 ): Promise<any> => {
   let tempFilePath: string | null = null;
   try {
     const urlParts = new URL(documentUrl);
-    const bucket = urlParts.hostname.split(".")[0];
+    const bucket = urlParts.hostname.split('.')[0];
     const key = urlParts.pathname.substring(1);
 
-    const tempDir = path.join(__dirname, "..", "temp");
+    const tempDir = path.join(__dirname, '..', 'temp');
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
     }
@@ -85,63 +80,63 @@ const createDocument = async (
       new GetObjectCommand({
         Bucket: bucket,
         Key: key,
-      })
+      }),
     );
 
     if (s3Response.Body) {
       const bodyStream = s3Response.Body as Readable;
       await new Promise((resolve, reject) => {
         bodyStream.pipe(fileStream);
-        bodyStream.on("error", reject);
-        fileStream.on("finish", resolve);
+        bodyStream.on('error', reject);
+        fileStream.on('finish', resolve);
       });
     } else {
-      throw new Error("No file body received from S3");
+      throw new Error('No file body received from S3');
     }
 
     const requestData = {
       requests: {
-        request_name: "Booking Agreement Signing Request",
-        notes: "Please sign this booking agreement",
+        request_name: 'Booking Agreement Signing Request',
+        notes: 'Please sign this booking agreement',
         is_sequential: false,
         expiration_days: 30,
         actions: [
           {
-            action_type: "SIGN",
+            action_type: 'SIGN',
             recipient_name: `${driver.driver.firstName} ${driver.driver.lastName}`,
             recipient_email: driverEmail,
             in_person_name: `${driver.driver.firstName} ${driver.driver.lastName}`,
             verify_recipient: false,
-            private_notes: "Primary Driver",
+            private_notes: 'Primary Driver',
           },
           {
-            action_type: "SIGN",
+            action_type: 'SIGN',
             recipient_name: `${user.firstName} ${user.lastName}`,
             recipient_email: `${user.email}`,
             in_person_name: `${user.firstName} ${user.lastName}`,
             verify_recipient: false,
-            private_notes: "Authorized Representative",
+            private_notes: 'Authorized Representative',
           },
         ],
       },
     };
 
     const formData = new FormData();
-    formData.append("file", fs.createReadStream(tempFilePath), {
-      filename: "Booking_Agreement.pdf",
-      contentType: "application/pdf",
+    formData.append('file', fs.createReadStream(tempFilePath), {
+      filename: 'Booking_Agreement.pdf',
+      contentType: 'application/pdf',
     });
-    formData.append("data", JSON.stringify(requestData));
+    formData.append('data', JSON.stringify(requestData));
 
     const response = await axios.post(
-      "https://sign.zoho.com/api/v1/requests",
+      'https://sign.zoho.com/api/v1/requests',
       formData,
       {
         headers: {
           Authorization: `Zoho-oauthtoken ${accessToken}`,
           ...formData.getHeaders(),
         },
-      }
+      },
     );
 
     if (tempFilePath && fs.existsSync(tempFilePath)) {
@@ -149,12 +144,12 @@ const createDocument = async (
     }
 
     loggerConfig.logger.info(
-      `Zoho Sign Request Created: ${response.data.request_id}`
+      `Zoho Sign Request Created: ${response.data.request_id}`,
     );
 
     return response.data;
   } catch (error: any) {
-    loggerConfig.logger.error("Error creating Zoho Sign request:", error);
+    loggerConfig.logger.error('Error creating Zoho Sign request:', error);
 
     if (tempFilePath && fs.existsSync(tempFilePath)) {
       fs.unlinkSync(tempFilePath);
@@ -175,12 +170,12 @@ const sendForSigning = async (data: any, accessToken: string) => {
         headers: {
           Authorization: `Zoho-oauthtoken ${accessToken}`,
         },
-      }
+      },
     );
 
     return res.data;
   } catch (error) {
-    loggerConfig.logger.error("Error sending for signature:", error);
+    loggerConfig.logger.error('Error sending for signature:', error);
   }
 };
 

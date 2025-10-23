@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Booking Notification</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f4f6f8;
+        font-family: Arial, sans-serif;
+        color: #333333;
+      }
+
+      .email-container {
+        max-width: 650px;
+        margin: 30px auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e1e5eb;
+      }
+
+      .email-header {
+        background: linear-gradient(135deg, #1e2a32 0%, #2c3e50 100%);
+        text-align: center;
+        padding: 30px 20px;
+        color: #ffffff;
+      }
+
+      .email-header .logo {
+        max-width: 50px;
+        max-height: 50px;
+        margin-bottom: 10px;
+      }
+
+      .email-header .brand-title {
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+      }
+
+      .email-header .tagline {
+        font-size: 16px;
+        font-weight: 600;
+        opacity: 0.9;
+      }
+
+      .email-body {
+        padding: 35px 30px;
+      }
+
+      .notification-title {
+        font-size: 28px;
+        color: #228b22;
+        text-align: center;
+        margin-bottom: 15px;
+        font-weight: 700;
+      }
+
+      .notification-subtitle {
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #555555;
+        font-weight: 600;
+      }
+
+      .info-card {
+        background-color: #f9fafb;
+        border-radius: 10px;
+        padding: 20px 25px;
+        margin-bottom: 25px;
+        border: 1px solid #e5e9ef;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .info-heading {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #1e2a32;
+        border-bottom: 1px solid #dfe3e8;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .info-heading i {
+        margin-right: 10px;
+        font-size: 20px;
+      }
+
+      .info-item {
+        font-size: 15px;
+        margin: 10px 0;
+      }
+
+      .info-label {
+        font-weight: 600;
+        color: #444444;
+        min-width: 160px;
+        margin-right: 8px;
+      }
+
+      .info-value {
+        color: #222222;
+        text-align: right;
+        flex: 1;
+      }
+
+      .booking-id {
+        color: #228b22;
+        font-weight: bold;
+        font-size: 16px;
+      }
+
+      .highlight-card {
+        background-color: #e8f5e9;
+        border-left: 4px solid #228b22;
+      }
+
+      .additions-list {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .additions-list li {
+        margin-bottom: 8px;
+      }
+
+      .priority-tag {
+        display: inline-block;
+        background-color: #ff6b6b;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+
+      .footer {
+        background-color: #1e2a32;
+        color: #cccccc;
+        text-align: center;
+        padding: 25px 20px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .footer a {
+        color: #4cd3e3;
+        font-weight: bold;
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      .action-button {
+        display: inline-block;
+        background-color: #228b22;
+        color: white;
+        padding: 12px 25px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        margin: 10px 5px;
+        text-align: center;
+      }
+
+      .action-button.secondary {
+        background-color: #4cd3e3;
+      }
+
+      .actions-section {
+        text-align: center;
+        margin: 30px 0 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="email-container">
+      <div class="email-header">
+        <img
+          src="https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/Logos/rentnexa.png"
+          alt="FleetNexa"
+          class="logo"
+        />
+        <h1 class="brand-title">RentNexa</h1>
+        <div class="tagline">New Booking Notification</div>
+      </div>
+
+      <div class="email-body">
+        <h1 class="notification-title">New Booking Received!</h1>
+        <p class="notification-subtitle">
+          A customer has booked a vehicle through your storefront
+        </p>
+
+        <div class="info-card">
+          <div class="info-heading">Booking Overview</div>
+          <div class="info-item">
+            <span class="info-label">Booking ID:</span>
+            <span class="info-value booking-id">{{bookingId}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Booking Date:</span>
+            <span class="info-value">{{bookingDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Vehicle:</span>
+            <span class="info-value">{{vehicle}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Total Amount:</span>
+            <span class="info-value">{{totalPrice}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Customer Details</div>
+          <div class="info-item">
+            <span class="info-label">Full Name:</span>
+            <span class="info-value">{{customerName}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email:</span>
+            <span class="info-value">{{customerEmail}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Phone:</span>
+            <span class="info-value">{{customerPhone}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Driver's License:</span>
+            <span class="info-value">{{driverLicense}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Address:</span>
+            <span class="info-value">{{customerAddress}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Pickup Details</div>
+          <div class="info-item">
+            <span class="info-label">Pickup Date:</span>
+            <span class="info-value">{{startDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Time:</span>
+            <span class="info-value">{{pickupTime}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup Location:</span>
+            <span class="info-value">{{pickupLocation}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Return Details</div>
+          <div class="info-item">
+            <span class="info-label">Return Date:</span>
+            <span class="info-value">{{endDate}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Return Time:</span>
+            <span class="info-value">{{returnTime}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Return Location:</span>
+            <span class="info-value">{{returnLocation}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Rental Duration:</span>
+            <span class="info-value">{{rentalDuration}}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Booking Additions</div>
+          {{#if bookingAdditions}}
+          <ul class="additions-list">
+            {{#each bookingAdditions}}
+            <li>
+              <strong>{{this.name}}:</strong> {{this.quantity}} × {{this.price}}
+              = {{this.total}}
+            </li>
+            {{/each}}
+          </ul>
+          {{else}}
+          <div class="info-item">
+            <span class="info-label">No additional services selected</span>
+            <span class="info-value">-</span>
+          </div>
+          {{/if}}
+        </div>
+
+        <div class="info-card">
+          <div class="info-heading">Payment Summary</div>
+          <div class="info-item">
+            <span class="info-label">Vehicle Rental:</span>
+            <span class="info-value">{{vehiclePrice}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Additional Services:</span>
+            <span class="info-value">{{additionsTotal}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Security Deposit:</span>
+            <span class="info-value">{{taxesFees}}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Total Amount:</span>
+            <span class="info-value" style="font-weight: bold; font-size: 16px"
+              >{{totalPrice}}</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        <p>
+          © 2025 RentNexa - Caribbean Rental Storefront. All rights reserved.
+        </p>
+        <p>
+          This is an automated notification. Please do not reply to this
+          email.<br />
+          Manage your notifications in your
+          <a href="{{settingsLink}}">account settings</a>.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

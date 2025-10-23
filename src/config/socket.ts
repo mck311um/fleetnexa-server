@@ -1,5 +1,6 @@
-import { Server, Socket } from "socket.io";
-import jwt from "jsonwebtoken";
+import { Server, Socket } from 'socket.io';
+import jwt from 'jsonwebtoken';
+import { logger } from './logger';
 
 interface UserPayload {
   id: string;
@@ -11,7 +12,7 @@ function setupSocket(io: Server) {
     const token = socket.handshake.auth.token;
 
     if (!token) {
-      return next(new Error("Authentication error: Token missing"));
+      return next(new Error('Authentication error: Token missing'));
     }
 
     try {
@@ -22,20 +23,21 @@ function setupSocket(io: Server) {
       (socket as any).user = decoded.user;
 
       return next();
-    } catch (err) {
-      return next(new Error("Authentication error: Invalid token"));
+    } catch (error) {
+      logger.e(error, 'Socket authentication failed');
+      return next(new Error('Authentication error: Invalid token'));
     }
   });
 
-  io.on("connection", (socket: Socket) => {
+  io.on('connection', (socket: Socket) => {
     const user = (socket as any).user;
 
-    console.log("✅ Socket connected for user:", user);
+    console.log('✅ Socket connected for user:', user);
 
     socket.join(user.tenantId);
 
-    socket.on("disconnect", () => {
-      console.log("❌ Socket disconnected for user:", user.id);
+    socket.on('disconnect', () => {
+      console.log('❌ Socket disconnected for user:', user.id);
     });
   });
 }

@@ -1,0 +1,23 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const booking_controller_1 = __importDefault(require("./booking.controller"));
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const router = express_1.default.Router();
+router.get('/', auth_middleware_1.auth, booking_controller_1.default.getBookings);
+router.get('/code/:bookingCode', auth_middleware_1.auth, booking_controller_1.default.getBookingByCode);
+router.get('/:id', auth_middleware_1.auth, booking_controller_1.default.getBookingById);
+router.post('/', auth_middleware_1.auth, booking_controller_1.default.createSystemBooking);
+router.post('/confirm', auth_middleware_1.auth, booking_controller_1.default.confirmBooking);
+router.post('/decline/:id', auth_middleware_1.auth, booking_controller_1.default.declineBooking);
+router.post('/cancel/:id', auth_middleware_1.auth, booking_controller_1.default.cancelBooking);
+router.post('/start', auth_middleware_1.auth, booking_controller_1.default.startBooking);
+router.post('/end', auth_middleware_1.auth, booking_controller_1.default.endBooking);
+router.post('/invoice/:id', auth_middleware_1.auth, booking_controller_1.default.generateInvoice);
+router.post('/agreement/:id', auth_middleware_1.auth, booking_controller_1.default.generateBookingAgreement);
+router.put('/:id', auth_middleware_1.auth, booking_controller_1.default.updateBooking);
+router.delete('/:id', auth_middleware_1.auth, booking_controller_1.default.deleteBooking);
+exports.default = router;

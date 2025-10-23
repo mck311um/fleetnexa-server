@@ -1,0 +1,42 @@
+import { logger } from '../../config/logger';
+import { Request, Response } from 'express';
+import { adminService } from './admin.service';
+
+const getAdminData = async (req: Request, res: Response) => {
+  try {
+    const data = await adminService.getAdminData();
+
+    res.status(200).json(data);
+  } catch (error) {
+    logger.e(error, 'Error fetching admin data');
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const dashboardAdminData = async (req: Request, res: Response) => {
+  try {
+    const data = await adminService.getDashboardAdminData();
+
+    res.status(200).json(data);
+  } catch (error) {
+    logger.e(error, 'Error fetching dashboard admin data');
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const getStorefrontAdminData = async (req: Request, res: Response) => {
+  try {
+    const data = await adminService.getStorefrontAdminData();
+
+    res.status(200).json(data);
+  } catch (error) {
+    logger.e(error, 'Error fetching storefront admin data');
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export default {
+  getAdminData,
+  dashboardAdminData,
+  getStorefrontAdminData,
+};
