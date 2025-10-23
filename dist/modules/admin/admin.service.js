@@ -112,5 +112,28 @@ class AdminService {
             throw error;
         }
     }
+    async getStorefrontAdminData() {
+        try {
+            const models = {
+                vehicleFeatures: prisma_config_1.default.vehicleFeature,
+                vehicleBodyTypes: prisma_config_1.default.vehicleBodyType,
+                caribbeanCountries: prisma_config_1.default.caribbeanCountry,
+                countries: prisma_config_1.default.country,
+            };
+            const entries = await Promise.all(Object.entries(models).map(async ([key, model]) => {
+                if (key === 'caribbeanCountries')
+                    return [
+                        key,
+                        await model.findMany({
+                            include: { country: true },
+                        }),
+                    ];
+                return [key, await model.findMany()];
+            }));
+            const data = Object.fromEntries(entries);
+            return data;
+        }
+        catch (error) { }
+    }
 }
 exports.adminService = new AdminService();

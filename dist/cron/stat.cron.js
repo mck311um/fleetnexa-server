@@ -18,6 +18,7 @@ const runYearlyStatCron = async () => {
             const to = (0, date_fns_1.endOfYear)(new Date(year, 0, 1));
             await Promise.all([
                 saveYearlyStat(tenant.id, year, 'YEARLY_REVENUE', await calcYearlyRevenue(tenant.id, from, to), from, to),
+                saveYearlyStat(tenant.id, year, 'YEARLY_EXPENSES', await calculateYearlyExpenses(tenant.id, from, to), from, to),
                 saveYearlyStat(tenant.id, year, 'YEARLY_RENTALS', await calcYearlyRentals(tenant.id, from, to), from, to),
                 saveYearlyStat(tenant.id, year, 'YEARLY_CUSTOMERS', await calcYearlyCustomers(tenant.id, from, to), from, to),
                 saveYearlyStat(tenant.id, year, 'AVERAGE_RENTAL_DURATION', await calcAverageRentalDuration(tenant.id, from, to), from, to),
@@ -54,6 +55,17 @@ const calcYearlyRevenue = async (tenantId, from, to) => {
                 startDate: { gte: from, lte: to },
                 status: 'COMPLETED',
             },
+            isDeleted: false,
+        },
+        _sum: { amount: true },
+    });
+    return _sum.amount ?? 0;
+};
+const calculateYearlyExpenses = async (tenantId, from, to) => {
+    const { _sum } = await prisma.expense.aggregate({
+        where: {
+            tenantId,
+            expenseDate: { gte: from, lte: to },
             isDeleted: false,
         },
         _sum: { amount: true },

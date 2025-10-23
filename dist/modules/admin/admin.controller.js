@@ -22,7 +22,18 @@ const dashboardAdminData = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+const getStorefrontAdminData = async (req, res) => {
+    try {
+        const data = await admin_service_1.adminService.getStorefrontAdminData();
+        res.status(200).json(data);
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Error fetching storefront admin data');
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 exports.default = {
     getAdminData,
     dashboardAdminData,
+    getStorefrontAdminData,
 };

@@ -7,7 +7,7 @@ const getExpenses = async (req, res) => {
     const { tenant, user } = req.context;
     try {
         const expenses = await expense_service_1.expenseService.getTenantExpenses(tenant);
-        res.status(200).json({ expenses });
+        res.status(200).json(expenses);
     }
     catch (error) {
         logger_1.logger.e(error, 'Failed to fetch expenses', {
@@ -25,7 +25,13 @@ const createExpense = async (req, res) => {
         await expense_service_1.expenseService.createExpense(expenseDto, tenant, user);
         const expenses = await expense_service_1.expenseService.getTenantExpenses(tenant);
         const transactions = await transaction_service_1.transactionService.getTenantTransactions(tenant);
-        res.status(201).json({ expenses, transactions });
+        res
+            .status(201)
+            .json({
+            expenses,
+            transactions,
+            message: 'Expense created successfully',
+        });
     }
     catch (error) {
         logger_1.logger.e(error, 'Failed to create expense', {

@@ -6,11 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.storefrontService = void 0;
 const logger_1 = require("../../config/logger");
 const prisma_config_1 = __importDefault(require("../../config/prisma.config"));
+const tenant_extras_service_1 = require("../tenant/modules/tenant-extras/tenant-extras.service");
 class StorefrontService {
     async getTenants() {
         try {
             const tenants = await prisma_config_1.default.tenant.findMany({
-                where: { storefrontEnabled: true },
+                where: {
+                    storefrontEnabled: true,
+                    vehicles: {
+                        some: {
+                            storefrontEnabled: true,
+                            isDeleted: false,
+                        },
+                    },
+                },
                 select: {
                     id: true,
                     tenantName: true,
@@ -22,7 +31,9 @@ class StorefrontService {
                     number: true,
                     _count: {
                         select: {
-                            vehicles: true,
+                            vehicles: {
+                                where: { storefrontEnabled: true, isDeleted: false },
+                            },
                             ratings: true,
                         },
                     },
@@ -58,7 +69,9 @@ class StorefrontService {
                     number: true,
                     _count: {
                         select: {
-                            vehicles: true,
+                            vehicles: {
+                                where: { storefrontEnabled: true, isDeleted: false },
+                            },
                             ratings: true,
                         },
                     },
@@ -204,6 +217,9 @@ class StorefrontService {
                             currency: true,
                             logo: true,
                             securityDeposit: true,
+                            tenantLocations: {
+                                where: { storefrontEnabled: true, isDeleted: false },
+                            },
                             currencyRates: {
                                 include: {
                                     currency: true,
@@ -220,7 +236,20 @@ class StorefrontService {
                     },
                 },
             });
-            return vehicles;
+            const tenantIds = [
+                ...new Set(vehicles.map((v) => v.tenant?.id).filter(Boolean)),
+            ];
+            const tenantExtrasPromises = tenantIds.map((id) => tenant_extras_service_1.tenantExtraService.getTenantExtras(id || ''));
+            const tenantExtrasResults = await Promise.all(tenantExtrasPromises);
+            const tenantExtras = tenantExtrasResults.flat();
+            const vehiclesWithExtras = vehicles.map((vehicle) => ({
+                ...vehicle,
+                tenant: {
+                    ...vehicle.tenant,
+                    extras: tenantExtras.filter((extra) => extra.tenantId === vehicle?.tenant?.id),
+                },
+            }));
+            return vehiclesWithExtras;
         }
         catch (error) {
             logger_1.logger.e(error, 'Error fetching vehicles for storefront');
@@ -289,6 +318,9 @@ class StorefrontService {
                                     currency: true,
                                 },
                             },
+                            tenantLocations: {
+                                where: { storefrontEnabled: true, isDeleted: false },
+                            },
                             address: {
                                 include: {
                                     country: true,
@@ -300,7 +332,17 @@ class StorefrontService {
                     },
                 },
             });
-            return vehicle;
+            const tenantExtras = await tenant_extras_service_1.tenantExtraService.getTenantExtras(vehicle?.tenant?.id || '');
+            const vehicleWithExtras = vehicle
+                ? {
+                    ...vehicle,
+                    tenant: {
+                        ...vehicle.tenant,
+                        extras: tenantExtras,
+                    },
+                }
+                : null;
+            return vehicleWithExtras;
         }
         catch (error) {
             logger_1.logger.e(error, 'Error fetching vehicle by ID for storefront');

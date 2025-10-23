@@ -98,6 +98,65 @@ class EmailService {
             throw error;
         }
     }
+    async sendBookingCompletedEmail(bookingId, tenant) {
+        try {
+            const booking = await prisma_config_1.default.rental.findUnique({
+                where: { id: bookingId, tenantId: tenant.id },
+                include: {
+                    values: true,
+                    pickup: true,
+                    vehicle: {
+                        include: {
+                            brand: true,
+                            model: true,
+                        },
+                    },
+                },
+            });
+            if (!booking) {
+                throw new Error('Booking not found');
+            }
+            let currency;
+            if (!tenant.currencyId) {
+                currency = await prisma_config_1.default.currency.findFirst({
+                    where: { code: 'USD' },
+                });
+            }
+            else {
+                currency = await prisma_config_1.default.currency.findUnique({
+                    where: { id: tenant.currencyId },
+                });
+            }
+            const primaryDriver = await customer_service_1.default.getPrimaryDriver(booking.id);
+            const templateData = {
+                bookingId: booking?.bookingCode || '',
+                startDate: formatter_1.default.formatDateToFriendlyDate(booking?.startDate) || '',
+                pickupTime: formatter_1.default.formatDateToFriendlyTime(booking?.startDate) || '',
+                endDate: formatter_1.default.formatDateToFriendlyDate(booking?.endDate) || '',
+                pickupLocation: booking?.pickup.location || '',
+                totalPrice: formatter_1.default.formatNumberToTenantCurrency(booking?.values?.netTotal || 0, currency?.code || 'USD'),
+                tenantName: tenant?.tenantName || '',
+                phone: tenant?.number || '',
+                vehicle: formatter_1.default.formatVehicleToFriendly(booking?.vehicle) || '',
+                email: tenant?.email || '',
+            };
+            await ses_service_1.default.sendEmail({
+                to: [primaryDriver?.customer.email || ''],
+                cc: [],
+                from: 'no-reply@rentnexa.com',
+                template: 'BookingCompleted',
+                templateData,
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error sending booking completed email', {
+                bookingId,
+                tenantId: tenant?.id,
+                tenantCode: tenant?.tenantCode,
+            });
+            throw error;
+        }
+    }
 }
 exports.emailService = new EmailService();
 const sendWelcomeEmail = async (tenant, username, password, name) => {
@@ -125,7 +184,6 @@ const sendWelcomeEmail = async (tenant, username, password, name) => {
 const sendConfirmationEmail = async (bookingId, includeInvoice, includeAgreement, tenant) => {
     try {
         let currency;
-        logger_1.logger.i('Fetching currency', { tenantId: tenant.currencyId });
         if (!tenant.currencyId) {
             currency = await prisma_config_1.default.currency.findFirst({
                 where: { code: 'USD' },

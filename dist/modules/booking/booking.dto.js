@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StorefrontBookingSchema = void 0;
+exports.StorefrontGuestBookingSchema = exports.StorefrontCustomerSchema = exports.StorefrontUserBookingSchema = void 0;
 const zod_1 = require("zod");
 const RentalExtrasSchema = zod_1.z.array(zod_1.z.object({
     id: zod_1.z.uuid(),
@@ -34,13 +34,41 @@ const RentalValuesSchema = zod_1.z.object({
     additionalDriverFees: zod_1.z.float64().min(0),
     extras: RentalExtrasSchema,
 });
-exports.StorefrontBookingSchema = zod_1.z.object({
-    id: zod_1.z.uuid(),
-    startDate: zod_1.z.date(),
-    endDate: zod_1.z.date(),
+exports.StorefrontUserBookingSchema = zod_1.z.object({
+    userId: zod_1.z.uuid(),
+    startDate: zod_1.z.string(),
+    endDate: zod_1.z.string(),
     pickupLocationId: zod_1.z.uuid(),
     returnLocationId: zod_1.z.uuid(),
     vehicleId: zod_1.z.uuid(),
-    chargeTypeId: zod_1.z.uuid(),
+    tenantId: zod_1.z.uuid(),
+    values: RentalValuesSchema,
+});
+exports.StorefrontCustomerSchema = zod_1.z.object({
+    firstName: zod_1.z.string().max(100),
+    lastName: zod_1.z.string().max(100),
+    email: zod_1.z.email().max(255),
+    gender: zod_1.z.string().optional(),
+    phone: zod_1.z.string().max(20),
+    driverLicenseNumber: zod_1.z.string().max(50),
+    licenseExpiry: zod_1.z.string().max(50),
+    licenseIssued: zod_1.z.string().max(50),
+    dateOfBirth: zod_1.z.string(),
+    license: zod_1.z.string().optional(),
+    address: zod_1.z.object({
+        street: zod_1.z.string().optional(),
+        villageId: zod_1.z.uuid().optional(),
+        stateId: zod_1.z.uuid().optional(),
+        countryId: zod_1.z.uuid().optional(),
+    }),
+});
+exports.StorefrontGuestBookingSchema = zod_1.z.object({
+    customer: exports.StorefrontCustomerSchema,
+    startDate: zod_1.z.string(),
+    endDate: zod_1.z.string(),
+    pickupLocationId: zod_1.z.uuid(),
+    returnLocationId: zod_1.z.uuid(),
+    vehicleId: zod_1.z.uuid(),
+    tenantId: zod_1.z.uuid(),
     values: RentalValuesSchema,
 });
