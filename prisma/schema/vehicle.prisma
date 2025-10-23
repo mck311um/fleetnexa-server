@@ -136,7 +136,6 @@ model VehicleServiceLog {
 model VehicleMaintenance {
   id                 String              @id @default(dbgenerated("gen_random_uuid()"))
   vehicleId          String
-  serviceId          String
   vendorId           String?
   startDate          DateTime
   endDate            DateTime
@@ -149,13 +148,14 @@ model VehicleMaintenance {
   updatedAt          DateTime?           @updatedAt
   createdBy          String?
   updatedBy          String?
+  expenses           Expense[]
 
-  maintenance        MaintenanceService  @relation(fields: [serviceId], references: [id])
   vehicle            Vehicle             @relation(fields: [vehicleId], references: [id])
   vendor             TenantVendor?       @relation(fields: [vendorId], references: [id])
   tenant             Tenant?             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  expenses           Expense[]
+  services           MaintenanceService[]  @relation("MaintenanceToServices")
 }
+
 
 
 model VehicleServiceSchedule {

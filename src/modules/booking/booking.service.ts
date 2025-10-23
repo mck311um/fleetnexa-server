@@ -15,14 +15,17 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 import { CreateRentalActivityDto } from './dto/create-activity.dto';
 import pdf from '../../services/pdf.service';
 import documentService from '../../services/document.service';
-import customerService from '../customer/customer.service';
 import prisma, { TxClient } from '../../config/prisma.config';
 import transactionService from '../transaction/transaction.service';
 import { error } from 'console';
 import { bookingRepo } from './booking.repository';
-import { StorefrontUserBookingDto } from './booking.dto';
+import {
+  StorefrontGuestBookingDto,
+  StorefrontUserBookingDto,
+} from './booking.dto';
 import { tenantNotificationService } from '../tenant/modules/tenant-notification/tenant-notification.service';
 import { emailService } from '../email/email.service';
+import { customerService } from '../customer/customer.service';
 
 class BookingService {
   async getTenantBookings(tenant: Tenant) {
@@ -385,7 +388,7 @@ class BookingService {
             rentalNumber: bookingNumber,
             tenantId: tenant.id,
             status: RentalStatus.PENDING,
-            agent: Agent.SYSTEM,
+            agent: Agent.STOREFRONT,
             drivers: {
               create: {
                 driverId: customer!.id,
@@ -485,6 +488,158 @@ class BookingService {
         tenantCode: tenant.tenantCode,
       });
       throw error;
+    }
+  }
+
+  async createGuestStorefrontBooking(
+    data: StorefrontGuestBookingDto,
+    tenant: Tenant,
+  ) {
+    try {
+      const booking = await prisma.$transaction(async (tx) => {
+        const customer = await customerService.getStorefrontCustomer(
+          data.customer,
+          tenant,
+          tx,
+        );
+
+        const bookingNumber = await generator.generateRentalNumber(tenant.id);
+
+        if (!bookingNumber) {
+          throw error;
+        }
+
+        const bookingCode = generator.generateBookingCode(
+          tenant.tenantCode,
+          bookingNumber,
+        );
+
+        if (!bookingCode) {
+          throw error;
+        }
+
+        const chargeType = await prisma.chargeType.findFirst({
+          where: { unit: 'day' },
+        });
+
+        if (!chargeType) {
+          logger.w('No charge type found for storefront booking');
+          throw error;
+        }
+
+        const newBooking = await tx.rental.create({
+          data: {
+            startDate: new Date(data.startDate),
+            endDate: new Date(data.endDate),
+            pickupLocationId: data.pickupLocationId,
+            returnLocationId: data.returnLocationId,
+            vehicleId: data.vehicleId,
+            chargeTypeId: chargeType?.id,
+            bookingCode,
+            createdAt: new Date(),
+            rentalNumber: bookingNumber,
+            tenantId: tenant.id,
+            status: RentalStatus.PENDING,
+            agent: Agent.STOREFRONT,
+            drivers: {
+              create: {
+                driverId: customer!.id,
+                isPrimary: true,
+              },
+            },
+          },
+          select: {
+            startDate: true,
+            endDate: true,
+            id: true,
+            rentalNumber: true,
+            bookingCode: true,
+            tenant: {
+              select: {
+                id: true,
+                tenantName: true,
+                email: true,
+                number: true,
+              },
+            },
+            vehicle: {
+              select: {
+                year: true,
+                brand: true,
+                model: true,
+                tenant: {
+                  select: {
+                    currency: true,
+                  },
+                },
+              },
+            },
+            pickup: true,
+            values: {
+              select: {
+                netTotal: true,
+              },
+            },
+          },
+        });
+
+        await tx.values.create({
+          data: {
+            id: data.values.id,
+            numberOfDays: data.values.numberOfDays,
+            basePrice: data.values.basePrice,
+            customBasePrice: data.values.customBasePrice,
+            totalCost: data.values.totalCost,
+            customTotalCost: data.values.customTotalCost,
+            discount: data.values.discount,
+            customDiscount: data.values.customDiscount,
+            deliveryFee: data.values.deliveryFee,
+            customDeliveryFee: data.values.customDeliveryFee,
+            collectionFee: data.values.collectionFee,
+            customCollectionFee: data.values.customCollectionFee,
+            deposit: data.values.deposit,
+            customDeposit: data.values.customDeposit,
+            totalExtras: data.values.totalExtras,
+            subTotal: data.values.subTotal,
+            netTotal: data.values.netTotal,
+            discountMin: data.values.discountMin,
+            discountMax: data.values.discountMax,
+            discountAmount: data.values.discountAmount,
+            discountPolicy: data.values.discountPolicy || '',
+            rentalId: newBooking.id,
+          },
+        });
+
+        await Promise.all(
+          data.values.extras.map((extra: any) =>
+            tx.rentalExtra.create({
+              data: {
+                id: extra.id,
+                extraId: extra.extraId,
+                amount: extra.amount,
+                customAmount: extra.customAmount,
+                valuesId: extra.valuesId,
+              },
+            }),
+          ),
+        );
+
+        return newBooking;
+      });
+
+      await emailService.sendBookingCompletedEmail(booking.id, tenant);
+      await tenantNotificationService.sendBookingNotification(
+        booking.id,
+        tenant,
+      );
+
+      return booking;
+    } catch (error) {
+      logger.e(error, 'Failed to create guest storefront booking', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to create guest storefront booking');
     }
   }
 }

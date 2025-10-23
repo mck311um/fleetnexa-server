@@ -10,6 +10,7 @@ router.get('/:id', auth, controller.getBookingById);
 
 router.post('/', auth, controller.createSystemBooking);
 router.post('/storefront/user', controller.createStorefrontUserBooking);
+router.post('/storefront/guest', controller.createStorefrontGuestBooking);
 
 router.post('/confirm', auth, controller.confirmBooking);
 router.post('/decline/:id', auth, controller.declineBooking);

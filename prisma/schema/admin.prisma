@@ -127,8 +127,7 @@ model MaintenanceService {
   description       String
   serviceLog        VehicleServiceLog[]
   serviceSchedule   VehicleServiceSchedule[]
-
-  scheduledMaintenance VehicleMaintenance[]
+  vehicleMaintenance VehicleMaintenance[] @relation("MaintenanceToServices")
 }
 
 model DocumentType {
