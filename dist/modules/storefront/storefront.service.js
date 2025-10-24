@@ -349,5 +349,33 @@ class StorefrontService {
             throw error;
         }
     }
+    async rateTenant(data, tenant) {
+        try {
+            const newRating = await prisma_config_1.default.tenantRatings.create({
+                data: {
+                    tenantId: tenant.id,
+                    rating: data.rating,
+                    comment: data.comment,
+                    fullName: data.fullName,
+                    email: data.email,
+                },
+            });
+            // Recalculate tenant average rating
+            const ratings = await prisma_config_1.default.tenantRatings.findMany({
+                where: { tenantId: tenant.id },
+                select: { rating: true },
+            });
+            const averageRating = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+            await prisma_config_1.default.tenant.update({
+                where: { id: tenant.id },
+                data: { rating: averageRating },
+            });
+            return newRating;
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error rating tenant in storefront');
+            throw error;
+        }
+    }
 }
 exports.storefrontService = new StorefrontService();
