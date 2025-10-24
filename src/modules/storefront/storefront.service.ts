@@ -1,6 +1,8 @@
+import { Tenant } from '@prisma/client';
 import { logger } from '../../config/logger';
 import prisma from '../../config/prisma.config';
 import { tenantExtraService } from '../tenant/modules/tenant-extras/tenant-extras.service';
+import { StorefrontRatingDto } from './storefront.dto';
 
 class StorefrontService {
   async getTenants() {
@@ -356,6 +358,39 @@ class StorefrontService {
       return vehicleWithExtras;
     } catch (error) {
       logger.e(error, 'Error fetching vehicle by ID for storefront');
+      throw error;
+    }
+  }
+
+  async rateTenant(data: StorefrontRatingDto, tenant: Tenant) {
+    try {
+      const newRating = await prisma.tenantRatings.create({
+        data: {
+          tenantId: tenant.id,
+          rating: data.rating,
+          comment: data.comment,
+          fullName: data.fullName,
+          email: data.email,
+        },
+      });
+
+      // Recalculate tenant average rating
+      const ratings = await prisma.tenantRatings.findMany({
+        where: { tenantId: tenant.id },
+        select: { rating: true },
+      });
+
+      const averageRating =
+        ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+
+      await prisma.tenant.update({
+        where: { id: tenant.id },
+        data: { rating: averageRating },
+      });
+
+      return newRating;
+    } catch (error) {
+      logger.e(error, 'Error rating tenant in storefront');
       throw error;
     }
   }

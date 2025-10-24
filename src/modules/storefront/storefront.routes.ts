@@ -10,4 +10,6 @@ router.get('/tenant/:slug', api, controller.getTenantBySlug);
 router.get('/vehicles', api, controller.getVehicles);
 router.get('/vehicle/:id', api, controller.getVehicleById);
 
+router.post('/tenant/rate', api, controller.rateTenant);
+
 export default router;
