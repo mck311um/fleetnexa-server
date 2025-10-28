@@ -108,7 +108,23 @@ class AuthService {
       });
 
       if (existingUser) {
-        throw new Error('Email already in use, please login in');
+        throw new Error('An account with these credentials already exists.');
+      }
+
+      const existingPhone = await prisma.storefrontUser.findFirst({
+        where: { phone: data.phone },
+      });
+
+      if (existingPhone) {
+        throw new Error('An account with these credentials already exists.');
+      }
+
+      const existingLicense = await prisma.storefrontUser.findFirst({
+        where: { driverLicenseNumber: data.driversLicenseNumber },
+      });
+
+      if (existingLicense) {
+        throw new Error('An account with these credentials already exists.');
       }
 
       const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -125,9 +141,9 @@ class AuthService {
           licenseIssued: new Date(data.licenseIssued),
           license: data.license,
           dateOfBirth: new Date(data.dateOfBirth),
-          street: data.street,
+          street: data.street || '',
           countryId: data.countryId || null,
-          stateId: data.stateId,
+          stateId: data.stateId || null,
         },
         select: {
           id: true,
