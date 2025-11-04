@@ -27,8 +27,10 @@ const expense_routes_1 = __importDefault(require("./modules/transaction/modules/
 const tenant_activity_routes_1 = __importDefault(require("./modules/tenant/modules/tenant-activity/tenant-activity.routes"));
 const refund_routes_1 = __importDefault(require("./modules/transaction/modules/refund/refund.routes"));
 const storefront_routes_1 = __importDefault(require("./modules/storefront/storefront.routes"));
+const signing_routes_1 = __importDefault(require("./modules/signing/signing.routes"));
 const registerRoutes = (app) => {
     app.use('/api/booking', booking_routes_1.default);
+    app.use('/api/signing', signing_routes_1.default);
     app.use('/api/admin', admin_routes_1.default);
     app.use('/api/storefront', storefront_routes_1.default);
     app.use('/api/email', email_routes_1.default);

@@ -10,6 +10,7 @@ const auth_dto_1 = require("./auth.dto");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generator_service_1 = __importDefault(require("../../services/generator.service"));
+const email_service_1 = require("../email/email.service");
 class AuthService {
     async validateAdminUserData(data) {
         if (!data) {
@@ -171,13 +172,95 @@ class AuthService {
                 licenseIssued: user.licenseIssued,
                 dateOfBirth: user.dateOfBirth,
             };
-            return userData;
+            const payload = {
+                storefrontUser: { id: user.id },
+            };
+            const token = jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
+                expiresIn: data.rememberMe ? '30d' : '7d',
+            });
+            return { userData, token };
         }
         catch (error) {
             logger_1.logger.e(error, 'Failed to validate storefront user', {
                 email: data.username,
             });
             throw new Error('Failed to validate storefront user');
+        }
+    }
+    async requestStorefrontPasswordReset(email) {
+        try {
+            const user = await prisma_config_1.default.storefrontUser.findUnique({
+                where: { email },
+            });
+            if (!user) {
+                throw new Error('No user found with the provided email');
+            }
+            await prisma_config_1.default.emailTokens.updateMany({
+                where: { email, expired: false },
+                data: { expired: true },
+            });
+            const resetToken = generator_service_1.default.generateVerificationCode();
+            const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+            await prisma_config_1.default.emailTokens.create({
+                data: {
+                    email,
+                    token: resetToken,
+                    expiresAt,
+                },
+            });
+            await email_service_1.emailService.sendStorefrontPasswordResetEmail(resetToken, email);
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to request password reset', { email });
+            throw error;
+        }
+    }
+    async verifyStorefrontPasswordResetToken(data) {
+        try {
+            const record = await prisma_config_1.default.emailTokens.findFirst({
+                where: {
+                    email: data.email,
+                    token: data.token,
+                    expired: false,
+                    expiresAt: { gt: new Date() },
+                },
+            });
+            if (!record) {
+                throw new Error('Invalid or expired token');
+            }
+            await prisma_config_1.default.emailTokens.updateMany({
+                where: { email: data.email, token: data.token },
+                data: { expired: true, verified: true },
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to verify password reset token', {
+                email: data.email,
+                token: data.token,
+            });
+            throw error;
+        }
+    }
+    async resetStorefrontPassword(data) {
+        try {
+            const hashedPassword = await bcrypt_1.default.hash(data.newPassword, 10);
+            const user = await prisma_config_1.default.storefrontUser.findUnique({
+                where: { email: data.email },
+            });
+            const passwordCompare = await bcrypt_1.default.compare(data.newPassword, user?.password || '');
+            if (passwordCompare) {
+                throw new Error('New password must be different from the old password');
+            }
+            await prisma_config_1.default.storefrontUser.updateMany({
+                where: { email: data.email },
+                data: { password: hashedPassword },
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to reset storefront password', {
+                email: data.email,
+            });
+            throw error;
         }
     }
     async validateTenantUser(data) {

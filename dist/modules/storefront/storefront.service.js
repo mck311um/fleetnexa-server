@@ -13,6 +13,9 @@ class StorefrontService {
             const tenants = await prisma_config_1.default.tenant.findMany({
                 where: {
                     storefrontEnabled: true,
+                    tenantLocations: {
+                        some: { storefrontEnabled: true, isDeleted: false },
+                    },
                     vehicles: {
                         some: {
                             storefrontEnabled: true,

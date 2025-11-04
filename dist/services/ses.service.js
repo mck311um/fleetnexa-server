@@ -20,6 +20,7 @@ const testRenderEmailTemplate = async (templateName, templateData) => {
 };
 const sendEmail = async (params) => {
     const { to, cc = [], template, templateData, from = 'no-reply@fleetnexa.com', } = params;
+    logger_1.logger.i('Sending email', { params });
     try {
         await testRenderEmailTemplate(template, templateData);
         const command = new client_ses_1.SendTemplatedEmailCommand({
@@ -36,7 +37,6 @@ const sendEmail = async (params) => {
         return true;
     }
     catch (error) {
-        console.error('Failed to send email:', error);
         logger_1.logger.e(error, 'Failed to send email:');
         throw error;
     }
