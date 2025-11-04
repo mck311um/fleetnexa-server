@@ -36,3 +36,17 @@ export const StorefrontUserSchema = z.object({
 });
 
 export type StorefrontUserDto = z.infer<typeof StorefrontUserSchema>;
+
+export const VerifyEmailTokenSchema = z.object({
+  email: email(),
+  token: z.string().min(6),
+});
+
+export type VerifyEmailTokenDto = z.infer<typeof VerifyEmailTokenSchema>;
+
+export const ResetPasswordDtoSchema = z.object({
+  email: email(),
+  newPassword: z.string().min(6).max(100),
+});
+
+export type ResetPasswordDto = z.infer<typeof ResetPasswordDtoSchema>;

@@ -3,6 +3,7 @@ import {
   BookingCompletedEmailParams,
   BookingConfirmationEmailParams,
   BookingDocumentsEmailParams,
+  PasswordResetEmailParams,
   VerifyBusinessEmailParams,
   WelcomeEmailParams,
 } from '../../types/email';
@@ -181,6 +182,29 @@ class EmailService {
         bookingId,
         tenantId: tenant?.id,
         tenantCode: tenant?.tenantCode,
+      });
+      throw error;
+    }
+  }
+
+  async sendStorefrontPasswordResetEmail(token: string, email: string) {
+    try {
+      const templateData: PasswordResetEmailParams = {
+        verificationCode: token,
+      };
+
+      logger.i('Sending storefront password reset email', { email });
+
+      await ses.sendEmail({
+        to: [email],
+        cc: [],
+        from: 'RentNexa <no-reply@rentnexa.com>',
+        template: 'PasswordRequestStorefront',
+        templateData,
+      });
+    } catch (error) {
+      logger.e(error, 'Error sending storefront password reset email', {
+        email,
       });
       throw error;
     }

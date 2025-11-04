@@ -7,14 +7,7 @@ import {
   UpdateTemplateCommand,
 } from '@aws-sdk/client-ses';
 import { sesClient } from '../config/aws.config';
-import {
-  BookingCompletedEmailParams,
-  BookingConfirmationEmailParams,
-  EmailTemplateParams,
-  SendEmailParams,
-  VerifyBusinessEmailParams,
-  WelcomeEmailParams,
-} from '../types/email';
+import { EmailTemplateParams, SendEmailParams } from '../types/email';
 import {
   generateTextFromHtml,
   readTemplateFile,
@@ -23,11 +16,7 @@ import { logger } from '../config/logger';
 
 const testRenderEmailTemplate = async (
   templateName: string,
-  templateData:
-    | WelcomeEmailParams
-    | BookingConfirmationEmailParams
-    | BookingCompletedEmailParams
-    | VerifyBusinessEmailParams,
+  templateData: any,
 ) => {
   try {
     const command = new TestRenderTemplateCommand({
@@ -51,6 +40,8 @@ const sendEmail = async (params: SendEmailParams) => {
     from = 'no-reply@fleetnexa.com',
   } = params;
 
+  logger.i('Sending email', { params });
+
   try {
     await testRenderEmailTemplate(template, templateData);
 
@@ -68,7 +59,6 @@ const sendEmail = async (params: SendEmailParams) => {
     logger.i(`Email sent successfully to: ${to.join(', ')}`);
     return true;
   } catch (error) {
-    console.error('Failed to send email:', error);
     logger.e(error, 'Failed to send email:');
     throw error;
   }

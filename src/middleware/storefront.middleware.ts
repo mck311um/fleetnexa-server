@@ -3,17 +3,16 @@ import jwt from 'jsonwebtoken';
 import { logger } from '../config/logger';
 import { tenantRepo } from '../repository/tenant.repository';
 import { userRepo } from '../modules/user/user.repository';
+import prisma from '../config/prisma.config';
 
 interface UserPayload {
   id: string;
-  tenantId: string;
-  tenantCode: string;
 }
 
 declare global {
   namespace Express {
     interface Request {
-      user?: UserPayload;
+      storefrontUser?: UserPayload;
       context?: {
         tenant: any;
         user: any;
@@ -24,7 +23,11 @@ declare global {
   }
 }
 
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+export const storefrontAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const token = req.header('x-auth-token');
 
   if (!token) {
@@ -35,24 +38,22 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
-      user: UserPayload;
+      storefrontUser: UserPayload;
     };
-    req.user = decoded.user;
+    req.storefrontUser = decoded.storefrontUser;
 
-    const tenant = await tenantRepo.getTenantById(req.user.tenantId);
-    if (!tenant) {
-      return res.status(404).json({ message: 'Tenant not found' });
-    }
-
-    const user = await userRepo.getUserById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    const storefrontUser = await prisma.storefrontUser.findUnique({
+      where: { id: req.storefrontUser.id },
+    });
+    if (!storefrontUser) {
+      return res.status(404).json({ message: 'Storefront user not found' });
     }
 
     req.context = {
-      tenant,
-      user,
-      tenantCode: req.user.tenantCode,
+      tenant: null,
+      user: null,
+      tenantCode: '',
+      storefrontUser,
     };
 
     next();

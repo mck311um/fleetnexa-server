@@ -280,6 +280,25 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+const getCurrentStorefrontUser = async (req: Request, res: Response) => {
+  const storefrontUserId = req.storefrontUser?.id;
+
+  if (!storefrontUserId) {
+    logger.w('Storefront User ID is missing', { storefrontUserId });
+    return res.status(400).json({ error: 'Storefront User ID is required' });
+  }
+
+  try {
+    const storefrontUser =
+      await userService.getCurrentStorefrontUser(storefrontUserId);
+
+    res.status(200).json(storefrontUser);
+  } catch (error) {
+    logger.e(error, 'Error fetching storefront user', { storefrontUserId });
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 export default {
   getCurrentUser,
   getSystemUsers,
@@ -289,4 +308,5 @@ export default {
   changePassword,
   resetUserPassword,
   getCurrentAdminUser,
+  getCurrentStorefrontUser,
 };

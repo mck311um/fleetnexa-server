@@ -1,7 +1,59 @@
 import axios from 'axios';
 import { AgreementData, InvoiceData } from '../types/pdf';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { PDFDocument } from 'pdf-lib';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
+class PDFService {
+  async getPDFFromS3(bucketName: string, key: string): Promise<Buffer> {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+      });
+
+      const response = await s3Client.send(command);
+      return (await this.streamToBuffer(response.Body)) as Buffer;
+    } catch (error) {
+      console.error('Error fetching PDF from S3:', error);
+      throw error;
+    }
+  }
+
+  async getPresignedURL(bucketName: string, key: string, expiresIn = 3600) {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+      });
+
+      return await getSignedUrl(s3Client, command, { expiresIn });
+    } catch (error) {
+      console.error('Error generating presigned URL:', error);
+      throw error;
+    }
+  }
+
+  async streamToBuffer(stream: any) {
+    return new Promise((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      stream.on('data', (chunk: Buffer) => chunks.push(chunk));
+      stream.on('error', reject);
+      stream.on('end', () => resolve(Buffer.concat(chunks)));
+    });
+  }
+
+  async getPDFAsBase64(bucketName: string, key: string) {
+    const pdfBuffer = await this.getPDFFromS3(bucketName, key);
+    return pdfBuffer.toString('base64');
+  }
+}
+
+export const pdfService = new PDFService();
 
 const apiKey = process.env.PDFMONKEY_API_KEY!;
 const invoiceId = process.env.PDFMONKEY_INVOICE_ID!;

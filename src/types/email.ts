@@ -5,7 +5,9 @@ type EmailTemplate =
   | 'NewUser'
   | 'PasswordReset'
   | 'VerifyBusinessEmail'
-  | 'BookingDocuments';
+  | 'BookingDocuments'
+  | 'NewBooking'
+  | 'PasswordRequestStorefront';
 
 export interface SendEmailParams {
   to: string[];
@@ -16,8 +18,13 @@ export interface SendEmailParams {
     | BookingConfirmationEmailParams
     | BookingCompletedEmailParams
     | BookingDocumentsEmailParams
-    | VerifyBusinessEmailParams;
+    | VerifyBusinessEmailParams
+    | PasswordResetEmailParams;
   from?: string;
+}
+
+export interface PasswordResetEmailParams {
+  verificationCode: string;
 }
 
 export interface EmailTemplateParams {

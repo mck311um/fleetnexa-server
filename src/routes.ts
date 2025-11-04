@@ -23,9 +23,11 @@ import expenseRoutes from './modules/transaction/modules/expense/expense.routes'
 import tenantActivityRoutes from './modules/tenant/modules/tenant-activity/tenant-activity.routes';
 import refundRoutes from './modules/transaction/modules/refund/refund.routes';
 import storefrontRoutes from './modules/storefront/storefront.routes';
+import signingRoutes from './modules/signing/signing.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
+  app.use('/api/signing', signingRoutes);
 
   app.use('/api/admin', adminRoutes);
 
