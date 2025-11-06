@@ -15,7 +15,8 @@ model ChargeType {
 
 model VehicleBrand {
   id      String         @id @default(dbgenerated("gen_random_uuid()"))
-  brand   String
+  brand   String         @unique
+
   vehicle Vehicle[]
   models  VehicleModel[]
 }
@@ -25,14 +26,17 @@ model VehicleModel {
   model    String
   brandId  String
   typeId   String?
+
   vehicles Vehicle[]
   brand    VehicleBrand     @relation(fields: [brandId], references: [id])
   bodyType VehicleBodyType? @relation(fields: [typeId], references: [id])
+
+  @@unique([model, brandId, typeId])
 }
 
 model VehicleBodyType {
   id       String         @id @default(dbgenerated("gen_random_uuid()"))
-  bodyType String
+  bodyType String         @unique
   models   VehicleModel[]
 }
 

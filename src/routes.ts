@@ -24,12 +24,16 @@ import tenantActivityRoutes from './modules/tenant/modules/tenant-activity/tenan
 import refundRoutes from './modules/transaction/modules/refund/refund.routes';
 import storefrontRoutes from './modules/storefront/storefront.routes';
 import signingRoutes from './modules/signing/signing.routes';
+import vehicleModelRoutes from './modules/admin/modules/vehicle-model/vehicle-model.routes';
+import bodyTypeRoutes from './modules/admin/modules/body-type/body-type.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
   app.use('/api/signing', signingRoutes);
 
   app.use('/api/admin', adminRoutes);
+  app.use('/api/admin/vehicle-model', vehicleModelRoutes);
+  app.use('/api/admin/body-types', bodyTypeRoutes);
 
   app.use('/api/storefront', storefrontRoutes);
 
