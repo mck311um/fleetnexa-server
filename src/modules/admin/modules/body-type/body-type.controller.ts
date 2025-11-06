@@ -69,9 +69,9 @@ const deleteVehicleBodyType = async (req: Request, res: Response) => {
       message: 'Vehicle body type deleted successfully',
       vehicleBodyTypes,
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.e(error, 'Error deleting vehicle body type');
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -101,7 +101,7 @@ const bulkInsertVehicleBodyTypes = async (req: Request, res: Response) => {
     });
   } catch (error) {
     logger.e(error, 'Error during bulk vehicle body type import');
-    res.status(500).json(error);
+    res.status(500).json({ error });
   }
 };
 

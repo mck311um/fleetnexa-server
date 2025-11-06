@@ -135,11 +135,32 @@ class BodyTypeService {
     try {
       const existingBodyType = await prisma.vehicleBodyType.findUnique({
         where: { id },
+        include: {
+          models: {
+            include: {
+              _count: { select: { vehicles: true } },
+            },
+          },
+        },
       });
 
       if (!existingBodyType) {
         logger.w(`Vehicle body type not found: ${id}`);
         throw new Error('Vehicle body type not found');
+      }
+
+      const totalVehicles = existingBodyType.models.reduce(
+        (sum, model) => sum + model._count.vehicles,
+        0,
+      );
+
+      if (totalVehicles > 0) {
+        logger.w(
+          `Vehicle body type cannot be deleted (ID: ${id}) - vehicles exist`,
+        );
+        throw new Error(
+          'This vehicle body type is associated with existing vehicles and cannot be deleted',
+        );
       }
 
       await prisma.vehicleBodyType.delete({

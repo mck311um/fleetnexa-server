@@ -133,7 +133,9 @@ class VehicleModelService {
         logger.w(
           `Vehicle model cannot be deleted (ID: ${id}) - vehicles exist`,
         );
-        throw new Error('Vehicle model cannot be deleted - vehicles exist');
+        throw new Error(
+          'This vehicle model is associated with existing vehicles and cannot be deleted',
+        );
       }
 
       await prisma.vehicleModel.delete({

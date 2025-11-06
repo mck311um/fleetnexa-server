@@ -69,9 +69,9 @@ const deleteVehicleModel = async (req: Request, res: Response) => {
     res
       .status(200)
       .json({ message: 'Vehicle model deleted successfully', vehicleModels });
-  } catch (error) {
+  } catch (error: any) {
     logger.e(error, 'Error deleting vehicle model');
-    res.status(500).json({ error });
+    res.status(500).json({ message: error.message });
   }
 };
 
