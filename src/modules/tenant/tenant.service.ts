@@ -183,14 +183,14 @@ const updateTenant = async (data: UpdateTenantDto, tenant: Tenant) => {
           tenantName: data.tenantName,
           financialYearStart: data.financialYearStart,
           setupCompleted: true,
-          storefrontEnabled: data.storefrontEnabled,
           securityDeposit: data.securityDeposit,
           additionalDriverFee: data.additionalDriverFee,
           daysInMonth: data.daysInMonth,
-          description: data.description,
           paymentMethods: {
             set: data.paymentMethods.map((method: any) => ({ id: method })),
           },
+          startTime: data.startTime,
+          endTime: data.endTime,
         },
       });
 

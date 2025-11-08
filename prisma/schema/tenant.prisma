@@ -26,6 +26,8 @@ model Tenant {
   businessVerified      Boolean                    @default(false)
   merchantId           String?
   isDeleted            Boolean                    @default(false)
+  startTime            String?                    @default("12:00 AM")
+  endTime              String?                    @default("11:30 PM")
 
   address              Address?
   customers            Customer[]
