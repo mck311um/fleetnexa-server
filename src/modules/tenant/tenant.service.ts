@@ -1,6 +1,6 @@
 import { logger } from '../../config/logger';
 import prisma, { TxClient } from '../../config/prisma.config';
-import { CreateTenantDto } from './dto/create-tenant.dto';
+import { CreateTenantDto, CreateTenantSchema } from './dto/create-tenant.dto';
 import { repo } from './tenant.repository';
 import generator from '../../services/generator.service';
 import { CreateUserDto } from '../user/user.dto';
@@ -15,13 +15,35 @@ import { tenantLocationService } from './modules/tenant-location/tenant-location
 import { authService } from '../auth/auth.service';
 
 class TenantService {
+  async validateCreateTenantData(data: any) {
+    if (!data) {
+      logger.w('No data provided for tenant creation');
+      throw new Error('No data provided');
+    }
+
+    const safeParse = CreateTenantSchema.safeParse(data);
+    if (!safeParse.success) {
+      logger.w('Invalid data provided for tenant creation', {
+        errors: safeParse.error.issues,
+      });
+      throw new Error('Invalid data provided');
+    }
+
+    return safeParse.data;
+  }
+
   async createTenant(data: CreateTenantDto) {
     try {
       const { tenant, country } = await prisma.$transaction(async (tx) => {
         const existingTenant = await repo.getTenantByEmail(data.companyEmail);
 
         if (existingTenant) {
-          throw new Error('Tenant with this email already exists');
+          logger.w('Tenant with this email already exists', {
+            email: data.companyEmail,
+          });
+          throw new Error(
+            'Unable to create account. Please check your input and try again.',
+          );
         }
 
         const country = await tx.country.findUnique({
@@ -29,7 +51,10 @@ class TenantService {
         });
 
         if (!country) {
-          throw new Error('Invalid country code');
+          logger.w('Invalid country code provided for tenant creation', {
+            countryCode: data.country,
+          });
+          throw new Error('Invalid country code provided');
         }
 
         const tenantCode = await generator.generateTenantCode(data.tenantName);
@@ -77,7 +102,7 @@ class TenantService {
         email: data.companyEmail,
         tenantName: data.tenantName,
       });
-      throw new Error('Failed to create tenant');
+      throw error;
     }
   }
 

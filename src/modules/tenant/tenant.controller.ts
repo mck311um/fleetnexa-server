@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import service, { tenantService } from './tenant.service';
 import { logger } from '../../config/logger';
 import { CreateTenantSchema } from './dto/create-tenant.dto';
-import prisma from '../../config/prisma.config';
 import { UpdateTenantDtoSchema } from './dto/tenant.dto';
 import { tenantRepo } from '../../repository/tenant.repository';
 import { tenantExtraService } from './modules/tenant-extras/tenant-extras.service';
@@ -101,21 +100,7 @@ const getTenantById = async (req: Request, res: Response) => {
 const createTenant = async (req: Request, res: Response) => {
   const data = req.body;
 
-  if (!data) {
-    logger.w('Tenant data is missing');
-    return res.status(400).json({ message: 'Tenant data is required' });
-  }
-
-  const parseResult = CreateTenantSchema.safeParse(data);
-  if (!parseResult.success) {
-    return res.status(400).json({
-      error: 'Invalid user data',
-      details: parseResult.error.issues,
-    });
-  }
-
-  const tenantDto = parseResult.data;
-
+  const tenantDto = await tenantService.validateCreateTenantData(data);
   try {
     const { tenant, token } = await tenantService.createTenant(tenantDto);
 
@@ -129,12 +114,14 @@ const createTenant = async (req: Request, res: Response) => {
       tenantCode: tenant.tenantCode,
       tenantName: tenant.tenantName,
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.e(error, 'Failed to create tenant', {
       email: tenantDto.email,
       tenantName: tenantDto.tenantName,
     });
-    return res.status(500).json({ message: 'Failed to create tenant' });
+    return res
+      .status(500)
+      .json({ message: error.message || 'Failed to create tenant' });
   }
 };
 
