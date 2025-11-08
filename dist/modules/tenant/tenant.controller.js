@@ -35,7 +35,6 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const tenant_service_1 = __importStar(require("./tenant.service"));
 const logger_1 = require("../../config/logger");
-const create_tenant_dto_1 = require("./dto/create-tenant.dto");
 const tenant_dto_1 = require("./dto/tenant.dto");
 const tenant_repository_1 = require("../../repository/tenant.repository");
 const tenant_extras_service_1 = require("./modules/tenant-extras/tenant-extras.service");
@@ -121,18 +120,7 @@ const getTenantById = async (req, res) => {
 };
 const createTenant = async (req, res) => {
     const data = req.body;
-    if (!data) {
-        logger_1.logger.w('Tenant data is missing');
-        return res.status(400).json({ message: 'Tenant data is required' });
-    }
-    const parseResult = create_tenant_dto_1.CreateTenantSchema.safeParse(data);
-    if (!parseResult.success) {
-        return res.status(400).json({
-            error: 'Invalid user data',
-            details: parseResult.error.issues,
-        });
-    }
-    const tenantDto = parseResult.data;
+    const tenantDto = await tenant_service_1.tenantService.validateCreateTenantData(data);
     try {
         const { tenant, token } = await tenant_service_1.tenantService.createTenant(tenantDto);
         if (typeof token !== 'string') {
@@ -150,7 +138,9 @@ const createTenant = async (req, res) => {
             email: tenantDto.email,
             tenantName: tenantDto.tenantName,
         });
-        return res.status(500).json({ message: 'Failed to create tenant' });
+        return res
+            .status(500)
+            .json({ message: error.message || 'Failed to create tenant' });
     }
 };
 const updateTenant = async (req, res) => {

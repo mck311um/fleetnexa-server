@@ -157,17 +157,36 @@ class EmailService {
             throw error;
         }
     }
+    async sendPasswordResetEmail(token, email) {
+        try {
+            const templateData = {
+                verificationCode: token,
+            };
+            await ses_service_1.default.sendEmail({
+                to: [email],
+                cc: [],
+                from: 'FleetNexa <no-reply@fleetnexa.com>',
+                template: 'PasswordReset',
+                templateData,
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error sending storefront password reset email', {
+                email,
+            });
+            throw error;
+        }
+    }
     async sendStorefrontPasswordResetEmail(token, email) {
         try {
             const templateData = {
                 verificationCode: token,
             };
-            logger_1.logger.i('Sending storefront password reset email', { email });
             await ses_service_1.default.sendEmail({
                 to: [email],
                 cc: [],
                 from: 'RentNexa <no-reply@rentnexa.com>',
-                template: 'PasswordRequestStorefront',
+                template: 'PasswordReset',
                 templateData,
             });
         }

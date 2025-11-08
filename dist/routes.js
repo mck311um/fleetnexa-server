@@ -32,6 +32,7 @@ const vehicle_model_routes_1 = __importDefault(require("./modules/admin/modules/
 const body_type_routes_1 = __importDefault(require("./modules/admin/modules/body-type/body-type.routes"));
 const vehicle_brand_routes_1 = __importDefault(require("./modules/admin/modules/vehicle-brand/vehicle-brand.routes"));
 const storefront_routes_2 = __importDefault(require("./modules/user/modules/storefront/storefront.routes"));
+const tenant_user_routes_1 = __importDefault(require("./modules/user/modules/tenant-user/tenant-user.routes"));
 const registerRoutes = (app) => {
     app.use('/api/booking', booking_routes_1.default);
     app.use('/api/signing', signing_routes_1.default);
@@ -50,6 +51,7 @@ const registerRoutes = (app) => {
     app.use('/api/user', user_routes_1.default);
     app.use('/api/user-role', user_role_routes_1.default);
     app.use('/api/user/storefront', storefront_routes_2.default);
+    app.use('/api/user/tenant', tenant_user_routes_1.default);
     app.use('/api/customer', customer_routes_1.default);
     app.use('/api/tenant', tenant_routes_1.default);
     app.use('/api/tenant-activity', tenant_activity_routes_1.default);

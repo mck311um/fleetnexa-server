@@ -51,10 +51,7 @@ const tenantLogin = async (req: Request, res: Response) => {
 
   const parseResult = LoginDtoSchema.safeParse(data);
   if (!parseResult.success) {
-    return res.status(400).json({
-      error: 'Username/password validation failed',
-      details: parseResult.error.issues,
-    });
+    return res.status(400).json({});
   }
 
   const userDto = parseResult.data;

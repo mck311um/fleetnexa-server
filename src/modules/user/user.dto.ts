@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { email, z } from 'zod';
 
 export const CreateUserSchema = z.object({
   email: z.email(),
@@ -21,8 +21,23 @@ export const ChangePasswordSchema = z.object({
   newPassword: z.string().min(2).max(100),
 });
 
+export const NewPasswordSchema = z.object({
+  email: z.email(),
+  password: z.string().min(8).max(100),
+});
+
+export const RequestPasswordResetSchema = z.object({
+  username: z.string(),
+});
+
 export type CreateUserDto = z.infer<typeof CreateUserSchema>;
 
 export type ChangePasswordDto = z.infer<typeof ChangePasswordSchema>;
 
 export type UpdateUserDto = z.infer<typeof UpdateUserSchema>;
+
+export type RequestPasswordResetDto = z.infer<
+  typeof RequestPasswordResetSchema
+>;
+
+export type NewPasswordDto = z.infer<typeof NewPasswordSchema>;

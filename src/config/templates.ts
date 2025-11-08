@@ -21,8 +21,8 @@ export const templates = [
   },
   {
     name: 'PasswordReset',
-    subject: 'Your FleetNexa Password Has Been Reset',
-    text: "Password Reset Notification\n\nYour FleetNexa password has been reset as requested.\n\nLogin Details:\nUsername: {{username}}\nTemporary Password: {{password}}\n\nLogin URL: https://app.fleetnexa.com/login\n\nImportant Security Notice:\n- You must change this temporary password immediately after logging in\n- This temporary password will expire in 24 hours\n\nIf you didn't request this password reset, please contact our security team immediately at security@devvize.com\n\n© 2025 Devvize Services. All rights reserved.",
+    subject: 'Password Reset Verification - FleetNexa',
+    text: 'Password Reset Request\n\nUse the verification code below to reset your password:\n\nVerification Code: {{verificationCode}}\n\nThis code will expire in 10 minutes.\n\nIf you did not request a password reset, please ignore this email or contact our support team immediately.\n\n© 2025 RentNexa - Caribbean Rental Storefront. All rights reserved.\nThis is an automated notification. Please do not reply to this email.',
   },
   {
     name: 'VerifyBusinessEmail',

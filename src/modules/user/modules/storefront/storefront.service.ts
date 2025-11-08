@@ -8,6 +8,7 @@ import {
 } from './storefront.dto';
 import prisma from '../../../../config/prisma.config';
 import bcrypt from 'bcrypt';
+import { VerifyEmailTokenSchema } from '../../../auth/auth.dto';
 
 class StorefrontUserService {
   async validateUserData(data: any) {
