@@ -173,41 +173,6 @@ class UserService {
             throw new Error('Error resetting password');
         }
     }
-    async getCurrentStorefrontUser(userId) {
-        try {
-            const user = await prisma_config_1.default.storefrontUser.findUnique({
-                where: { id: userId },
-                select: {
-                    id: true,
-                    firstName: true,
-                    lastName: true,
-                    createdAt: true,
-                    email: true,
-                    profilePicture: true,
-                },
-            });
-            if (!user) {
-                throw new Error('Storefront user not found');
-            }
-            const userData = {
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                initials: `${user.firstName[0]}${user.lastName[0]}`,
-                fullName: `${user.firstName} ${user.lastName}`,
-                createdAt: user.createdAt,
-                email: user.email,
-                profilePicture: user.profilePicture || null,
-            };
-            return userData;
-        }
-        catch (error) {
-            logger_1.logger.e(error, 'Error fetching current storefront user', {
-                userId,
-            });
-            throw new Error('Error fetching current storefront user');
-        }
-    }
 }
 exports.userService = new UserService();
 const getCurrentUser = async (userId, tenant) => {

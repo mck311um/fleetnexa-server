@@ -27,6 +27,7 @@ import signingRoutes from './modules/signing/signing.routes';
 import vehicleModelRoutes from './modules/admin/modules/vehicle-model/vehicle-model.routes';
 import bodyTypeRoutes from './modules/admin/modules/body-type/body-type.routes';
 import vehicleBrandRoutes from './modules/admin/modules/vehicle-brand/vehicle-brand.routes';
+import storefrontUserRoutes from './modules/user/modules/storefront/storefront.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
@@ -50,6 +51,7 @@ export const registerRoutes = (app: Application) => {
 
   app.use('/api/user', userRoutes);
   app.use('/api/user-role', roleRoutes);
+  app.use('/api/user/storefront', storefrontUserRoutes);
 
   app.use('/api/customer', customerRoutes);
 

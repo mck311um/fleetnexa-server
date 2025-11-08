@@ -9,11 +9,6 @@ const router = express.Router();
 router.get('/', auth, controller.getSystemUsers);
 router.get('/me', auth, controller.getCurrentUser);
 router.get('/admin/me', admin, controller.getCurrentAdminUser);
-router.get(
-  '/storefront/me',
-  storefrontAuth,
-  controller.getCurrentStorefrontUser,
-);
 
 router.post('/', auth, controller.createSystemUser);
 router.post('/reset/:id', controller.resetUserPassword);

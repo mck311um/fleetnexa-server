@@ -119,6 +119,8 @@ class AdminService {
                 vehicleBodyTypes: prisma_config_1.default.vehicleBodyType,
                 caribbeanCountries: prisma_config_1.default.caribbeanCountry,
                 countries: prisma_config_1.default.country,
+                states: prisma_config_1.default.state,
+                villages: prisma_config_1.default.village,
             };
             const entries = await Promise.all(Object.entries(models).map(async ([key, model]) => {
                 if (key === 'caribbeanCountries')
