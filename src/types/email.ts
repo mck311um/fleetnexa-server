@@ -37,7 +37,6 @@ export interface WelcomeEmailParams {
   name: string;
   tenantName: string;
   username: string;
-  password: string;
 }
 
 export interface BookingConfirmationEmailParams {

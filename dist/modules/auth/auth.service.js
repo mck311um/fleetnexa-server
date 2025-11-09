@@ -265,8 +265,8 @@ class AuthService {
     }
     async validateTenantUser(data) {
         try {
-            const user = await prisma_config_1.default.user.findUnique({
-                where: { username: data.username },
+            const user = await prisma_config_1.default.user.findFirst({
+                where: { OR: [{ username: data.username }, { email: data.username }] },
                 include: {
                     tenant: true,
                     role: {
@@ -280,11 +280,19 @@ class AuthService {
                     },
                 },
             });
-            if (!user)
-                return null;
+            if (!user) {
+                logger_1.logger.w('Failed to validate tenant user - user not found', {
+                    username: data.username,
+                });
+                throw new Error('Failed to validate user');
+            }
             const isMatch = await bcrypt_1.default.compare(data.password, user.password);
-            if (!isMatch)
-                return null;
+            if (!isMatch) {
+                logger_1.logger.w('Failed to validate tenant user - invalid password', {
+                    username: data.username,
+                });
+                throw new Error('Failed to validate user');
+            }
             const userData = {
                 id: user.id,
                 username: user.username,
@@ -314,7 +322,7 @@ class AuthService {
             logger_1.logger.e(error, 'Failed to validate tenant user', {
                 username: data.username,
             });
-            throw new Error('Failed to validate user');
+            throw error;
         }
     }
     async generateVerificationToken(tenant) {

@@ -29,6 +29,7 @@ import bodyTypeRoutes from './modules/admin/modules/body-type/body-type.routes';
 import vehicleBrandRoutes from './modules/admin/modules/vehicle-brand/vehicle-brand.routes';
 import storefrontUserRoutes from './modules/user/modules/storefront/storefront.routes';
 import tenantUserRoutes from './modules/user/modules/tenant-user/tenant-user.routes';
+import tenantNotificationRoutes from './modules/tenant/modules/tenant-notification/tenant-notification.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
@@ -64,6 +65,7 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/tenant-violation', tenantViolationRoutes);
   app.use('/api/tenant-vendor', tenantVendorRoutes);
   app.use('/api/currency-rate', currencyRatesRoutes);
+  app.use('/api/tenant-notification', tenantNotificationRoutes);
 
   app.use('/api/vehicle', vehicleRoutes);
   app.use('/api/vehicle-damage', vehicleDamageRoutes);

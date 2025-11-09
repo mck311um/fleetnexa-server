@@ -197,30 +197,30 @@ class EmailService {
             throw error;
         }
     }
+    async sendWelcomeEmail(tenant, username, name, email) {
+        try {
+            const templateData = {
+                tenantName: tenant.tenantName,
+                username,
+                name,
+            };
+            await ses_service_1.default.sendEmail({
+                to: [email],
+                from: 'FleetNexa <no-reply@fleetnexa.com>',
+                template: 'WelcomeTemplate',
+                templateData,
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error sending welcome email', {
+                tenantId: tenant.id,
+                tenantCode: tenant.tenantCode,
+            });
+            throw error;
+        }
+    }
 }
 exports.emailService = new EmailService();
-const sendWelcomeEmail = async (tenant, username, password, name) => {
-    try {
-        const templateData = {
-            tenantName: tenant.tenantName,
-            username,
-            password,
-            name,
-        };
-        await ses_service_1.default.sendEmail({
-            to: [tenant.email || ''],
-            template: 'WelcomeTemplate',
-            templateData,
-        });
-    }
-    catch (error) {
-        logger_1.logger.e(error, 'Error sending welcome email', {
-            tenantId: tenant.id,
-            tenantCode: tenant.tenantCode,
-        });
-        throw error;
-    }
-};
 const sendConfirmationEmail = async (bookingId, includeInvoice, includeAgreement, tenant) => {
     try {
         let currency;
@@ -354,5 +354,4 @@ exports.default = {
     sendConfirmationEmail,
     newUserEmail,
     resetPasswordEmail,
-    sendWelcomeEmail,
 };

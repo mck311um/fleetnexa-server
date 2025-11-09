@@ -12,6 +12,7 @@ const generator_service_1 = __importDefault(require("../../services/generator.se
 const user_service_1 = require("../user/user.service");
 const tenant_location_service_1 = require("./modules/tenant-location/tenant-location.service");
 const auth_service_1 = require("../auth/auth.service");
+const email_service_1 = require("../email/email.service");
 class TenantService {
     async validateCreateTenantData(data) {
         if (!data) {
@@ -77,7 +78,8 @@ class TenantService {
                 password: data.password,
                 roleId: '',
             };
-            await user_service_1.userService.createOwner(userDetails, tenant);
+            const { user } = await user_service_1.userService.createOwner(userDetails, tenant);
+            await email_service_1.emailService.sendWelcomeEmail(tenant, user.username, `${user.firstName} ${user.lastName}`, user.email || '');
             return { tenant, token };
         }
         catch (error) {
@@ -158,14 +160,14 @@ const updateTenant = async (data, tenant) => {
                     tenantName: data.tenantName,
                     financialYearStart: data.financialYearStart,
                     setupCompleted: true,
-                    storefrontEnabled: data.storefrontEnabled,
                     securityDeposit: data.securityDeposit,
                     additionalDriverFee: data.additionalDriverFee,
                     daysInMonth: data.daysInMonth,
-                    description: data.description,
                     paymentMethods: {
                         set: data.paymentMethods.map((method) => ({ id: method })),
                     },
+                    startTime: data.startTime,
+                    endTime: data.endTime,
                 },
             });
             await tx.cancellationPolicy.upsert({

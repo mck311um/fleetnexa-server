@@ -9,6 +9,36 @@ const prisma_config_1 = __importDefault(require("../../../../config/prisma.confi
 const formatter_1 = __importDefault(require("../../../../utils/formatter"));
 const app_1 = __importDefault(require("../../../../app"));
 class TenantNotificationService {
+    async getNotifications(tenant, user) {
+        try {
+            const notifications = await prisma_config_1.default.tenantNotification.findMany({
+                where: { tenantId: tenant.id, isDeleted: false },
+                orderBy: { createdAt: 'desc' },
+                include: {
+                    readByUsers: true,
+                },
+            });
+            const notificationsWithReadStatus = await Promise.all(notifications.map(async (notification) => {
+                const readStatus = await prisma_config_1.default.notificationReadStatus.findUnique({
+                    where: {
+                        notificationId_userId: {
+                            notificationId: notification.id,
+                            userId: user.id,
+                        },
+                    },
+                });
+                return {
+                    ...notification,
+                    isRead: !!readStatus,
+                };
+            }));
+            return notificationsWithReadStatus;
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to get notifications', { tenantId: tenant.id });
+            throw error;
+        }
+    }
     async sendBookingNotification(bookingId, tenant) {
         try {
             const booking = await prisma_config_1.default.rental.findUnique({
@@ -48,7 +78,6 @@ class TenantNotificationService {
                     priority: 'HIGH',
                     message,
                     actionUrl,
-                    read: false,
                     createdAt: new Date(),
                 },
             });
@@ -60,7 +89,95 @@ class TenantNotificationService {
                 bookingId,
                 tenantId: tenant.id,
             });
-            throw new Error('Failed to send booking notification');
+            throw error;
+        }
+    }
+    async markNotificationAsRead(notificationId, tenant, user) {
+        try {
+            const notification = await prisma_config_1.default.tenantNotification.findUnique({
+                where: { id: notificationId, tenantId: tenant.id },
+            });
+            if (!notification) {
+                logger_1.logger.w('Notification not found', {
+                    notificationId,
+                    tenantId: tenant.id,
+                });
+                throw new Error('Notification not found');
+            }
+            await prisma_config_1.default.notificationReadStatus.upsert({
+                where: {
+                    notificationId_userId: {
+                        notificationId: notificationId,
+                        userId: user.id,
+                    },
+                },
+                create: {
+                    notificationId: notification.id,
+                    userId: user.id,
+                },
+                update: {},
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to mark notification as read', {
+                notificationId,
+                tenantId: tenant.id,
+                userId: user.id,
+            });
+            throw error;
+        }
+    }
+    async markAllNotificationsAsRead(tenant, user) {
+        try {
+            const notifications = await prisma_config_1.default.tenantNotification.findMany({
+                where: { tenantId: tenant.id, isDeleted: false },
+            });
+            const readStatusPromises = notifications.map((notification) => prisma_config_1.default.notificationReadStatus.upsert({
+                where: {
+                    notificationId_userId: {
+                        notificationId: notification.id,
+                        userId: user.id,
+                    },
+                },
+                create: {
+                    notificationId: notification.id,
+                    userId: user.id,
+                },
+                update: {},
+            }));
+            await Promise.all(readStatusPromises);
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to mark all notifications as read', {
+                tenantId: tenant.id,
+                userId: user.id,
+            });
+            throw error;
+        }
+    }
+    async deleteNotification(notificationId, tenant) {
+        try {
+            const notification = await prisma_config_1.default.tenantNotification.findUnique({
+                where: { id: notificationId, tenantId: tenant.id },
+            });
+            if (!notification) {
+                logger_1.logger.w('Notification not found for deletion', {
+                    notificationId,
+                    tenantId: tenant.id,
+                });
+                throw new Error('Notification not found');
+            }
+            await prisma_config_1.default.tenantNotification.update({
+                where: { id: notificationId },
+                data: { isDeleted: true },
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to delete notification', {
+                notificationId,
+                tenantId: tenant.id,
+            });
+            throw error;
         }
     }
 }

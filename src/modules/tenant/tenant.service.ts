@@ -13,6 +13,7 @@ import {
 import { userService } from '../user/user.service';
 import { tenantLocationService } from './modules/tenant-location/tenant-location.service';
 import { authService } from '../auth/auth.service';
+import { emailService } from '../email/email.service';
 
 class TenantService {
   async validateCreateTenantData(data: any) {
@@ -94,7 +95,14 @@ class TenantService {
         roleId: '',
       };
 
-      await userService.createOwner(userDetails, tenant);
+      const { user } = await userService.createOwner(userDetails, tenant);
+
+      await emailService.sendWelcomeEmail(
+        tenant,
+        user.username,
+        `${user.firstName} ${user.lastName}`,
+        user.email || '',
+      );
 
       return { tenant, token };
     } catch (error) {

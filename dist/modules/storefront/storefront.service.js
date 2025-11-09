@@ -29,9 +29,12 @@ class StorefrontService {
                     slug: true,
                     logo: true,
                     rating: true,
+                    ratings: true,
                     description: true,
                     email: true,
                     number: true,
+                    startTime: true,
+                    endTime: true,
                     _count: {
                         select: {
                             vehicles: {
@@ -40,7 +43,11 @@ class StorefrontService {
                             ratings: true,
                         },
                     },
-                    ratings: true,
+                    currencyRates: {
+                        include: {
+                            currency: true,
+                        },
+                    },
                     address: {
                         include: {
                             country: true,
@@ -67,9 +74,12 @@ class StorefrontService {
                     slug: true,
                     logo: true,
                     rating: true,
+                    ratings: true,
                     description: true,
                     email: true,
                     number: true,
+                    startTime: true,
+                    endTime: true,
                     _count: {
                         select: {
                             vehicles: {
@@ -78,7 +88,16 @@ class StorefrontService {
                             ratings: true,
                         },
                     },
-                    ratings: true,
+                    currencyRates: {
+                        where: {
+                            currency: {
+                                code: 'USD',
+                            },
+                        },
+                        include: {
+                            currency: true,
+                        },
+                    },
                     address: {
                         include: {
                             country: true,
@@ -139,7 +158,15 @@ class StorefrontService {
                                     currency: true,
                                     logo: true,
                                     securityDeposit: true,
+                                    startTime: true,
+                                    endTime: true,
+                                    ratings: true,
                                     currencyRates: {
+                                        where: {
+                                            currency: {
+                                                code: 'USD',
+                                            },
+                                        },
                                         include: {
                                             currency: true,
                                         },
@@ -220,10 +247,19 @@ class StorefrontService {
                             currency: true,
                             logo: true,
                             securityDeposit: true,
+                            rating: true,
+                            ratings: true,
+                            startTime: true,
+                            endTime: true,
                             tenantLocations: {
                                 where: { storefrontEnabled: true, isDeleted: false },
                             },
                             currencyRates: {
+                                where: {
+                                    currency: {
+                                        code: 'USD',
+                                    },
+                                },
                                 include: {
                                     currency: true,
                                 },
@@ -316,7 +352,16 @@ class StorefrontService {
                             currency: true,
                             logo: true,
                             securityDeposit: true,
+                            rating: true,
+                            ratings: true,
+                            startTime: true,
+                            endTime: true,
                             currencyRates: {
+                                where: {
+                                    currency: {
+                                        code: 'USD',
+                                    },
+                                },
                                 include: {
                                     currency: true,
                                 },

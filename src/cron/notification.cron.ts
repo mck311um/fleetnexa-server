@@ -57,7 +57,6 @@ const runUnconfirmedRentalsCron = async () => {
             priority: 'MEDIUM',
             message,
             actionUrl,
-            read: false,
             createdAt: new Date(),
           },
         });
@@ -148,7 +147,6 @@ const runUpcomingRentalsCron = async () => {
             priority: 'HIGH',
             message,
             actionUrl,
-            read: false,
             createdAt: new Date(),
           },
         });
@@ -239,7 +237,6 @@ const runUpcomingReturnsCron = async () => {
             priority: 'MEDIUM',
             message,
             actionUrl,
-            read: false,
             createdAt: new Date(),
           },
         });

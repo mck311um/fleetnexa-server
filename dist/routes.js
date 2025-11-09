@@ -33,6 +33,7 @@ const body_type_routes_1 = __importDefault(require("./modules/admin/modules/body
 const vehicle_brand_routes_1 = __importDefault(require("./modules/admin/modules/vehicle-brand/vehicle-brand.routes"));
 const storefront_routes_2 = __importDefault(require("./modules/user/modules/storefront/storefront.routes"));
 const tenant_user_routes_1 = __importDefault(require("./modules/user/modules/tenant-user/tenant-user.routes"));
+const tenant_notification_routes_1 = __importDefault(require("./modules/tenant/modules/tenant-notification/tenant-notification.routes"));
 const registerRoutes = (app) => {
     app.use('/api/booking', booking_routes_1.default);
     app.use('/api/signing', signing_routes_1.default);
@@ -60,6 +61,7 @@ const registerRoutes = (app) => {
     app.use('/api/tenant-violation', tenant_violation_routes_1.default);
     app.use('/api/tenant-vendor', tenant_vendor_routes_1.default);
     app.use('/api/currency-rate', currency_rates_routes_1.default);
+    app.use('/api/tenant-notification', tenant_notification_routes_1.default);
     app.use('/api/vehicle', vehicle_routes_1.default);
     app.use('/api/vehicle-damage', damage_routes_1.default);
     app.use('/api/vehicle-maintenance', vehicle_maintenance_routes_1.default);

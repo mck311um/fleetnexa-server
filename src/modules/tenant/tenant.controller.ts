@@ -17,31 +17,19 @@ import { tenantCurrencyRatesService } from './modules/currency-rates/currency-ra
 import { emailService } from '../email/email.service';
 import { tenantVendorService } from './modules/tenant-vendor/tenant-vendor.service';
 import { vehicleMaintenanceService } from '../vehicle/modules/vehicle-maintanance/vehicle-maintenance.service';
+import { tenantNotificationService } from './modules/tenant-notification/tenant-notification.service';
 
 const getCurrentTenant = async (req: Request, res: Response) => {
-  const tenantId = req.user?.tenantId;
-  const tenantCode = req.user?.tenantCode;
-
-  if (!tenantId) {
-    logger.w('Tenant ID is missing');
-    return res.status(400).json({ message: 'Tenant ID is required' });
-  }
+  const { tenant, user } = req.context!;
 
   try {
-    const tenant = await tenantRepo.getTenantById(tenantId);
-
-    if (!tenant) {
-      logger.w('Tenant not found', { tenantCode, tenantId });
-      return res.status(404).json({ message: 'Tenant not found' });
-    }
-
-    const extras = await tenantExtraService.getTenantExtras(tenantId);
+    const extras = await tenantExtraService.getTenantExtras(tenant.id);
     const locations = await tenantLocationService.getAllLocations(tenant);
     const vehicles = await vehicleService.getTenantVehicles(tenant);
     const customers = await customerService.getTenantCustomers(tenant);
     const bookings = await bookingService.getTenantBookings(tenant);
     const activity = await tenantActivityService.getTenantActivities(tenant);
-    const users = await userRepo.getUsers(tenantId);
+    const users = await userRepo.getUsers(tenant.id);
     const roles = await userRoleService.getTenantRoles(tenant);
     const violations =
       await tenantViolationsService.getTenantViolations(tenant);
@@ -50,6 +38,10 @@ const getCurrentTenant = async (req: Request, res: Response) => {
     const vendors = await tenantVendorService.getTenantVendors(tenant);
     const scheduledMaintenances =
       await vehicleMaintenanceService.getTenantMaintenanceServices(tenant);
+    const notifications = await tenantNotificationService.getNotifications(
+      tenant,
+      user,
+    );
 
     return res.status(200).json({
       tenant,
@@ -65,13 +57,16 @@ const getCurrentTenant = async (req: Request, res: Response) => {
       violations,
       currencyRates,
       vendors,
+      notifications,
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.e(error, 'Failed to get tenant', {
-      tenantCode,
-      tenantId,
+      tenantCode: tenant.tenantCode,
+      tenantId: tenant.id,
     });
-    return res.status(500).json({ message: 'Failed to get tenant' });
+    return res
+      .status(500)
+      .json({ message: error.message || 'Failed to get tenant' });
   }
 };
 const getTenantById = async (req: Request, res: Response) => {

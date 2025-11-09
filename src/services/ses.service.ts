@@ -37,7 +37,7 @@ const sendEmail = async (params: SendEmailParams) => {
     cc = [],
     template,
     templateData,
-    from = 'no-reply@fleetnexa.com',
+    from = 'FleetNexa <no-reply@fleetnexa.com>',
   } = params;
 
   logger.i('Sending email', { params });

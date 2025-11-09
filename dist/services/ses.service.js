@@ -19,7 +19,7 @@ const testRenderEmailTemplate = async (templateName, templateData) => {
     }
 };
 const sendEmail = async (params) => {
-    const { to, cc = [], template, templateData, from = 'no-reply@fleetnexa.com', } = params;
+    const { to, cc = [], template, templateData, from = 'FleetNexa <no-reply@fleetnexa.com>', } = params;
     logger_1.logger.i('Sending email', { params });
     try {
         await testRenderEmailTemplate(template, templateData);

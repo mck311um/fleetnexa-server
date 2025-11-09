@@ -214,19 +214,7 @@ model TenantReminders {
   tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
-model TenantNotification {
-  id        String               @id @default(dbgenerated("gen_random_uuid()"))
-  title     String
-  type      NotificationType
-  priority  NotificationPriority
-  message   String
-  tenantId  String
-  actionUrl String?
-  read      Boolean              @default(false)
-  createdAt DateTime             @default(now())
-  isDeleted Boolean              @default(false)
-  tenant    Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-}
+
 
 model CancellationPolicy {
   id                 String  @id @default(dbgenerated("gen_random_uuid()"))

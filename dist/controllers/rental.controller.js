@@ -406,7 +406,6 @@ const handleStorefrontRental = async (req, res, next) => {
                     priority: 'HIGH',
                     message,
                     actionUrl,
-                    read: false,
                     createdAt: new Date(),
                 },
             });
