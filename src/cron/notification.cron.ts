@@ -1,4 +1,5 @@
 import app from '../app';
+import { logger } from '../config/logger';
 import prisma from '../config/prisma.config';
 import cron from 'node-cron';
 
@@ -253,13 +254,10 @@ const runUpcomingReturnsCron = async () => {
 
 cron.schedule('0 * * * *', async () => {
   try {
-    console.log('Running notifications cron job...');
     await runUpcomingRentalsCron();
     await runUnconfirmedRentalsCron();
     await runUpcomingReturnsCron();
   } catch (error) {
-    console.error('Error running notifications cron job:', error);
-  } finally {
-    console.log('Notifications cron job completed.');
+    logger.e(error, 'Error running notifications cron job:');
   }
 });

@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("../app"));
+const logger_1 = require("../config/logger");
 const prisma_config_1 = __importDefault(require("../config/prisma.config"));
 const node_cron_1 = __importDefault(require("node-cron"));
 const runUnconfirmedRentalsCron = async () => {
@@ -231,15 +232,11 @@ const runUpcomingReturnsCron = async () => {
 };
 node_cron_1.default.schedule('0 * * * *', async () => {
     try {
-        console.log('Running notifications cron job...');
         await runUpcomingRentalsCron();
         await runUnconfirmedRentalsCron();
         await runUpcomingReturnsCron();
     }
     catch (error) {
-        console.error('Error running notifications cron job:', error);
-    }
-    finally {
-        console.log('Notifications cron job completed.');
+        logger_1.logger.e(error, 'Error running notifications cron job:');
     }
 });
