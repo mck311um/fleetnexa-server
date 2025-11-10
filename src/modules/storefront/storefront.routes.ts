@@ -11,5 +11,6 @@ router.get('/vehicles', api, controller.getVehicles);
 router.get('/vehicle/:id', api, controller.getVehicleById);
 
 router.post('/tenant/rate', api, controller.rateTenant);
+router.post('/rate', api, controller.rateSite);
 
 export default router;

@@ -129,11 +129,11 @@ const loginStorefrontUser = async (req: Request, res: Response) => {
     const result = await authService.validateStorefrontUser(userDto);
 
     res.status(200).json(result);
-  } catch (error) {
+  } catch (error: any) {
     logger.e(error, 'Error during storefront user login', {
       email: userDto.username,
     });
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: error.message || 'Internal server error' });
   }
 };
 

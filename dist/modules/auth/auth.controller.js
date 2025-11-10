@@ -110,7 +110,7 @@ const loginStorefrontUser = async (req, res) => {
         logger_1.logger.e(error, 'Error during storefront user login', {
             email: userDto.username,
         });
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: error.message || 'Internal server error' });
     }
 };
 const requestStorefrontPasswordReset = async (req, res) => {

@@ -9,7 +9,7 @@ const updateStorefrontUser = async (req, res) => {
     try {
         const updatedUser = await storefront_service_1.storefrontUserService.updateStorefrontUser(userDto, storefrontUser);
         return res.status(200).json({
-            message: 'Storefront user updated successfully',
+            message: 'Account updated successfully',
             user: updatedUser,
         });
     }
@@ -41,9 +41,7 @@ const changePassword = async (req, res) => {
     const userDto = await storefront_service_1.storefrontUserService.validatePasswordData(body);
     try {
         await storefront_service_1.storefrontUserService.updatePassword(userDto, storefrontUser);
-        res
-            .status(200)
-            .json({ message: 'Storefront user password updated successfully' });
+        res.status(200).json({ message: 'Password Changed Successfully' });
     }
     catch (error) {
         logger_1.logger.e(error, 'Error updating storefront user password', {

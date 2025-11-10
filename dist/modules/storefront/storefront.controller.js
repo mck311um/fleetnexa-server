@@ -67,7 +67,7 @@ const rateTenant = async (req, res) => {
     }
     const ratingDto = parseResult.data;
     try {
-        const tenant = await tenant_repository_1.tenantRepo.getTenantById(ratingDto.tenantId);
+        const tenant = await tenant_repository_1.tenantRepo.getTenantById(ratingDto.tenantId || '');
         if (!tenant) {
             logger_1.logger.e(`Tenant not found with id: ${ratingDto.tenantId}`);
             return res.status(404).json({ error: 'Tenant not found' });
@@ -80,10 +80,34 @@ const rateTenant = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+const rateSite = async (req, res) => {
+    const data = req.body;
+    if (!data) {
+        logger_1.logger.e('No data provided for site rating');
+        return res.status(400).json({ error: 'Bad Request: No data provided' });
+    }
+    const parseResult = storefront_dto_1.StorefrontRatingSchema.omit({ tenantId: true }).safeParse(data);
+    if (!parseResult.success) {
+        return res.status(400).json({
+            error: 'Invalid site rating data',
+            details: parseResult.error.issues,
+        });
+    }
+    const ratingDto = parseResult.data;
+    try {
+        await storefront_service_1.storefrontService.rateRentnexa(ratingDto);
+        res.status(201).json({ message: 'Site rating submitted successfully' });
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Error saving site rating');
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 exports.default = {
     getTenants,
     getTenantBySlug,
     getVehicles,
     getVehicleById,
     rateTenant,
+    rateSite,
 };

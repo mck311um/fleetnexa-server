@@ -236,6 +236,7 @@ class BookingService {
                 where: { id: data.userId },
             });
             if (!user) {
+                logger_1.logger.w('Storefront user not found', { userId: data.userId });
                 throw new Error('Storefront user not found');
             }
             let customer;
@@ -280,18 +281,23 @@ class BookingService {
             }
             const bookingNumber = await generator_service_1.default.generateRentalNumber(tenant.id);
             if (!bookingNumber) {
-                throw console_1.error;
+                logger_1.logger.w('Failed to generate booking number', { tenantId: tenant.id });
+                throw new Error('Failed to generate booking number');
             }
             const bookingCode = generator_service_1.default.generateBookingCode(tenant.tenantCode, bookingNumber);
             if (!bookingCode) {
-                throw console_1.error;
+                logger_1.logger.w('Failed to generate booking code', {
+                    tenantId: tenant.id,
+                    bookingNumber,
+                });
+                throw new Error('Failed to generate booking code');
             }
             const chargeType = await prisma_config_1.default.chargeType.findFirst({
                 where: { unit: 'day' },
             });
             if (!chargeType) {
                 logger_1.logger.w('No charge type found for storefront booking');
-                throw console_1.error;
+                throw new Error('No charge type found for storefront booking');
             }
             const booking = await prisma_config_1.default.$transaction(async (tx) => {
                 const newBooking = await tx.rental.create({
@@ -312,39 +318,6 @@ class BookingService {
                             create: {
                                 driverId: customer.id,
                                 isPrimary: true,
-                            },
-                        },
-                    },
-                    select: {
-                        startDate: true,
-                        endDate: true,
-                        id: true,
-                        rentalNumber: true,
-                        bookingCode: true,
-                        tenant: {
-                            select: {
-                                id: true,
-                                tenantName: true,
-                                email: true,
-                                number: true,
-                            },
-                        },
-                        vehicle: {
-                            select: {
-                                year: true,
-                                brand: true,
-                                model: true,
-                                tenant: {
-                                    select: {
-                                        currency: true,
-                                    },
-                                },
-                            },
-                        },
-                        pickup: true,
-                        values: {
-                            select: {
-                                netTotal: true,
                             },
                         },
                     },
@@ -388,7 +361,49 @@ class BookingService {
             });
             await email_service_1.emailService.sendBookingCompletedEmail(booking.id, tenant);
             await tenant_notification_service_1.tenantNotificationService.sendBookingNotification(booking.id, tenant);
-            return booking;
+            const bookingDetails = await prisma_config_1.default.rental.findUnique({
+                where: { id: booking.id },
+                select: {
+                    startDate: true,
+                    endDate: true,
+                    id: true,
+                    rentalNumber: true,
+                    bookingCode: true,
+                    tenant: {
+                        select: {
+                            id: true,
+                            tenantName: true,
+                            email: true,
+                            number: true,
+                            currency: true,
+                            currencyRates: {
+                                include: {
+                                    currency: true,
+                                },
+                            },
+                        },
+                    },
+                    vehicle: {
+                        select: {
+                            year: true,
+                            brand: true,
+                            model: true,
+                            tenant: {
+                                select: {
+                                    currency: true,
+                                },
+                            },
+                        },
+                    },
+                    pickup: true,
+                    values: {
+                        select: {
+                            netTotal: true,
+                        },
+                    },
+                },
+            });
+            return bookingDetails;
         }
         catch (error) {
             logger_1.logger.e(error, 'Failed to create storefront booking', {
@@ -509,9 +524,51 @@ class BookingService {
                 })));
                 return newBooking;
             });
-            await email_service_1.emailService.sendBookingCompletedEmail(booking.id, tenant);
-            await tenant_notification_service_1.tenantNotificationService.sendBookingNotification(booking.id, tenant);
-            return booking;
+            const bookingDetails = await prisma_config_1.default.rental.findUnique({
+                where: { id: booking.id },
+                select: {
+                    startDate: true,
+                    endDate: true,
+                    id: true,
+                    rentalNumber: true,
+                    bookingCode: true,
+                    tenant: {
+                        select: {
+                            id: true,
+                            tenantName: true,
+                            email: true,
+                            number: true,
+                            currency: true,
+                            currencyRates: {
+                                include: {
+                                    currency: true,
+                                },
+                            },
+                        },
+                    },
+                    vehicle: {
+                        select: {
+                            year: true,
+                            brand: true,
+                            model: true,
+                            tenant: {
+                                select: {
+                                    currency: true,
+                                },
+                            },
+                        },
+                    },
+                    pickup: true,
+                    values: {
+                        select: {
+                            netTotal: true,
+                        },
+                    },
+                },
+            });
+            await email_service_1.emailService.sendBookingCompletedEmail(bookingDetails?.id || '', tenant);
+            await tenant_notification_service_1.tenantNotificationService.sendBookingNotification(bookingDetails?.id || '', tenant);
+            return bookingDetails;
         }
         catch (error) {
             logger_1.logger.e(error, 'Failed to create guest storefront booking', {

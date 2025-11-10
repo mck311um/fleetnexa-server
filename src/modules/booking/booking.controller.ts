@@ -195,7 +195,7 @@ const createStorefrontUserBooking = async (req: Request, res: Response) => {
     );
 
     return res.status(201).json({
-      message: `Booking #${booking.rentalNumber} created successfully`,
+      message: `Booking #${booking!.rentalNumber} created successfully`,
       booking,
     });
   } catch (error) {
@@ -231,7 +231,7 @@ const createStorefrontGuestBooking = async (req: Request, res: Response) => {
     );
 
     return res.status(201).json({
-      message: `Booking #${booking.rentalNumber} created successfully`,
+      message: `Booking #${booking!.rentalNumber} created successfully`,
       booking,
     });
   } catch (error) {

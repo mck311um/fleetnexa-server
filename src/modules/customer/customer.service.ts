@@ -39,20 +39,20 @@ class CustomerService {
       });
 
       if (existingCustomer) {
-        await tx.customer.update({
-          where: { id: existingCustomer.id },
-          data: {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            gender: data.gender,
-            dateOfBirth: data.dateOfBirth,
-            email: data.email,
-            phone: data.phone,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            tenantId: tenant.id,
-          },
-        });
+        // await tx.customer.update({
+        //   where: { id: existingCustomer.id },
+        //   data: {
+        //     firstName: data.firstName,
+        //     lastName: data.lastName,
+        //     gender: data.gender,
+        //     dateOfBirth: data.dateOfBirth,
+        //     email: data.email,
+        //     phone: data.phone,
+        //     createdAt: new Date(),
+        //     updatedAt: new Date(),
+        //     tenantId: tenant.id,
+        //   },
+        // });
 
         await tx.driverLicense.update({
           where: { customerId: existingCustomer.id },

@@ -131,7 +131,7 @@ class AuthService {
       }
 
       const hashedPassword = await bcrypt.hash(data.password, 10);
-      const newUser = await prisma.storefrontUser.create({
+      const user = await prisma.storefrontUser.create({
         data: {
           firstName: data.firstName,
           lastName: data.lastName,
@@ -152,16 +152,55 @@ class AuthService {
           id: true,
           firstName: true,
           lastName: true,
+          createdAt: true,
           email: true,
-          phone: true,
+          profilePicture: true,
           driverLicenseNumber: true,
           licenseExpiry: true,
           licenseIssued: true,
-          dateOfBirth: true,
+          license: true,
+          country: true,
+          countryId: true,
+          street: true,
+          village: true,
+          villageId: true,
+          state: true,
+          stateId: true,
+          phone: true,
         },
       });
 
-      return newUser;
+      const userData = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        initials: `${user.firstName[0]}${user.lastName[0]}`,
+        fullName: `${user.firstName} ${user.lastName}`,
+        createdAt: user.createdAt,
+        email: user.email,
+        profilePicture: user.profilePicture || null,
+        driverLicenseNumber: user.driverLicenseNumber,
+        licenseExpiry: user.licenseExpiry,
+        licenseIssued: user.licenseIssued,
+        license: user.license,
+        country: user.country?.country,
+        countryId: user.countryId,
+        street: user.street,
+        village: user.village?.village,
+        villageId: user.villageId,
+        state: user.state?.state,
+        stateId: user.stateId,
+        phone: user.phone,
+      };
+
+      const payload = {
+        storefrontUser: { id: user.id },
+      };
+      const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+        expiresIn: '7d',
+      });
+
+      return { userData, token };
     } catch (error) {
       logger.e(error, 'Failed to create storefront user', {
         email: data.email,
