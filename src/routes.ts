@@ -23,11 +23,22 @@ import expenseRoutes from './modules/transaction/modules/expense/expense.routes'
 import tenantActivityRoutes from './modules/tenant/modules/tenant-activity/tenant-activity.routes';
 import refundRoutes from './modules/transaction/modules/refund/refund.routes';
 import storefrontRoutes from './modules/storefront/storefront.routes';
+import signingRoutes from './modules/signing/signing.routes';
+import vehicleModelRoutes from './modules/admin/modules/vehicle-model/vehicle-model.routes';
+import bodyTypeRoutes from './modules/admin/modules/body-type/body-type.routes';
+import vehicleBrandRoutes from './modules/admin/modules/vehicle-brand/vehicle-brand.routes';
+import storefrontUserRoutes from './modules/user/modules/storefront/storefront.routes';
+import tenantUserRoutes from './modules/user/modules/tenant-user/tenant-user.routes';
+import tenantNotificationRoutes from './modules/tenant/modules/tenant-notification/tenant-notification.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
+  app.use('/api/signing', signingRoutes);
 
   app.use('/api/admin', adminRoutes);
+  app.use('/api/admin/vehicle-model', vehicleModelRoutes);
+  app.use('/api/admin/body-type', bodyTypeRoutes);
+  app.use('/api/admin/vehicle-brand', vehicleBrandRoutes);
 
   app.use('/api/storefront', storefrontRoutes);
 
@@ -42,6 +53,8 @@ export const registerRoutes = (app: Application) => {
 
   app.use('/api/user', userRoutes);
   app.use('/api/user-role', roleRoutes);
+  app.use('/api/user/storefront', storefrontUserRoutes);
+  app.use('/api/user/tenant', tenantUserRoutes);
 
   app.use('/api/customer', customerRoutes);
 
@@ -52,6 +65,7 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/tenant-violation', tenantViolationRoutes);
   app.use('/api/tenant-vendor', tenantVendorRoutes);
   app.use('/api/currency-rate', currencyRatesRoutes);
+  app.use('/api/tenant-notification', tenantNotificationRoutes);
 
   app.use('/api/vehicle', vehicleRoutes);
   app.use('/api/vehicle-damage', vehicleDamageRoutes);

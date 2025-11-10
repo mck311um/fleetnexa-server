@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { storefrontService } from './storefront.service';
 import { logger } from '../../config/logger';
+import { StorefrontRatingSchema } from './storefront.dto';
+import { tenantRepo } from '../../repository/tenant.repository';
 
 const getTenants = async (req: Request, res: Response) => {
   try {
@@ -58,9 +60,44 @@ const getVehicleById = async (req: Request, res: Response) => {
   }
 };
 
+const rateTenant = async (req: Request, res: Response) => {
+  const data = req.body;
+
+  if (!data) {
+    logger.e('No data provided for rating tenant');
+    return res.status(400).json({ error: 'Bad Request: No data provided' });
+  }
+
+  const parseResult = StorefrontRatingSchema.safeParse(data);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: 'Invalid rating data',
+      details: parseResult.error.issues,
+    });
+  }
+
+  const ratingDto = parseResult.data;
+
+  try {
+    const tenant = await tenantRepo.getTenantById(ratingDto.tenantId);
+
+    if (!tenant) {
+      logger.e(`Tenant not found with id: ${ratingDto.tenantId}`);
+      return res.status(404).json({ error: 'Tenant not found' });
+    }
+
+    await storefrontService.rateTenant(ratingDto, tenant);
+    res.status(201).json({ message: 'Rating submitted successfully' });
+  } catch (error) {
+    logger.e(error, 'Error saving tenant rating');
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 export default {
   getTenants,
   getTenantBySlug,
   getVehicles,
   getVehicleById,
+  rateTenant,
 };

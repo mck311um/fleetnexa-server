@@ -6,24 +6,46 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.tenantService = void 0;
 const logger_1 = require("../../config/logger");
 const prisma_config_1 = __importDefault(require("../../config/prisma.config"));
+const create_tenant_dto_1 = require("./dto/create-tenant.dto");
 const tenant_repository_1 = require("./tenant.repository");
 const generator_service_1 = __importDefault(require("../../services/generator.service"));
 const user_service_1 = require("../user/user.service");
 const tenant_location_service_1 = require("./modules/tenant-location/tenant-location.service");
 const auth_service_1 = require("../auth/auth.service");
+const email_service_1 = require("../email/email.service");
 class TenantService {
+    async validateCreateTenantData(data) {
+        if (!data) {
+            logger_1.logger.w('No data provided for tenant creation');
+            throw new Error('No data provided');
+        }
+        const safeParse = create_tenant_dto_1.CreateTenantSchema.safeParse(data);
+        if (!safeParse.success) {
+            logger_1.logger.w('Invalid data provided for tenant creation', {
+                errors: safeParse.error.issues,
+            });
+            throw new Error('Invalid data provided');
+        }
+        return safeParse.data;
+    }
     async createTenant(data) {
         try {
             const { tenant, country } = await prisma_config_1.default.$transaction(async (tx) => {
                 const existingTenant = await tenant_repository_1.repo.getTenantByEmail(data.companyEmail);
                 if (existingTenant) {
-                    throw new Error('Tenant with this email already exists');
+                    logger_1.logger.w('Tenant with this email already exists', {
+                        email: data.companyEmail,
+                    });
+                    throw new Error('Unable to create account. Please check your input and try again.');
                 }
                 const country = await tx.country.findUnique({
                     where: { code: data.country },
                 });
                 if (!country) {
-                    throw new Error('Invalid country code');
+                    logger_1.logger.w('Invalid country code provided for tenant creation', {
+                        countryCode: data.country,
+                    });
+                    throw new Error('Invalid country code provided');
                 }
                 const tenantCode = await generator_service_1.default.generateTenantCode(data.tenantName);
                 const slug = await generator_service_1.default.generateTenantSlug(data.tenantName);
@@ -56,7 +78,8 @@ class TenantService {
                 password: data.password,
                 roleId: '',
             };
-            await user_service_1.userService.createOwner(userDetails, tenant);
+            const { user } = await user_service_1.userService.createOwner(userDetails, tenant);
+            await email_service_1.emailService.sendWelcomeEmail(tenant, user.username, `${user.firstName} ${user.lastName}`, user.email || '');
             return { tenant, token };
         }
         catch (error) {
@@ -64,7 +87,7 @@ class TenantService {
                 email: data.companyEmail,
                 tenantName: data.tenantName,
             });
-            throw new Error('Failed to create tenant');
+            throw error;
         }
     }
     async updateStorefrontSettings(data, tenant, user) {
@@ -137,14 +160,14 @@ const updateTenant = async (data, tenant) => {
                     tenantName: data.tenantName,
                     financialYearStart: data.financialYearStart,
                     setupCompleted: true,
-                    storefrontEnabled: data.storefrontEnabled,
                     securityDeposit: data.securityDeposit,
                     additionalDriverFee: data.additionalDriverFee,
                     daysInMonth: data.daysInMonth,
-                    description: data.description,
                     paymentMethods: {
                         set: data.paymentMethods.map((method) => ({ id: method })),
                     },
+                    startTime: data.startTime,
+                    endTime: data.endTime,
                 },
             });
             await tx.cancellationPolicy.upsert({

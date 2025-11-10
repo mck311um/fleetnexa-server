@@ -11,6 +11,8 @@ router.get('/', auth_middleware_1.auth, booking_controller_1.default.getBookings
 router.get('/code/:bookingCode', auth_middleware_1.auth, booking_controller_1.default.getBookingByCode);
 router.get('/:id', auth_middleware_1.auth, booking_controller_1.default.getBookingById);
 router.post('/', auth_middleware_1.auth, booking_controller_1.default.createSystemBooking);
+router.post('/storefront/user', booking_controller_1.default.createStorefrontUserBooking);
+router.post('/storefront/guest', booking_controller_1.default.createStorefrontGuestBooking);
 router.post('/confirm', auth_middleware_1.auth, booking_controller_1.default.confirmBooking);
 router.post('/decline/:id', auth_middleware_1.auth, booking_controller_1.default.declineBooking);
 router.post('/cancel/:id', auth_middleware_1.auth, booking_controller_1.default.cancelBooking);

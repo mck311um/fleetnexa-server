@@ -22,7 +22,7 @@ class ExpenseService {
     async getTenantExpenses(tenant) {
         try {
             const expenses = await prisma_config_1.default.expense.findMany({
-                where: { tenantId: tenant.id },
+                where: { tenantId: tenant.id, isDeleted: false },
                 include: {
                     vendor: true,
                     vehicle: true,
@@ -42,7 +42,7 @@ class ExpenseService {
             await prisma_config_1.default.expense.create({
                 data: {
                     id: data.id,
-                    amount: -data.amount,
+                    amount: data.amount,
                     expenseDate: data.expenseDate,
                     notes: data.notes,
                     vendorId: data.vendorId,
@@ -84,10 +84,13 @@ class ExpenseService {
                 await tx.expense.update({
                     where: { id: data.id },
                     data: {
-                        amount: -data.amount,
+                        amount: data.amount,
                         expenseDate: data.expenseDate,
                         notes: data.notes,
                         vendorId: data.vendorId,
+                        payee: data.payee,
+                        expense: data.expense,
+                        maintenanceId: data.maintenanceId,
                         vehicleId: data.vehicleId,
                         updatedAt: new Date(),
                     },

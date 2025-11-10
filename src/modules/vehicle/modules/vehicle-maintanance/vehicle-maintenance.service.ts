@@ -27,7 +27,7 @@ class VehicleMaintenanceService {
       const services = await prisma.vehicleMaintenance.findMany({
         where: { tenantId: tenant.id, isDeleted: false },
         include: {
-          maintenance: true,
+          services: true,
           vendor: true,
           vehicle: {
             select: {
@@ -54,7 +54,7 @@ class VehicleMaintenanceService {
       const maintenances = await prisma.vehicleMaintenance.findMany({
         where: { vehicleId, isDeleted: false },
         include: {
-          maintenance: true,
+          services: true,
           vendor: true,
           vehicle: {
             select: {
@@ -85,17 +85,20 @@ class VehicleMaintenanceService {
         data: {
           id: data.id,
           vehicleId: data.vehicleId,
-          serviceId: data.serviceId,
-          vendorId: data.vendorId || null,
+          vendorId: data.vendorId ?? null,
           startDate: new Date(data.startDate),
           endDate: new Date(data.endDate),
           cost: data.cost,
           tenantId: tenant.id,
+          createdBy: user.username,
+          services: {
+            connect: data.services.map((serviceId) => ({ id: serviceId })),
+          },
         },
       });
     } catch (error) {
       logger.e(error, 'Error adding vehicle maintenance', {
-        teatId: tenant.id,
+        tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
       });
       throw new Error('Could not add vehicle maintenance');
@@ -120,7 +123,6 @@ class VehicleMaintenanceService {
         where: { id: data.id },
         data: {
           vehicleId: data.vehicleId,
-          serviceId: data.serviceId,
           vendorId: data.vendorId || null,
           startDate: new Date(data.startDate),
           endDate: new Date(data.endDate),
@@ -129,11 +131,14 @@ class VehicleMaintenanceService {
           updatedBy: user.username,
           status: data.status || existingRecord.status,
           tenantId: tenant.id,
+          services: {
+            set: data.services.map((id) => ({ id })),
+          },
         },
       });
     } catch (error) {
       logger.e(error, 'Error updating vehicle maintenance', {
-        teatId: tenant.id,
+        tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
       });
       throw new Error('Could not update vehicle maintenance');
@@ -194,7 +199,7 @@ class VehicleMaintenanceService {
           updatedBy: user.username,
         },
         include: {
-          maintenance: true,
+          services: true,
           vehicle: {
             include: { brand: true, model: true },
           },
@@ -203,10 +208,13 @@ class VehicleMaintenanceService {
       });
 
       if (data.recordExpense) {
-        const desc = `${updatedRecord.maintenance.service} - ${updatedRecord.vehicle.year} ${updatedRecord.vehicle.brand.brand} ${updatedRecord.vehicle.model.model} (${updatedRecord.vehicle.licensePlate})`;
+        const desc = `Maintenance ${updatedRecord.vehicle.year} ${updatedRecord.vehicle.brand.brand} ${updatedRecord.vehicle.model.model} (${updatedRecord.vehicle.licensePlate})`;
         const payee = updatedRecord.vendor
           ? updatedRecord.vendor.vendor
           : 'Unknown Vendor';
+        const note = updatedRecord.services
+          .map((service) => service.service)
+          .join(', ');
 
         const expense: ExpenseDto = {
           id: data.id,
@@ -214,6 +222,7 @@ class VehicleMaintenanceService {
           vendorId: data.vendorId,
           amount: data.cost,
           maintenanceId: data.id,
+          notes: note,
           expenseDate: data.expenseDate
             ? new Date(data.expenseDate).toISOString()
             : new Date().toISOString(),

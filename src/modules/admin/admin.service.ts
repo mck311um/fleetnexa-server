@@ -127,6 +127,8 @@ class AdminService {
         vehicleBodyTypes: prisma.vehicleBodyType,
         caribbeanCountries: prisma.caribbeanCountry,
         countries: prisma.country,
+        states: prisma.state,
+        villages: prisma.village,
       };
 
       const entries = await Promise.all(

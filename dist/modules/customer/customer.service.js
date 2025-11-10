@@ -21,6 +21,135 @@ class CustomerService {
             throw new Error('Failed to get customers');
         }
     }
+    async getStorefrontCustomer(data, tenant, tx) {
+        try {
+            const existingCustomer = await tx.customer.findFirst({
+                where: {
+                    tenantId: tenant.id,
+                    license: {
+                        licenseNumber: data.driverLicenseNumber,
+                    },
+                },
+            });
+            if (existingCustomer) {
+                await tx.customer.update({
+                    where: { id: existingCustomer.id },
+                    data: {
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        gender: data.gender,
+                        dateOfBirth: data.dateOfBirth,
+                        email: data.email,
+                        phone: data.phone,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        tenantId: tenant.id,
+                    },
+                });
+                await tx.driverLicense.update({
+                    where: { customerId: existingCustomer.id },
+                    data: {
+                        licenseExpiry: data.licenseExpiry,
+                        licenseIssued: data.licenseIssued,
+                    },
+                });
+                await tx.customerAddress.update({
+                    where: { customerId: existingCustomer.id },
+                    data: {
+                        street: data.address.street,
+                        village: data.address.villageId
+                            ? { connect: { id: data.address.villageId } }
+                            : undefined,
+                        state: data.address.stateId
+                            ? { connect: { id: data.address.stateId } }
+                            : undefined,
+                        country: data.address.countryId
+                            ? { connect: { id: data.address.countryId } }
+                            : undefined,
+                    },
+                });
+                return existingCustomer;
+            }
+            else {
+                const customer = await tx.customer.create({
+                    data: {
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        gender: data.gender || 'UNSPECIFIED',
+                        dateOfBirth: data.dateOfBirth,
+                        email: data.email,
+                        phone: data.phone,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        tenantId: tenant.id,
+                        status: 'ACTIVE',
+                    },
+                });
+                await tx.driverLicense.create({
+                    data: {
+                        customerId: customer.id,
+                        licenseNumber: data.driverLicenseNumber,
+                        licenseExpiry: data.licenseExpiry,
+                        licenseIssued: data.licenseIssued,
+                    },
+                });
+                await tx.customerAddress.create({
+                    data: {
+                        customer: { connect: { id: customer.id } },
+                        street: data.address.street,
+                        village: data.address.villageId
+                            ? { connect: { id: data.address.villageId } }
+                            : undefined,
+                        state: data.address.stateId
+                            ? { connect: { id: data.address.stateId } }
+                            : undefined,
+                        country: data.address.countryId
+                            ? { connect: { id: data.address.countryId } }
+                            : undefined,
+                    },
+                });
+                return customer;
+            }
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Failed to get storefront customer', {
+                tenantId: tenant.id,
+                tenantCode: tenant.tenantCode,
+            });
+            throw new Error('Failed to get storefront customer');
+        }
+    }
+    async getPrimaryDriver(bookingId) {
+        try {
+            const driver = await prisma_config_1.default.rentalDriver.findFirst({
+                where: {
+                    rentalId: bookingId,
+                    isPrimary: true,
+                },
+                include: {
+                    customer: {
+                        include: {
+                            address: {
+                                include: {
+                                    country: true,
+                                    state: true,
+                                    village: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            if (!driver) {
+                throw new Error('Primary driver not found');
+            }
+            return driver;
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error fetching primary driver', { bookingId });
+            throw error;
+        }
+    }
 }
 exports.customerService = new CustomerService();
 const getPrimaryDriver = async (bookingId) => {

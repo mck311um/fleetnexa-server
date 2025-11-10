@@ -468,7 +468,6 @@ const handleStorefrontRental = async (
           priority: 'HIGH',
           message,
           actionUrl,
-          read: false,
           createdAt: new Date(),
         },
       });

@@ -50,3 +50,39 @@ export const StorefrontUserBookingSchema = z.object({
 export type StorefrontUserBookingDto = z.infer<
   typeof StorefrontUserBookingSchema
 >;
+
+export const StorefrontCustomerSchema = z.object({
+  firstName: z.string().max(100),
+  lastName: z.string().max(100),
+  email: z.email().max(255),
+  gender: z.string().optional(),
+  phone: z.string().max(20),
+  driverLicenseNumber: z.string().max(50),
+  licenseExpiry: z.string().max(50),
+  licenseIssued: z.string().max(50),
+  dateOfBirth: z.string(),
+  license: z.string().optional(),
+  address: z.object({
+    street: z.string().optional(),
+    villageId: z.uuid().optional(),
+    stateId: z.uuid().optional(),
+    countryId: z.uuid().optional(),
+  }),
+});
+
+export type StorefrontCustomerDto = z.infer<typeof StorefrontCustomerSchema>;
+
+export const StorefrontGuestBookingSchema = z.object({
+  customer: StorefrontCustomerSchema,
+  startDate: z.string(),
+  endDate: z.string(),
+  pickupLocationId: z.uuid(),
+  returnLocationId: z.uuid(),
+  vehicleId: z.uuid(),
+  tenantId: z.uuid(),
+  values: RentalValuesSchema,
+});
+
+export type StorefrontGuestBookingDto = z.infer<
+  typeof StorefrontGuestBookingSchema
+>;

@@ -2,6 +2,7 @@ import express from 'express';
 import controller from './user.controller';
 import { auth } from '../../middleware/auth.middleware';
 import { admin } from '../../middleware/admin.middleware';
+import { storefrontAuth } from '../../middleware/storefront.middleware';
 
 const router = express.Router();
 

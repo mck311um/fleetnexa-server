@@ -5,7 +5,7 @@ export const VehicleMaintenanceSchema = z
   .object({
     id: z.uuid(),
     vehicleId: z.uuid(),
-    serviceId: z.uuid(),
+    services: z.array(z.uuid()),
     vendorId: z.string().optional(),
     startDate: z.string(),
     endDate: z.string(),

@@ -18,6 +18,7 @@ declare global {
         tenant: any;
         user: any;
         tenantCode: string;
+        storefrontUser?: any;
       };
     }
   }

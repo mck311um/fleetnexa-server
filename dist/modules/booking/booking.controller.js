@@ -47,6 +47,7 @@ const action_booking_dto_1 = require("./dto/action-booking.dto");
 const client_1 = require("@prisma/client");
 const tenant_repository_1 = require("../../repository/tenant.repository");
 const booking_repository_1 = require("./booking.repository");
+const booking_dto_1 = require("./booking.dto");
 //#region Get Bookings
 const getBookings = async (req, res) => {
     const tenantId = req.user?.tenantId;
@@ -170,6 +171,60 @@ const createSystemBooking = async (req, res) => {
     }
     catch (error) {
         logger_1.logger.e(error, 'Failed to create booking', { tenantId });
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+const createStorefrontUserBooking = async (req, res) => {
+    const data = req.body;
+    const parseResult = booking_dto_1.StorefrontUserBookingSchema.safeParse(data);
+    if (!parseResult.success) {
+        return res.status(400).json({
+            error: 'Invalid booking data',
+            details: parseResult.error.issues,
+        });
+    }
+    const bookingDto = parseResult.data;
+    try {
+        const tenant = await tenant_repository_1.tenantRepo.getTenantById(bookingDto.tenantId);
+        if (!tenant) {
+            logger_1.logger.w('Tenant not found', { tenantId: bookingDto.tenantId });
+            return res.status(404).json({ error: 'Tenant not found' });
+        }
+        const booking = await booking_service_1.bookingService.createUserStorefrontBooking(bookingDto, tenant);
+        return res.status(201).json({
+            message: `Booking #${booking.rentalNumber} created successfully`,
+            booking,
+        });
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Failed to create storefront user booking');
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+const createStorefrontGuestBooking = async (req, res) => {
+    const data = req.body;
+    const parseResult = booking_dto_1.StorefrontGuestBookingSchema.safeParse(data);
+    if (!parseResult.success) {
+        return res.status(400).json({
+            error: 'Invalid booking data',
+            details: parseResult.error.issues,
+        });
+    }
+    const bookingDto = parseResult.data;
+    try {
+        const tenant = await tenant_repository_1.tenantRepo.getTenantById(bookingDto.tenantId);
+        if (!tenant) {
+            logger_1.logger.w('Tenant not found', { tenantId: bookingDto.tenantId });
+            return res.status(404).json({ error: 'Tenant not found' });
+        }
+        const booking = await booking_service_1.bookingService.createGuestStorefrontBooking(bookingDto, tenant);
+        return res.status(201).json({
+            message: `Booking #${booking.rentalNumber} created successfully`,
+            booking,
+        });
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Failed to create storefront user booking');
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -569,6 +624,8 @@ exports.default = {
     cancelBooking,
     confirmBooking,
     createSystemBooking,
+    createStorefrontUserBooking,
+    createStorefrontGuestBooking,
     declineBooking,
     deleteBooking,
     endBooking,

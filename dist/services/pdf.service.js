@@ -3,9 +3,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.pdfService = void 0;
 const axios_1 = __importDefault(require("axios"));
 const client_s3_1 = require("@aws-sdk/client-s3");
 const pdf_lib_1 = require("pdf-lib");
+const s3_request_presigner_1 = require("@aws-sdk/s3-request-presigner");
+class PDFService {
+    async getPDFFromS3(bucketName, key) {
+        try {
+            const command = new client_s3_1.GetObjectCommand({
+                Bucket: bucketName,
+                Key: key,
+            });
+            const response = await s3Client.send(command);
+            return (await this.streamToBuffer(response.Body));
+        }
+        catch (error) {
+            console.error('Error fetching PDF from S3:', error);
+            throw error;
+        }
+    }
+    async getPresignedURL(bucketName, key, expiresIn = 3600) {
+        try {
+            const command = new client_s3_1.GetObjectCommand({
+                Bucket: bucketName,
+                Key: key,
+            });
+            return await (0, s3_request_presigner_1.getSignedUrl)(s3Client, command, { expiresIn });
+        }
+        catch (error) {
+            console.error('Error generating presigned URL:', error);
+            throw error;
+        }
+    }
+    async streamToBuffer(stream) {
+        return new Promise((resolve, reject) => {
+            const chunks = [];
+            stream.on('data', (chunk) => chunks.push(chunk));
+            stream.on('error', reject);
+            stream.on('end', () => resolve(Buffer.concat(chunks)));
+        });
+    }
+    async getPDFAsBase64(bucketName, key) {
+        const pdfBuffer = await this.getPDFFromS3(bucketName, key);
+        return pdfBuffer.toString('base64');
+    }
+}
+exports.pdfService = new PDFService();
 const apiKey = process.env.PDFMONKEY_API_KEY;
 const invoiceId = process.env.PDFMONKEY_INVOICE_ID;
 const agreementId = process.env.PDFMONKEY_AGREEMENT_ID;

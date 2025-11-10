@@ -26,6 +26,8 @@ model Tenant {
   businessVerified      Boolean                    @default(false)
   merchantId           String?
   isDeleted            Boolean                    @default(false)
+  startTime            String?                    @default("12:00 AM")
+  endTime              String?                    @default("11:30 PM")
 
   address              Address?
   customers            Customer[]
@@ -212,19 +214,7 @@ model TenantReminders {
   tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
-model TenantNotification {
-  id        String               @id @default(dbgenerated("gen_random_uuid()"))
-  title     String
-  type      NotificationType
-  priority  NotificationPriority
-  message   String
-  tenantId  String
-  actionUrl String?
-  read      Boolean              @default(false)
-  createdAt DateTime             @default(now())
-  isDeleted Boolean              @default(false)
-  tenant    Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-}
+
 
 model CancellationPolicy {
   id                 String  @id @default(dbgenerated("gen_random_uuid()"))

@@ -55,7 +55,7 @@ class TransactionRepository {
                     maintenance: {
                         select: {
                             id: true,
-                            maintenance: true,
+                            services: true,
                         },
                     },
                     vehicle: {

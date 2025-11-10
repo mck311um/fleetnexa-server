@@ -6,27 +6,48 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.storefrontService = void 0;
 const logger_1 = require("../../config/logger");
 const prisma_config_1 = __importDefault(require("../../config/prisma.config"));
+const tenant_extras_service_1 = require("../tenant/modules/tenant-extras/tenant-extras.service");
 class StorefrontService {
     async getTenants() {
         try {
             const tenants = await prisma_config_1.default.tenant.findMany({
-                where: { storefrontEnabled: true },
+                where: {
+                    storefrontEnabled: true,
+                    tenantLocations: {
+                        some: { storefrontEnabled: true, isDeleted: false },
+                    },
+                    vehicles: {
+                        some: {
+                            storefrontEnabled: true,
+                            isDeleted: false,
+                        },
+                    },
+                },
                 select: {
                     id: true,
                     tenantName: true,
                     slug: true,
                     logo: true,
                     rating: true,
+                    ratings: true,
                     description: true,
                     email: true,
                     number: true,
+                    startTime: true,
+                    endTime: true,
                     _count: {
                         select: {
-                            vehicles: true,
+                            vehicles: {
+                                where: { storefrontEnabled: true, isDeleted: false },
+                            },
                             ratings: true,
                         },
                     },
-                    ratings: true,
+                    currencyRates: {
+                        include: {
+                            currency: true,
+                        },
+                    },
                     address: {
                         include: {
                             country: true,
@@ -53,16 +74,30 @@ class StorefrontService {
                     slug: true,
                     logo: true,
                     rating: true,
+                    ratings: true,
                     description: true,
                     email: true,
                     number: true,
+                    startTime: true,
+                    endTime: true,
                     _count: {
                         select: {
-                            vehicles: true,
+                            vehicles: {
+                                where: { storefrontEnabled: true, isDeleted: false },
+                            },
                             ratings: true,
                         },
                     },
-                    ratings: true,
+                    currencyRates: {
+                        where: {
+                            currency: {
+                                code: 'USD',
+                            },
+                        },
+                        include: {
+                            currency: true,
+                        },
+                    },
                     address: {
                         include: {
                             country: true,
@@ -123,7 +158,15 @@ class StorefrontService {
                                     currency: true,
                                     logo: true,
                                     securityDeposit: true,
+                                    startTime: true,
+                                    endTime: true,
+                                    ratings: true,
                                     currencyRates: {
+                                        where: {
+                                            currency: {
+                                                code: 'USD',
+                                            },
+                                        },
                                         include: {
                                             currency: true,
                                         },
@@ -204,7 +247,19 @@ class StorefrontService {
                             currency: true,
                             logo: true,
                             securityDeposit: true,
+                            rating: true,
+                            ratings: true,
+                            startTime: true,
+                            endTime: true,
+                            tenantLocations: {
+                                where: { storefrontEnabled: true, isDeleted: false },
+                            },
                             currencyRates: {
+                                where: {
+                                    currency: {
+                                        code: 'USD',
+                                    },
+                                },
                                 include: {
                                     currency: true,
                                 },
@@ -220,7 +275,20 @@ class StorefrontService {
                     },
                 },
             });
-            return vehicles;
+            const tenantIds = [
+                ...new Set(vehicles.map((v) => v.tenant?.id).filter(Boolean)),
+            ];
+            const tenantExtrasPromises = tenantIds.map((id) => tenant_extras_service_1.tenantExtraService.getTenantExtras(id || ''));
+            const tenantExtrasResults = await Promise.all(tenantExtrasPromises);
+            const tenantExtras = tenantExtrasResults.flat();
+            const vehiclesWithExtras = vehicles.map((vehicle) => ({
+                ...vehicle,
+                tenant: {
+                    ...vehicle.tenant,
+                    extras: tenantExtras.filter((extra) => extra.tenantId === vehicle?.tenant?.id),
+                },
+            }));
+            return vehiclesWithExtras;
         }
         catch (error) {
             logger_1.logger.e(error, 'Error fetching vehicles for storefront');
@@ -284,10 +352,22 @@ class StorefrontService {
                             currency: true,
                             logo: true,
                             securityDeposit: true,
+                            rating: true,
+                            ratings: true,
+                            startTime: true,
+                            endTime: true,
                             currencyRates: {
+                                where: {
+                                    currency: {
+                                        code: 'USD',
+                                    },
+                                },
                                 include: {
                                     currency: true,
                                 },
+                            },
+                            tenantLocations: {
+                                where: { storefrontEnabled: true, isDeleted: false },
                             },
                             address: {
                                 include: {
@@ -300,10 +380,48 @@ class StorefrontService {
                     },
                 },
             });
-            return vehicle;
+            const tenantExtras = await tenant_extras_service_1.tenantExtraService.getTenantExtras(vehicle?.tenant?.id || '');
+            const vehicleWithExtras = vehicle
+                ? {
+                    ...vehicle,
+                    tenant: {
+                        ...vehicle.tenant,
+                        extras: tenantExtras,
+                    },
+                }
+                : null;
+            return vehicleWithExtras;
         }
         catch (error) {
             logger_1.logger.e(error, 'Error fetching vehicle by ID for storefront');
+            throw error;
+        }
+    }
+    async rateTenant(data, tenant) {
+        try {
+            const newRating = await prisma_config_1.default.tenantRatings.create({
+                data: {
+                    tenantId: tenant.id,
+                    rating: data.rating,
+                    comment: data.comment,
+                    fullName: data.fullName,
+                    email: data.email,
+                },
+            });
+            // Recalculate tenant average rating
+            const ratings = await prisma_config_1.default.tenantRatings.findMany({
+                where: { tenantId: tenant.id },
+                select: { rating: true },
+            });
+            const averageRating = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+            await prisma_config_1.default.tenant.update({
+                where: { id: tenant.id },
+                data: { rating: averageRating },
+            });
+            return newRating;
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error rating tenant in storefront');
             throw error;
         }
     }

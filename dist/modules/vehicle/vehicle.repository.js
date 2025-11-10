@@ -117,7 +117,7 @@ class VehicleRepository {
             scheduledMaintenance: {
                 where: { isDeleted: false },
                 include: {
-                    maintenance: true,
+                    services: true,
                     vendor: true,
                 },
             },

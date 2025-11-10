@@ -5,12 +5,15 @@ import {
   AdminUserDto,
   AdminUserSchema,
   LoginDto,
+  ResetPasswordDto,
   StorefrontUserDto,
   StorefrontUserSchema,
+  VerifyEmailTokenDto,
 } from './auth.dto';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import generatorService from '../../services/generator.service';
+import { emailService } from '../email/email.service';
 
 class AuthService {
   async validateAdminUserData(data: any) {
@@ -108,7 +111,23 @@ class AuthService {
       });
 
       if (existingUser) {
-        throw new Error('Email already in use, please login in');
+        throw new Error('An account with these credentials already exists.');
+      }
+
+      const existingPhone = await prisma.storefrontUser.findFirst({
+        where: { phone: data.phone },
+      });
+
+      if (existingPhone) {
+        throw new Error('An account with these credentials already exists.');
+      }
+
+      const existingLicense = await prisma.storefrontUser.findFirst({
+        where: { driverLicenseNumber: data.driversLicenseNumber },
+      });
+
+      if (existingLicense) {
+        throw new Error('An account with these credentials already exists.');
       }
 
       const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -125,9 +144,9 @@ class AuthService {
           licenseIssued: new Date(data.licenseIssued),
           license: data.license,
           dateOfBirth: new Date(data.dateOfBirth),
-          street: data.street,
+          street: data.street || '',
           countryId: data.countryId || null,
-          stateId: data.stateId,
+          stateId: data.stateId || null,
         },
         select: {
           id: true,
@@ -180,7 +199,14 @@ class AuthService {
         dateOfBirth: user.dateOfBirth,
       };
 
-      return userData;
+      const payload = {
+        storefrontUser: { id: user.id },
+      };
+      const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+        expiresIn: data.rememberMe ? '30d' : '7d',
+      });
+
+      return { userData, token };
     } catch (error) {
       logger.e(error, 'Failed to validate storefront user', {
         email: data.username,
@@ -189,10 +215,98 @@ class AuthService {
     }
   }
 
+  async requestStorefrontPasswordReset(email: string) {
+    try {
+      const user = await prisma.storefrontUser.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        throw new Error('No user found with the provided email');
+      }
+
+      await prisma.emailTokens.updateMany({
+        where: { email, expired: false },
+        data: { expired: true },
+      });
+
+      const resetToken = generatorService.generateVerificationCode();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+      await prisma.emailTokens.create({
+        data: {
+          email,
+          token: resetToken,
+          expiresAt,
+        },
+      });
+
+      await emailService.sendStorefrontPasswordResetEmail(resetToken, email);
+    } catch (error) {
+      logger.e(error, 'Failed to request password reset', { email });
+      throw error;
+    }
+  }
+
+  async verifyStorefrontPasswordResetToken(data: VerifyEmailTokenDto) {
+    try {
+      const record = await prisma.emailTokens.findFirst({
+        where: {
+          email: data.email,
+          token: data.token,
+          expired: false,
+          expiresAt: { gt: new Date() },
+        },
+      });
+
+      if (!record) {
+        throw new Error('Invalid or expired token');
+      }
+
+      await prisma.emailTokens.updateMany({
+        where: { email: data.email, token: data.token },
+        data: { expired: true, verified: true },
+      });
+    } catch (error) {
+      logger.e(error, 'Failed to verify password reset token', {
+        email: data.email,
+        token: data.token,
+      });
+      throw error;
+    }
+  }
+
+  async resetStorefrontPassword(data: ResetPasswordDto) {
+    try {
+      const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+      const user = await prisma.storefrontUser.findUnique({
+        where: { email: data.email },
+      });
+
+      const passwordCompare = await bcrypt.compare(
+        data.newPassword,
+        user?.password || '',
+      );
+      if (passwordCompare) {
+        throw new Error('New password must be different from the old password');
+      }
+
+      await prisma.storefrontUser.updateMany({
+        where: { email: data.email },
+        data: { password: hashedPassword },
+      });
+    } catch (error) {
+      logger.e(error, 'Failed to reset storefront password', {
+        email: data.email,
+      });
+      throw error;
+    }
+  }
+
   async validateTenantUser(data: LoginDto) {
     try {
-      const user = await prisma.user.findUnique({
-        where: { username: data.username },
+      const user = await prisma.user.findFirst({
+        where: { OR: [{ username: data.username }, { email: data.username }] },
         include: {
           tenant: true,
           role: {
@@ -206,10 +320,22 @@ class AuthService {
           },
         },
       });
-      if (!user) return null;
+
+      if (!user) {
+        logger.w('Failed to validate tenant user - user not found', {
+          username: data.username,
+        });
+        throw new Error('Failed to validate user');
+      }
 
       const isMatch = await bcrypt.compare(data.password, user.password);
-      if (!isMatch) return null;
+
+      if (!isMatch) {
+        logger.w('Failed to validate tenant user - invalid password', {
+          username: data.username,
+        });
+        throw new Error('Failed to validate user');
+      }
 
       const userData = {
         id: user.id,
@@ -242,7 +368,7 @@ class AuthService {
       logger.e(error, 'Failed to validate tenant user', {
         username: data.username,
       });
-      throw new Error('Failed to validate user');
+      throw error;
     }
   }
 

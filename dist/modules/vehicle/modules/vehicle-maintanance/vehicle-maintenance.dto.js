@@ -7,7 +7,7 @@ exports.VehicleMaintenanceSchema = zod_1.z
     .object({
     id: zod_1.z.uuid(),
     vehicleId: zod_1.z.uuid(),
-    serviceId: zod_1.z.uuid(),
+    services: zod_1.z.array(zod_1.z.uuid()),
     vendorId: zod_1.z.string().optional(),
     startDate: zod_1.z.string(),
     endDate: zod_1.z.string(),

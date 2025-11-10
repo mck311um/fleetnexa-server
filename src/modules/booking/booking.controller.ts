@@ -10,7 +10,10 @@ import { ActionBookingDtoSchema } from './dto/action-booking.dto';
 import { Rental, RentalStatus, Tenant } from '@prisma/client';
 import { tenantRepo } from '../../repository/tenant.repository';
 import { bookingRepo } from './booking.repository';
-import { StorefrontUserBookingSchema } from './booking.dto';
+import {
+  StorefrontGuestBookingSchema,
+  StorefrontUserBookingSchema,
+} from './booking.dto';
 
 //#region Get Bookings
 const getBookings = async (req: Request, res: Response) => {
@@ -187,6 +190,42 @@ const createStorefrontUserBooking = async (req: Request, res: Response) => {
     }
 
     const booking = await bookingService.createUserStorefrontBooking(
+      bookingDto,
+      tenant!,
+    );
+
+    return res.status(201).json({
+      message: `Booking #${booking.rentalNumber} created successfully`,
+      booking,
+    });
+  } catch (error) {
+    logger.e(error, 'Failed to create storefront user booking');
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const createStorefrontGuestBooking = async (req: Request, res: Response) => {
+  const data = req.body;
+
+  const parseResult = StorefrontGuestBookingSchema.safeParse(data);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: 'Invalid booking data',
+      details: parseResult.error.issues,
+    });
+  }
+
+  const bookingDto = parseResult.data;
+
+  try {
+    const tenant = await tenantRepo.getTenantById(bookingDto.tenantId);
+
+    if (!tenant) {
+      logger.w('Tenant not found', { tenantId: bookingDto.tenantId });
+      return res.status(404).json({ error: 'Tenant not found' });
+    }
+
+    const booking = await bookingService.createGuestStorefrontBooking(
       bookingDto,
       tenant!,
     );
@@ -734,6 +773,7 @@ export default {
   confirmBooking,
   createSystemBooking,
   createStorefrontUserBooking,
+  createStorefrontGuestBooking,
   declineBooking,
   deleteBooking,
   endBooking,

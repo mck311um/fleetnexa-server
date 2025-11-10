@@ -3,6 +3,7 @@ import {
   BookingCompletedEmailParams,
   BookingConfirmationEmailParams,
   BookingDocumentsEmailParams,
+  PasswordResetEmailParams,
   VerifyBusinessEmailParams,
   WelcomeEmailParams,
 } from '../../types/email';
@@ -185,37 +186,79 @@ class EmailService {
       throw error;
     }
   }
+
+  async sendPasswordResetEmail(token: string, email: string) {
+    try {
+      const templateData: PasswordResetEmailParams = {
+        verificationCode: token,
+      };
+
+      await ses.sendEmail({
+        to: [email],
+        cc: [],
+        from: 'FleetNexa <no-reply@fleetnexa.com>',
+        template: 'PasswordReset',
+        templateData,
+      });
+    } catch (error) {
+      logger.e(error, 'Error sending storefront password reset email', {
+        email,
+      });
+      throw error;
+    }
+  }
+
+  async sendStorefrontPasswordResetEmail(token: string, email: string) {
+    try {
+      const templateData: PasswordResetEmailParams = {
+        verificationCode: token,
+      };
+
+      await ses.sendEmail({
+        to: [email],
+        cc: [],
+        from: 'RentNexa <no-reply@rentnexa.com>',
+        template: 'PasswordReset',
+        templateData,
+      });
+    } catch (error) {
+      logger.e(error, 'Error sending storefront password reset email', {
+        email,
+      });
+      throw error;
+    }
+  }
+
+  async sendWelcomeEmail(
+    tenant: Tenant,
+    username: string,
+    name: string,
+    email: string,
+  ) {
+    try {
+      const templateData: WelcomeEmailParams = {
+        tenantName: tenant.tenantName,
+        username,
+        name,
+      };
+
+      await ses.sendEmail({
+        to: [email],
+        from: 'FleetNexa <no-reply@fleetnexa.com>',
+        template: 'WelcomeTemplate',
+        templateData,
+      });
+    } catch (error) {
+      logger.e(error, 'Error sending welcome email', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw error;
+    }
+  }
 }
 
 export const emailService = new EmailService();
-
-const sendWelcomeEmail = async (
-  tenant: Tenant,
-  username: string,
-  password: string,
-  name: string,
-) => {
-  try {
-    const templateData: WelcomeEmailParams = {
-      tenantName: tenant.tenantName,
-      username,
-      password,
-      name,
-    };
-
-    await ses.sendEmail({
-      to: [tenant.email || ''],
-      template: 'WelcomeTemplate',
-      templateData,
-    });
-  } catch (error) {
-    logger.e(error, 'Error sending welcome email', {
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-    throw error;
-  }
-};
 
 const sendConfirmationEmail = async (
   bookingId: string,
@@ -377,5 +420,4 @@ export default {
   sendConfirmationEmail,
   newUserEmail,
   resetPasswordEmail,
-  sendWelcomeEmail,
 };
