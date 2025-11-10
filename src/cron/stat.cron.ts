@@ -9,6 +9,7 @@ import {
   endOfYear,
 } from 'date-fns';
 import cron from 'node-cron';
+import { logger } from '../config/logger';
 
 const prisma = new PrismaClient();
 
@@ -28,14 +29,6 @@ export const runYearlyStatCron = async () => {
           year,
           'YEARLY_REVENUE',
           await calcYearlyRevenue(tenant.id, from, to),
-          from,
-          to,
-        ),
-        saveYearlyStat(
-          tenant.id,
-          year,
-          'YEARLY_EXPENSES',
-          await calculateYearlyExpenses(tenant.id, from, to),
           from,
           to,
         ),
@@ -73,11 +66,9 @@ const saveYearlyStat = async (
   year: number,
   stat:
     | 'YEARLY_REVENUE'
-    | 'YEARLY_EXPENSES'
     | 'YEARLY_RENTALS'
     | 'YEARLY_CUSTOMERS'
     | 'AVERAGE_RENTAL_DURATION',
-
   value: number,
   from: Date,
   to: Date,
@@ -107,8 +98,9 @@ const calcYearlyRevenue = async (
   from: Date,
   to: Date,
 ): Promise<number> => {
-  const { _sum } = await prisma.transactions.aggregate({
+  const { _sum: paymentSum } = await prisma.transactions.aggregate({
     where: {
+      type: 'PAYMENT',
       rental: {
         tenantId,
         startDate: { gte: from, lte: to },
@@ -119,24 +111,23 @@ const calcYearlyRevenue = async (
     _sum: { amount: true },
   });
 
-  return _sum.amount ?? 0;
-};
-
-const calculateYearlyExpenses = async (
-  tenantId: string,
-  from: Date,
-  to: Date,
-): Promise<number> => {
-  const { _sum } = await prisma.expense.aggregate({
+  const { _sum: refundSum } = await prisma.transactions.aggregate({
     where: {
-      tenantId,
-      expenseDate: { gte: from, lte: to },
+      type: 'REFUND',
+      rental: {
+        tenantId,
+        startDate: { gte: from, lte: to },
+        status: 'COMPLETED',
+      },
       isDeleted: false,
     },
     _sum: { amount: true },
   });
 
-  return _sum.amount ?? 0;
+  const payments = Math.abs(paymentSum.amount ?? 0);
+  const refunds = Math.abs(refundSum.amount ?? 0);
+
+  return payments - refunds;
 };
 
 const calcYearlyRentals = async (
@@ -280,8 +271,9 @@ const calcMonthlyEarnings = async (
   from: Date,
   to: Date,
 ): Promise<number> => {
-  const { _sum } = await prisma.transactions.aggregate({
+  const { _sum: paymentSum } = await prisma.transactions.aggregate({
     where: {
+      type: 'PAYMENT',
       rental: {
         tenantId,
         startDate: { gte: from, lte: to },
@@ -292,7 +284,23 @@ const calcMonthlyEarnings = async (
     _sum: { amount: true },
   });
 
-  return _sum.amount ?? 0;
+  const { _sum: refundSum } = await prisma.transactions.aggregate({
+    where: {
+      type: 'REFUND',
+      rental: {
+        tenantId,
+        startDate: { gte: from, lte: to },
+        status: 'COMPLETED',
+        isDeleted: false,
+      },
+    },
+    _sum: { amount: true },
+  });
+
+  const payments = Math.abs(paymentSum.amount ?? 0);
+  const refunds = Math.abs(refundSum.amount ?? 0);
+
+  return payments - refunds;
 };
 
 const calcMonthlyRentals = async (
@@ -387,14 +395,11 @@ const saveMonthlyRentalStatus = async (
   });
 };
 
-cron.schedule('*/30 * * * *', async () => {
+cron.schedule('* * * * *', async () => {
   try {
-    console.log('Running stats cron job...');
     await runMonthlyStatCron();
     await runYearlyStatCron();
   } catch (error) {
-    console.error('Error running stats cron job:', error);
-  } finally {
-    console.log('Stats cron job completed.');
+    logger.e(error, 'Stats Cron Job Error');
   }
 });
