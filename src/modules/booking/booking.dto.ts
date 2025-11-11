@@ -64,9 +64,9 @@ export const StorefrontCustomerSchema = z.object({
   license: z.string().optional(),
   address: z.object({
     street: z.string().optional(),
-    villageId: z.uuid().optional(),
-    stateId: z.uuid().optional(),
-    countryId: z.uuid().optional(),
+    villageId: z.string().optional(),
+    stateId: z.string().optional(),
+    countryId: z.string().optional(),
   }),
 });
 

@@ -57,9 +57,9 @@ exports.StorefrontCustomerSchema = zod_1.z.object({
     license: zod_1.z.string().optional(),
     address: zod_1.z.object({
         street: zod_1.z.string().optional(),
-        villageId: zod_1.z.uuid().optional(),
-        stateId: zod_1.z.uuid().optional(),
-        countryId: zod_1.z.uuid().optional(),
+        villageId: zod_1.z.string().optional(),
+        stateId: zod_1.z.string().optional(),
+        countryId: zod_1.z.string().optional(),
     }),
 });
 exports.StorefrontGuestBookingSchema = zod_1.z.object({
