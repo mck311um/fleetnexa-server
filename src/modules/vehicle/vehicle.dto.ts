@@ -8,9 +8,9 @@ export const UpdateVehicleStatusSchema = z.object({
 export type UpdateVehicleStatusDto = z.infer<typeof UpdateVehicleStatusSchema>;
 
 export const VehicleDiscountSchema = z.object({
-  periodMin: z.number().min(1),
-  periodMax: z.number().min(1),
-  amount: z.number().min(0),
+  period: z.union([z.string(), z.number().min(1)]),
+  periodPolicy: z.string(),
+  amount: z.union([z.string(), z.number().min(0)]),
   discountPolicy: z.string(),
   id: z.uuid().optional(),
 });

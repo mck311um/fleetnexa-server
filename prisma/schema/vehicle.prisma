@@ -62,15 +62,18 @@ model VehicleDiscount {
   id             String    @id @default(dbgenerated("gen_random_uuid()"))
   amount         Decimal   @db.Decimal(10, 2)
   discountPolicy String
-  periodMax      Int
-  periodMin      Int
+  periodPolicy   String    @default("greater_than")
+  period         Int       @default(1)
   isActive       Boolean   @default(false)
   isDeleted      Boolean   @default(false)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime? @updatedAt
+  vehicleId      String
+
   createdBy      String?
   updatedBy      String?
-  vehicleId      String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime? @updatedAt
+  deletedAt      DateTime?
+
   vehicle        Vehicle   @relation(fields: [vehicleId], references: [id])
 }
 
