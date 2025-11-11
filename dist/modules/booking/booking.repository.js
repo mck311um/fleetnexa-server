@@ -60,11 +60,13 @@ class BookingRepository {
             },
             charges: true,
             refunds: {
+                where: { isDeleted: false },
                 include: {
                     customer: true,
                 },
             },
             transactions: {
+                where: { isDeleted: false },
                 include: {
                     payment: {
                         include: {
@@ -120,6 +122,7 @@ class BookingRepository {
                                 },
                             },
                             violations: {
+                                where: { isDeleted: false },
                                 include: {
                                     violation: true,
                                 },
@@ -129,6 +132,7 @@ class BookingRepository {
                 },
             },
             payments: {
+                where: { isDeleted: false },
                 include: {
                     paymentMethod: true,
                     paymentType: true,

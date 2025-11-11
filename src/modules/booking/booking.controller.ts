@@ -83,8 +83,6 @@ const getBookingByCode = async (req: Request, res: Response) => {
   }
 
   try {
-    logger.i('Fetching booking by code', { tenantId, bookingCode });
-
     const booking = await bookingRepo.getRentalByCode(bookingCode, tenantId);
 
     if (!booking) {
@@ -162,9 +160,11 @@ const createSystemBooking = async (req: Request, res: Response) => {
       updatedBooking,
       bookings,
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.e(error, 'Failed to create booking', { tenantId });
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res
+      .status(500)
+      .json({ error: error?.message || 'Internal Server Error' });
   }
 };
 
@@ -241,24 +241,18 @@ const createStorefrontGuestBooking = async (req: Request, res: Response) => {
 };
 
 const updateBooking = async (req: Request, res: Response) => {
-  const tenantId = req.user?.tenantId;
-  const tenantCode = req.user?.tenantCode;
   const { id } = req.params;
   const data = req.body;
+  const { tenant, user } = req.context!;
   const userId = req.user?.id;
 
-  if (!tenantId) {
-    logger.w('Tenant ID is missing', { tenantId });
-    return res.status(400).json({ error: 'Tenant ID is required' });
-  }
-
   if (!id) {
-    logger.w('Booking ID is missing', { tenantId });
+    logger.w('Booking ID is missing', { tenantId: tenant.id });
     return res.status(400).json({ error: 'Booking ID is required' });
   }
 
   if (!data) {
-    logger.w('Booking data is missing', { tenantId });
+    logger.w('Booking data is missing', { tenantId: tenant.id });
     return res.status(400).json({ error: 'Booking data is required' });
   }
 
@@ -274,21 +268,12 @@ const updateBooking = async (req: Request, res: Response) => {
 
   try {
     const booking = await prisma.$transaction(async (tx) => {
-      const tenant = await tx.tenant.findUnique({
-        where: { id: tenantId },
-      });
-
-      if (!tenant) {
-        logger.w('Tenant not found', { tenantId });
-        throw new Error('Tenant not found');
-      }
-
       const existingBooking = await tx.rental.findUnique({
         where: { id },
       });
 
       if (!existingBooking) {
-        logger.w('Booking not found', { tenantId, id });
+        logger.w('Booking not found', { tenantId: tenant.id, id });
         throw new Error('Booking not found');
       }
 
@@ -296,26 +281,24 @@ const updateBooking = async (req: Request, res: Response) => {
     });
 
     logger.i('Booking updated successfully', {
-      tenantId,
-      tenantCode,
+      tenant,
       bookingId: booking.id,
       bookingCode: booking.bookingCode,
     });
 
-    const updatedBooking = await bookingRepo.getRentalById(
-      booking.id,
-      tenantId,
-    );
-    const bookings = await bookingRepo.getBookings(tenantId);
+    const updatedBooking = await bookingRepo.getRentalById(booking.id, tenant);
+    const bookings = await bookingRepo.getBookings(tenant.id);
 
     return res.status(200).json({
       message: `Booking #${booking.rentalNumber} updated successfully`,
       updatedBooking,
       bookings,
     });
-  } catch (error) {
-    logger.e(error, 'Failed to update booking', { tenantId, id });
-    return res.status(500).json({ error: 'Internal Server Error' });
+  } catch (error: any) {
+    logger.e(error, 'Failed to update booking', { tenant, id });
+    return res
+      .status(500)
+      .json({ error: error?.message || 'Internal Server Error' });
   }
 };
 const deleteBooking = async (req: Request, res: Response) => {

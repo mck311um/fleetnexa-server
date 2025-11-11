@@ -7,28 +7,32 @@ model Rental {
   returnLocationId  String
   vehicleId         String
   agent             Agent
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime?          @updatedAt
   tenantId          String
   status            RentalStatus       @default(PENDING)
-  createdBy         String?
-  updatedBy         String?
   notes             String?
   isDeleted         Boolean            @default(false)
   chargeTypeId      String?
   bookingCode       String?            @unique
+
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime?          @updatedAt
   deletedAt         DateTime?
+  createdBy         String?
+  updatedBy         String?
+
   invoice           Invoice?
-  payments          Payment[]
-  refunds           Refund[]
+  agreement         RentalAgreement?
+
   chargeType        ChargeType?        @relation(fields: [chargeTypeId], references: [id])
   user              User?              @relation(fields: [createdBy], references: [id])
   pickup            TenantLocation     @relation("PickupLocation", fields: [pickupLocationId], references: [id])
   return            TenantLocation     @relation("ReturnLocation", fields: [returnLocationId], references: [id])
   tenant            Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   vehicle           Vehicle            @relation(fields: [vehicleId], references: [id])
+
+  payments          Payment[]
+  refunds           Refund[]
   rentalActivity    RentalActivity[]
-  agreement         RentalAgreement?
   charges           RentalCharge[]
   drivers           RentalDriver[]
   storefrontBooking StorefrontBooking?
@@ -106,8 +110,6 @@ model Values {
   subTotal             Float
   netTotal             Float
   rentalId             String        @unique
-  discountMin          Int
-  discountMax          Int
   discountAmount       Float
   discountPolicy       String
   createdAt            DateTime      @default(now())
@@ -121,8 +123,10 @@ model Values {
   customDeposit        Boolean       @default(false)
   customDiscount       Boolean       @default(false)
   customTotalCost      Boolean       @default(false)
-  extras               RentalExtra[]
+  
   rental               Rental        @relation(fields: [rentalId], references: [id])
+
+  extras               RentalExtra[]
 }
 
 model RentalExtra {

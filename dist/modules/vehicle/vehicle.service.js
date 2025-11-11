@@ -106,6 +106,7 @@ class VehicleService {
                         fuelPolicyId: data.fuelPolicyId,
                         locationId: data.locationId,
                         drivingExperience: data.drivingExperience,
+                        createdBy: user.username,
                     },
                 });
                 if (data.discounts && data.discounts.length > 0) {
@@ -114,19 +115,21 @@ class VehicleService {
                         create: {
                             id: discount.id,
                             vehicleId: data.id,
-                            periodMin: discount.periodMin,
-                            periodMax: discount.periodMax,
+                            period: Number(discount.period),
+                            periodPolicy: discount.periodPolicy,
                             amount: discount.amount,
                             discountPolicy: discount.discountPolicy,
                             createdAt: new Date(),
                             updatedAt: new Date(),
+                            createdBy: user.username,
                         },
                         update: {
-                            periodMin: discount.periodMin,
-                            periodMax: discount.periodMax,
                             amount: discount.amount,
+                            period: Number(discount.period),
+                            periodPolicy: discount.periodPolicy,
                             discountPolicy: discount.discountPolicy,
                             updatedAt: new Date(),
+                            updatedBy: user.username,
                         },
                     })));
                 }
@@ -205,19 +208,21 @@ class VehicleService {
                         create: {
                             id: discount.id,
                             vehicleId: data.id,
-                            periodMin: discount.periodMin,
-                            periodMax: discount.periodMax,
                             amount: discount.amount,
                             discountPolicy: discount.discountPolicy,
+                            period: Number(discount.period),
+                            periodPolicy: discount.periodPolicy,
                             createdAt: new Date(),
                             updatedAt: new Date(),
+                            createdBy: user.username,
                         },
                         update: {
-                            periodMin: discount.periodMin,
-                            periodMax: discount.periodMax,
                             amount: discount.amount,
                             discountPolicy: discount.discountPolicy,
+                            period: Number(discount.period),
+                            periodPolicy: discount.periodPolicy,
                             updatedAt: new Date(),
+                            updatedBy: user.username,
                         },
                     })));
                 }
@@ -228,7 +233,7 @@ class VehicleService {
                 tenantId: tenant.id,
                 tenantCode: tenant.tenantCode,
             });
-            throw new Error('Failed to update vehicle');
+            throw error;
         }
     }
     async getVehicleByLicensePlate(licensePlate, tenant) {
@@ -281,9 +286,8 @@ class VehicleService {
             logger_1.logger.e(error, 'Failed to update vehicle status', {
                 tenantId: tenant.id,
                 tenantCode: tenant.tenantCode,
-                data,
             });
-            throw new Error('Failed to update vehicle status');
+            throw error;
         }
     }
     async deleteVehicle(vehicleId, tenant, user) {

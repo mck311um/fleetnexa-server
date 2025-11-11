@@ -70,9 +70,10 @@ const addVehicle = async (req, res) => {
         logger_1.logger.e(error, 'Failed to add vehicle', {
             tenantId: tenant.id,
             tenantCode: tenant.tenantCode,
-            data,
         });
-        return res.status(500).json({ message: 'Failed to add vehicle' });
+        return res
+            .status(500)
+            .json({ message: error?.message || 'Failed to add vehicle' });
     }
 };
 const updateVehicle = async (req, res) => {
@@ -94,9 +95,10 @@ const updateVehicle = async (req, res) => {
         logger_1.logger.e(error, 'Failed to update vehicle', {
             tenantId: tenant.id,
             tenantCode: tenant.tenantCode,
-            data,
         });
-        return res.status(500).json({ message: 'Failed to update vehicle' });
+        return res
+            .status(500)
+            .json({ message: error?.message || 'Failed to update vehicle' });
     }
 };
 const deleteVehicle = async (req, res) => {
