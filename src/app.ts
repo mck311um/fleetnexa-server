@@ -5,11 +5,9 @@ import { allowedOrigins } from './config/cors';
 import { registerRoutes } from './routes';
 import cors from 'cors';
 
-import authRoutes from './routes/auth.routes';
 import tenantRoutes from './routes/tenant.routes';
 import fileRoutes from './routes/file.routes';
 import customerRoutes from './routes/customer.routes';
-import emailRoutes from './routes/email.routes';
 import twillioRoutes from './routes/twillio.routes';
 import rentnexaRoutes from './routes/rentnexa.routes';
 import zohoRoutes from './routes/zoho.routes';
@@ -47,12 +45,10 @@ app.options('*', cors());
 
 // Routes
 registerRoutes(app);
-app.use('/api/auth', authRoutes);
 app.use('/api/tenant', tenantRoutes);
 app.use('/api/files', fileRoutes);
 // app.use('/api/vehicle', vehicleRoutes);
 app.use('/api/customer', customerRoutes);
-app.use('/api/email', emailRoutes);
 app.use('/api/whatsapp', twillioRoutes);
 app.use('/api/rentnexa', rentnexaRoutes);
 app.use('/api/zoho', zohoRoutes);

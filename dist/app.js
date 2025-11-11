@@ -9,11 +9,9 @@ const helmet_1 = __importDefault(require("helmet"));
 const cors_1 = require("./config/cors");
 const routes_1 = require("./routes");
 const cors_2 = __importDefault(require("cors"));
-const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const tenant_routes_1 = __importDefault(require("./routes/tenant.routes"));
 const file_routes_1 = __importDefault(require("./routes/file.routes"));
 const customer_routes_1 = __importDefault(require("./routes/customer.routes"));
-const email_routes_1 = __importDefault(require("./routes/email.routes"));
 const twillio_routes_1 = __importDefault(require("./routes/twillio.routes"));
 const rentnexa_routes_1 = __importDefault(require("./routes/rentnexa.routes"));
 const zoho_routes_1 = __importDefault(require("./routes/zoho.routes"));
@@ -43,12 +41,10 @@ app.use((0, cors_2.default)({
 app.options('*', (0, cors_2.default)());
 // Routes
 (0, routes_1.registerRoutes)(app);
-app.use('/api/auth', auth_routes_1.default);
 app.use('/api/tenant', tenant_routes_1.default);
 app.use('/api/files', file_routes_1.default);
 // app.use('/api/vehicle', vehicleRoutes);
 app.use('/api/customer', customer_routes_1.default);
-app.use('/api/email', email_routes_1.default);
 app.use('/api/whatsapp', twillio_routes_1.default);
 app.use('/api/rentnexa', rentnexa_routes_1.default);
 app.use('/api/zoho', zoho_routes_1.default);
