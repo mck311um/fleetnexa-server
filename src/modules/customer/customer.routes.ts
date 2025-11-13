@@ -4,13 +4,12 @@ import { auth } from '../../middleware/auth.middleware';
 
 const router = express.Router();
 
-router.get('/violations', auth, controller.getCustomerViolations);
-router.get('/violation/:id', auth, controller.getCustomerViolationById);
+router.get('/:id', auth, controller.getCustomerById);
 
-router.post('/violation', auth, controller.addCustomerViolation);
+router.post('/', auth, controller.createCustomer);
 
-router.put('/violation', auth, controller.updateCustomerViolation);
+router.put('/', auth, controller.updateCustomer);
 
-router.delete('/violation/:id', auth, controller.deleteCustomerViolation);
+router.delete('/:id', auth, controller.deleteCustomer);
 
 export default router;

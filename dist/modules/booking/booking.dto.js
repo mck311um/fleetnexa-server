@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StorefrontGuestBookingSchema = exports.StorefrontCustomerSchema = exports.StorefrontUserBookingSchema = void 0;
+exports.BookingDtoSchema = exports.StorefrontGuestBookingSchema = exports.StorefrontCustomerSchema = exports.StorefrontUserBookingSchema = void 0;
+const client_1 = require("@prisma/client");
 const zod_1 = require("zod");
 const RentalExtrasSchema = zod_1.z.array(zod_1.z.object({
     id: zod_1.z.uuid(),
@@ -69,4 +70,29 @@ exports.StorefrontGuestBookingSchema = zod_1.z.object({
     vehicleId: zod_1.z.uuid(),
     tenantId: zod_1.z.uuid(),
     values: RentalValuesSchema,
+});
+const RentalDriverSchema = zod_1.z.object({
+    id: zod_1.z.uuid(),
+    driverId: zod_1.z.uuid(),
+    isPrimary: zod_1.z.boolean().default(false),
+});
+exports.BookingDtoSchema = zod_1.z.object({
+    id: zod_1.z.uuid(),
+    startDate: zod_1.z.string().refine((val) => !isNaN(Date.parse(val)), {
+        message: 'Invalid startDate',
+    }),
+    endDate: zod_1.z.string().refine((val) => !isNaN(Date.parse(val)), {
+        message: 'Invalid endDate',
+    }),
+    pickupLocationId: zod_1.z.uuid(),
+    returnLocationId: zod_1.z.uuid(),
+    vehicleId: zod_1.z.uuid(),
+    chargeTypeId: zod_1.z.uuid(),
+    agent: zod_1.z.enum(client_1.Agent).optional(),
+    notes: zod_1.z.string().max(500).optional(),
+    drivers: zod_1.z.array(RentalDriverSchema).min(1),
+    values: RentalValuesSchema,
+    bookingCode: zod_1.z.string().optional(),
+    bookingNumber: zod_1.z.string().optional(),
+    status: zod_1.z.enum(client_1.RentalStatus),
 });

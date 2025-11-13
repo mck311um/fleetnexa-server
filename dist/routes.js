@@ -35,6 +35,7 @@ const storefront_routes_2 = __importDefault(require("./modules/user/modules/stor
 const tenant_user_routes_1 = __importDefault(require("./modules/user/modules/tenant-user/tenant-user.routes"));
 const tenant_notification_routes_1 = __importDefault(require("./modules/tenant/modules/tenant-notification/tenant-notification.routes"));
 const storefront_routes_3 = __importDefault(require("./modules/auth/modules/storefront/storefront.routes"));
+const customer_violation_routes_1 = __importDefault(require("./modules/customer/customer-violation/customer-violation.routes"));
 const registerRoutes = (app) => {
     app.use('/api/booking', booking_routes_1.default);
     app.use('/api/signing', signing_routes_1.default);
@@ -56,6 +57,7 @@ const registerRoutes = (app) => {
     app.use('/api/user/storefront', storefront_routes_2.default);
     app.use('/api/user/tenant', tenant_user_routes_1.default);
     app.use('/api/customer', customer_routes_1.default);
+    app.use('/api/customer/violation', customer_violation_routes_1.default);
     app.use('/api/tenant', tenant_routes_1.default);
     app.use('/api/tenant-activity', tenant_activity_routes_1.default);
     app.use('/api/tenant-extra', tenant_extra_routes_1.default);

@@ -244,47 +244,20 @@ const updateBooking = async (req: Request, res: Response) => {
   const { id } = req.params;
   const data = req.body;
   const { tenant, user } = req.context!;
-  const userId = req.user?.id;
 
   if (!id) {
     logger.w('Booking ID is missing', { tenantId: tenant.id });
     return res.status(400).json({ error: 'Booking ID is required' });
   }
 
-  if (!data) {
-    logger.w('Booking data is missing', { tenantId: tenant.id });
-    return res.status(400).json({ error: 'Booking data is required' });
-  }
-
-  const parseResult = UpdateBookingDtoSchema.safeParse(data);
-  if (!parseResult.success) {
-    return res.status(400).json({
-      error: 'Invalid booking data',
-      details: parseResult.error.issues,
-    });
-  }
-
-  const bookingDto = parseResult.data;
+  const bookingDto = await bookingService.validateBookingData(data);
 
   try {
-    const booking = await prisma.$transaction(async (tx) => {
-      const existingBooking = await tx.rental.findUnique({
-        where: { id },
-      });
-
-      if (!existingBooking) {
-        logger.w('Booking not found', { tenantId: tenant.id, id });
-        throw new Error('Booking not found');
-      }
-
-      return service.updateBooking(bookingDto, tenant, tx, userId!);
-    });
-
-    logger.i('Booking updated successfully', {
+    const booking = await bookingService.updateBooking(
+      bookingDto,
       tenant,
-      bookingId: booking.id,
-      bookingCode: booking.bookingCode,
-    });
+      user,
+    );
 
     const updatedBooking = await bookingRepo.getRentalById(booking.id, tenant);
     const bookings = await bookingRepo.getBookings(tenant.id);
@@ -301,6 +274,7 @@ const updateBooking = async (req: Request, res: Response) => {
       .json({ error: error?.message || 'Internal Server Error' });
   }
 };
+
 const deleteBooking = async (req: Request, res: Response) => {
   const { id } = req.params;
   const tenantId = req.user?.tenantId;
@@ -346,6 +320,7 @@ const deleteBooking = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 const confirmBooking = async (req: Request, res: Response) => {
   const data = req.body;
   const { tenant, user } = req.context!;

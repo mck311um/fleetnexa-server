@@ -31,6 +31,7 @@ import storefrontUserRoutes from './modules/user/modules/storefront/storefront.r
 import tenantUserRoutes from './modules/user/modules/tenant-user/tenant-user.routes';
 import tenantNotificationRoutes from './modules/tenant/modules/tenant-notification/tenant-notification.routes';
 import storefrontAuthRoutes from './modules/auth/modules/storefront/storefront.routes';
+import customerViolationRoutes from './modules/customer/customer-violation/customer-violation.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
@@ -60,6 +61,7 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/user/tenant', tenantUserRoutes);
 
   app.use('/api/customer', customerRoutes);
+  app.use('/api/customer/violation', customerViolationRoutes);
 
   app.use('/api/tenant', tenantRoutes);
   app.use('/api/tenant-activity', tenantActivityRoutes);

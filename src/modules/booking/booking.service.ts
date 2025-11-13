@@ -20,6 +20,7 @@ import transactionService from '../transaction/transaction.service';
 import { error } from 'console';
 import { bookingRepo } from './booking.repository';
 import {
+  BookingDtoSchema,
   StorefrontGuestBookingDto,
   StorefrontUserBookingDto,
 } from './booking.dto';
@@ -28,6 +29,23 @@ import { emailService } from '../email/email.service';
 import { customerService } from '../customer/customer.service';
 
 class BookingService {
+  async validateBookingData(data: any) {
+    if (!data) {
+      logger.e('Invalid booking data', 'Booking validation failed');
+      throw new Error('Invalid booking data');
+    }
+
+    const safeParse = BookingDtoSchema.safeParse(data);
+    if (!safeParse.success) {
+      logger.w('Invalid booking data', {
+        errors: safeParse.error.issues,
+      });
+      throw new Error('Invalid booking data');
+    }
+
+    return safeParse.data;
+  }
+
   async getTenantBookings(tenant: Tenant) {
     try {
       return await bookingRepo.getBookings(tenant.id);
@@ -701,6 +719,103 @@ class BookingService {
       throw new Error('Failed to create guest storefront booking');
     }
   }
+
+  async updateBooking(data: UpdateBookingDto, tenant: Tenant, user: User) {
+    try {
+      const booking = await prisma.rental.findUnique({
+        where: { id: data.id },
+      });
+
+      if (!booking) {
+        logger.w('Booking not found', { bookingId: data.id });
+        throw new Error('Booking not found');
+      }
+
+      const updatedBooking = await prisma.$transaction(async (tx) => {
+        const updatedBooking = await tx.rental.update({
+          where: { id: data.id },
+          data: {
+            id: data.id,
+            startDate: new Date(data.startDate),
+            endDate: new Date(data.endDate),
+            pickupLocationId: data.pickupLocationId,
+            returnLocationId: data.returnLocationId,
+            vehicleId: data.vehicleId,
+            chargeTypeId: data.chargeTypeId,
+            status: data.status ?? RentalStatus.PENDING,
+            agent: data.agent ?? Agent.SYSTEM,
+            updatedAt: new Date(),
+            updatedBy: user.id,
+          },
+        });
+
+        await tx.rentalDriver.deleteMany({ where: { rentalId: booking.id } });
+
+        await Promise.all(
+          data.drivers.map((driver: any) =>
+            tx.rentalDriver.create({
+              data: {
+                ...driver,
+                rentalId: booking.id,
+              },
+            }),
+          ),
+        );
+
+        await tx.values.update({
+          where: { rentalId: booking.id },
+          data: {
+            numberOfDays: data.values.numberOfDays,
+            basePrice: data.values.basePrice,
+            customBasePrice: data.values.customBasePrice,
+            totalCost: data.values.totalCost,
+            customTotalCost: data.values.customTotalCost,
+            discount: data.values.discount,
+            customDiscount: data.values.customDiscount,
+            deliveryFee: data.values.deliveryFee,
+            customDeliveryFee: data.values.customDeliveryFee,
+            collectionFee: data.values.collectionFee,
+            customCollectionFee: data.values.customCollectionFee,
+            deposit: data.values.deposit,
+            customDeposit: data.values.customDeposit,
+            totalExtras: data.values.totalExtras,
+            subTotal: data.values.subTotal,
+            netTotal: data.values.netTotal,
+            discountAmount: data.values.discountAmount,
+            discountPolicy: data.values.discountPolicy || '',
+          },
+        });
+
+        await tx.rentalExtra.deleteMany({
+          where: { valuesId: data.values.id },
+        });
+
+        await Promise.all(
+          data.values.extras.map((extra: any) =>
+            tx.rentalExtra.create({
+              data: {
+                id: extra.id,
+                extraId: extra.extraId,
+                amount: extra.amount,
+                customAmount: extra.customAmount,
+                valuesId: extra.valuesId,
+              },
+            }),
+          ),
+        );
+
+        return updatedBooking;
+      });
+
+      return updatedBooking;
+    } catch (error) {
+      logger.e(error, 'Failed to update booking', {
+        tenantId: tenant.id,
+        bookingId: data.id,
+      });
+      throw error;
+    }
+  }
 }
 
 export const bookingService = new BookingService();
@@ -806,99 +921,6 @@ const createBooking = async (
   }
 };
 
-const updateBooking = async (
-  data: UpdateBookingDto,
-  tenant: Tenant,
-  tx: TxClient,
-  userId: string,
-) => {
-  try {
-    const booking = await tx.rental.findUnique({ where: { id: data.id } });
-
-    if (!booking) {
-      throw new Error('Booking not found');
-    }
-
-    const updatedBooking = await tx.rental.update({
-      where: { id: data.id },
-      data: {
-        id: data.id,
-        startDate: new Date(data.startDate),
-        endDate: new Date(data.endDate),
-        pickupLocationId: data.pickupLocationId,
-        returnLocationId: data.returnLocationId,
-        vehicleId: data.vehicleId,
-        chargeTypeId: data.chargeTypeId,
-        status: data.status ?? RentalStatus.PENDING,
-        agent: data.agent ?? Agent.SYSTEM,
-        updatedAt: new Date(),
-        updatedBy: userId,
-      },
-    });
-
-    await tx.rentalDriver.deleteMany({ where: { rentalId: booking.id } });
-
-    await Promise.all(
-      data.drivers.map((driver: any) =>
-        tx.rentalDriver.create({
-          data: {
-            ...driver,
-            rentalId: booking.id,
-          },
-        }),
-      ),
-    );
-
-    await tx.values.update({
-      where: { rentalId: booking.id },
-      data: {
-        numberOfDays: data.values.numberOfDays,
-        basePrice: data.values.basePrice,
-        customBasePrice: data.values.customBasePrice,
-        totalCost: data.values.totalCost,
-        customTotalCost: data.values.customTotalCost,
-        discount: data.values.discount,
-        customDiscount: data.values.customDiscount,
-        deliveryFee: data.values.deliveryFee,
-        customDeliveryFee: data.values.customDeliveryFee,
-        collectionFee: data.values.collectionFee,
-        customCollectionFee: data.values.customCollectionFee,
-        deposit: data.values.deposit,
-        customDeposit: data.values.customDeposit,
-        totalExtras: data.values.totalExtras,
-        subTotal: data.values.subTotal,
-        netTotal: data.values.netTotal,
-        discountAmount: data.values.discountAmount,
-        discountPolicy: data.values.discountPolicy || '',
-      },
-    });
-
-    await tx.rentalExtra.deleteMany({ where: { valuesId: data.values.id } });
-
-    await Promise.all(
-      data.values.extras.map((extra: any) =>
-        tx.rentalExtra.create({
-          data: {
-            id: extra.id,
-            extraId: extra.extraId,
-            amount: extra.amount,
-            customAmount: extra.customAmount,
-            valuesId: extra.valuesId,
-          },
-        }),
-      ),
-    );
-
-    return updatedBooking;
-  } catch (error) {
-    logger.e(error, 'Failed to update booking', {
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-    throw new Error('Failed to update booking');
-  }
-};
-
 const deleteBooking = async (
   bookingId: string,
   tenant: Tenant,
@@ -932,6 +954,5 @@ const deleteBooking = async (
 
 export default {
   createBooking,
-  updateBooking,
   deleteBooking,
 };

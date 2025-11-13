@@ -57,17 +57,18 @@ class PaymentService {
                     where: { id: data.bookingId },
                 });
                 if (!existingBooking) {
+                    logger_1.logger.w('Booking not found', { bookingId: data.bookingId });
                     throw new Error('Booking not found');
                 }
                 const existingCustomer = await tx.customer.findUnique({
                     where: { id: data.customerId },
                 });
                 if (!existingCustomer) {
+                    logger_1.logger.w('Customer not found', { customerId: data.customerId });
                     throw new Error('Customer not found');
                 }
                 const newPayment = await tx.payment.create({
                     data: {
-                        id: data.id,
                         amount: data.amount,
                         tenantId: tenant.id,
                         rentalId: data.bookingId,
@@ -193,6 +194,7 @@ class PaymentService {
                 },
             });
             await transaction_service_1.transactionService.deleteTransaction(existingTransaction.id, tenant, user);
+            return existingPayment;
         }
         catch (error) {
             logger_1.logger.e(error, 'Error deleting payment', {
