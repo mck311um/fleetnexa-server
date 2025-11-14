@@ -5,6 +5,7 @@ import { storefrontAuth } from '../../../../middleware/storefront.middleware';
 const router = express.Router();
 
 router.get('/me', storefrontAuth, controller.getCurrentUser);
+router.get('/bookings', storefrontAuth, controller.getPreviousBookings);
 
 router.put('/', storefrontAuth, controller.updateStorefrontUser);
 

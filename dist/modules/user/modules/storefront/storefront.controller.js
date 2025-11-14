@@ -50,8 +50,22 @@ const changePassword = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+const getPreviousBookings = async (req, res) => {
+    const { storefrontUser } = req.context;
+    try {
+        const bookings = await storefront_service_1.storefrontUserService.getPreviousBookings(storefrontUser);
+        res.status(200).json({ bookings });
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Error fetching previous bookings', {
+            storefrontUserId: storefrontUser.id,
+        });
+        res.status(500).json({ message: error.message || 'Internal Server Error' });
+    }
+};
 exports.default = {
     getCurrentUser,
     updateStorefrontUser,
     changePassword,
+    getPreviousBookings,
 };

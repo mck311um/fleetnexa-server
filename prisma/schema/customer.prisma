@@ -17,7 +17,7 @@ model Customer {
   updatedBy      String?
   tenant         Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   address        CustomerAddress?
-  storefrontId   String?                @unique              
+                       
   documents      CustomerDocument?
 
   apps           CustomerMessengerApp[]
@@ -31,6 +31,8 @@ model Customer {
   charges        RentalCharge[]
   drivers        RentalDriver[]
   damages        VehicleDamage[]
+  
+  storefrontId   String?       
   storefrontUser StorefrontUser? @relation(fields: [storefrontId], references: [id])
 
   @@unique([tenantId, storefrontId])

@@ -32,6 +32,7 @@ const uploadMultipleFiles = async (req: Request, res: Response) => {
       const result = await service.uploadFile(req.body, file);
       files.push(result);
     }
+    res.status(200).json({ message: 'Files uploaded successfully', files });
   });
 };
 

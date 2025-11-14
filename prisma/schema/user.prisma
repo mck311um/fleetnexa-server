@@ -48,11 +48,10 @@ model StorefrontUser {
   profilePicture       String?             @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
   bookings            StorefrontBooking[]
 
+  customers           Customer[]
   country             Country?             @relation(fields: [countryId], references: [id])
   state               State?               @relation(fields: [stateId], references: [id])
   village             Village?             @relation(fields: [villageId], references: [id])
-
-  Customer Customer[]
 }
 
 model AdminUser {

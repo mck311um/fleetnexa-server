@@ -31,6 +31,7 @@ const uploadMultipleFiles = async (req, res) => {
             const result = await storage_service_1.default.uploadFile(req.body, file);
             files.push(result);
         }
+        res.status(200).json({ message: 'Files uploaded successfully', files });
     });
 };
 exports.default = { uploadFile, uploadMultipleFiles };

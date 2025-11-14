@@ -2,7 +2,7 @@ export const templates = [
   {
     name: 'WelcomeTemplate',
     subject: 'Welcome to FleetNexa!',
-    text: 'Welcome {{name}}!\n\nThank you for joining FleetNexa.\n\nYour account:\nCompany: {{tenantName}}\nUsername: {{username}}\nPassword: {{password}}\n\nPlease change your password immediately after first login.\n\nBest regards,\nFleetNexa Team',
+    text: 'Welcome {{name}}!\n\nThank you for joining FleetNexa.\n\nYour account:\nCompany: {{tenantName}}\nUsername: {{username}}\n\nPlease use the password you created during registration to access your account.\n\nBest regards,\nFleetNexa Team',
   },
   {
     name: 'BookingConfirmation',

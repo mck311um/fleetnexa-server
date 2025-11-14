@@ -34,15 +34,6 @@ class StorefrontAuthService {
                 logger_1.logger.w('User with email already exists', { email: data.email });
                 throw new Error('An account with these credentials already exists.');
             }
-            const existingPhone = await prisma_config_1.default.storefrontUser.findFirst({
-                where: { phone: data.phone },
-            });
-            if (existingPhone) {
-                logger_1.logger.w('User with phone number already exists', {
-                    phone: data.phone,
-                });
-                throw new Error('An account with these credentials already exists.');
-            }
             const existingLicense = await prisma_config_1.default.storefrontUser.findFirst({
                 where: { driverLicenseNumber: data.driversLicenseNumber },
             });
