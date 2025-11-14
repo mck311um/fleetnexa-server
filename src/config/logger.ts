@@ -1,5 +1,34 @@
+import fs from 'fs';
+import path from 'path';
 import pino from 'pino';
 import * as Sentry from '@sentry/node';
+
+const getLogDir = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return '/var/log/fleetnexa';
+  } else {
+    return path.join(process.cwd(), 'logs');
+  }
+};
+
+const logDir = getLogDir();
+const logFilePath = path.join(logDir, 'backend.log');
+
+const ensureLogDirExists = () => {
+  try {
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+      console.log(`Log directory created: ${logDir}`);
+    }
+  } catch (error) {
+    console.warn(
+      `Could not create log directory ${logDir}, using fallback:`,
+      error,
+    );
+    return false;
+  }
+  return true;
+};
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -8,23 +37,41 @@ Sentry.init({
   sendDefaultPii: true,
 });
 
-const transport = pino.transport({
-  target: 'pino-pretty',
-  options: { colorize: true, translateTime: 'SYS:standard' },
+const streams = [];
+
+streams.push({
+  stream: pino.transport({
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      translateTime: 'SYS:standard',
+      ignore: 'pid,hostname',
+    },
+  }),
 });
 
-const pinoLogger = transport
-  ? pino(
-      {
-        level: process.env.LOG_LEVEL || 'info',
-        timestamp: pino.stdTimeFunctions.isoTime,
-      },
-      transport,
-    )
-  : pino({
-      level: process.env.LOG_LEVEL || 'info',
-      timestamp: pino.stdTimeFunctions.isoTime,
+let logFileStream: fs.WriteStream | null = null;
+if (ensureLogDirExists()) {
+  try {
+    logFileStream = fs.createWriteStream(logFilePath, {
+      flags: 'a',
     });
+    streams.push({ stream: logFileStream });
+    console.log(`File logging enabled: ${logFilePath}`);
+  } catch (error) {
+    console.warn('Could not create file log stream:', error);
+  }
+} else {
+  console.log('File logging disabled - using console only');
+}
+
+const pinoLogger = pino(
+  {
+    level: process.env.LOG_LEVEL || 'info',
+    timestamp: pino.stdTimeFunctions.isoTime,
+  },
+  pino.multistream(streams),
+);
 
 export const logger = {
   i: (message: string, meta?: Record<string, unknown>) => {
