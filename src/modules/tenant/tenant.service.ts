@@ -12,6 +12,7 @@ import { UserRoleService } from '../user/user-role/user-role.service';
 import { TenantUserService } from '../user/tenant/tenant-user.service';
 import { EmailService } from '../email/email.service';
 import { WelcomeEmailDto } from '../email/dto/welcome.dto';
+import { Tenant } from 'prisma/generated/prisma/client';
 
 @Injectable()
 export class TenantService {
@@ -25,6 +26,18 @@ export class TenantService {
     private readonly userService: TenantUserService,
     private readonly emailService: EmailService,
   ) {}
+
+  async getCurrentTenant(tenant: Tenant) {
+    try {
+      const data = {
+        tenant,
+      };
+      return data;
+    } catch (error) {
+      this.logger.error('Failed to get current tenant', error);
+      throw error;
+    }
+  }
 
   async createTenant(data: CreateTenantDto) {
     try {

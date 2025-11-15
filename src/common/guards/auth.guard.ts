@@ -2,24 +2,22 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TenantRepository } from 'src/modules/tenant/tenant.repository';
 import { TenantUserRepository } from 'src/modules/user/tenant/tenant-user.repository';
+import type {
+  AuthenticatedRequest,
+  UserPayload,
+} from 'src/types/authenticated-request';
 
-interface UserPayload {
-  id: string;
-  tenantId: string;
-  tenantCode: string;
-}
-
-interface AuthenticatedRequest extends Request {
-  user: UserPayload;
-}
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private readonly logger = new Logger(AuthGuard.name);
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly tenantRepo: TenantRepository,
@@ -31,11 +29,19 @@ export class AuthGuard implements CanActivate {
 
     const token = req.headers['x-auth-token'] as string;
     if (!token) {
+      this.logger.warn('No auth token provided');
       throw new UnauthorizedException('No auth token, authorization denied');
     }
 
     try {
-      const decoded = this.jwtService.verify(token) as {
+      const secret = process.env.JWT_SECRET;
+
+      if (!secret) {
+        this.logger.error('JWT secret is not defined in environment variables');
+        throw new UnauthorizedException('Token is not valid');
+      }
+
+      const decoded = this.jwtService.verify(token, { secret }) as {
         user: UserPayload;
       };
       req.user = decoded.user;
@@ -50,8 +56,14 @@ export class AuthGuard implements CanActivate {
         throw new NotFoundException('User not found');
       }
 
+      req.context = {
+        tenant,
+        user,
+      };
+
       return true;
     } catch (error) {
+      this.logger.error('AuthGuard error:', error);
       throw new UnauthorizedException('Token is not valid');
     }
   }

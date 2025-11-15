@@ -9,6 +9,8 @@ import { TenantUserModule } from '../user/tenant/tenant-user.module';
 import { EmailModule } from '../email/email.module';
 import { TenantRepository } from './tenant.repository';
 import { TenantUserRepository } from '../user/tenant/tenant-user.repository';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -20,7 +22,13 @@ import { TenantUserRepository } from '../user/tenant/tenant-user.repository';
     EmailModule,
   ],
   controllers: [TenantController],
-  providers: [TenantService, TenantRepository, TenantUserRepository],
+  providers: [
+    JwtService,
+    TenantService,
+    TenantRepository,
+    TenantUserRepository,
+    AuthGuard,
+  ],
   exports: [
     PrismaModule,
     TenantService,

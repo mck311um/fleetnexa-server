@@ -1,10 +1,19 @@
-import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, UseGuards } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { TenantService } from './tenant.service';
+import type { AuthenticatedRequest } from 'src/types/authenticated-request';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 
 @Controller('tenant')
 export class TenantController {
   constructor(private readonly tenantService: TenantService) {}
+
+  @Get()
+  @UseGuards(AuthGuard)
+  getCurrentTenant(@Req() req: AuthenticatedRequest) {
+    const tenant = req.context.tenant;
+    return this.tenantService.getCurrentTenant(tenant);
+  }
 
   @Post()
   createTenant(@Body('data') data: CreateTenantDto) {
