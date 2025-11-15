@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const storefront_service_1 = require("./storefront.service");
 const logger_1 = require("../../../../config/logger");
-const updateStorefrontUser = async (req, res) => {
+const updateUser = async (req, res) => {
     const body = req.body;
     const { storefrontUser } = req.context;
     const userDto = await storefront_service_1.storefrontUserService.validateUserData(body);
@@ -63,9 +63,30 @@ const getPreviousBookings = async (req, res) => {
         res.status(500).json({ message: error.message || 'Internal Server Error' });
     }
 };
+const deleteUser = async (req, res) => {
+    const { storefrontUser } = req.context;
+    const { password } = req.body;
+    if (!password) {
+        logger_1.logger.w('Password is missing for account deletion', {
+            storefrontUserId: storefrontUser.id,
+        });
+        return res.status(400).json({ message: 'Password is required' });
+    }
+    try {
+        await storefront_service_1.storefrontUserService.deleteUser(password, storefrontUser);
+        res.status(200).json({ message: 'Account deleted successfully' });
+    }
+    catch (error) {
+        logger_1.logger.e(error, 'Error deleting storefront user', {
+            storefrontUserId: storefrontUser.id,
+        });
+        res.status(500).json({ message: error.message || 'Internal Server Error' });
+    }
+};
 exports.default = {
     getCurrentUser,
-    updateStorefrontUser,
+    updateUser,
     changePassword,
     getPreviousBookings,
+    deleteUser,
 };

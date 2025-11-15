@@ -9,6 +9,7 @@ const storefront_middleware_1 = require("../../../../middleware/storefront.middl
 const router = express_1.default.Router();
 router.get('/me', storefront_middleware_1.storefrontAuth, storefront_controller_1.default.getCurrentUser);
 router.get('/bookings', storefront_middleware_1.storefrontAuth, storefront_controller_1.default.getPreviousBookings);
-router.put('/', storefront_middleware_1.storefrontAuth, storefront_controller_1.default.updateStorefrontUser);
+router.put('/', storefront_middleware_1.storefrontAuth, storefront_controller_1.default.updateUser);
 router.patch('/change-password', storefront_middleware_1.storefrontAuth, storefront_controller_1.default.changePassword);
+router.delete('/', storefront_middleware_1.storefrontAuth, storefront_controller_1.default.deleteUser);
 exports.default = router;

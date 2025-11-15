@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { storefrontUserService } from './storefront.service';
 import { logger } from '../../../../config/logger';
 
-const updateStorefrontUser = async (req: Request, res: Response) => {
+const updateUser = async (req: Request, res: Response) => {
   const body = req.body;
   const { storefrontUser } = req.context!;
 
@@ -78,9 +78,33 @@ const getPreviousBookings = async (req: Request, res: Response) => {
   }
 };
 
+const deleteUser = async (req: Request, res: Response) => {
+  const { storefrontUser } = req.context!;
+  const { password } = req.body;
+
+  if (!password) {
+    logger.w('Password is missing for account deletion', {
+      storefrontUserId: storefrontUser.id,
+    });
+    return res.status(400).json({ message: 'Password is required' });
+  }
+
+  try {
+    await storefrontUserService.deleteUser(password, storefrontUser);
+
+    res.status(200).json({ message: 'Account deleted successfully' });
+  } catch (error: any) {
+    logger.e(error, 'Error deleting storefront user', {
+      storefrontUserId: storefrontUser.id,
+    });
+    res.status(500).json({ message: error.message || 'Internal Server Error' });
+  }
+};
+
 export default {
   getCurrentUser,
-  updateStorefrontUser,
+  updateUser,
   changePassword,
   getPreviousBookings,
+  deleteUser,
 };

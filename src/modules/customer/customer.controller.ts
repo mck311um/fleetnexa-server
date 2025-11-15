@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { logger } from '../../config/logger';
 import { tenantRepo } from '../../repository/tenant.repository';
 import { customerService } from './customer.service';
-import { ca } from 'zod/v4/locales/index.cjs';
 
 const getCustomers = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -54,10 +53,10 @@ const getCustomerById = async (req: Request, res: Response) => {
 };
 
 const createCustomer = async (req: Request, res: Response) => {
-  const body = req.body;
+  const data = req.body;
   const { tenant, user } = req.context!;
 
-  const customerDto = await customerService.validateCustomerData(body);
+  const customerDto = await customerService.validateCustomerData(data);
 
   try {
     const customer = await customerService.createCustomer(
@@ -83,11 +82,10 @@ const createCustomer = async (req: Request, res: Response) => {
 };
 
 const updateCustomer = async (req: Request, res: Response) => {
-  const body = req.body;
+  const data = req.body;
   const { tenant, user } = req.context!;
 
-  const customerDto = await customerService.validateCustomerData(body);
-
+  const customerDto = await customerService.validateCustomerData(data);
   try {
     const customer = await customerService.updateCustomer(
       customerDto,

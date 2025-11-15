@@ -30,6 +30,6 @@ exports.CustomerSchema = zod_1.default.object({
     phone: zod_1.default.string().optional(),
     profileImage: zod_1.default.string().optional(),
     status: zod_1.default.enum(client_1.CustomerStatus),
-    driversLicense: exports.CustomerDriverLicenseSchema,
+    license: exports.CustomerDriverLicenseSchema,
     address: exports.CustomerAddressSchema,
 });

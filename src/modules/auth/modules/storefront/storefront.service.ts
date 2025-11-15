@@ -134,6 +134,7 @@ class StorefrontAuthService {
       const user = await prisma.storefrontUser.findUnique({
         where: { email: data.username },
       });
+
       if (!user) {
         logger.w('Invalid email or password', { email: data.username });
         throw new Error('Invalid email or password');

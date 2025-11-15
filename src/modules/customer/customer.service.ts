@@ -10,20 +10,25 @@ import { CustomerDto, CustomerSchema } from './customer.dto';
 
 class CustomerService {
   async validateCustomerData(data: any) {
-    if (!data) {
-      logger.e('Invalid customer data', 'Customer validation failed');
-    }
+    try {
+      if (!data) {
+        throw new Error('Customer data is required');
+      }
 
-    const safeParse = CustomerSchema.safeParse(data);
-    if (!safeParse.success) {
-      logger.w('Invalid customer data', {
-        errors: safeParse.error.issues,
-        input: data,
-      });
-      throw new Error('Invalid customer data');
-    }
+      const safeParse = CustomerSchema.safeParse(data);
+      if (!safeParse.success) {
+        logger.w('Invalid customer data', {
+          errors: safeParse.error.issues,
+          input: data,
+        });
+        throw new Error('Invalid customer data');
+      }
 
-    return safeParse.data;
+      return safeParse.data;
+    } catch (error) {
+      logger.e(error, 'Customer validation failed', { data });
+      throw error;
+    }
   }
 
   async getTenantCustomers(tenant: Tenant) {
@@ -79,9 +84,10 @@ class CustomerService {
         await tx.driverLicense.create({
           data: {
             customerId: data.id,
-            licenseNumber: data.driversLicense.licenseNumber,
-            licenseExpiry: data.driversLicense.licenseExpiry,
-            licenseIssued: data.driversLicense.licenseIssued,
+            licenseNumber: data.license.licenseNumber,
+            licenseExpiry: data.license.licenseExpiry,
+            licenseIssued: data.license.licenseIssued,
+            image: data.license.image,
           },
         });
 
@@ -152,10 +158,10 @@ class CustomerService {
         await tx.driverLicense.update({
           where: { customerId: data.id },
           data: {
-            licenseNumber: data.driversLicense.licenseNumber,
-            licenseIssued: data.driversLicense.licenseIssued,
-            licenseExpiry: data.driversLicense.licenseExpiry,
-            image: data.driversLicense.image,
+            licenseNumber: data.license.licenseNumber,
+            licenseIssued: data.license.licenseIssued,
+            licenseExpiry: data.license.licenseExpiry,
+            image: data.license.image,
           },
         });
 

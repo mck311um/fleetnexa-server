@@ -52,10 +52,10 @@ const registerRoutes = (app) => {
     app.use('/api/payment', payment_routes_1.default);
     app.use('/api/expense', expense_routes_1.default);
     app.use('/api/refund', refund_routes_1.default);
-    app.use('/api/user', user_routes_1.default);
     app.use('/api/user-role', user_role_routes_1.default);
     app.use('/api/user/storefront', storefront_routes_2.default);
     app.use('/api/user/tenant', tenant_user_routes_1.default);
+    app.use('/api/user', user_routes_1.default);
     app.use('/api/customer', customer_routes_1.default);
     app.use('/api/customer/violation', customer_violation_routes_1.default);
     app.use('/api/tenant', tenant_routes_1.default);

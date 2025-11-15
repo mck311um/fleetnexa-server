@@ -27,7 +27,7 @@ export const CustomerSchema = z.object({
   phone: z.string().optional(),
   profileImage: z.string().optional(),
   status: z.enum(CustomerStatus),
-  driversLicense: CustomerDriverLicenseSchema,
+  license: CustomerDriverLicenseSchema,
   address: CustomerAddressSchema,
 });
 

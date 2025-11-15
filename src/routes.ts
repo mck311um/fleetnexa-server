@@ -55,10 +55,10 @@ export const registerRoutes = (app: Application) => {
   app.use('/api/expense', expenseRoutes);
   app.use('/api/refund', refundRoutes);
 
-  app.use('/api/user', userRoutes);
   app.use('/api/user-role', roleRoutes);
   app.use('/api/user/storefront', storefrontUserRoutes);
   app.use('/api/user/tenant', tenantUserRoutes);
+  app.use('/api/user', userRoutes);
 
   app.use('/api/customer', customerRoutes);
   app.use('/api/customer/violation', customerViolationRoutes);

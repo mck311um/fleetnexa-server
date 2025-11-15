@@ -46,9 +46,9 @@ const getCustomerById = async (req, res) => {
     }
 };
 const createCustomer = async (req, res) => {
-    const body = req.body;
+    const data = req.body;
     const { tenant, user } = req.context;
-    const customerDto = await customer_service_1.customerService.validateCustomerData(body);
+    const customerDto = await customer_service_1.customerService.validateCustomerData(data);
     try {
         const customer = await customer_service_1.customerService.createCustomer(customerDto, tenant, user);
         const customers = await customer_service_1.customerService.getTenantCustomers(tenant);
@@ -67,9 +67,9 @@ const createCustomer = async (req, res) => {
     }
 };
 const updateCustomer = async (req, res) => {
-    const body = req.body;
+    const data = req.body;
     const { tenant, user } = req.context;
-    const customerDto = await customer_service_1.customerService.validateCustomerData(body);
+    const customerDto = await customer_service_1.customerService.validateCustomerData(data);
     try {
         const customer = await customer_service_1.customerService.updateCustomer(customerDto, tenant, user);
         const customers = await customer_service_1.customerService.getTenantCustomers(tenant);

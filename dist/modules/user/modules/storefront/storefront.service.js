@@ -316,5 +316,36 @@ class StorefrontUserService {
             throw error;
         }
     }
+    async deleteUser(password, user) {
+        try {
+            const existingUser = await prisma_config_1.default.storefrontUser.findUnique({
+                where: { id: user.id },
+            });
+            if (!existingUser) {
+                logger_1.logger.w(`Storefront user not found (ID: ${user.id})`);
+                throw new Error('Storefront user not found');
+            }
+            const isMatch = await bcrypt_1.default.compare(password, existingUser.password);
+            if (!isMatch) {
+                logger_1.logger.w(`Incorrect password attempt (User ID: ${user.id})`);
+                throw new Error('Incorrect credentials');
+            }
+            await prisma_config_1.default.customer.updateMany({
+                where: {
+                    storefrontId: user.id,
+                },
+                data: { storefrontId: null },
+            });
+            await prisma_config_1.default.storefrontUser.delete({
+                where: { id: user.id },
+            });
+        }
+        catch (error) {
+            logger_1.logger.e(error, 'Error deleting storefront user', {
+                userId: user.id,
+            });
+            throw error;
+        }
+    }
 }
 exports.storefrontUserService = new StorefrontUserService();
