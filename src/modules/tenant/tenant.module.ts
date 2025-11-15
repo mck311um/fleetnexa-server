@@ -11,12 +11,14 @@ import { TenantRepository } from './tenant.repository';
 import { TenantUserRepository } from '../user/tenant/tenant-user.repository';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { TenantExtrasModule } from './tenant-extras/tenant-extras.module';
 
 @Module({
   imports: [
     PrismaModule,
     GeneratorModule,
     TenantLocationModule,
+    TenantExtrasModule,
     TenantUserModule,
     UserRoleModule,
     EmailModule,

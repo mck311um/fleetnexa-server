@@ -13,6 +13,7 @@ import { TenantUserService } from '../user/tenant/tenant-user.service';
 import { EmailService } from '../email/email.service';
 import { WelcomeEmailDto } from '../email/dto/welcome.dto';
 import { Tenant } from 'prisma/generated/prisma/client';
+import { TenantExtraService } from './tenant-extras/tenant-extras.service';
 
 @Injectable()
 export class TenantService {
@@ -25,12 +26,16 @@ export class TenantService {
     private readonly userRoleService: UserRoleService,
     private readonly userService: TenantUserService,
     private readonly emailService: EmailService,
+    private readonly extraService: TenantExtraService,
   ) {}
 
   async getCurrentTenant(tenant: Tenant) {
     try {
+      const extras = await this.extraService.getTenantExtras(tenant);
+
       const data = {
         tenant,
+        extras,
       };
       return data;
     } catch (error) {
