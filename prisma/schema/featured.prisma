@@ -1,0 +1,8 @@
+model CaribbeanCountry {
+  id          String  @id @default(dbgenerated("gen_random_uuid()"))
+  countryId   String  @unique
+  image       String
+  isActive    Boolean @default(false)
+  description String  @default("")
+  country     Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+}

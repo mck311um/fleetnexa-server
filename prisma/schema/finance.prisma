@@ -1,0 +1,47 @@
+model ShopDMMerchant {
+  id              String @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId        String @unique
+  merchant_handle String
+  merchant_secret String
+  tenant          Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model Currency {
+  id            String               @id @default(dbgenerated("gen_random_uuid()"))
+  code          String               @unique
+  currency      String?
+  symbol        String?
+  bases         ExchangeRate[]       @relation("BaseCurrency")
+  targets       ExchangeRate[]       @relation("TargetCurrency")
+  payments      Payment[]
+  tenants       Tenant[]
+  currencyRates TenantCurrencyRate[]
+}
+
+model TenantCurrencyRate {
+  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId   String
+  currencyId String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
+  enabled    Boolean   @default(true)
+  fromRate   Float?    @default(0.0)
+  toRate     Float?    @default(0.0)
+  currency   Currency  @relation(fields: [currencyId], references: [id])
+  tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, currencyId])
+}
+
+model ExchangeRate {
+  id             String    @id @default(dbgenerated("gen_random_uuid()"))
+  base           String
+  target         String
+  rate           Float
+  updatedAt      DateTime? @updatedAt
+  createdAt      DateTime  @default(now())
+  baseCurrency   Currency  @relation("BaseCurrency", fields: [base], references: [code])
+  targetCurrency Currency  @relation("TargetCurrency", fields: [target], references: [code])
+
+  @@unique([base, target])
+}
