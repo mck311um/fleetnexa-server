@@ -1,7 +1,7 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TenantLoginDto } from './dto/login.dto';
-import { User } from 'prisma/generated/prisma/client';
+import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 @Injectable()
@@ -68,6 +68,23 @@ export class TenantAuthService {
         role: user.role,
         tenant: user.tenant,
       };
-    } catch (error) {}
+
+      const payload = {
+        user: {
+          id: user.id,
+          tenantId: user.tenantId,
+          tenantCode: user.tenant?.tenantCode,
+        },
+      };
+
+      const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+        expiresIn: data.rememberMe ? '30d' : '7d',
+      });
+
+      return { userData, token };
+    } catch (error) {
+      this.logger.error('Login error', error);
+      throw error;
+    }
   }
 }

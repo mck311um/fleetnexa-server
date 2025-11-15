@@ -7,6 +7,8 @@ import { TenantController } from './tenant.controller';
 import { TenantService } from './tenant.service';
 import { TenantUserModule } from '../user/tenant/tenant-user.module';
 import { EmailModule } from '../email/email.module';
+import { TenantRepository } from './tenant.repository';
+import { TenantUserRepository } from '../user/tenant/tenant-user.repository';
 
 @Module({
   imports: [
@@ -18,7 +20,12 @@ import { EmailModule } from '../email/email.module';
     EmailModule,
   ],
   controllers: [TenantController],
-  providers: [TenantService],
-  exports: [PrismaModule, TenantService],
+  providers: [TenantService, TenantRepository, TenantUserRepository],
+  exports: [
+    PrismaModule,
+    TenantService,
+    TenantRepository,
+    TenantUserRepository,
+  ],
 })
 export class TenantModule {}
