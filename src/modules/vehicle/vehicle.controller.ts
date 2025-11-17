@@ -193,25 +193,28 @@ const updateVehicleStorefrontStatus = async (req: Request, res: Response) => {
   }
 
   try {
-    await vehicleService.updateVehicleStorefrontStatus(id, tenant, user);
-
+    const message = await vehicleService.updateVehicleStorefrontStatus(
+      id,
+      tenant,
+      user,
+    );
     const vehicle = await vehicleService.getVehicleById(id, tenant);
     const vehicles = await vehicleService.getTenantVehicles(tenant);
 
     return res.status(200).json({
-      message: 'Vehicle storefront status updated',
+      message,
       vehicle,
       vehicles,
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.e(error, 'Failed to update vehicle storefront status', {
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
       vehicleId: id,
     });
-    return res
-      .status(500)
-      .json({ message: 'Failed to update vehicle storefront status' });
+    return res.status(500).json({
+      message: error.message || 'Failed to update vehicle storefront status',
+    });
   }
 };
 

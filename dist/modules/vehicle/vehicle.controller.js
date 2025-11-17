@@ -163,11 +163,11 @@ const updateVehicleStorefrontStatus = async (req, res) => {
         return res.status(400).json({ message: 'Vehicle ID is required' });
     }
     try {
-        await vehicle_service_1.vehicleService.updateVehicleStorefrontStatus(id, tenant, user);
+        const message = await vehicle_service_1.vehicleService.updateVehicleStorefrontStatus(id, tenant, user);
         const vehicle = await vehicle_service_1.vehicleService.getVehicleById(id, tenant);
         const vehicles = await vehicle_service_1.vehicleService.getTenantVehicles(tenant);
         return res.status(200).json({
-            message: 'Vehicle storefront status updated',
+            message,
             vehicle,
             vehicles,
         });
@@ -178,9 +178,9 @@ const updateVehicleStorefrontStatus = async (req, res) => {
             tenantCode: tenant.tenantCode,
             vehicleId: id,
         });
-        return res
-            .status(500)
-            .json({ message: 'Failed to update vehicle storefront status' });
+        return res.status(500).json({
+            message: error.message || 'Failed to update vehicle storefront status',
+        });
     }
 };
 exports.default = {

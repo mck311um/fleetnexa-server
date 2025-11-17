@@ -32,11 +32,18 @@ class TenantService {
         try {
             const { tenant, country } = await prisma_config_1.default.$transaction(async (tx) => {
                 const existingTenant = await tenant_repository_1.repo.getTenantByEmail(data.companyEmail);
+                const existingTenantByPhone = await tenant_repository_1.repo.getTenantByPhoneNumber(data.number);
                 if (existingTenant) {
                     logger_1.logger.w('Tenant with this email already exists', {
                         email: data.companyEmail,
                     });
-                    throw new Error('Unable to create account. Please check your input and try again.');
+                    throw new Error('Unable to create account. Company email already in use.');
+                }
+                if (existingTenantByPhone) {
+                    logger_1.logger.w('Tenant with this phone number already exists', {
+                        phoneNumber: data.number,
+                    });
+                    throw new Error('Unable to create account. Phone number already in use.');
                 }
                 const country = await tx.country.findUnique({
                     where: { code: data.country },
@@ -170,7 +177,7 @@ const updateTenant = async (data, tenant) => {
                     endTime: data.endTime,
                 },
             });
-            await tx.cancellationPolicy.upsert({
+            const cancellationPolicy = await tx.cancellationPolicy.upsert({
                 where: {
                     tenantId: tenant.id,
                 },
@@ -188,7 +195,7 @@ const updateTenant = async (data, tenant) => {
                     bookingMinimumDays: data.cancellationPolicy?.bookingMinimumDays || 0,
                 },
             });
-            await tx.latePolicy.upsert({
+            const latePolicy = await tx.latePolicy.upsert({
                 where: {
                     tenantId: tenant.id,
                 },
@@ -200,6 +207,13 @@ const updateTenant = async (data, tenant) => {
                     tenantId: tenant.id,
                     amount: data.latePolicy?.amount || 0,
                     maxHours: data.latePolicy?.maxHours || 0,
+                },
+            });
+            await tx.tenant.update({
+                where: { id: tenant.id },
+                data: {
+                    cancellationPolicyId: cancellationPolicy.id,
+                    latePolicyId: latePolicy.id,
                 },
             });
             const usdRate = await tx.tenantCurrencyRate.findFirst({

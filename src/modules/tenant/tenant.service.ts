@@ -37,13 +37,25 @@ class TenantService {
     try {
       const { tenant, country } = await prisma.$transaction(async (tx) => {
         const existingTenant = await repo.getTenantByEmail(data.companyEmail);
+        const existingTenantByPhone = await repo.getTenantByPhoneNumber(
+          data.number,
+        );
 
         if (existingTenant) {
           logger.w('Tenant with this email already exists', {
             email: data.companyEmail,
           });
           throw new Error(
-            'Unable to create account. Please check your input and try again.',
+            'Unable to create account. Company email already in use.',
+          );
+        }
+
+        if (existingTenantByPhone) {
+          logger.w('Tenant with this phone number already exists', {
+            phoneNumber: data.number,
+          });
+          throw new Error(
+            'Unable to create account. Phone number already in use.',
           );
         }
 
@@ -202,7 +214,7 @@ const updateTenant = async (data: UpdateTenantDto, tenant: Tenant) => {
         },
       });
 
-      await tx.cancellationPolicy.upsert({
+      const cancellationPolicy = await tx.cancellationPolicy.upsert({
         where: {
           tenantId: tenant.id,
         },
@@ -221,7 +233,7 @@ const updateTenant = async (data: UpdateTenantDto, tenant: Tenant) => {
         },
       });
 
-      await tx.latePolicy.upsert({
+      const latePolicy = await tx.latePolicy.upsert({
         where: {
           tenantId: tenant.id,
         },
@@ -233,6 +245,14 @@ const updateTenant = async (data: UpdateTenantDto, tenant: Tenant) => {
           tenantId: tenant.id,
           amount: data.latePolicy?.amount || 0,
           maxHours: data.latePolicy?.maxHours || 0,
+        },
+      });
+
+      await tx.tenant.update({
+        where: { id: tenant.id },
+        data: {
+          cancellationPolicyId: cancellationPolicy.id,
+          latePolicyId: latePolicy.id,
         },
       });
 

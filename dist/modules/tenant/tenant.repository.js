@@ -14,8 +14,14 @@ class TenantRepository {
         });
     }
     async getTenantByEmail(email) {
-        return prisma_config_1.default.tenant.findFirst({
+        return prisma_config_1.default.tenant.findUnique({
             where: { email: email },
+            include: this.getTenantIncludeOptions(),
+        });
+    }
+    async getTenantByPhoneNumber(phoneNumber) {
+        return prisma_config_1.default.tenant.findUnique({
+            where: { number: phoneNumber },
             include: this.getTenantIncludeOptions(),
         });
     }

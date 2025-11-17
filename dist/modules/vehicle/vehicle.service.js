@@ -324,9 +324,13 @@ class VehicleService {
     }
     async updateVehicleStorefrontStatus(vehicleId, tenant, user) {
         try {
-            await prisma_config_1.default.$transaction(async (tx) => {
+            const vehicle = await prisma_config_1.default.$transaction(async (tx) => {
                 if (!tenant.storefrontEnabled) {
-                    throw new Error('Storefront is not enabled for this tenant');
+                    logger_1.logger.w('Tenant storefront is disabled, tried to list vehicle', {
+                        tenantId: tenant.id,
+                        tenantCode: tenant.tenantCode,
+                    });
+                    throw new Error('Your storefront is disabled, enable it to list vehicles');
                 }
                 const vehicle = await tx.vehicle.findUnique({
                     where: { id: vehicleId },
@@ -345,7 +349,16 @@ class VehicleService {
                         updatedBy: user.username,
                     },
                 });
+                return vehicle;
             });
+            let message = '';
+            if (vehicle.storefrontEnabled) {
+                message = 'Vehicle is now listed on the storefront';
+            }
+            else {
+                message = 'Vehicle is no longer listed on the storefront';
+            }
+            return message;
         }
         catch (error) {
             logger_1.logger.e(error, 'Failed to update vehicle storefront status', {
@@ -353,7 +366,7 @@ class VehicleService {
                 tenantCode: tenant.tenantCode,
                 vehicleId,
             });
-            throw new Error('Failed to update vehicle storefront status');
+            throw error;
         }
     }
 }

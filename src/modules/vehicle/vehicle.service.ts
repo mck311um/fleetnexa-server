@@ -7,6 +7,7 @@ import {
   VehicleDto,
   VehicleSchema,
 } from './vehicle.dto';
+import e from 'express';
 
 class VehicleService {
   validateVehicleData(data: any) {
@@ -367,9 +368,15 @@ class VehicleService {
     user: User,
   ) {
     try {
-      await prisma.$transaction(async (tx) => {
+      const vehicle = await prisma.$transaction(async (tx) => {
         if (!tenant.storefrontEnabled) {
-          throw new Error('Storefront is not enabled for this tenant');
+          logger.w('Tenant storefront is disabled, tried to list vehicle', {
+            tenantId: tenant.id,
+            tenantCode: tenant.tenantCode,
+          });
+          throw new Error(
+            'Your storefront is disabled, enable it to list vehicles',
+          );
         }
 
         const vehicle = await tx.vehicle.findUnique({
@@ -391,14 +398,26 @@ class VehicleService {
             updatedBy: user.username,
           },
         });
+
+        return vehicle;
       });
+
+      let message = '';
+
+      if (vehicle.storefrontEnabled) {
+        message = 'Vehicle is now listed on the storefront';
+      } else {
+        message = 'Vehicle is no longer listed on the storefront';
+      }
+
+      return message;
     } catch (error) {
       logger.e(error, 'Failed to update vehicle storefront status', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
         vehicleId,
       });
-      throw new Error('Failed to update vehicle storefront status');
+      throw error;
     }
   }
 }
