@@ -57,9 +57,11 @@ if (ensureLogDirExists()) {
       flags: 'a',
     });
     streams.push({ stream: logFileStream });
-    console.log(`File logging enabled: ${logFilePath}`);
   } catch (error) {
-    console.warn('Could not create file log stream:', error);
+    console.error(
+      'Failed to create log file stream, using console only:',
+      error,
+    );
   }
 } else {
   console.log('File logging disabled - using console only');
