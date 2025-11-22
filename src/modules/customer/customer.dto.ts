@@ -1,12 +1,34 @@
-import { z } from 'zod';
-import { vi } from 'zod/v4/locales/index.cjs';
+import { CustomerStatus } from '@prisma/client';
+import z, { date } from 'zod';
 
-export const CustomerViolationSchema = z.object({
+export const CustomerDriverLicenseSchema = z.object({
   id: z.uuid(),
   customerId: z.uuid(),
-  violationId: z.uuid(),
-  violationDate: z.string(),
-  notes: z.string().optional(),
+  licenseNumber: z.string(),
+  licenseIssued: z.string(),
+  licenseExpiry: z.string(),
+  image: z.string().optional(),
 });
 
-export type CustomerViolationDto = z.infer<typeof CustomerViolationSchema>;
+export const CustomerAddressSchema = z.object({
+  street: z.string().optional(),
+  villageId: z.string().optional(),
+  stateId: z.string().optional(),
+  countryId: z.string().optional(),
+});
+
+export const CustomerSchema = z.object({
+  id: z.uuid(),
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.email(),
+  gender: z.string().optional(),
+  dateOfBirth: z.string(),
+  phone: z.string().optional(),
+  profileImage: z.string().optional(),
+  status: z.enum(CustomerStatus),
+  license: CustomerDriverLicenseSchema,
+  address: CustomerAddressSchema,
+});
+
+export type CustomerDto = z.infer<typeof CustomerSchema>;

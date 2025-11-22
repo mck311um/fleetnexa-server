@@ -79,14 +79,16 @@ const deleteRefund = async (req, res) => {
     const { tenant, user } = req.context;
     const { id } = req.params;
     try {
-        await refund_service_1.refundService.deleteRefund(id, tenant, user);
+        const refund = await refund_service_1.refundService.deleteRefund(id, tenant, user);
         const bookings = await booking_service_1.bookingService.getTenantBookings(tenant);
+        const updatedBooking = await booking_service_1.bookingService.getBookingById(tenant, refund.rentalId || '');
         const refunds = await refund_service_1.refundService.getTenantRefunds(tenant);
         const transactions = await transaction_service_1.transactionService.getTenantTransactions(tenant);
         res.status(200).json({
             message: 'Refund deleted successfully',
             bookings,
             refunds,
+            updatedBooking,
             transactions,
         });
     }

@@ -33,8 +33,6 @@ const RentalValuesSchema = zod_1.z.object({
     totalExtras: zod_1.z.float64().min(0),
     subTotal: zod_1.z.float64().min(0),
     netTotal: zod_1.z.float64().min(0),
-    discountMin: zod_1.z.float64().min(0),
-    discountMax: zod_1.z.float64().min(0),
     discountAmount: zod_1.z.float64().min(0),
     discountPolicy: zod_1.z.string().max(500).optional(),
     additionalDriverFees: zod_1.z.float64().min(0),

@@ -90,15 +90,21 @@ const deleteRefund = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    await refundService.deleteRefund(id, tenant, user);
+    const refund = await refundService.deleteRefund(id, tenant, user);
 
     const bookings = await bookingService.getTenantBookings(tenant);
+    const updatedBooking = await bookingService.getBookingById(
+      tenant,
+      refund.rentalId || '',
+    );
     const refunds = await refundService.getTenantRefunds(tenant);
     const transactions = await transactionService.getTenantTransactions(tenant);
+
     res.status(200).json({
       message: 'Refund deleted successfully',
       bookings,
       refunds,
+      updatedBooking,
       transactions,
     });
   } catch (error) {

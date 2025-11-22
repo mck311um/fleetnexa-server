@@ -44,12 +44,14 @@ const createPayment = async (req: Request, res: Response) => {
       payments,
       transactions,
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.e(error, 'Failed to create payment', {
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
     });
-    res.status(500).json({ error: 'Failed to create payment' });
+    res
+      .status(500)
+      .json({ error: error.message || 'Failed to create payment' });
   }
 };
 
@@ -99,15 +101,22 @@ const deletePayment = async (req: Request, res: Response) => {
   }
 
   try {
-    await paymentService.deletePayment(id, tenant, user);
+    const payment = await paymentService.deletePayment(id, tenant, user);
 
+    const bookings = await bookingService.getTenantBookings(tenant);
     const payments = await paymentService.getTenantPayments(tenant);
     const transactions = await transactionService.getTenantTransactions(tenant);
+    const updatedBooking = await bookingService.getBookingById(
+      tenant,
+      payment.rentalId || '',
+    );
 
     res.status(200).json({
       message: 'Payment deleted successfully',
       payments,
       transactions,
+      bookings,
+      updatedBooking,
     });
   } catch (error) {
     logger.e(error, 'Failed to delete payment', {

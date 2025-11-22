@@ -87,11 +87,6 @@ class StorefrontService {
             },
           },
           currencyRates: {
-            where: {
-              currency: {
-                code: 'USD',
-              },
-            },
             include: {
               currency: true,
             },
@@ -160,15 +155,11 @@ class StorefrontService {
                   endTime: true,
                   ratings: true,
                   currencyRates: {
-                    where: {
-                      currency: {
-                        code: 'USD',
-                      },
-                    },
                     include: {
                       currency: true,
                     },
                   },
+
                   address: {
                     include: {
                       country: true,
@@ -254,11 +245,6 @@ class StorefrontService {
                 where: { storefrontEnabled: true, isDeleted: false },
               },
               currencyRates: {
-                where: {
-                  currency: {
-                    code: 'USD',
-                  },
-                },
                 include: {
                   currency: true,
                 },
@@ -365,11 +351,6 @@ class StorefrontService {
               startTime: true,
               endTime: true,
               currencyRates: {
-                where: {
-                  currency: {
-                    code: 'USD',
-                  },
-                },
                 include: {
                   currency: true,
                 },
@@ -434,6 +415,24 @@ class StorefrontService {
       await prisma.tenant.update({
         where: { id: tenant.id },
         data: { rating: averageRating },
+      });
+
+      return newRating;
+    } catch (error) {
+      logger.e(error, 'Error rating tenant in storefront');
+      throw error;
+    }
+  }
+
+  async rateRentnexa(data: StorefrontRatingDto) {
+    try {
+      const newRating = await prisma.siteRatings.create({
+        data: {
+          rating: data.rating,
+          comment: data.comment,
+          fullName: data.fullName,
+          email: data.email,
+        },
       });
 
       return newRating;

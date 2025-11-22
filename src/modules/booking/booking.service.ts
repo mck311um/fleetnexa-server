@@ -20,6 +20,7 @@ import transactionService from '../transaction/transaction.service';
 import { error } from 'console';
 import { bookingRepo } from './booking.repository';
 import {
+  BookingDtoSchema,
   StorefrontGuestBookingDto,
   StorefrontUserBookingDto,
 } from './booking.dto';
@@ -28,6 +29,23 @@ import { emailService } from '../email/email.service';
 import { customerService } from '../customer/customer.service';
 
 class BookingService {
+  async validateBookingData(data: any) {
+    if (!data) {
+      logger.e('Invalid booking data', 'Booking validation failed');
+      throw new Error('Invalid booking data');
+    }
+
+    const safeParse = BookingDtoSchema.safeParse(data);
+    if (!safeParse.success) {
+      logger.w('Invalid booking data', {
+        errors: safeParse.error.issues,
+      });
+      throw new Error('Invalid booking data');
+    }
+
+    return safeParse.data;
+  }
+
   async getTenantBookings(tenant: Tenant) {
     try {
       return await bookingRepo.getBookings(tenant.id);
@@ -302,6 +320,7 @@ class BookingService {
       });
 
       if (!user) {
+        logger.w('Storefront user not found', { userId: data.userId });
         throw new Error('Storefront user not found');
       }
 
@@ -353,7 +372,8 @@ class BookingService {
       const bookingNumber = await generator.generateRentalNumber(tenant.id);
 
       if (!bookingNumber) {
-        throw error;
+        logger.w('Failed to generate booking number', { tenantId: tenant.id });
+        throw new Error('Failed to generate booking number');
       }
 
       const bookingCode = generator.generateBookingCode(
@@ -362,7 +382,11 @@ class BookingService {
       );
 
       if (!bookingCode) {
-        throw error;
+        logger.w('Failed to generate booking code', {
+          tenantId: tenant.id,
+          bookingNumber,
+        });
+        throw new Error('Failed to generate booking code');
       }
 
       const chargeType = await prisma.chargeType.findFirst({
@@ -371,7 +395,7 @@ class BookingService {
 
       if (!chargeType) {
         logger.w('No charge type found for storefront booking');
-        throw error;
+        throw new Error('No charge type found for storefront booking');
       }
 
       const booking = await prisma.$transaction(async (tx) => {
@@ -396,39 +420,6 @@ class BookingService {
               },
             },
           },
-          select: {
-            startDate: true,
-            endDate: true,
-            id: true,
-            rentalNumber: true,
-            bookingCode: true,
-            tenant: {
-              select: {
-                id: true,
-                tenantName: true,
-                email: true,
-                number: true,
-              },
-            },
-            vehicle: {
-              select: {
-                year: true,
-                brand: true,
-                model: true,
-                tenant: {
-                  select: {
-                    currency: true,
-                  },
-                },
-              },
-            },
-            pickup: true,
-            values: {
-              select: {
-                netTotal: true,
-              },
-            },
-          },
         });
 
         await tx.values.create({
@@ -450,8 +441,7 @@ class BookingService {
             totalExtras: data.values.totalExtras,
             subTotal: data.values.subTotal,
             netTotal: data.values.netTotal,
-            discountMin: data.values.discountMin,
-            discountMax: data.values.discountMax,
+
             discountAmount: data.values.discountAmount,
             discountPolicy: data.values.discountPolicy || '',
             rentalId: newBooking.id,
@@ -481,7 +471,50 @@ class BookingService {
         tenant,
       );
 
-      return booking;
+      const bookingDetails = await prisma.rental.findUnique({
+        where: { id: booking.id },
+        select: {
+          startDate: true,
+          endDate: true,
+          id: true,
+          rentalNumber: true,
+          bookingCode: true,
+          tenant: {
+            select: {
+              id: true,
+              tenantName: true,
+              email: true,
+              number: true,
+              currency: true,
+              currencyRates: {
+                include: {
+                  currency: true,
+                },
+              },
+            },
+          },
+          vehicle: {
+            select: {
+              year: true,
+              brand: true,
+              model: true,
+              tenant: {
+                select: {
+                  currency: true,
+                },
+              },
+            },
+          },
+          pickup: true,
+          values: {
+            select: {
+              netTotal: true,
+            },
+          },
+        },
+      });
+
+      return bookingDetails;
     } catch (error) {
       logger.e(error, 'Failed to create storefront booking', {
         tenantId: tenant.id,
@@ -602,8 +635,6 @@ class BookingService {
             totalExtras: data.values.totalExtras,
             subTotal: data.values.subTotal,
             netTotal: data.values.netTotal,
-            discountMin: data.values.discountMin,
-            discountMax: data.values.discountMax,
             discountAmount: data.values.discountAmount,
             discountPolicy: data.values.discountPolicy || '',
             rentalId: newBooking.id,
@@ -627,19 +658,162 @@ class BookingService {
         return newBooking;
       });
 
-      await emailService.sendBookingCompletedEmail(booking.id, tenant);
+      const bookingDetails = await prisma.rental.findUnique({
+        where: { id: booking.id },
+        select: {
+          startDate: true,
+          endDate: true,
+          id: true,
+          rentalNumber: true,
+          bookingCode: true,
+          tenant: {
+            select: {
+              id: true,
+              tenantName: true,
+              email: true,
+              number: true,
+              currency: true,
+              currencyRates: {
+                include: {
+                  currency: true,
+                },
+              },
+            },
+          },
+          vehicle: {
+            select: {
+              year: true,
+              brand: true,
+              model: true,
+              tenant: {
+                select: {
+                  currency: true,
+                },
+              },
+            },
+          },
+          pickup: true,
+          values: {
+            select: {
+              netTotal: true,
+            },
+          },
+        },
+      });
+
+      await emailService.sendBookingCompletedEmail(
+        bookingDetails?.id || '',
+        tenant,
+      );
       await tenantNotificationService.sendBookingNotification(
-        booking.id,
+        bookingDetails?.id || '',
         tenant,
       );
 
-      return booking;
+      return bookingDetails;
     } catch (error) {
       logger.e(error, 'Failed to create guest storefront booking', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
       });
       throw new Error('Failed to create guest storefront booking');
+    }
+  }
+
+  async updateBooking(data: UpdateBookingDto, tenant: Tenant, user: User) {
+    try {
+      const booking = await prisma.rental.findUnique({
+        where: { id: data.id },
+      });
+
+      if (!booking) {
+        logger.w('Booking not found', { bookingId: data.id });
+        throw new Error('Booking not found');
+      }
+
+      const updatedBooking = await prisma.$transaction(async (tx) => {
+        const updatedBooking = await tx.rental.update({
+          where: { id: data.id },
+          data: {
+            id: data.id,
+            startDate: new Date(data.startDate),
+            endDate: new Date(data.endDate),
+            pickupLocationId: data.pickupLocationId,
+            returnLocationId: data.returnLocationId,
+            vehicleId: data.vehicleId,
+            chargeTypeId: data.chargeTypeId,
+            status: data.status ?? RentalStatus.PENDING,
+            agent: data.agent ?? Agent.SYSTEM,
+            updatedAt: new Date(),
+            updatedBy: user.id,
+          },
+        });
+
+        await tx.rentalDriver.deleteMany({ where: { rentalId: booking.id } });
+
+        await Promise.all(
+          data.drivers.map((driver: any) =>
+            tx.rentalDriver.create({
+              data: {
+                ...driver,
+                rentalId: booking.id,
+              },
+            }),
+          ),
+        );
+
+        await tx.values.update({
+          where: { rentalId: booking.id },
+          data: {
+            numberOfDays: data.values.numberOfDays,
+            basePrice: data.values.basePrice,
+            customBasePrice: data.values.customBasePrice,
+            totalCost: data.values.totalCost,
+            customTotalCost: data.values.customTotalCost,
+            discount: data.values.discount,
+            customDiscount: data.values.customDiscount,
+            deliveryFee: data.values.deliveryFee,
+            customDeliveryFee: data.values.customDeliveryFee,
+            collectionFee: data.values.collectionFee,
+            customCollectionFee: data.values.customCollectionFee,
+            deposit: data.values.deposit,
+            customDeposit: data.values.customDeposit,
+            totalExtras: data.values.totalExtras,
+            subTotal: data.values.subTotal,
+            netTotal: data.values.netTotal,
+            discountAmount: data.values.discountAmount,
+            discountPolicy: data.values.discountPolicy || '',
+          },
+        });
+
+        await tx.rentalExtra.deleteMany({
+          where: { valuesId: data.values.id },
+        });
+
+        await Promise.all(
+          data.values.extras.map((extra: any) =>
+            tx.rentalExtra.create({
+              data: {
+                id: extra.id,
+                extraId: extra.extraId,
+                amount: extra.amount,
+                customAmount: extra.customAmount,
+                valuesId: extra.valuesId,
+              },
+            }),
+          ),
+        );
+
+        return updatedBooking;
+      });
+
+      return updatedBooking;
+    } catch (error) {
+      logger.e(error, 'Failed to update booking', {
+        tenantId: tenant.id,
+        bookingId: data.id,
+      });
+      throw error;
     }
   }
 }
@@ -717,8 +891,6 @@ const createBooking = async (
         totalExtras: data.values.totalExtras,
         subTotal: data.values.subTotal,
         netTotal: data.values.netTotal,
-        discountMin: data.values.discountMin,
-        discountMax: data.values.discountMax,
         discountAmount: data.values.discountAmount,
         discountPolicy: data.values.discountPolicy || '',
         rentalId: newBooking.id,
@@ -746,101 +918,6 @@ const createBooking = async (
       tenantCode: tenant.tenantCode,
     });
     throw error;
-  }
-};
-
-const updateBooking = async (
-  data: UpdateBookingDto,
-  tenant: Tenant,
-  tx: TxClient,
-  userId: string,
-) => {
-  try {
-    const booking = await tx.rental.findUnique({ where: { id: data.id } });
-
-    if (!booking) {
-      throw new Error('Booking not found');
-    }
-
-    const updatedBooking = await tx.rental.update({
-      where: { id: data.id },
-      data: {
-        id: data.id,
-        startDate: new Date(data.startDate),
-        endDate: new Date(data.endDate),
-        pickupLocationId: data.pickupLocationId,
-        returnLocationId: data.returnLocationId,
-        vehicleId: data.vehicleId,
-        chargeTypeId: data.chargeTypeId,
-        status: data.status ?? RentalStatus.PENDING,
-        agent: data.agent ?? Agent.SYSTEM,
-        updatedAt: new Date(),
-        updatedBy: userId,
-      },
-    });
-
-    await tx.rentalDriver.deleteMany({ where: { rentalId: booking.id } });
-
-    await Promise.all(
-      data.drivers.map((driver: any) =>
-        tx.rentalDriver.create({
-          data: {
-            ...driver,
-            rentalId: booking.id,
-          },
-        }),
-      ),
-    );
-
-    await tx.values.update({
-      where: { rentalId: booking.id },
-      data: {
-        numberOfDays: data.values.numberOfDays,
-        basePrice: data.values.basePrice,
-        customBasePrice: data.values.customBasePrice,
-        totalCost: data.values.totalCost,
-        customTotalCost: data.values.customTotalCost,
-        discount: data.values.discount,
-        customDiscount: data.values.customDiscount,
-        deliveryFee: data.values.deliveryFee,
-        customDeliveryFee: data.values.customDeliveryFee,
-        collectionFee: data.values.collectionFee,
-        customCollectionFee: data.values.customCollectionFee,
-        deposit: data.values.deposit,
-        customDeposit: data.values.customDeposit,
-        totalExtras: data.values.totalExtras,
-        subTotal: data.values.subTotal,
-        netTotal: data.values.netTotal,
-        discountMin: data.values.discountMin,
-        discountMax: data.values.discountMax,
-        discountAmount: data.values.discountAmount,
-        discountPolicy: data.values.discountPolicy || '',
-      },
-    });
-
-    await tx.rentalExtra.deleteMany({ where: { valuesId: data.values.id } });
-
-    await Promise.all(
-      data.values.extras.map((extra: any) =>
-        tx.rentalExtra.create({
-          data: {
-            id: extra.id,
-            extraId: extra.extraId,
-            amount: extra.amount,
-            customAmount: extra.customAmount,
-            valuesId: extra.valuesId,
-          },
-        }),
-      ),
-    );
-
-    return updatedBooking;
-  } catch (error) {
-    logger.e(error, 'Failed to update booking', {
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-    throw new Error('Failed to update booking');
   }
 };
 
@@ -877,6 +954,5 @@ const deleteBooking = async (
 
 export default {
   createBooking,
-  updateBooking,
   deleteBooking,
 };

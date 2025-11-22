@@ -37,27 +37,69 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logger = void 0;
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const pino_1 = __importDefault(require("pino"));
 const Sentry = __importStar(require("@sentry/node"));
+const getLogDir = () => {
+    if (process.env.NODE_ENV === 'production') {
+        return '/var/log/fleetnexa';
+    }
+    else {
+        return path_1.default.join(process.cwd(), 'logs');
+    }
+};
+const logDir = getLogDir();
+const logFilePath = path_1.default.join(logDir, 'backend.log');
+const ensureLogDirExists = () => {
+    try {
+        if (!fs_1.default.existsSync(logDir)) {
+            fs_1.default.mkdirSync(logDir, { recursive: true });
+            console.log(`Log directory created: ${logDir}`);
+        }
+    }
+    catch (error) {
+        console.warn(`Could not create log directory ${logDir}, using fallback:`, error);
+        return false;
+    }
+    return true;
+};
 Sentry.init({
     dsn: process.env.SENTRY_DSN,
     environment: process.env.ENVIRONMENT || 'development',
     tracesSampleRate: 1.0,
     sendDefaultPii: true,
 });
-const transport = pino_1.default.transport({
-    target: 'pino-pretty',
-    options: { colorize: true, translateTime: 'SYS:standard' },
+const streams = [];
+streams.push({
+    stream: pino_1.default.transport({
+        target: 'pino-pretty',
+        options: {
+            colorize: true,
+            translateTime: 'SYS:standard',
+            ignore: 'pid,hostname',
+        },
+    }),
 });
-const pinoLogger = transport
-    ? (0, pino_1.default)({
-        level: process.env.LOG_LEVEL || 'info',
-        timestamp: pino_1.default.stdTimeFunctions.isoTime,
-    }, transport)
-    : (0, pino_1.default)({
-        level: process.env.LOG_LEVEL || 'info',
-        timestamp: pino_1.default.stdTimeFunctions.isoTime,
-    });
+let logFileStream = null;
+if (ensureLogDirExists()) {
+    try {
+        logFileStream = fs_1.default.createWriteStream(logFilePath, {
+            flags: 'a',
+        });
+        streams.push({ stream: logFileStream });
+    }
+    catch (error) {
+        console.error('Failed to create log file stream, using console only:', error);
+    }
+}
+else {
+    console.log('File logging disabled - using console only');
+}
+const pinoLogger = (0, pino_1.default)({
+    level: process.env.LOG_LEVEL || 'info',
+    timestamp: pino_1.default.stdTimeFunctions.isoTime,
+}, pino_1.default.multistream(streams));
 exports.logger = {
     i: (message, meta) => {
         pinoLogger.info(meta || {}, message);

@@ -12,4 +12,5 @@ router.get('/tenant/:slug', api_middleware_1.api, storefront_controller_1.defaul
 router.get('/vehicles', api_middleware_1.api, storefront_controller_1.default.getVehicles);
 router.get('/vehicle/:id', api_middleware_1.api, storefront_controller_1.default.getVehicleById);
 router.post('/tenant/rate', api_middleware_1.api, storefront_controller_1.default.rateTenant);
+router.post('/rate', api_middleware_1.api, storefront_controller_1.default.rateSite);
 exports.default = router;

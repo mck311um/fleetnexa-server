@@ -1,3 +1,4 @@
+import { Agent, RentalStatus } from '@prisma/client';
 import { z } from 'zod';
 
 const RentalExtrasSchema = z.array(
@@ -28,8 +29,6 @@ const RentalValuesSchema = z.object({
   totalExtras: z.float64().min(0),
   subTotal: z.float64().min(0),
   netTotal: z.float64().min(0),
-  discountMin: z.float64().min(0),
-  discountMax: z.float64().min(0),
   discountAmount: z.float64().min(0),
   discountPolicy: z.string().max(500).optional(),
   additionalDriverFees: z.float64().min(0),
@@ -64,9 +63,9 @@ export const StorefrontCustomerSchema = z.object({
   license: z.string().optional(),
   address: z.object({
     street: z.string().optional(),
-    villageId: z.uuid().optional(),
-    stateId: z.uuid().optional(),
-    countryId: z.uuid().optional(),
+    villageId: z.string().optional(),
+    stateId: z.string().optional(),
+    countryId: z.string().optional(),
   }),
 });
 
@@ -86,3 +85,32 @@ export const StorefrontGuestBookingSchema = z.object({
 export type StorefrontGuestBookingDto = z.infer<
   typeof StorefrontGuestBookingSchema
 >;
+
+const RentalDriverSchema = z.object({
+  id: z.uuid(),
+  driverId: z.uuid(),
+  isPrimary: z.boolean().default(false),
+});
+
+export const BookingDtoSchema = z.object({
+  id: z.uuid(),
+  startDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: 'Invalid startDate',
+  }),
+  endDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: 'Invalid endDate',
+  }),
+  pickupLocationId: z.uuid(),
+  returnLocationId: z.uuid(),
+  vehicleId: z.uuid(),
+  chargeTypeId: z.uuid(),
+  agent: z.enum(Agent).optional(),
+  notes: z.string().max(500).optional(),
+  drivers: z.array(RentalDriverSchema).min(1),
+  values: RentalValuesSchema,
+  bookingCode: z.string().optional(),
+  bookingNumber: z.string().optional(),
+  status: z.enum(RentalStatus),
+});
+
+export type BookingDto = z.infer<typeof BookingDtoSchema>;

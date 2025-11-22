@@ -30,6 +30,8 @@ import vehicleBrandRoutes from './modules/admin/modules/vehicle-brand/vehicle-br
 import storefrontUserRoutes from './modules/user/modules/storefront/storefront.routes';
 import tenantUserRoutes from './modules/user/modules/tenant-user/tenant-user.routes';
 import tenantNotificationRoutes from './modules/tenant/modules/tenant-notification/tenant-notification.routes';
+import storefrontAuthRoutes from './modules/auth/modules/storefront/storefront.routes';
+import customerViolationRoutes from './modules/customer/customer-violation/customer-violation.routes';
 
 export const registerRoutes = (app: Application) => {
   app.use('/api/booking', bookingRoutes);
@@ -44,19 +46,22 @@ export const registerRoutes = (app: Application) => {
 
   app.use('/api/email', emailRoutes);
   app.use('/api/storage', storageRoutes);
+
   app.use('/api/auth', authRoutes);
+  app.use('/api/auth/storefront', storefrontAuthRoutes);
 
   app.use('/api/transaction', transactionRoutes);
   app.use('/api/payment', paymentRoutes);
   app.use('/api/expense', expenseRoutes);
   app.use('/api/refund', refundRoutes);
 
-  app.use('/api/user', userRoutes);
   app.use('/api/user-role', roleRoutes);
   app.use('/api/user/storefront', storefrontUserRoutes);
   app.use('/api/user/tenant', tenantUserRoutes);
+  app.use('/api/user', userRoutes);
 
   app.use('/api/customer', customerRoutes);
+  app.use('/api/customer/violation', customerViolationRoutes);
 
   app.use('/api/tenant', tenantRoutes);
   app.use('/api/tenant-activity', tenantActivityRoutes);

@@ -183,7 +183,7 @@ class RefundService {
 
   async deleteRefund(refundId: string, tenant: Tenant, user: User) {
     try {
-      await prisma.$transaction(async (tx) => {
+      const refund = await prisma.$transaction(async (tx) => {
         const existingRefund = await tx.refund.findUnique({
           where: { id: refundId },
         });
@@ -214,7 +214,11 @@ class RefundService {
           tenant,
           user,
         );
+
+        return existingRefund;
       });
+
+      return refund;
     } catch (error) {
       logger.e(error, 'Error deleting refund', {
         refundId: refundId,

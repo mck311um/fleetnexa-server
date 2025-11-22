@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChangePasswordSchema = exports.StorefrontUserSchema = void 0;
 const zod_1 = require("zod");
 exports.StorefrontUserSchema = zod_1.z.object({
+    id: zod_1.z.uuid().optional(),
     firstName: zod_1.z.string().min(1).max(50),
     lastName: zod_1.z.string().min(1).max(50),
     email: (0, zod_1.email)().max(100),

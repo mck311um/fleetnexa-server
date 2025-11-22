@@ -1,14 +1,36 @@
-import { Tenant } from '@prisma/client';
+import { Tenant, User } from '@prisma/client';
 import { logger } from '../../config/logger';
 import prisma, { TxClient } from '../../config/prisma.config';
-import { CustomerViolationDto } from './customer.dto';
 import { customerRepo } from './customer.repository';
 import {
   StorefrontCustomerDto,
   StorefrontGuestBookingDto,
 } from '../booking/booking.dto';
+import { CustomerDto, CustomerSchema } from './customer.dto';
 
 class CustomerService {
+  async validateCustomerData(data: any) {
+    try {
+      if (!data) {
+        throw new Error('Customer data is required');
+      }
+
+      const safeParse = CustomerSchema.safeParse(data);
+      if (!safeParse.success) {
+        logger.w('Invalid customer data', {
+          errors: safeParse.error.issues,
+          input: data,
+        });
+        throw new Error('Invalid customer data');
+      }
+
+      return safeParse.data;
+    } catch (error) {
+      logger.e(error, 'Customer validation failed', { data });
+      throw error;
+    }
+  }
+
   async getTenantCustomers(tenant: Tenant) {
     try {
       const customers = customerRepo.getCustomers(tenant.id);
@@ -20,6 +42,189 @@ class CustomerService {
         tenantCode: tenant.tenantCode,
       });
       throw new Error('Failed to get customers');
+    }
+  }
+
+  async getCustomerById(id: string, tenant: Tenant) {
+    try {
+      const customer = await customerRepo.getCustomerById(id, tenant.id);
+
+      return customer;
+    } catch (error) {
+      logger.e(error, 'Failed to get customer by ID', {
+        customerId: id,
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to get customer by ID');
+    }
+  }
+
+  async createCustomer(data: CustomerDto, tenant: Tenant, user: User) {
+    try {
+      await prisma.$transaction(async (tx) => {
+        await tx.customer.create({
+          data: {
+            id: data.id,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            gender: data.gender || 'UNSPECIFIED',
+            dateOfBirth: data.dateOfBirth,
+            email: data.email,
+            phone: data.phone || '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            updatedBy: user.username,
+            profileImage: data.profileImage,
+            tenantId: tenant.id,
+            status: data.status,
+          },
+        });
+
+        await tx.driverLicense.create({
+          data: {
+            customerId: data.id,
+            licenseNumber: data.license.licenseNumber,
+            licenseExpiry: data.license.licenseExpiry,
+            licenseIssued: data.license.licenseIssued,
+            image: data.license.image,
+          },
+        });
+
+        await tx.customerAddress.create({
+          data: {
+            customer: { connect: { id: data.id } },
+            street: data.address.street,
+            village: data.address.villageId
+              ? { connect: { id: data.address.villageId } }
+              : undefined,
+            state: data.address.stateId
+              ? { connect: { id: data.address.stateId } }
+              : undefined,
+            country: data.address.countryId
+              ? { connect: { id: data.address.countryId } }
+              : undefined,
+          },
+        });
+
+        return await tx.customer.findUnique({
+          where: { id: data.id },
+        });
+      });
+
+      const customer = await this.getCustomerById(data.id, tenant);
+      return customer;
+    } catch (error) {
+      logger.e(error, 'Failed to create customer', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        data,
+      });
+      throw error;
+    }
+  }
+
+  async updateCustomer(data: CustomerDto, tenant: Tenant, user: User) {
+    try {
+      await prisma.$transaction(async (tx) => {
+        const existingCustomer = await tx.customer.findUnique({
+          where: { id: data.id, tenantId: tenant.id },
+        });
+
+        if (!existingCustomer) {
+          logger.w('Customer not found for update', {
+            customerId: data.id,
+            tenantId: tenant.id,
+          });
+          throw new Error('Customer not found');
+        }
+
+        await tx.customer.update({
+          where: { id: data.id },
+          data: {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            gender: data.gender,
+            dateOfBirth: data.dateOfBirth,
+            email: data.email,
+            phone: data.phone,
+            updatedBy: user.username,
+            updatedAt: new Date(),
+            profileImage: data.profileImage,
+            status: data.status,
+          },
+        });
+
+        await tx.driverLicense.update({
+          where: { customerId: data.id },
+          data: {
+            licenseNumber: data.license.licenseNumber,
+            licenseIssued: data.license.licenseIssued,
+            licenseExpiry: data.license.licenseExpiry,
+            image: data.license.image,
+          },
+        });
+
+        await tx.customerAddress.update({
+          where: { customerId: data.id },
+          data: {
+            street: data.address.street,
+            village: data.address.villageId
+              ? { connect: { id: data.address.villageId } }
+              : undefined,
+            state: data.address.stateId
+              ? { connect: { id: data.address.stateId } }
+              : undefined,
+            country: data.address.countryId
+              ? { connect: { id: data.address.countryId } }
+              : undefined,
+          },
+        });
+      });
+
+      const updatedCustomer = await this.getCustomerById(data.id, tenant);
+      return updatedCustomer;
+    } catch (error) {
+      logger.e(error, 'Failed to update customer', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        data,
+      });
+      throw error;
+    }
+  }
+
+  async deleteCustomer(id: string, tenant: Tenant, user: User) {
+    try {
+      const existingCustomer = await prisma.customer.findUnique({
+        where: { id, tenantId: tenant.id },
+      });
+
+      if (!existingCustomer) {
+        logger.w('Customer not found for deletion', {
+          customerId: id,
+          tenantId: tenant.id,
+        });
+        throw new Error('Customer not found');
+      }
+
+      await prisma.customer.update({
+        where: { id },
+        data: {
+          isDeleted: true,
+          updatedBy: user.username,
+          updatedAt: new Date(),
+        },
+      });
+
+      return { message: 'Customer deleted successfully' };
+    } catch (error) {
+      logger.e(error, 'Failed to delete customer', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        customerId: id,
+      });
+      throw error;
     }
   }
 
@@ -39,20 +244,20 @@ class CustomerService {
       });
 
       if (existingCustomer) {
-        await tx.customer.update({
-          where: { id: existingCustomer.id },
-          data: {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            gender: data.gender,
-            dateOfBirth: data.dateOfBirth,
-            email: data.email,
-            phone: data.phone,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            tenantId: tenant.id,
-          },
-        });
+        // await tx.customer.update({
+        //   where: { id: existingCustomer.id },
+        //   data: {
+        //     firstName: data.firstName,
+        //     lastName: data.lastName,
+        //     gender: data.gender,
+        //     dateOfBirth: data.dateOfBirth,
+        //     email: data.email,
+        //     phone: data.phone,
+        //     createdAt: new Date(),
+        //     updatedAt: new Date(),
+        //     tenantId: tenant.id,
+        //   },
+        // });
 
         await tx.driverLicense.update({
           where: { customerId: existingCustomer.id },
@@ -200,139 +405,6 @@ const getPrimaryDriver = async (bookingId: string) => {
   }
 };
 
-const addCustomerViolation = async (
-  data: CustomerViolationDto,
-  tenant: Tenant,
-) => {
-  try {
-    const violations = await prisma.$transaction(async (tx) => {
-      const customer = await tx.customer.findUnique({
-        where: { id: data.customerId, tenantId: tenant.id },
-      });
-
-      if (!customer) {
-        throw new Error('Customer not found');
-      }
-
-      await tx.customerViolation.create({
-        data: {
-          id: data.id,
-          customerId: data.customerId,
-          tenantId: tenant.id,
-          violationId: data.violationId,
-          violationDate: data.violationDate,
-          notes: data.notes,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      });
-
-      return await tx.customerViolation.findMany({
-        where: { tenantId: tenant.id, isDeleted: false },
-        include: {
-          violation: true,
-          customer: { select: { id: true, firstName: true, lastName: true } },
-        },
-      });
-    });
-
-    return violations;
-  } catch (error) {
-    logger.e(error, 'Error adding customer violation', {
-      data,
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-  }
-};
-const updateCustomerViolation = async (
-  data: CustomerViolationDto,
-  tenant: Tenant,
-) => {
-  try {
-    const violations = await prisma.$transaction(async (tx) => {
-      const customer = await tx.customer.findUnique({
-        where: { id: data.customerId, tenantId: tenant.id },
-      });
-
-      if (!customer) {
-        throw new Error('Customer not found');
-      }
-
-      const existingViolation = await tx.customerViolation.findUnique({
-        where: { id: data.id, tenantId: tenant.id },
-      });
-
-      if (!existingViolation) {
-        throw new Error('Customer violation not found');
-      }
-
-      await tx.customerViolation.update({
-        where: { id: data.id, tenantId: tenant.id },
-        data: {
-          violationId: data.violationId,
-          violationDate: data.violationDate,
-          notes: data.notes,
-          updatedAt: new Date(),
-        },
-      });
-
-      return await tx.customerViolation.findMany({
-        where: { tenantId: tenant.id, isDeleted: false },
-        include: {
-          violation: true,
-          customer: { select: { id: true, firstName: true, lastName: true } },
-        },
-      });
-    });
-
-    return violations;
-  } catch (error) {
-    logger.e(error, 'Error updating customer violation', {
-      data,
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-  }
-};
-const deleteCustomerViolation = async (violationId: string, tenant: Tenant) => {
-  try {
-    const violations = await prisma.$transaction(async (tx) => {
-      const existingViolation = await tx.customerViolation.findUnique({
-        where: { id: violationId, tenantId: tenant.id },
-      });
-
-      if (!existingViolation) {
-        throw new Error('Customer violation not found');
-      }
-
-      await tx.customerViolation.update({
-        where: { id: violationId, tenantId: tenant.id },
-        data: { isDeleted: true, updatedAt: new Date() },
-      });
-
-      return await tx.customerViolation.findMany({
-        where: { tenantId: tenant.id, isDeleted: false },
-        include: {
-          violation: true,
-          customer: { select: { id: true, firstName: true, lastName: true } },
-        },
-      });
-    });
-
-    return violations;
-  } catch (error) {
-    logger.e(error, 'Error deleting customer violation', {
-      violationId,
-      tenantId: tenant.id,
-      tenantCode: tenant.tenantCode,
-    });
-  }
-};
-
 export default {
   getPrimaryDriver,
-  addCustomerViolation,
-  updateCustomerViolation,
-  deleteCustomerViolation,
 };

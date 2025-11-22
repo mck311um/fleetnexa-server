@@ -11,8 +11,15 @@ class TenantRepository {
   }
 
   async getTenantByEmail(email: string) {
-    return prisma.tenant.findFirst({
+    return prisma.tenant.findUnique({
       where: { email: email },
+      include: this.getTenantIncludeOptions(),
+    });
+  }
+
+  async getTenantByPhoneNumber(phoneNumber: string) {
+    return prisma.tenant.findUnique({
+      where: { number: phoneNumber },
       include: this.getTenantIncludeOptions(),
     });
   }
@@ -79,7 +86,6 @@ class TenantRepository {
       yearlyStats: true,
       cancellationPolicy: true,
       latePolicy: true,
-
       transactions: {
         where: { isDeleted: false },
         include: {

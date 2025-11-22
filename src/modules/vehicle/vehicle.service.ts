@@ -7,6 +7,7 @@ import {
   VehicleDto,
   VehicleSchema,
 } from './vehicle.dto';
+import e from 'express';
 
 class VehicleService {
   validateVehicleData(data: any) {
@@ -115,6 +116,7 @@ class VehicleService {
             fuelPolicyId: data.fuelPolicyId,
             locationId: data.locationId,
             drivingExperience: data.drivingExperience,
+            createdBy: user.username,
           },
         });
 
@@ -126,19 +128,21 @@ class VehicleService {
                 create: {
                   id: discount.id,
                   vehicleId: data.id,
-                  periodMin: discount.periodMin,
-                  periodMax: discount.periodMax,
+                  period: Number(discount.period),
+                  periodPolicy: discount.periodPolicy,
                   amount: discount.amount,
                   discountPolicy: discount.discountPolicy,
                   createdAt: new Date(),
                   updatedAt: new Date(),
+                  createdBy: user.username,
                 },
                 update: {
-                  periodMin: discount.periodMin,
-                  periodMax: discount.periodMax,
                   amount: discount.amount,
+                  period: Number(discount.period),
+                  periodPolicy: discount.periodPolicy,
                   discountPolicy: discount.discountPolicy,
                   updatedAt: new Date(),
+                  updatedBy: user.username,
                 },
               }),
             ),
@@ -227,19 +231,21 @@ class VehicleService {
                 create: {
                   id: discount.id,
                   vehicleId: data.id,
-                  periodMin: discount.periodMin,
-                  periodMax: discount.periodMax,
                   amount: discount.amount,
                   discountPolicy: discount.discountPolicy,
+                  period: Number(discount.period),
+                  periodPolicy: discount.periodPolicy,
                   createdAt: new Date(),
                   updatedAt: new Date(),
+                  createdBy: user.username,
                 },
                 update: {
-                  periodMin: discount.periodMin,
-                  periodMax: discount.periodMax,
                   amount: discount.amount,
                   discountPolicy: discount.discountPolicy,
+                  period: Number(discount.period),
+                  periodPolicy: discount.periodPolicy,
                   updatedAt: new Date(),
+                  updatedBy: user.username,
                 },
               }),
             ),
@@ -251,7 +257,7 @@ class VehicleService {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
       });
-      throw new Error('Failed to update vehicle');
+      throw error;
     }
   }
 
@@ -317,9 +323,8 @@ class VehicleService {
       logger.e(error, 'Failed to update vehicle status', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
-        data,
       });
-      throw new Error('Failed to update vehicle status');
+      throw error;
     }
   }
 
@@ -363,9 +368,15 @@ class VehicleService {
     user: User,
   ) {
     try {
-      await prisma.$transaction(async (tx) => {
+      const vehicle = await prisma.$transaction(async (tx) => {
         if (!tenant.storefrontEnabled) {
-          throw new Error('Storefront is not enabled for this tenant');
+          logger.w('Tenant storefront is disabled, tried to list vehicle', {
+            tenantId: tenant.id,
+            tenantCode: tenant.tenantCode,
+          });
+          throw new Error(
+            'Your storefront is disabled, enable it to list vehicles',
+          );
         }
 
         const vehicle = await tx.vehicle.findUnique({
@@ -387,14 +398,26 @@ class VehicleService {
             updatedBy: user.username,
           },
         });
+
+        return vehicle;
       });
+
+      let message = '';
+
+      if (vehicle.storefrontEnabled) {
+        message = 'Vehicle is now listed on the storefront';
+      } else {
+        message = 'Vehicle is no longer listed on the storefront';
+      }
+
+      return message;
     } catch (error) {
       logger.e(error, 'Failed to update vehicle storefront status', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
         vehicleId,
       });
-      throw new Error('Failed to update vehicle storefront status');
+      throw error;
     }
   }
 }

@@ -20,7 +20,9 @@ class TransactionRepository {
         return {
             rental: {
                 select: {
+                    id: true,
                     rentalNumber: true,
+                    bookingCode: true,
                 },
             },
             payment: {

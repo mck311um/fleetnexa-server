@@ -10,7 +10,6 @@ class TransactionRepository {
       where: {
         tenantId,
         isDeleted: false,
-
         ...additionalWhere,
       },
       include: this.getTransactionIncludeOptions(),
@@ -21,7 +20,9 @@ class TransactionRepository {
     return {
       rental: {
         select: {
+          id: true,
           rentalNumber: true,
+          bookingCode: true,
         },
       },
       payment: {

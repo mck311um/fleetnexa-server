@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
-import prisma from '../../config/prisma.config';
 import { logger } from '../../config/logger';
-import { CustomerViolationSchema } from './customer.dto';
 import { tenantRepo } from '../../repository/tenant.repository';
-import service, { customerService } from './customer.service';
-import { customerRepo } from './customer.repository';
+import { customerService } from './customer.service';
 
 const getCustomers = async (req: Request, res: Response) => {
   const tenantId = req.user?.tenantId;
@@ -35,209 +32,114 @@ const getCustomers = async (req: Request, res: Response) => {
   }
 };
 
-const getCustomerViolations = async (req: Request, res: Response) => {
-  const tenantId = req.user?.tenantId;
-  const tenantCode = req.user?.tenantCode;
-
-  if (!tenantId) {
-    return res.status(400).json({ message: 'Tenant ID is required' });
-  }
-
-  try {
-    const violations = await prisma.customerViolation.findMany({
-      where: { tenantId, isDeleted: false },
-      include: {
-        violation: true,
-        customer: { select: { id: true, firstName: true, lastName: true } },
-      },
-    });
-
-    return res.status(200).json({ violations });
-  } catch (error) {
-    logger.e(error, 'Failed to fetch customer violations', {
-      tenantId,
-      tenantCode,
-    });
-    return res
-      .status(500)
-      .json({ message: 'Failed to fetch customer violations' });
-  }
-};
-const getCustomerViolationById = async (req: Request, res: Response) => {
+const getCustomerById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const tenantId = req.user?.tenantId;
-  const tenantCode = req.user?.tenantCode;
-
-  if (!tenantId) {
-    return res.status(400).json({ message: 'Tenant ID is required' });
-  }
-
-  if (!id) {
-    return res
-      .status(400)
-      .json({ message: 'Customer violation ID is required' });
-  }
-
-  try {
-    const violations = await prisma.customerViolation.findFirst({
-      where: { customerId: id, tenantId, isDeleted: false },
-      include: {
-        violation: true,
-        customer: { select: { id: true, firstName: true, lastName: true } },
-      },
-    });
-
-    return res.status(200).json({ violations });
-  } catch (error) {
-    logger.e(error, 'Failed to fetch customer violation', {
-      tenantId,
-      tenantCode,
-    });
-    return res
-      .status(500)
-      .json({ message: 'Failed to fetch customer violation' });
-  }
-};
-const addCustomerViolation = async (req: Request, res: Response) => {
-  const data = req.body;
   const { tenant } = req.context!;
 
-  if (!data) {
-    logger.w('Customer violation data is missing', {
-      tenantCode: tenant.tenantCode,
-      tenantId: tenant.id,
-    });
-    return res
-      .status(400)
-      .json({ message: 'Customer violation data is required' });
-  }
-
-  const parseResult = CustomerViolationSchema.safeParse(data);
-  if (!parseResult.success) {
-    return res.status(400).json({
-      error: 'Invalid customer violation data',
-      details: parseResult.error.issues,
-    });
-  }
-
-  const violationDto = parseResult.data;
-
   try {
-    await service.addCustomerViolation(violationDto, tenant);
+    const customer = await customerService.getCustomerById(id, tenant);
 
-    const violations = await prisma.customerViolation.findMany({
-      where: { tenantId: tenant.id, isDeleted: false },
-      include: {
-        violation: true,
-        customer: { select: { id: true, firstName: true, lastName: true } },
-      },
-    });
-
-    const customer = await customerRepo.getCustomerById(
-      violationDto.customerId,
-      tenant.id,
-    );
-
-    return res.status(201).json({
-      message: 'Customer violation added successfully',
-      violations,
-      customer,
-    });
-  } catch (error) {
-    logger.e(error, 'Failed to add customer violation', {
+    return res.status(200).json(customer);
+  } catch (error: any) {
+    logger.e(error, 'Failed to get customer by ID', {
+      customerId: id,
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
     });
     return res
       .status(500)
-      .json({ message: 'Failed to add customer violation' });
+      .json({ message: error.message || 'Failed to get customer by ID' });
   }
 };
-const updateCustomerViolation = async (req: Request, res: Response) => {
+
+const createCustomer = async (req: Request, res: Response) => {
   const data = req.body;
-  const { tenant } = req.context!;
+  const { tenant, user } = req.context!;
 
-  if (!data) {
-    logger.w('Customer violation data is missing', {
-      tenantCode: tenant.tenantCode,
-      tenantId: tenant.id,
-    });
-    return res
-      .status(400)
-      .json({ message: 'Customer violation data is required' });
-  }
-
-  const parseResult = CustomerViolationSchema.safeParse(data);
-  if (!parseResult.success) {
-    return res.status(400).json({
-      error: 'Invalid customer violation data',
-      details: parseResult.error.issues,
-    });
-  }
-
-  const violationDto = parseResult.data;
+  const customerDto = await customerService.validateCustomerData(data);
 
   try {
-    const violations = await service.updateCustomerViolation(
-      violationDto,
+    const customer = await customerService.createCustomer(
+      customerDto,
       tenant,
+      user,
     );
 
-    const customer = await customerRepo.getCustomerById(
-      violationDto.customerId,
-      tenant.id,
+    const customers = await customerService.getTenantCustomers(tenant);
+
+    return res
+      .status(201)
+      .json({ message: 'Customer created successfully', customer, customers });
+  } catch (error: any) {
+    logger.e(error, 'Failed to create customer', {
+      tenantId: tenant.id,
+      tenantCode: tenant.tenantCode,
+    });
+    return res
+      .status(500)
+      .json({ message: error.message || 'Failed to create customer' });
+  }
+};
+
+const updateCustomer = async (req: Request, res: Response) => {
+  const data = req.body;
+  const { tenant, user } = req.context!;
+
+  const customerDto = await customerService.validateCustomerData(data);
+  try {
+    const customer = await customerService.updateCustomer(
+      customerDto,
+      tenant,
+      user,
     );
+
+    const customers = await customerService.getTenantCustomers(tenant);
 
     return res.status(200).json({
-      message: 'Customer violation updated successfully',
-      violations,
+      message: 'Customer updated successfully',
       customer,
+      customers,
     });
-  } catch (error) {
-    logger.e(error, 'Failed to update customer violation', {
+  } catch (error: any) {
+    logger.e(error, 'Failed to update customer', {
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
+      userId: user.id,
     });
     return res
       .status(500)
-      .json({ message: 'Failed to update customer violation' });
+      .json({ message: error.message || 'Failed to update customer' });
   }
 };
-const deleteCustomerViolation = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { tenant } = req.context!;
 
-  if (!id) {
-    logger.w('Customer violation ID is missing', {
-      tenantCode: tenant.tenantCode,
-      tenantId: tenant.id,
-    });
-    return res
-      .status(400)
-      .json({ message: 'Customer violation ID is required' });
-  }
+const deleteCustomer = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { tenant, user } = req.context!;
 
   try {
-    const violations = await service.deleteCustomerViolation(id, tenant);
+    await customerService.deleteCustomer(id, tenant, user);
+
+    const customers = await customerService.getTenantCustomers(tenant);
 
     return res
       .status(200)
-      .json({ message: 'Customer violation deleted successfully', violations });
-  } catch (error) {
-    logger.e(error, 'Failed to delete customer violation', {
+      .json({ message: 'Customer deleted successfully', customers });
+  } catch (error: any) {
+    logger.e(error, 'Failed to delete customer', {
       tenantId: tenant.id,
       tenantCode: tenant.tenantCode,
+      userId: user.id,
     });
     return res
       .status(500)
-      .json({ message: 'Failed to delete customer violation' });
+      .json({ message: error.message || 'Failed to delete customer' });
   }
 };
 
 export default {
-  getCustomerViolations,
-  getCustomerViolationById,
-  addCustomerViolation,
-  updateCustomerViolation,
-  deleteCustomerViolation,
+  getCustomers,
+  getCustomerById,
+  createCustomer,
+  updateCustomer,
+  deleteCustomer,
 };

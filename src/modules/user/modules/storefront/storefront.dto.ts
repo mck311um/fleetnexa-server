@@ -1,6 +1,7 @@
 import { email, z } from 'zod';
 
 export const StorefrontUserSchema = z.object({
+  id: z.uuid().optional(),
   firstName: z.string().min(1).max(50),
   lastName: z.string().min(1).max(50),
   email: email().max(100),

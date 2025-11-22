@@ -179,9 +179,11 @@ const updateStorefrontSettings = async (req, res) => {
     try {
         await tenant_service_1.tenantService.updateStorefrontSettings(data, tenant, user);
         const updatedTenant = await tenant_repository_1.tenantRepo.getTenantById(tenant.id);
+        const vehicles = await vehicle_service_1.vehicleService.getTenantVehicles(tenant);
         return res.status(200).json({
-            message: 'Storefront settings updated successfully',
+            message: 'Storefront updated successfully',
             tenant: updatedTenant,
+            vehicles,
         });
     }
     catch (error) {
@@ -191,9 +193,9 @@ const updateStorefrontSettings = async (req, res) => {
             userId: user.id,
             data,
         });
-        return res
-            .status(500)
-            .json({ message: 'Failed to update storefront settings' });
+        return res.status(500).json({
+            message: error.message || 'Failed to update storefront settings',
+        });
     }
 };
 exports.default = {
