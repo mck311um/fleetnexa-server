@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TenantExtraService } from './tenant-extras.service';
+import { TenantExtraService } from './tenant-extras.service.js';
 
 @Module({
   imports: [],

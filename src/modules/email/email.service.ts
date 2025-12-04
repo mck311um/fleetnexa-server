@@ -1,9 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AwsService } from 'src/common/aws/aws.service';
-import { GeneratorService } from 'src/common/generator/generator.service';
-import { SesService } from 'src/ses/ses.service';
-import { WelcomeEmailDto } from './dto/welcome.dto';
-import { Tenant } from 'prisma/generated/prisma/client';
+import { SesService } from '../../ses/ses.service.js';
+import { WelcomeEmailDto } from './dto/welcome.dto.js';
+import { Tenant } from '../../generated/prisma/client.js';
 
 @Injectable()
 export class EmailService {

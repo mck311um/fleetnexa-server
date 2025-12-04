@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Country, Tenant } from 'prisma/generated/prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Country, Tenant } from '../../../generated/prisma/client.js';
+import { PrismaService } from '../../../prisma/prisma.service.js';
+
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()

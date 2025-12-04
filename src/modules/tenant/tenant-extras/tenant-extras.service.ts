@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { TenantLocationService } from '../tenant-location/tenant-location.service';
-import { Tenant } from 'prisma/generated/prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { TenantExtra } from 'src/types/tenant';
+import { TenantLocationService } from '../tenant-location/tenant-location.service.js';
+import { PrismaService } from '../../../prisma/prisma.service.js';
+import { Tenant } from '../../../generated/prisma/client.js';
+import { TenantExtra } from '../../../types/tenant.js';
 
 @Injectable()
 export class TenantExtraService {

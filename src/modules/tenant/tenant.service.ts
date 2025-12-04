@@ -4,17 +4,17 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { GeneratorService } from 'src/common/generator/generator.service';
-import { CreateTenantDto } from './dto/create-tenant.dto';
-import { TenantLocationService } from './tenant-location/tenant-location.service';
-import { UserRoleService } from '../user/user-role/user-role.service';
-import { TenantUserService } from '../user/tenant/tenant-user.service';
-import { EmailService } from '../email/email.service';
-import { WelcomeEmailDto } from '../email/dto/welcome.dto';
-import { Tenant } from 'prisma/generated/prisma/client';
-import { TenantExtraService } from './tenant-extras/tenant-extras.service';
-import { TenantRepository } from './tenant.repository';
+import { GeneratorService } from '../../common/generator/generator.service.js';
+import { Tenant } from '../../generated/prisma/client.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { WelcomeEmailDto } from '../email/dto/welcome.dto.js';
+import { EmailService } from '../email/email.service.js';
+import { TenantUserService } from '../user/tenant/tenant-user.service.js';
+import { UserRoleService } from '../user/user-role/user-role.service.js';
+import { CreateTenantDto } from './dto/create-tenant.dto.js';
+import { TenantExtraService } from './tenant-extras/tenant-extras.service.js';
+import { TenantLocationService } from './tenant-location/tenant-location.service.js';
+import { TenantRepository } from './tenant.repository.js';
 
 @Injectable()
 export class TenantService {

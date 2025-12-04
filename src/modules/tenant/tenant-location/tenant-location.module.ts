@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TenantModule } from '../tenant.module';
-import { TenantLocationService } from './tenant-location.service';
+import { TenantLocationService } from './tenant-location.service.js';
 
 @Module({
   imports: [],

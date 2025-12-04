@@ -7,12 +7,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { TenantRepository } from 'src/modules/tenant/tenant.repository';
-import { TenantUserRepository } from 'src/modules/user/tenant/tenant-user.repository';
-import type {
+import { TenantRepository } from '../../modules/tenant/tenant.repository.js';
+import { TenantUserRepository } from '../../modules/user/tenant/tenant-user.repository.js';
+import {
   AuthenticatedRequest,
   UserPayload,
-} from 'src/types/authenticated-request';
+} from '../../types/authenticated-request.js';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

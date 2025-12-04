@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { GeneratorModule } from 'src/common/generator/generator.module';
-import { UserModule } from 'src/modules/user/user.module';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { TenantAuthController } from './tenant-auth.controller';
-import { TenantAuthService } from './tenant-auth.service';
+import { UserModule } from '../../user/user.module.js';
+import { TenantAuthService } from './tenant-auth.service.js';
+import { TenantAuthController } from './tenant-auth.controller.js';
+import { GeneratorModule } from '../../../common/generator/generator.module.js';
+import { PrismaModule } from '../../../prisma/prisma.module.js';
 
 @Module({
   imports: [UserModule, GeneratorModule, PrismaModule],

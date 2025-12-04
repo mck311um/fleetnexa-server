@@ -7,10 +7,10 @@ import {
   UseGuards,
   Param,
 } from '@nestjs/common';
-import { CreateTenantDto } from './dto/create-tenant.dto';
-import { TenantService } from './tenant.service';
-import type { AuthenticatedRequest } from 'src/types/authenticated-request';
-import { AuthGuard } from 'src/common/guards/auth.guard';
+import { TenantService } from './tenant.service.js';
+import { AuthGuard } from '../../common/guards/auth.guard.js';
+import type { AuthenticatedRequest } from '../../types/authenticated-request.js';
+import { CreateTenantDto } from './dto/create-tenant.dto.js';
 
 @Controller('tenant')
 export class TenantController {

@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { Tenant, User } from 'prisma/generated/prisma/client';
+import { Tenant, User } from '../generated/prisma/client.js';
 
 export interface UserPayload {
   id: string;

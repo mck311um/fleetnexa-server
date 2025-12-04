@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { EmailService } from './email.service';
-import { AwsModule } from 'src/common/aws/aws.module';
-import { SesModule } from 'src/ses/ses.module';
+import { SesModule } from '../../ses/ses.module.js';
+import { EmailService } from './email.service.js';
 
 @Module({
   imports: [SesModule],

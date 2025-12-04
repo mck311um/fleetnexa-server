@@ -3,7 +3,7 @@ import {
   TestRenderTemplateCommand,
 } from '@aws-sdk/client-ses';
 import { Injectable, Logger } from '@nestjs/common';
-import { AwsService } from 'src/common/aws/aws.service';
+import { AwsService } from '../common/aws/aws.service.js';
 
 @Injectable()
 export class SesService {

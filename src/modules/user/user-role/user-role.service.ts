@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { Tenant, UserRole } from 'prisma/generated/prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Tenant, UserRole } from '../../../generated/prisma/client.js';
+import { PrismaService } from '../../../prisma/prisma.service.js';
 
 @Injectable()
 export class UserRoleService {
