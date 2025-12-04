@@ -10,6 +10,42 @@ import {
   IsUUID,
 } from 'class-validator';
 
+class TenantAddressDto {
+  @IsString()
+  street: string;
+
+  @IsUUID()
+  villageId: string;
+
+  @IsUUID()
+  stateId: string;
+
+  @IsUUID()
+  countryId: string;
+}
+
+class CancellationPolicyDto {
+  @IsNumber()
+  amount: number;
+
+  @IsString()
+  policy: string;
+
+  @IsNumber()
+  minimumDays: number;
+
+  @IsNumber()
+  bookingMinimumDays: number;
+}
+
+class LatePolicyDto {
+  @IsNumber()
+  amount: number;
+
+  @IsNumber()
+  maxHours: number;
+}
+
 export class UpdateTenantDto {
   @IsString()
   @IsNotEmpty()
@@ -88,40 +124,4 @@ export class UpdateTenantDto {
 
   @IsObject()
   latePolicy: LatePolicyDto;
-}
-
-class TenantAddressDto {
-  @IsString()
-  street: string;
-
-  @IsUUID()
-  villageId: string;
-
-  @IsUUID()
-  stateId: string;
-
-  @IsUUID()
-  countryId: string;
-}
-
-class CancellationPolicyDto {
-  @IsNumber()
-  amount: number;
-
-  @IsString()
-  policy: string;
-
-  @IsNumber()
-  minimumDays: number;
-
-  @IsNumber()
-  bookingMinimumDays: number;
-}
-
-class LatePolicyDto {
-  @IsNumber()
-  amount: number;
-
-  @IsNumber()
-  maxHours: number;
 }

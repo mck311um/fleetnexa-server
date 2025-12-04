@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { GeneratorService } from '../../common/generator/generator.service.js';
-import { Tenant } from '../../generated/prisma/client.js';
+import { Tenant, User } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { WelcomeEmailDto } from '../email/dto/welcome.dto.js';
 import { EmailService } from '../email/email.service.js';
@@ -16,6 +16,7 @@ import { TenantExtraService } from './tenant-extras/tenant-extras.service.js';
 import { TenantLocationService } from './tenant-location/tenant-location.service.js';
 import { TenantRepository } from './tenant.repository.js';
 import { UpdateTenantDto } from './dto/update-tenant.dto.js';
+import { UpdateStorefrontDto } from './dto/update-storefont.dto.js';
 
 @Injectable()
 export class TenantService {
@@ -263,6 +264,28 @@ export class TenantService {
       });
     } catch (error) {
       this.logger.error('Failed to update tenant', error);
+      throw error;
+    }
+  }
+
+  async updateStorefront(data: UpdateStorefrontDto, tenant: Tenant) {
+    try {
+      await this.prisma.tenant.update({
+        where: { id: tenant.id },
+        data: {
+          storefrontEnabled: data.storefrontEnabled,
+          description: data.description,
+        },
+      });
+
+      if (!data.storefrontEnabled) {
+        await this.prisma.vehicle.updateMany({
+          where: { tenantId: tenant.id, storefrontEnabled: true },
+          data: { storefrontEnabled: false },
+        });
+      }
+    } catch (error) {
+      this.logger.error('Failed to update storefront settings', error);
       throw error;
     }
   }
