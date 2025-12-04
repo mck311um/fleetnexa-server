@@ -15,6 +15,7 @@ import { CreateTenantDto } from './dto/create-tenant.dto.js';
 import { TenantExtraService } from './tenant-extras/tenant-extras.service.js';
 import { TenantLocationService } from './tenant-location/tenant-location.service.js';
 import { TenantRepository } from './tenant.repository.js';
+import { UpdateTenantDto } from './dto/update-tenant.dto.js';
 
 @Injectable()
 export class TenantService {
@@ -135,6 +136,133 @@ export class TenantService {
       return tenant;
     } catch (error) {
       this.logger.error('Failed to create tenant', error);
+      throw error;
+    }
+  }
+
+  async updateTenant(data: UpdateTenantDto, tenant: Tenant) {
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        await tx.address.upsert({
+          where: { tenantId: tenant.id },
+          update: {
+            street: data.address.street,
+            village: { connect: { id: data.address.villageId } },
+            state: { connect: { id: data.address.stateId } },
+            country: { connect: { id: data.address.countryId } },
+          },
+          create: {
+            tenant: { connect: { id: tenant.id } },
+            street: data.address.street,
+            village: { connect: { id: data.address.villageId } },
+            state: { connect: { id: data.address.stateId } },
+            country: { connect: { id: data.address.countryId } },
+          },
+        });
+
+        await tx.tenant.update({
+          where: { id: tenant.id },
+          data: {
+            currencyId: data.currencyId,
+            email: data.email,
+            invoiceFootNotes: data.invoiceFootNotes,
+            invoiceSequenceId: data.invoiceSequenceId,
+            logo: data.logo,
+            number: data.number,
+            tenantName: data.tenantName,
+            financialYearStart: data.financialYearStart,
+            setupCompleted: true,
+            securityDeposit: data.securityDeposit,
+            additionalDriverFee: data.additionalDriverFee,
+            daysInMonth: data.daysInMonth,
+            paymentMethods: {
+              set: data.paymentMethods.map((method: any) => ({
+                id: method,
+              })),
+            },
+            startTime: data.startTime,
+            endTime: data.endTime,
+          },
+        });
+
+        const cancellationPolicy = await tx.cancellationPolicy.upsert({
+          where: {
+            tenantId: tenant.id,
+          },
+          update: {
+            amount: data.cancellationPolicy?.amount || 0,
+            policy: data.cancellationPolicy?.policy || 'fixed_amount',
+            minimumDays: data.cancellationPolicy?.minimumDays || 0,
+            bookingMinimumDays:
+              data.cancellationPolicy?.bookingMinimumDays || 0,
+          },
+          create: {
+            tenantId: tenant.id,
+            amount: data.cancellationPolicy?.amount || 0,
+            policy: data.cancellationPolicy?.policy || 'fixed_amount',
+            minimumDays: data.cancellationPolicy?.minimumDays || 0,
+            bookingMinimumDays:
+              data.cancellationPolicy?.bookingMinimumDays || 0,
+          },
+        });
+
+        const latePolicy = await tx.latePolicy.upsert({
+          where: {
+            tenantId: tenant.id,
+          },
+          update: {
+            amount: data.latePolicy?.amount || 0,
+            maxHours: data.latePolicy?.maxHours || 0,
+          },
+          create: {
+            tenantId: tenant.id,
+            amount: data.latePolicy?.amount || 0,
+            maxHours: data.latePolicy?.maxHours || 0,
+          },
+        });
+
+        await tx.tenant.update({
+          where: { id: tenant.id },
+          data: {
+            cancellationPolicyId: cancellationPolicy.id,
+            latePolicyId: latePolicy.id,
+          },
+        });
+
+        const usdRate = await tx.tenantCurrencyRate.findFirst({
+          where: { tenantId: tenant.id, currency: { code: 'USD' } },
+        });
+
+        const usd = await tx.currency.findUnique({
+          where: { code: 'USD' },
+        });
+
+        if (!usd) {
+          this.logger.warn(`USD currency not found for tenant ${tenant.id}`);
+          throw new NotFoundException('USD currency not found');
+        }
+
+        if (usdRate) {
+          await tx.tenantCurrencyRate.update({
+            where: { id: usdRate.id },
+            data: {
+              toRate: data.fromUSDRate || 1.0,
+              fromRate: 1 / (data.fromUSDRate || 1.0),
+            },
+          });
+        } else {
+          await tx.tenantCurrencyRate.create({
+            data: {
+              tenantId: tenant.id,
+              currencyId: usd.id,
+              toRate: data.fromUSDRate || 1.0,
+              fromRate: 1 / (data.fromUSDRate || 1.0),
+            },
+          });
+        }
+      });
+    } catch (error) {
+      this.logger.error('Failed to update tenant', error);
       throw error;
     }
   }

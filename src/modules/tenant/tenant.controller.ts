@@ -6,11 +6,13 @@ import {
   Req,
   UseGuards,
   Param,
+  Put,
 } from '@nestjs/common';
 import { TenantService } from './tenant.service.js';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
 import type { AuthenticatedRequest } from '../../types/authenticated-request.js';
 import { CreateTenantDto } from './dto/create-tenant.dto.js';
+import { UpdateTenantDto } from './dto/update-tenant.dto.js';
 
 @Controller('tenant')
 export class TenantController {
@@ -31,5 +33,14 @@ export class TenantController {
   @Post()
   createTenant(@Body('data') data: CreateTenantDto) {
     return this.tenantService.createTenant(data);
+  }
+
+  @Put()
+  updateTenant(
+    @Req() req: AuthenticatedRequest,
+    @Body('data') data: UpdateTenantDto,
+  ) {
+    const tenant = req.context.tenant;
+    return this.tenantService.updateTenant(data, tenant);
   }
 }
