@@ -8,7 +8,7 @@ import { EmailModule } from '../email/email.module.js';
 import { TenantUserModule } from '../user/tenant/tenant-user.module.js';
 import { TenantUserRepository } from '../user/tenant/tenant-user.repository.js';
 import { UserRoleModule } from '../user/user-role/user-role.module.js';
-import { TenantExtrasModule } from './tenant-extras/tenant-extras.module.js';
+import { TenantExtrasModule } from './tenant-extra/tenant-extra.module.js';
 import { TenantController } from './tenant.controller.js';
 import { TenantRepository } from './tenant.repository.js';
 import { TenantService } from './tenant.service.js';

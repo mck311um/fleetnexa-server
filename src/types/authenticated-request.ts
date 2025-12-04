@@ -8,6 +8,7 @@ export interface UserPayload {
 }
 
 export interface AuthenticatedRequest extends Request {
+  [x: string]: any;
   user: UserPayload;
   context: {
     tenant: Tenant;

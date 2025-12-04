@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { TenantLocationModule } from './modules/tenant/tenant-location/tenant-location.module.js';
 import { TenantRatesModule } from './modules/tenant/tenant-rates/tenant-rates.module.js';
 import { TenantActivityModule } from './modules/tenant/tenant-activity/tenant-activity.module.js';
+import { TenantExtrasModule } from './modules/tenant/tenant-extra/tenant-extra.module.js';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TenantActivityModule } from './modules/tenant/tenant-activity/tenant-ac
     TenantLocationModule,
     TenantRatesModule,
     TenantActivityModule,
+    TenantExtrasModule,
     TenantModule,
   ],
   controllers: [AppController],

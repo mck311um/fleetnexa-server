@@ -12,7 +12,7 @@ import { EmailService } from '../email/email.service.js';
 import { TenantUserService } from '../user/tenant/tenant-user.service.js';
 import { UserRoleService } from '../user/user-role/user-role.service.js';
 import { CreateTenantDto } from './dto/create-tenant.dto.js';
-import { TenantExtraService } from './tenant-extras/tenant-extras.service.js';
+import { TenantExtraService } from './tenant-extra/tenant-extra.service.js';
 import { TenantLocationService } from './tenant-location/tenant-location.service.js';
 import { TenantRepository } from './tenant.repository.js';
 import { UpdateTenantDto } from './dto/update-tenant.dto.js';
