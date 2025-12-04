@@ -13,6 +13,7 @@ import { TenantNotificationModule } from './modules/tenant/tenant-notification/t
 import { SocketModule } from './gateway/socket.module.js';
 import { TenantReviewModule } from './modules/tenant/tenant-review/tenant-review.module.js';
 import { TenantVendorModule } from './modules/tenant/tenant-vendor/tenant-vendor.module.js';
+import { TenantViolationModule } from './modules/tenant/tenant-violation/tenant-violation.module.js';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TenantVendorModule } from './modules/tenant/tenant-vendor/tenant-vendor
     TenantNotificationModule,
     TenantReviewModule,
     TenantVendorModule,
+    TenantViolationModule,
     TenantModule,
     SocketModule,
   ],
