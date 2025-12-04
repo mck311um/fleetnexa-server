@@ -1,8 +1,18 @@
-import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { TenantNotificationService } from './tenant-notification.service.js';
-import type { AuthenticatedRequest } from 'src/types/authenticated-request.js';
+import type { AuthenticatedRequest } from '../../../types/authenticated-request.js';
+import { AuthGuard } from '../../../common/guards/auth.guard.js';
 
 @Controller('tenant/notification')
+@UseGuards(AuthGuard)
 export class TenantNotificationController {
   constructor(private readonly service: TenantNotificationService) {}
 
