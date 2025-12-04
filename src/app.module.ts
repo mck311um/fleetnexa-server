@@ -3,9 +3,18 @@ import { TenantModule } from './modules/tenant/tenant.module.js';
 import { TenantAuthModule } from './modules/auth/tenant/tenant-auth.module.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './modules/auth/auth.module.js';
 
 @Module({
-  imports: [TenantModule, TenantAuthModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TenantModule,
+    TenantAuthModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

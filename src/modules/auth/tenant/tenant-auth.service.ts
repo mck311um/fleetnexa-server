@@ -1,15 +1,18 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 
-import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { PrismaService } from '../../../prisma/prisma.service.js';
 import { TenantLoginDto } from './dto/login.dto.js';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class TenantAuthService {
   private readonly logger = new Logger(TenantAuthService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwt: JwtService,
+  ) {}
 
   async login(data: TenantLoginDto) {
     try {
@@ -78,7 +81,7 @@ export class TenantAuthService {
         },
       };
 
-      const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+      const token = this.jwt.sign(payload, {
         expiresIn: data.rememberMe ? '30d' : '7d',
       });
 
