@@ -1,0 +1,106 @@
+model User {
+  id                       String                   @id @default(dbgenerated("gen_random_uuid()"))
+  password                 String
+  firstName                String
+  lastName                 String
+  username                 String                   @unique
+  tenantId                 String?
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime?                @updatedAt
+  roleId                   String?
+  lastChanged              DateTime?
+  email                    String?                  @unique
+  profilePicture           String                   @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
+  show                     Boolean                  @default(true)
+  deletedAt                DateTime?
+  isDeleted                Boolean                  @default(false)
+  requirePasswordChange    Boolean                  @default(true)
+  expenses                 Expense[]
+  notificationReadStatuses NotificationReadStatus[]
+  rentals                  Rental[]
+  transactions             Transactions[]
+  role                     UserRole?                @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  tenant                   Tenant?                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([username, tenantId])
+}
+
+model StorefrontUser {
+  id                  String              @id @default(dbgenerated("gen_random_uuid()"))
+  password            String
+  firstName           String
+  lastName            String
+  dateOfBirth         DateTime
+  gender              String
+  email               String              @unique
+  phone               String              @unique
+  driverLicenseNumber String              @unique
+  licenseExpiry       DateTime
+  street              String?
+  villageId           String?
+  stateId             String?
+  countryId           String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime?           @updatedAt
+  profilePicture      String?             @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
+  licenseIssued       DateTime
+  license             String?
+  deletedAt           DateTime?
+  isDeleted           Boolean             @default(false)
+  customers           Customer[]
+  bookings            StorefrontBooking[]
+  country             Country?            @relation(fields: [countryId], references: [id])
+  state               State?              @relation(fields: [stateId], references: [id])
+  village             Village?            @relation(fields: [villageId], references: [id])
+}
+
+model AdminUser {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  password  String
+  firstName String
+  lastName  String
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  username  String    @unique
+  countries Country[]
+}
+
+model UserRole {
+  id             String               @id @default(dbgenerated("gen_random_uuid()"))
+  name           String
+  description    String?
+  tenantId       String
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime?            @updatedAt
+  isDeleted      Boolean              @default(false)
+  updatedBy      String?
+  show           Boolean?             @default(true)
+  users          User[]
+  tenant         Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  rolePermission UserRolePermission[]
+}
+
+model UserRolePermission {
+  id           String        @id @default(dbgenerated("gen_random_uuid()"))
+  roleId       String
+  permissionId String
+  assignedBy   String?
+  assignedAt   DateTime      @default(now())
+  permission   AppPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role         UserRole      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model EmailTokens {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  email     String
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  expired   Boolean  @default(false)
+
+  @@index([email])
+}

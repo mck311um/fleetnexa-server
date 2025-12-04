@@ -1,0 +1,28 @@
+model SubscriptionPlan {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()"))
+  description        String?
+  name               String               @unique
+  planCode           String?              @unique
+  planId             String?              @unique
+  period             BillingPeriod        @default(MONTHLY)
+  price              Float                @default(0)
+  details            PlanDetails?
+  features           PlanFeatures[]
+  tenantSubscription TenantSubscription[]
+  categories         PermissionCategory[] @relation("PlanPermissionCategories")
+}
+
+model PlanFeatures {
+  id      String           @id @default(dbgenerated("gen_random_uuid()"))
+  planId  String
+  feature String
+  plan    SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+}
+
+model PlanDetails {
+  id       String           @id @default(dbgenerated("gen_random_uuid()"))
+  planId   String           @unique
+  users    Int
+  vehicles Int
+  plan     SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+}

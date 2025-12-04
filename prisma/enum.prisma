@@ -1,0 +1,141 @@
+enum Severity {
+  MINOR
+  MODERATE
+  SEVERE
+  CRITICAL
+}
+
+enum Agent {
+  MANUAL
+  RENTNEXA
+  PARTNER
+  SYSTEM
+  STOREFRONT
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  BANNED
+  BLACKLISTED
+}
+
+enum DamageLocation {
+  INTERIOR
+  EXTERIOR
+}
+
+enum ExtraType {
+  INSURANCE
+  EQUIPMENT
+}
+
+enum PricePolicy {
+  FIXED_AMOUNT
+  PERCENTAGE
+  DAILY_PRICE
+  FLAT_RATE
+}
+
+enum SubscriptionStatus {
+  PENDING
+  TRIAL
+  ACTIVE
+  SUSPENDED
+  CANCELED
+}
+
+enum RentalStatus {
+  PENDING
+  CONFIRMED
+  RESERVED
+  ACTIVE
+  COMPLETED
+  DECLINED
+  CANCELED
+  NO_SHOW
+  REFUNDED
+  EXPIRED
+}
+
+enum MaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+enum RentalAction {
+  BOOKED
+  CANCELED
+  RETURNED
+  EXTENDED
+  PICKED_UP
+}
+
+enum StatItem {
+  TOTAL_REVENUE
+  NEW_RENTALS
+  RENTED_VEHICLES
+  AVAILABLE_VEHICLES
+  TOTAL_CUSTOMERS
+  AVERAGE_RENTAL
+  MONTHLY_EARNINGS
+  MONTHLY_RENTALS
+  MONTHLY_RENTAL_STATUS
+  YEARLY_REVENUE
+  YEARLY_RENTALS
+  YEARLY_CUSTOMERS
+  AVERAGE_RENTAL_DURATION
+  YEARLY_EXPENSES
+}
+
+enum TransactionType {
+  RENTAL
+  REFUND
+  PAYMENT
+  EXPENSE
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum NotificationType {
+  BOOKING
+  UPCOMING
+  RETURN
+  UNCONFIRMED
+  PAYMENT
+  REFUND
+  GENERAL
+}
+
+enum PortType {
+  SEA
+  AIR
+}
+
+enum DirectionType {
+  ARRIVAL
+  DEPARTURE
+}
+
+enum VesselType {
+  SHIP
+  PLANE
+  OTHER
+}
+
+enum BillingPeriod {
+  MONTHLY
+  YEARLY
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

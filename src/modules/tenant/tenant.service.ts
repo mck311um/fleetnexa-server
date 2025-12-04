@@ -14,6 +14,7 @@ import { EmailService } from '../email/email.service';
 import { WelcomeEmailDto } from '../email/dto/welcome.dto';
 import { Tenant } from 'prisma/generated/prisma/client';
 import { TenantExtraService } from './tenant-extras/tenant-extras.service';
+import { TenantRepository } from './tenant.repository';
 
 @Injectable()
 export class TenantService {
@@ -27,6 +28,7 @@ export class TenantService {
     private readonly userService: TenantUserService,
     private readonly emailService: EmailService,
     private readonly extraService: TenantExtraService,
+    private readonly tenantRepo: TenantRepository,
   ) {}
 
   async getCurrentTenant(tenant: Tenant) {
@@ -40,6 +42,22 @@ export class TenantService {
       return data;
     } catch (error) {
       this.logger.error('Failed to get current tenant', error);
+      throw error;
+    }
+  }
+
+  async getTenantById(tenantId: string) {
+    try {
+      const tenant = await this.tenantRepo.getTenantById(tenantId);
+
+      if (!tenant) {
+        this.logger.warn(`Tenant with ID ${tenantId} not found.`);
+        throw new NotFoundException('Tenant not found');
+      }
+
+      return tenant;
+    } catch (error) {
+      this.logger.error('Failed to get tenant by ID', error);
       throw error;
     }
   }

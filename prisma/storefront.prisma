@@ -1,0 +1,21 @@
+model TenantRatings {
+  id        Int      @id @default(autoincrement())
+  tenantId  String
+  rating    Float    @default(0.0)
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String
+  fullName  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model SiteRatings {
+  id        Int      @id @default(autoincrement())
+  fullName  String
+  email     String
+  rating    Float    @default(0.0)
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,20 @@
+model AppPermission {
+  id              String               @id @default(dbgenerated("gen_random_uuid()"))
+  name            String               @unique
+  description     String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime?            @updatedAt
+  categoryId      String?
+  category        PermissionCategory?  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  rolePermissions UserRolePermission[]
+}
+
+model PermissionCategory {
+  id          String             @id @default(dbgenerated("gen_random_uuid()"))
+  name        String             @unique
+  description String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime?          @updatedAt
+  permissions AppPermission[]
+  plans       SubscriptionPlan[] @relation("PlanPermissionCategories")
+}
