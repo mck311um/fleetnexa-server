@@ -14,7 +14,7 @@ import type { AuthenticatedRequest } from 'src/types/authenticated-request.js';
 import { TenantLocationDto } from './tenant.location.dto.js';
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 
-@Controller('tenant-location')
+@Controller('tenant/location')
 @UseGuards(AuthGuard)
 export class TenantLocationController {
   constructor(private readonly service: TenantLocationService) {}

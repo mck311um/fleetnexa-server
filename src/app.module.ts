@@ -6,16 +6,18 @@ import { AppService } from './app.service.js';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { TenantLocationModule } from './modules/tenant/tenant-location/tenant-location.module.js';
+import { TenantRatesModule } from './modules/tenant/tenant-rates/tenant-rates.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TenantModule,
     TenantAuthModule,
     AuthModule,
     TenantLocationModule,
+    TenantRatesModule,
+    TenantModule,
   ],
   controllers: [AppController],
   providers: [AppService],
