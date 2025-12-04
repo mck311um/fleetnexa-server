@@ -9,6 +9,8 @@ import { TenantLocationModule } from './modules/tenant/tenant-location/tenant-lo
 import { TenantRatesModule } from './modules/tenant/tenant-rates/tenant-rates.module.js';
 import { TenantActivityModule } from './modules/tenant/tenant-activity/tenant-activity.module.js';
 import { TenantExtrasModule } from './modules/tenant/tenant-extra/tenant-extra.module.js';
+import { TenantNotificationModule } from './modules/tenant/tenant-notification/tenant-notification.module.js';
+import { SocketModule } from './gateway/socket.module.js';
 
 @Module({
   imports: [
@@ -21,7 +23,9 @@ import { TenantExtrasModule } from './modules/tenant/tenant-extra/tenant-extra.m
     TenantRatesModule,
     TenantActivityModule,
     TenantExtrasModule,
+    TenantNotificationModule,
     TenantModule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [AppService],
