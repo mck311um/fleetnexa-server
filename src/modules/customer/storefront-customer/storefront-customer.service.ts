@@ -56,7 +56,7 @@ export class StorefrontCustomerService {
             gender: data.gender || 'UNSPECIFIED',
             dateOfBirth: data.dateOfBirth,
             email: data.email,
-            phone: data.phone,
+            phone: data.phone || '',
             createdAt: new Date(),
             updatedAt: new Date(),
             tenantId: tenant.id,

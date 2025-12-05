@@ -18,6 +18,7 @@ import { BookingModule } from './modules/booking/booking.module.js';
 import { StorefrontBookingModule } from './modules/booking/storefront-booking/storefront-booking.module.js';
 import { AdminModule } from './modules/admin/admin.module.js';
 import { VehicleModule } from './modules/vehicles/vehicle.module.js';
+import { StorefrontAuthModule } from './modules/auth/storefront-auth/storefront-auth.module.js';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { VehicleModule } from './modules/vehicles/vehicle.module.js';
     }),
     AdminModule,
     TenantAuthModule,
+    StorefrontAuthModule,
     AuthModule,
     TenantLocationModule,
     TenantRatesModule,

@@ -29,10 +29,12 @@ export class StorefrontCustomerDto {
   email: string;
 
   @IsString()
-  gender: string;
+  @IsOptional()
+  gender?: string;
 
   @IsString()
-  phone: string;
+  @IsOptional()
+  phone?: string;
 
   @IsString()
   driverLicenseNumber: string;
