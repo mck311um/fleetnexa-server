@@ -61,6 +61,15 @@ export class TenantService {
     }
   }
 
+  async getStorefrontTenants() {
+    try {
+      return await this.tenantRepo.getStorefrontTenants();
+    } catch (error) {
+      this.logger.error('Failed to get storefront tenants', error);
+      throw error;
+    }
+  }
+
   async createTenant(data: CreateTenantDto) {
     try {
       const { tenant, country } = await this.prisma.$transaction(async (tx) => {

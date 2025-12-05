@@ -13,6 +13,20 @@ export class TenantRepository {
     });
   }
 
+  async getStorefrontTenants() {
+    return this.prisma.tenant.findMany({
+      where: { storefrontEnabled: true, isDeleted: false },
+      select: this.getStorefrontSelectOptions(),
+    });
+  }
+
+  async getTenantBySlug(slug: string) {
+    return this.prisma.tenant.findUnique({
+      where: { slug },
+      select: this.getStorefrontSelectOptions(),
+    });
+  }
+
   private getTenantIncludeOptions(): Prisma.TenantInclude {
     return {
       address: { include: { village: true, state: true, country: true } },
@@ -48,6 +62,42 @@ export class TenantRepository {
         },
       },
       currencyRates: { include: { currency: true } },
+    };
+  }
+
+  private getStorefrontSelectOptions(): Prisma.TenantSelect {
+    return {
+      id: true,
+      tenantName: true,
+      slug: true,
+      logo: true,
+      rating: true,
+      ratings: true,
+      description: true,
+      email: true,
+      number: true,
+      startTime: true,
+      endTime: true,
+      _count: {
+        select: {
+          vehicles: {
+            where: { storefrontEnabled: true, isDeleted: false },
+          },
+          ratings: true,
+        },
+      },
+      currencyRates: {
+        include: {
+          currency: true,
+        },
+      },
+      address: {
+        include: {
+          country: true,
+          state: true,
+          village: true,
+        },
+      },
     };
   }
 }

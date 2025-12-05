@@ -27,6 +27,11 @@ export class TenantController {
     return this.tenantService.getCurrentTenant(tenant);
   }
 
+  @Get('storefront')
+  getStorefrontTenants() {
+    return this.tenantService.getStorefrontTenants();
+  }
+
   @Get(':id')
   getTenantById(@Param('id') id: string) {
     return this.tenantService.getTenantById(id);
