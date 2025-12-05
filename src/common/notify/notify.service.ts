@@ -21,6 +21,9 @@ export class NotifyService {
   async sendEmail(payload: SendEmailDto) {
     try {
       const res = await this.api.post('email/send', payload);
+
+      this.logger.log(`Email sent: ${res.data.messageId}`);
+      return res.data;
     } catch (error) {
       this.logger.error('Error sending email', error);
       throw error;

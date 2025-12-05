@@ -128,4 +128,37 @@ export class GeneratorService {
       throw error;
     }
   }
+
+  async generateBookingNumber(tenantId: string): Promise<string> {
+    try {
+      const lastRental = await this.prisma.rental.findFirst({
+        where: { tenantId },
+        orderBy: { createdAt: 'desc' },
+        select: { rentalNumber: true },
+      });
+
+      if (!lastRental || !lastRental.rentalNumber) {
+        return '000001';
+      }
+
+      const lastNumber = parseInt(lastRental.rentalNumber, 10);
+      const nextNumber = lastNumber + 1;
+
+      return nextNumber.toString().padStart(6, '0');
+    } catch (error) {
+      this.logger.error('Failed to generate rental number', error);
+      throw error;
+    }
+  }
+
+  async generateBookingCode(
+    tenantCode: string,
+    rentalNumber: string,
+  ): Promise<string> {
+    const cleanedTenantCode = tenantCode.replace(/-/g, '');
+
+    const paddedRentalNumber = rentalNumber.padStart(6, '0');
+
+    return `${cleanedTenantCode}-${paddedRentalNumber}`;
+  }
 }

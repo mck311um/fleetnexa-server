@@ -14,3 +14,7 @@ export class PrismaService
     await this.$disconnect();
   }
 }
+export type TxClient = Omit<
+  PrismaClient,
+  '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+>;

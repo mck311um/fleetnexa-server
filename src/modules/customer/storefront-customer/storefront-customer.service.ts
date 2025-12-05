@@ -1,0 +1,104 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { PrismaService, TxClient } from 'src/prisma/prisma.service.js';
+import { StorefrontCustomerDto } from './storefront-customer.dto.js';
+import { Tenant } from 'src/generated/prisma/client.js';
+
+@Injectable()
+export class StorefrontCustomerService {
+  private readonly logger = new Logger(StorefrontCustomerService.name);
+
+  constructor(private readonly prisma: PrismaService) {}
+
+  async getCustomer(data: StorefrontCustomerDto, tenant: Tenant, tx: TxClient) {
+    try {
+      const existingCustomer = await tx.customer.findFirst({
+        where: {
+          tenantId: tenant.id,
+          license: {
+            licenseNumber: data.driverLicenseNumber,
+          },
+        },
+      });
+
+      if (existingCustomer) {
+        await tx.driverLicense.update({
+          where: { customerId: existingCustomer.id },
+          data: {
+            licenseExpiry: data.licenseExpiry,
+            licenseIssued: data.licenseIssued,
+          },
+        });
+
+        if (data.address) {
+          await tx.customerAddress.update({
+            where: { customerId: existingCustomer.id },
+            data: {
+              street: data.address.street,
+              village: data.address.villageId
+                ? { connect: { id: data.address.villageId } }
+                : undefined,
+              state: data.address.stateId
+                ? { connect: { id: data.address.stateId } }
+                : undefined,
+              country: data.address.countryId
+                ? { connect: { id: data.address.countryId } }
+                : undefined,
+            },
+          });
+        }
+
+        return existingCustomer;
+      } else {
+        const customer = await tx.customer.create({
+          data: {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            gender: data.gender || 'UNSPECIFIED',
+            dateOfBirth: data.dateOfBirth,
+            email: data.email,
+            phone: data.phone,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            tenantId: tenant.id,
+            status: 'ACTIVE',
+          },
+        });
+
+        await tx.driverLicense.create({
+          data: {
+            customerId: customer.id,
+            licenseNumber: data.driverLicenseNumber,
+            licenseExpiry: data.licenseExpiry,
+            licenseIssued: data.licenseIssued,
+          },
+        });
+
+        if (data.address) {
+          await tx.customerAddress.create({
+            data: {
+              customer: { connect: { id: customer.id } },
+              street: data.address.street,
+              village: data.address.villageId
+                ? { connect: { id: data.address.villageId } }
+                : undefined,
+              state: data.address.stateId
+                ? { connect: { id: data.address.stateId } }
+                : undefined,
+              country: data.address.countryId
+                ? { connect: { id: data.address.countryId } }
+                : undefined,
+            },
+          });
+        }
+
+        return customer;
+      }
+    } catch (error) {
+      this.logger.error(error, 'Failed to get storefront customer', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw error;
+    }
+  }
+}
