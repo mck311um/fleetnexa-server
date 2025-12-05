@@ -15,6 +15,7 @@ import { TenantReviewModule } from './modules/tenant/tenant-review/tenant-review
 import { TenantVendorModule } from './modules/tenant/tenant-vendor/tenant-vendor.module.js';
 import { TenantViolationModule } from './modules/tenant/tenant-violation/tenant-violation.module.js';
 import { BookingModule } from './modules/booking/booking.module.js';
+import { StorefrontBookingModule } from './modules/booking/storefront-booking/storefront-booking.module.js';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { BookingModule } from './modules/booking/booking.module.js';
     TenantVendorModule,
     TenantViolationModule,
     TenantModule,
+    StorefrontBookingModule,
     BookingModule,
     SocketModule,
   ],

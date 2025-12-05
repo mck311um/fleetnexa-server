@@ -1,22 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service.js';
-import { StorefrontUserBookingDto } from './storefront-user-booking.dto.js';
+import { StorefrontUserBookingDto } from './dto/storefront-user-booking.dto.js';
 import {
   Agent,
   RentalStatus,
   StorefrontUser,
-  Tenant,
 } from '../../../generated/prisma/client.js';
-import { StorefrontCustomerDto } from 'src/modules/customer/storefront-customer/storefront-customer.dto.js';
-import { StorefrontCustomerService } from 'src/modules/customer/storefront-customer/storefront-customer.service.js';
-import { GeneratorService } from 'src/common/generator/generator.service.js';
-import { NotifyService } from 'src/common/notify/notify.service.js';
-import { BookingCompletedEmailParams } from 'src/types/email.js';
+import { StorefrontCustomerDto } from '../../../modules/customer/storefront-customer/storefront-customer.dto.js';
+import { StorefrontCustomerService } from '../../../modules/customer/storefront-customer/storefront-customer.service.js';
+import { GeneratorService } from '../../../common/generator/generator.service.js';
+import { EmailService } from '../../../common/email/email.service.js';
+import { TenantNotificationService } from '../../../modules/tenant/tenant-notification/tenant-notification.service.js';
 
 @Injectable()
 export class StorefrontBookingService {
@@ -26,12 +20,24 @@ export class StorefrontBookingService {
     private readonly prisma: PrismaService,
     private readonly storefrontCustomer: StorefrontCustomerService,
     private readonly generator: GeneratorService,
-    private readonly notify: NotifyService,
+    private readonly emailService: EmailService,
+    private readonly tenantNotification: TenantNotificationService,
   ) {}
 
-  async createUserBooking(data: StorefrontUserBookingDto, tenant: Tenant) {
+  async createUserBooking(data: StorefrontUserBookingDto) {
     try {
       const booking = await this.prisma.$transaction(async (tx) => {
+        const tenant = await tx.tenant.findUnique({
+          where: { id: data.tenantId },
+        });
+
+        if (!tenant) {
+          this.logger.warn('Tenant not found for storefront booking', {
+            tenantId: data.tenantId,
+          });
+          throw new NotFoundException('Tenant not found');
+        }
+
         const user = await tx.storefrontUser.findUnique({
           where: { id: data.userId },
         });
@@ -106,6 +112,7 @@ export class StorefrontBookingService {
               },
             },
           },
+          select: { id: true, tenant: true },
         });
 
         await tx.values.create({
@@ -150,14 +157,71 @@ export class StorefrontBookingService {
 
         return newBooking;
       });
+
+      await this.emailService.sendBookingCompletedEmail(
+        booking.id,
+        booking.tenant,
+      );
+      await this.emailService.sendNewBookingEmail(booking.id, booking.tenant);
+      await this.tenantNotification.sendBookingNotification(
+        booking.id,
+        booking.tenant,
+      );
+
+      const bookingDetails = await this.prisma.rental.findUnique({
+        where: { id: booking.id },
+        select: {
+          startDate: true,
+          endDate: true,
+          id: true,
+          rentalNumber: true,
+          bookingCode: true,
+          tenant: {
+            select: {
+              id: true,
+              tenantName: true,
+              email: true,
+              number: true,
+              currency: true,
+              currencyRates: {
+                include: {
+                  currency: true,
+                },
+              },
+            },
+          },
+          vehicle: {
+            select: {
+              year: true,
+              brand: true,
+              model: true,
+              tenant: {
+                select: {
+                  currency: true,
+                },
+              },
+            },
+          },
+          pickup: true,
+          values: {
+            select: {
+              netTotal: true,
+            },
+          },
+        },
+      });
+
+      return bookingDetails;
     } catch (error) {
       this.logger.error(error, 'Failed to create storefront booking', {
         data,
-        tenantId: tenant.id,
+        tenantId: data.tenantId,
       });
       throw new Error('Failed to create storefront booking');
     }
   }
+
+  async createGuestBooking() {}
 
   async createCustomer(user: StorefrontUser): Promise<StorefrontCustomerDto> {
     try {

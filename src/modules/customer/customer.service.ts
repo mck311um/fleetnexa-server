@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaClient } from '../../generated/prisma/client.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 
 @Injectable()
 export class CustomerService {
   private readonly logger = new Logger(CustomerService.name);
 
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async getPrimaryDriver(bookingId: string) {
     try {
@@ -17,6 +17,7 @@ export class CustomerService {
         include: {
           customer: {
             include: {
+              license: true,
               address: {
                 include: {
                   country: true,

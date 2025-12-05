@@ -7,8 +7,6 @@ import {
 import { GeneratorService } from '../../common/generator/generator.service.js';
 import { Tenant, User } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { WelcomeEmailDto } from '../email/dto/welcome.dto.js';
-import { EmailService } from '../email/email.service.js';
 import { TenantUserService } from '../user/tenant/tenant-user.service.js';
 import { UserRoleService } from '../user/user-role/user-role.service.js';
 import { CreateTenantDto } from './dto/create-tenant.dto.js';
@@ -28,7 +26,6 @@ export class TenantService {
     private readonly locationService: TenantLocationService,
     private readonly userRoleService: UserRoleService,
     private readonly userService: TenantUserService,
-    private readonly emailService: EmailService,
     private readonly extraService: TenantExtraService,
     private readonly tenantRepo: TenantRepository,
   ) {}
@@ -124,15 +121,15 @@ export class TenantService {
       data.user.roleId = role.id;
       const user = await this.userService.createUser(data.user, tenant);
 
-      if (user.email) {
-        const emailData: WelcomeEmailDto = {
-          username: user.username,
-          name: `${user.firstName} ${user.lastName}`,
-          email: user.email,
-        };
+      // if (user.email) {
+      //   const emailData: WelcomeEmailDto = {
+      //     username: user.username,
+      //     name: `${user.firstName} ${user.lastName}`,
+      //     email: user.email,
+      //   };
 
-        await this.emailService.sendWelcomeEmail(emailData, tenant);
-      }
+      //   await this.emailService.sendWelcomeEmail(emailData, tenant);
+      // }
 
       return tenant;
     } catch (error) {

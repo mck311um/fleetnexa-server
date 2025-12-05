@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsObject, IsString, IsUUID } from 'class-validator';
-import { BookingValuesDto } from '../dto/booking-items.dto.js';
+import { BookingValuesDto } from '../../dto/booking-items.dto.js';
 
 export class StorefrontUserBookingDto {
   @IsUUID()

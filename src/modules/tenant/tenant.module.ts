@@ -4,7 +4,6 @@ import { PrismaModule } from '../../prisma/prisma.module.js';
 import { TenantLocationModule } from './tenant-location/tenant-location.module.js';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
-import { EmailModule } from '../email/email.module.js';
 import { TenantUserModule } from '../user/tenant/tenant-user.module.js';
 import { TenantUserRepository } from '../user/tenant/tenant-user.repository.js';
 import { UserRoleModule } from '../user/user-role/user-role.module.js';
@@ -21,7 +20,6 @@ import { TenantService } from './tenant.service.js';
     TenantExtrasModule,
     TenantUserModule,
     UserRoleModule,
-    EmailModule,
   ],
   controllers: [TenantController],
   providers: [
