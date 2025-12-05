@@ -1,8 +1,15 @@
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service.js';
 import { StorefrontAuthDto } from './storefront-auth.dto.js';
 import bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { EmailLoginDto } from '../dto/email-login.dto.js';
 
 @Injectable()
 export class StorefrontAuthService {
@@ -12,6 +19,50 @@ export class StorefrontAuthService {
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
   ) {}
+
+  async loginUser(data: EmailLoginDto) {
+    try {
+      const user = await this.prisma.storefrontUser.findUnique({
+        where: { email: data.email },
+      });
+
+      if (!user) {
+        this.logger.warn('Invalid email or password', { email: data.email });
+        throw new NotFoundException('Invalid email or password');
+      }
+
+      const isMatch = await bcrypt.compare(data.password, user.password);
+      if (!isMatch) {
+        this.logger.warn('Invalid email or password', { email: data.email });
+        throw new UnauthorizedException('Invalid email or password');
+      }
+
+      const userData = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        initials: `${user.firstName[0]}${user.lastName[0]}`,
+        fullName: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        driverLicenseNumber: user.driverLicenseNumber,
+        licenseExpiry: user.licenseExpiry,
+        licenseIssued: user.licenseIssued,
+        dateOfBirth: user.dateOfBirth,
+      };
+
+      const payload = {
+        storefrontUser: { id: user.id },
+      };
+      const token = this.jwt.sign(payload, {
+        expiresIn: data.rememberMe ? '30d' : '7d',
+      });
+
+      return { user: userData, token };
+    } catch (error) {
+      this.logger.error('Error logging in user', { error });
+      throw error;
+    }
+  }
 
   async createUser(data: StorefrontAuthDto) {
     try {
