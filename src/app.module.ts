@@ -17,6 +17,7 @@ import { TenantViolationModule } from './modules/tenant/tenant-violation/tenant-
 import { BookingModule } from './modules/booking/booking.module.js';
 import { StorefrontBookingModule } from './modules/booking/storefront-booking/storefront-booking.module.js';
 import { AdminModule } from './modules/admin/admin.module.js';
+import { VehicleModule } from './modules/vehicles/vehicle.module.js';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AdminModule } from './modules/admin/admin.module.js';
     TenantModule,
     StorefrontBookingModule,
     BookingModule,
+    VehicleModule,
     SocketModule,
   ],
   controllers: [AppController],
