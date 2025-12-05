@@ -23,7 +23,7 @@ export class TenantController {
   @Get()
   @UseGuards(AuthGuard)
   getCurrentTenant(@Req() req: AuthenticatedRequest) {
-    const tenant = req.context.tenant;
+    const tenant = req.context.tenant!;
     return this.tenantService.getCurrentTenant(tenant);
   }
 
@@ -48,7 +48,7 @@ export class TenantController {
     @Req() req: AuthenticatedRequest,
     @Body('data') data: UpdateTenantDto,
   ) {
-    const tenant = req.context.tenant;
+    const tenant = req.context.tenant!;
     return this.tenantService.updateTenant(data, tenant);
   }
 
@@ -58,7 +58,7 @@ export class TenantController {
     @Req() req: AuthenticatedRequest,
     @Body('data') data: UpdateStorefrontDto,
   ) {
-    const tenant = req.context.tenant;
+    const tenant = req.context.tenant!;
     return this.tenantService.updateStorefront(data, tenant);
   }
 }

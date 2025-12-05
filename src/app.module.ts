@@ -19,6 +19,7 @@ import { StorefrontBookingModule } from './modules/booking/storefront-booking/st
 import { AdminModule } from './modules/admin/admin.module.js';
 import { VehicleModule } from './modules/vehicles/vehicle.module.js';
 import { StorefrontAuthModule } from './modules/auth/storefront-auth/storefront-auth.module.js';
+import { StorefrontUserModule } from './modules/user/storefront-user/storefront-user.module.js';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { StorefrontAuthModule } from './modules/auth/storefront-auth/storefront-
     AdminModule,
     TenantAuthModule,
     StorefrontAuthModule,
+    StorefrontUserModule,
     AuthModule,
     TenantLocationModule,
     TenantRatesModule,

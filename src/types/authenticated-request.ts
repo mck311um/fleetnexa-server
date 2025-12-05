@@ -7,9 +7,14 @@ export interface UserPayload {
   tenantCode: string;
 }
 
+export interface StorefrontUserPayload {
+  id: string;
+}
+
 export interface AuthenticatedRequest extends Request {
   [x: string]: any;
   user: UserPayload;
+  storefrontUser?: StorefrontUserPayload;
   context: {
     tenant: Tenant;
     user: User;

@@ -18,7 +18,7 @@ export class TenantViolationController {
 
   @Get()
   async getTenantViolations(@Req() req: AuthenticatedRequest) {
-    const tenant = req.context.tenant;
+    const tenant = req.context.tenant!;
     return this.service.getTenantViolations(tenant);
   }
 
@@ -27,7 +27,7 @@ export class TenantViolationController {
     @Req() req: AuthenticatedRequest,
     @Body('data') data: TenantViolationDto,
   ) {
-    const tenant = req.context.tenant;
+    const tenant = req.context.tenant!;
     return this.service.createViolation(data, tenant);
   }
 
@@ -36,7 +36,7 @@ export class TenantViolationController {
     @Req() req: AuthenticatedRequest,
     @Body('data') data: TenantViolationDto,
   ) {
-    const { tenant, user } = req.context;
+    const tenant = req.context.tenant!;
     return this.service.updateViolation(data, tenant);
   }
 
@@ -45,7 +45,7 @@ export class TenantViolationController {
     @Req() req: AuthenticatedRequest,
     @Param('id') id: string,
   ) {
-    const tenant = req.context.tenant;
+    const tenant = req.context.tenant!;
     return this.service.deleteViolation(id, tenant);
   }
 }
