@@ -134,6 +134,7 @@ export class EmailService {
 
       const templateData: NewBookingEmailDto = {
         bookingId: booking.bookingCode || '',
+        bookingStatus: booking.status || '',
         bookingDate: this.formatter.formatDateToFriendlyDate(booking.createdAt),
         vehicle: this.formatter.formatVehicleToFriendly(booking?.vehicle),
         totalPrice: this.formatter.formatNumberToTenantCurrency(

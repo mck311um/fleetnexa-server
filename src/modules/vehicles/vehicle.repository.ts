@@ -52,7 +52,7 @@ export class VehicleRepository {
   }
 
   async getVehicleForStorefrontById(id: string) {
-    return this.prisma.vehicle.findFirst({
+    return this.prisma.vehicle.findUnique({
       where: {
         id,
         storefrontEnabled: true,

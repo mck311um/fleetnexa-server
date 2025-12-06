@@ -8,12 +8,12 @@ export class StorefrontBookingController {
   constructor(private readonly service: StorefrontBookingService) {}
 
   @Post('user')
-  async createUserBooking(@Body('data') data: StorefrontUserBookingDto) {
+  async createUserBooking(@Body() data: StorefrontUserBookingDto) {
     return this.service.createUserBooking(data);
   }
 
   @Post('guest')
-  async createGuestBooking(@Body('data') data: StorefrontGuestBookingDto) {
+  async createGuestBooking(@Body() data: StorefrontGuestBookingDto) {
     return this.service.createGuestBooking(data);
   }
 }

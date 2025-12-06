@@ -15,6 +15,7 @@ export interface NewBookingEmailDto {
   bookingId: string;
   bookingDate: string;
   vehicle: string;
+  bookingStatus: string;
   totalPrice: string;
   customerName: string;
   customerEmail: string;

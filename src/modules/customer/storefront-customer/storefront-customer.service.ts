@@ -30,9 +30,22 @@ export class StorefrontCustomerService {
         });
 
         if (data.address) {
-          await tx.customerAddress.update({
+          await tx.customerAddress.upsert({
             where: { customerId: existingCustomer.id },
-            data: {
+            update: {
+              street: data.address.street,
+              village: data.address.villageId
+                ? { connect: { id: data.address.villageId } }
+                : undefined,
+              state: data.address.stateId
+                ? { connect: { id: data.address.stateId } }
+                : undefined,
+              country: data.address.countryId
+                ? { connect: { id: data.address.countryId } }
+                : undefined,
+            },
+            create: {
+              customer: { connect: { id: existingCustomer.id } },
               street: data.address.street,
               village: data.address.villageId
                 ? { connect: { id: data.address.villageId } }
@@ -64,14 +77,29 @@ export class StorefrontCustomerService {
           },
         });
 
-        await tx.driverLicense.create({
-          data: {
-            customerId: customer.id,
-            licenseNumber: data.driverLicenseNumber,
-            licenseExpiry: data.licenseExpiry,
-            licenseIssued: data.licenseIssued,
-          },
+        const existingLicense = await tx.driverLicense.findUnique({
+          where: { licenseNumber: data.driverLicenseNumber },
         });
+
+        if (!existingLicense) {
+          await tx.driverLicense.create({
+            data: {
+              customerId: customer.id,
+              licenseNumber: data.driverLicenseNumber,
+              licenseExpiry: data.licenseExpiry,
+              licenseIssued: data.licenseIssued,
+            },
+          });
+        } else {
+          await tx.driverLicense.update({
+            where: { licenseNumber: data.driverLicenseNumber },
+            data: {
+              customerId: customer.id,
+              licenseExpiry: data.licenseExpiry,
+              licenseIssued: data.licenseIssued,
+            },
+          });
+        }
 
         if (data.address) {
           await tx.customerAddress.create({

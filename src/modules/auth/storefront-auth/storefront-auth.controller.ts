@@ -1,9 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { StorefrontAuthService } from './storefront-auth.service.js';
 import { StorefrontAuthDto } from './storefront-auth.dto.js';
 import { EmailLoginDto } from '../dto/email-login.dto.js';
+import { ApiGuard } from '../../../common/guards/api.guard.js';
 
 @Controller('auth/storefront')
+@UseGuards(ApiGuard)
 export class StorefrontAuthController {
   constructor(private readonly service: StorefrontAuthService) {}
 

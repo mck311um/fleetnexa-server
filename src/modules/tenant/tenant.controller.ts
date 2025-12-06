@@ -15,6 +15,7 @@ import type { AuthenticatedRequest } from '../../types/authenticated-request.js'
 import { CreateTenantDto } from './dto/create-tenant.dto.js';
 import { UpdateTenantDto } from './dto/update-tenant.dto.js';
 import { UpdateStorefrontDto } from './dto/update-storefont.dto.js';
+import { ApiGuard } from '../../common/guards/api.guard.js';
 
 @Controller('tenant')
 export class TenantController {
@@ -28,6 +29,7 @@ export class TenantController {
   }
 
   @Get('storefront')
+  @UseGuards(ApiGuard)
   getStorefrontTenants() {
     return this.tenantService.getStorefrontTenants();
   }

@@ -168,39 +168,54 @@ export class StorefrontBookingService {
   }
 
   private async createValuesAndExtras(tx, values, rentalId: string) {
-    await tx.values.create({
+    const { extras, ...valueData } = values;
+
+    const createdValue = await tx.values.create({
       data: {
-        ...values,
+        ...valueData,
         discountPolicy: values.discountPolicy || '',
         rentalId,
       },
     });
 
-    await Promise.all(
-      (values.extras || []).map((extra) =>
-        tx.rentalExtra.create({
-          data: {
-            ...extra,
-          },
-        }),
-      ),
-    );
+    if (extras && extras.length > 0) {
+      await Promise.all(
+        extras.map((extra) =>
+          tx.rentalExtra.create({
+            data: {
+              ...extra,
+              valueId: createdValue.id,
+            },
+          }),
+        ),
+      );
+    }
   }
 
   private async sendNotifications(booking: any) {
-    await this.emailService.sendBookingCompletedEmail(
-      booking.id,
-      booking.tenant,
-    );
+    const tasks = [
+      this.emailService.sendBookingCompletedEmail(booking.id, booking.tenant),
+      this.emailService.sendNewBookingEmail(booking.id, booking.tenant),
+      this.tenantNotification.sendBookingNotification(
+        booking.id,
+        booking.tenant,
+      ),
+    ];
 
-    await this.emailService.sendNewBookingEmail(booking.id, booking.tenant);
+    const results = await Promise.allSettled(tasks);
 
-    await this.tenantNotification.sendBookingNotification(
-      booking.id,
-      booking.tenant,
-    );
+    results.forEach((r, i) => {
+      if (r.status === 'rejected') {
+        this.logger.error(
+          r.reason,
+          `Notification #${i + 1} failed unexpectedly`,
+          {
+            bookingId: booking.id,
+          },
+        );
+      }
+    });
   }
-
   private async getBookingDetails(bookingId: string) {
     return this.prisma.rental.findUnique({
       where: { id: bookingId },
