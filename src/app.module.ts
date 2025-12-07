@@ -17,11 +17,12 @@ import { TenantViolationModule } from './modules/tenant/tenant-violation/tenant-
 import { BookingModule } from './modules/booking/booking.module.js';
 import { StorefrontBookingModule } from './modules/booking/storefront-booking/storefront-booking.module.js';
 import { AdminModule } from './modules/admin/admin.module.js';
-import { VehicleModule } from './modules/vehicles/vehicle.module.js';
+import { VehicleModule } from './modules/vehicle/vehicle.module.js';
 import { StorefrontAuthModule } from './modules/auth/storefront-auth/storefront-auth.module.js';
 import { StorefrontUserModule } from './modules/user/storefront-user/storefront-user.module.js';
 import { StorageModule } from './modules/storage/storage.module.js';
 import { TenantUserModule } from './modules/user/tenant-user/tenant-user.module.js';
+import { VehicleMaintenanceModule } from './modules/vehicle/modules/vehicle-maintenance/vehicle-maintenance.module.js';
 
 @Module({
   imports: [
@@ -29,10 +30,12 @@ import { TenantUserModule } from './modules/user/tenant-user/tenant-user.module.
       isGlobal: true,
     }),
     AdminModule,
-    TenantAuthModule,
+
     StorefrontAuthModule,
     StorefrontUserModule,
     AuthModule,
+    TenantAuthModule,
+
     TenantUserModule,
     TenantLocationModule,
     TenantRatesModule,
@@ -43,9 +46,13 @@ import { TenantUserModule } from './modules/user/tenant-user/tenant-user.module.
     TenantVendorModule,
     TenantViolationModule,
     TenantModule,
+
     StorefrontBookingModule,
     BookingModule,
+
+    VehicleMaintenanceModule,
     VehicleModule,
+
     SocketModule,
     StorageModule,
   ],
