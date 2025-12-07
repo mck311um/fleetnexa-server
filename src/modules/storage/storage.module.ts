@@ -17,6 +17,6 @@ import { TenantUserRepository } from '../user/tenant-user/tenant-user.repository
     TenantRepository,
     TenantUserRepository,
   ],
-  exports: [],
+  exports: [StorageService],
 })
 export class StorageModule {}
