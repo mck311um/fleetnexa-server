@@ -20,6 +20,7 @@ import { AdminModule } from './modules/admin/admin.module.js';
 import { VehicleModule } from './modules/vehicles/vehicle.module.js';
 import { StorefrontAuthModule } from './modules/auth/storefront-auth/storefront-auth.module.js';
 import { StorefrontUserModule } from './modules/user/storefront-user/storefront-user.module.js';
+import { StorageModule } from './modules/storage/storage.module.js';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { StorefrontUserModule } from './modules/user/storefront-user/storefront-
     BookingModule,
     VehicleModule,
     SocketModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
