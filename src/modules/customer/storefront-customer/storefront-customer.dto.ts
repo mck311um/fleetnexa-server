@@ -54,4 +54,7 @@ export class StorefrontCustomerDto {
 
   @IsOptional()
   address?: StorefrontCustomerAddressDto;
+
+  @IsOptional()
+  storefrontId?: string;
 }

@@ -7,11 +7,4 @@ import { ApiGuard } from '../../common/guards/api.guard.js';
 @Controller('booking')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
-
-  @Get('storefront')
-  @UseGuards(StorefrontGuard, ApiGuard)
-  async getStorefrontUserBookings(@Req() req: AuthenticatedRequest) {
-    const userId = req.storefrontUser!.id;
-    return this.bookingService.getStorefrontUserBookings(userId);
-  }
 }

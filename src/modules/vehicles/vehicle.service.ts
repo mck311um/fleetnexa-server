@@ -36,9 +36,6 @@ export class VehicleService {
   }
 
   private async attachTenantExtras(vehicle: any) {
-    this.logger.debug(
-      `Attaching tenant extras to vehicle with tenantId: ${vehicle?.tenantId}`,
-    );
     if (!vehicle?.tenantId) return vehicle;
 
     const tenant = await this.prisma.tenant.findUnique({
@@ -48,10 +45,6 @@ export class VehicleService {
     if (!tenant) return vehicle;
 
     const extras = await this.extrasService.getTenantExtras(tenant);
-
-    this.logger.debug(
-      `Attached ${extras.length} extras to vehicle ID: ${vehicle.id}`,
-    );
 
     return {
       ...vehicle,

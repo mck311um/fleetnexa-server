@@ -21,6 +21,13 @@ export class StorefrontCustomerService {
       });
 
       if (existingCustomer) {
+        await tx.customer.update({
+          where: { id: existingCustomer.id },
+          data: {
+            storefrontId: data.storefrontId || existingCustomer.storefrontId,
+          },
+        });
+
         await tx.driverLicense.update({
           where: { customerId: existingCustomer.id },
           data: {
@@ -74,6 +81,7 @@ export class StorefrontCustomerService {
             updatedAt: new Date(),
             tenantId: tenant.id,
             status: 'ACTIVE',
+            storefrontId: data.storefrontId || '',
           },
         });
 
@@ -87,6 +95,7 @@ export class StorefrontCustomerService {
               customerId: customer.id,
               licenseNumber: data.driverLicenseNumber,
               licenseExpiry: data.licenseExpiry,
+              image: data.license,
               licenseIssued: data.licenseIssued,
             },
           });
@@ -97,6 +106,7 @@ export class StorefrontCustomerService {
               customerId: customer.id,
               licenseExpiry: data.licenseExpiry,
               licenseIssued: data.licenseIssued,
+              image: data.license,
             },
           });
         }
