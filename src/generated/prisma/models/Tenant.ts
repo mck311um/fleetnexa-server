@@ -46,6 +46,9 @@ export type TenantMinAggregateOutputType = {
   tenantName: string | null
   email: string | null
   number: string | null
+  whatsappNumber: string | null
+  whatsappNotifications: boolean | null
+  emailNotifications: boolean | null
   currencyId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -78,6 +81,9 @@ export type TenantMaxAggregateOutputType = {
   tenantName: string | null
   email: string | null
   number: string | null
+  whatsappNumber: string | null
+  whatsappNotifications: boolean | null
+  emailNotifications: boolean | null
   currencyId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -110,6 +116,9 @@ export type TenantCountAggregateOutputType = {
   tenantName: number
   email: number
   number: number
+  whatsappNumber: number
+  whatsappNotifications: number
+  emailNotifications: number
   currencyId: number
   createdAt: number
   updatedAt: number
@@ -158,6 +167,9 @@ export type TenantMinAggregateInputType = {
   tenantName?: true
   email?: true
   number?: true
+  whatsappNumber?: true
+  whatsappNotifications?: true
+  emailNotifications?: true
   currencyId?: true
   createdAt?: true
   updatedAt?: true
@@ -190,6 +202,9 @@ export type TenantMaxAggregateInputType = {
   tenantName?: true
   email?: true
   number?: true
+  whatsappNumber?: true
+  whatsappNotifications?: true
+  emailNotifications?: true
   currencyId?: true
   createdAt?: true
   updatedAt?: true
@@ -222,6 +237,9 @@ export type TenantCountAggregateInputType = {
   tenantName?: true
   email?: true
   number?: true
+  whatsappNumber?: true
+  whatsappNotifications?: true
+  emailNotifications?: true
   currencyId?: true
   createdAt?: true
   updatedAt?: true
@@ -341,6 +359,9 @@ export type TenantGroupByOutputType = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber: string | null
+  whatsappNotifications: boolean
+  emailNotifications: boolean
   currencyId: string | null
   createdAt: Date
   updatedAt: Date | null
@@ -396,6 +417,9 @@ export type TenantWhereInput = {
   tenantName?: Prisma.StringFilter<"Tenant"> | string
   email?: Prisma.StringFilter<"Tenant"> | string
   number?: Prisma.StringFilter<"Tenant"> | string
+  whatsappNumber?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  whatsappNotifications?: Prisma.BoolFilter<"Tenant"> | boolean
+  emailNotifications?: Prisma.BoolFilter<"Tenant"> | boolean
   currencyId?: Prisma.StringNullableFilter<"Tenant"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
@@ -469,6 +493,9 @@ export type TenantOrderByWithRelationInput = {
   tenantName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   number?: Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   currencyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -541,6 +568,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   tenantCode?: string
   email?: string
   number?: string
+  whatsappNumber?: string
   cancellationPolicyId?: string
   latePolicyId?: string
   slug?: string
@@ -548,6 +576,8 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.TenantWhereInput[]
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   tenantName?: Prisma.StringFilter<"Tenant"> | string
+  whatsappNotifications?: Prisma.BoolFilter<"Tenant"> | boolean
+  emailNotifications?: Prisma.BoolFilter<"Tenant"> | boolean
   currencyId?: Prisma.StringNullableFilter<"Tenant"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
@@ -610,7 +640,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   maintenance?: Prisma.VehicleMaintenanceListRelationFilter
   verificationRequest?: Prisma.XOR<Prisma.VerificationRequestNullableScalarRelationFilter, Prisma.VerificationRequestWhereInput> | null
   paymentMethods?: Prisma.PaymentMethodListRelationFilter
-}, "id" | "tenantCode" | "email" | "number" | "cancellationPolicyId" | "latePolicyId" | "slug">
+}, "id" | "tenantCode" | "email" | "number" | "whatsappNumber" | "cancellationPolicyId" | "latePolicyId" | "slug">
 
 export type TenantOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -618,6 +648,9 @@ export type TenantOrderByWithAggregationInput = {
   tenantName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   number?: Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   currencyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -658,6 +691,9 @@ export type TenantScalarWhereWithAggregatesInput = {
   tenantName?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
   email?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
   number?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
+  whatsappNumber?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
+  whatsappNotifications?: Prisma.BoolWithAggregatesFilter<"Tenant"> | boolean
+  emailNotifications?: Prisma.BoolWithAggregatesFilter<"Tenant"> | boolean
   currencyId?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
@@ -690,6 +726,9 @@ export type TenantCreateInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -759,6 +798,9 @@ export type TenantUncheckedCreateInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -828,6 +870,9 @@ export type TenantUpdateInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -897,6 +942,9 @@ export type TenantUncheckedUpdateInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -966,6 +1014,9 @@ export type TenantCreateManyInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -998,6 +1049,9 @@ export type TenantUpdateManyMutationInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1026,6 +1080,9 @@ export type TenantUncheckedUpdateManyInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1073,6 +1130,9 @@ export type TenantCountOrderByAggregateInput = {
   tenantName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   number?: Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrder
+  whatsappNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   currencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1112,6 +1172,9 @@ export type TenantMaxOrderByAggregateInput = {
   tenantName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   number?: Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrder
+  whatsappNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   currencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1144,6 +1207,9 @@ export type TenantMinOrderByAggregateInput = {
   tenantName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   number?: Prisma.SortOrder
+  whatsappNumber?: Prisma.SortOrder
+  whatsappNotifications?: Prisma.SortOrder
+  emailNotifications?: Prisma.SortOrder
   currencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1884,6 +1950,9 @@ export type TenantCreateWithoutInvoiceSequenceInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -1952,6 +2021,9 @@ export type TenantUncheckedCreateWithoutInvoiceSequenceInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -2049,6 +2121,9 @@ export type TenantScalarWhereInput = {
   tenantName?: Prisma.StringFilter<"Tenant"> | string
   email?: Prisma.StringFilter<"Tenant"> | string
   number?: Prisma.StringFilter<"Tenant"> | string
+  whatsappNumber?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  whatsappNotifications?: Prisma.BoolFilter<"Tenant"> | boolean
+  emailNotifications?: Prisma.BoolFilter<"Tenant"> | boolean
   currencyId?: Prisma.StringNullableFilter<"Tenant"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
@@ -2081,6 +2156,9 @@ export type TenantCreateWithoutCustomersInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -2149,6 +2227,9 @@ export type TenantUncheckedCreateWithoutCustomersInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -2233,6 +2314,9 @@ export type TenantUpdateWithoutCustomersInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2301,6 +2385,9 @@ export type TenantUncheckedUpdateWithoutCustomersInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2369,6 +2456,9 @@ export type TenantCreateWithoutCustomerViolationsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -2437,6 +2527,9 @@ export type TenantUncheckedCreateWithoutCustomerViolationsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -2521,6 +2614,9 @@ export type TenantUpdateWithoutCustomerViolationsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2589,6 +2685,9 @@ export type TenantUncheckedUpdateWithoutCustomerViolationsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2657,6 +2756,9 @@ export type TenantCreateWithoutMerchantInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -2725,6 +2827,9 @@ export type TenantUncheckedCreateWithoutMerchantInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -2809,6 +2914,9 @@ export type TenantUpdateWithoutMerchantInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2877,6 +2985,9 @@ export type TenantUncheckedUpdateWithoutMerchantInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2945,6 +3056,9 @@ export type TenantCreateWithoutCurrencyInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -3013,6 +3127,9 @@ export type TenantUncheckedCreateWithoutCurrencyInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -3107,6 +3224,9 @@ export type TenantCreateWithoutCurrencyRatesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -3175,6 +3295,9 @@ export type TenantUncheckedCreateWithoutCurrencyRatesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -3259,6 +3382,9 @@ export type TenantUpdateWithoutCurrencyRatesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3327,6 +3453,9 @@ export type TenantUncheckedUpdateWithoutCurrencyRatesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3395,6 +3524,9 @@ export type TenantCreateWithoutFormsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -3463,6 +3595,9 @@ export type TenantUncheckedCreateWithoutFormsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -3547,6 +3682,9 @@ export type TenantUpdateWithoutFormsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3615,6 +3753,9 @@ export type TenantUncheckedUpdateWithoutFormsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3683,6 +3824,9 @@ export type TenantCreateWithoutRentalActivityInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -3751,6 +3895,9 @@ export type TenantUncheckedCreateWithoutRentalActivityInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -3835,6 +3982,9 @@ export type TenantUpdateWithoutRentalActivityInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3903,6 +4053,9 @@ export type TenantUncheckedUpdateWithoutRentalActivityInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3971,6 +4124,9 @@ export type TenantCreateWithoutNotificationsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -4039,6 +4195,9 @@ export type TenantUncheckedCreateWithoutNotificationsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -4123,6 +4282,9 @@ export type TenantUpdateWithoutNotificationsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4191,6 +4353,9 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4259,6 +4424,9 @@ export type TenantCreateWithoutRentalsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -4327,6 +4495,9 @@ export type TenantUncheckedCreateWithoutRentalsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -4411,6 +4582,9 @@ export type TenantUpdateWithoutRentalsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4479,6 +4653,9 @@ export type TenantUncheckedUpdateWithoutRentalsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4547,6 +4724,9 @@ export type TenantCreateWithoutInvoicesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -4615,6 +4795,9 @@ export type TenantUncheckedCreateWithoutInvoicesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -4699,6 +4882,9 @@ export type TenantUpdateWithoutInvoicesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4767,6 +4953,9 @@ export type TenantUncheckedUpdateWithoutInvoicesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4835,6 +5024,9 @@ export type TenantCreateWithoutAgreementsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -4903,6 +5095,9 @@ export type TenantUncheckedCreateWithoutAgreementsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -4987,6 +5182,9 @@ export type TenantUpdateWithoutAgreementsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5055,6 +5253,9 @@ export type TenantUncheckedUpdateWithoutAgreementsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5123,6 +5324,9 @@ export type TenantCreateWithoutChargesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -5191,6 +5395,9 @@ export type TenantUncheckedCreateWithoutChargesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -5275,6 +5482,9 @@ export type TenantUpdateWithoutChargesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5343,6 +5553,9 @@ export type TenantUncheckedUpdateWithoutChargesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5411,6 +5624,9 @@ export type TenantCreateWithoutWeeklyStatsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -5479,6 +5695,9 @@ export type TenantUncheckedCreateWithoutWeeklyStatsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -5563,6 +5782,9 @@ export type TenantUpdateWithoutWeeklyStatsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5631,6 +5853,9 @@ export type TenantUncheckedUpdateWithoutWeeklyStatsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5699,6 +5924,9 @@ export type TenantCreateWithoutYearlyStatsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -5767,6 +5995,9 @@ export type TenantUncheckedCreateWithoutYearlyStatsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -5851,6 +6082,9 @@ export type TenantUpdateWithoutYearlyStatsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5919,6 +6153,9 @@ export type TenantUncheckedUpdateWithoutYearlyStatsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5987,6 +6224,9 @@ export type TenantCreateWithoutMonthlyStatsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -6055,6 +6295,9 @@ export type TenantUncheckedCreateWithoutMonthlyStatsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -6139,6 +6382,9 @@ export type TenantUpdateWithoutMonthlyStatsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6207,6 +6453,9 @@ export type TenantUncheckedUpdateWithoutMonthlyStatsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6275,6 +6524,9 @@ export type TenantCreateWithoutMonthlyRentalStatsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -6343,6 +6595,9 @@ export type TenantUncheckedCreateWithoutMonthlyRentalStatsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -6427,6 +6682,9 @@ export type TenantUpdateWithoutMonthlyRentalStatsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6495,6 +6753,9 @@ export type TenantUncheckedUpdateWithoutMonthlyRentalStatsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6563,6 +6824,9 @@ export type TenantCreateWithoutRatingsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -6631,6 +6895,9 @@ export type TenantUncheckedCreateWithoutRatingsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -6715,6 +6982,9 @@ export type TenantUpdateWithoutRatingsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6783,6 +7053,9 @@ export type TenantUncheckedUpdateWithoutRatingsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6851,6 +7124,9 @@ export type TenantCreateWithoutEmailTokensInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -6919,6 +7195,9 @@ export type TenantUncheckedCreateWithoutEmailTokensInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -7003,6 +7282,9 @@ export type TenantUpdateWithoutEmailTokensInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7071,6 +7353,9 @@ export type TenantUncheckedUpdateWithoutEmailTokensInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7139,6 +7424,9 @@ export type TenantCreateWithoutPaymentMethodsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -7207,6 +7495,9 @@ export type TenantUncheckedCreateWithoutPaymentMethodsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -7296,6 +7587,9 @@ export type TenantCreateWithoutAddressInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -7364,6 +7658,9 @@ export type TenantUncheckedCreateWithoutAddressInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -7448,6 +7745,9 @@ export type TenantUpdateWithoutAddressInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7516,6 +7816,9 @@ export type TenantUncheckedUpdateWithoutAddressInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7584,6 +7887,9 @@ export type TenantCreateWithoutTenantLocationsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -7652,6 +7958,9 @@ export type TenantUncheckedCreateWithoutTenantLocationsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -7736,6 +8045,9 @@ export type TenantUpdateWithoutTenantLocationsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7804,6 +8116,9 @@ export type TenantUncheckedUpdateWithoutTenantLocationsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7872,6 +8187,9 @@ export type TenantCreateWithoutInsuranceInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -7940,6 +8258,9 @@ export type TenantUncheckedCreateWithoutInsuranceInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -8024,6 +8345,9 @@ export type TenantUpdateWithoutInsuranceInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8092,6 +8416,9 @@ export type TenantUncheckedUpdateWithoutInsuranceInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8160,6 +8487,9 @@ export type TenantCreateWithoutEquipmentInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -8228,6 +8558,9 @@ export type TenantUncheckedCreateWithoutEquipmentInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -8312,6 +8645,9 @@ export type TenantUpdateWithoutEquipmentInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8380,6 +8716,9 @@ export type TenantUncheckedUpdateWithoutEquipmentInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8448,6 +8787,9 @@ export type TenantCreateWithoutServicesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -8516,6 +8858,9 @@ export type TenantUncheckedCreateWithoutServicesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -8600,6 +8945,9 @@ export type TenantUpdateWithoutServicesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8668,6 +9016,9 @@ export type TenantUncheckedUpdateWithoutServicesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -8736,6 +9087,9 @@ export type TenantCreateWithoutSubscriptionInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -8804,6 +9158,9 @@ export type TenantUncheckedCreateWithoutSubscriptionInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -8888,6 +9245,9 @@ export type TenantUpdateWithoutSubscriptionInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8956,6 +9316,9 @@ export type TenantUncheckedUpdateWithoutSubscriptionInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9024,6 +9387,9 @@ export type TenantCreateWithoutContactsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -9092,6 +9458,9 @@ export type TenantUncheckedCreateWithoutContactsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -9176,6 +9545,9 @@ export type TenantUpdateWithoutContactsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9244,6 +9616,9 @@ export type TenantUncheckedUpdateWithoutContactsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9312,6 +9687,9 @@ export type TenantCreateWithoutRemindersInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -9380,6 +9758,9 @@ export type TenantUncheckedCreateWithoutRemindersInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -9464,6 +9845,9 @@ export type TenantUpdateWithoutRemindersInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9532,6 +9916,9 @@ export type TenantUncheckedUpdateWithoutRemindersInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9600,6 +9987,9 @@ export type TenantCreateWithoutCancellationPolicyInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -9668,6 +10058,9 @@ export type TenantUncheckedCreateWithoutCancellationPolicyInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -9752,6 +10145,9 @@ export type TenantUpdateWithoutCancellationPolicyInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9820,6 +10216,9 @@ export type TenantUncheckedUpdateWithoutCancellationPolicyInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9888,6 +10287,9 @@ export type TenantCreateWithoutLatePolicyInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -9956,6 +10358,9 @@ export type TenantUncheckedCreateWithoutLatePolicyInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -10040,6 +10445,9 @@ export type TenantUpdateWithoutLatePolicyInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10108,6 +10516,9 @@ export type TenantUncheckedUpdateWithoutLatePolicyInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10176,6 +10587,9 @@ export type TenantCreateWithoutViolationsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -10244,6 +10658,9 @@ export type TenantUncheckedCreateWithoutViolationsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -10328,6 +10745,9 @@ export type TenantUpdateWithoutViolationsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10396,6 +10816,9 @@ export type TenantUncheckedUpdateWithoutViolationsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10464,6 +10887,9 @@ export type TenantCreateWithoutVendorsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -10532,6 +10958,9 @@ export type TenantUncheckedCreateWithoutVendorsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -10616,6 +11045,9 @@ export type TenantUpdateWithoutVendorsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10684,6 +11116,9 @@ export type TenantUncheckedUpdateWithoutVendorsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -10752,6 +11187,9 @@ export type TenantCreateWithoutVerificationRequestInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -10820,6 +11258,9 @@ export type TenantUncheckedCreateWithoutVerificationRequestInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -10904,6 +11345,9 @@ export type TenantUpdateWithoutVerificationRequestInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10972,6 +11416,9 @@ export type TenantUncheckedUpdateWithoutVerificationRequestInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11040,6 +11487,9 @@ export type TenantCreateWithoutTransactionsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -11108,6 +11558,9 @@ export type TenantUncheckedCreateWithoutTransactionsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -11192,6 +11645,9 @@ export type TenantUpdateWithoutTransactionsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11260,6 +11716,9 @@ export type TenantUncheckedUpdateWithoutTransactionsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11328,6 +11787,9 @@ export type TenantCreateWithoutPaymentsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -11396,6 +11858,9 @@ export type TenantUncheckedCreateWithoutPaymentsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -11480,6 +11945,9 @@ export type TenantUpdateWithoutPaymentsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11548,6 +12016,9 @@ export type TenantUncheckedUpdateWithoutPaymentsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11616,6 +12087,9 @@ export type TenantCreateWithoutRefundsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -11684,6 +12158,9 @@ export type TenantUncheckedCreateWithoutRefundsInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -11768,6 +12245,9 @@ export type TenantUpdateWithoutRefundsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11836,6 +12316,9 @@ export type TenantUncheckedUpdateWithoutRefundsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11904,6 +12387,9 @@ export type TenantCreateWithoutExpensesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -11972,6 +12458,9 @@ export type TenantUncheckedCreateWithoutExpensesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -12056,6 +12545,9 @@ export type TenantUpdateWithoutExpensesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12124,6 +12616,9 @@ export type TenantUncheckedUpdateWithoutExpensesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12192,6 +12687,9 @@ export type TenantCreateWithoutUsersInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -12260,6 +12758,9 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -12344,6 +12845,9 @@ export type TenantUpdateWithoutUsersInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12412,6 +12916,9 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12480,6 +12987,9 @@ export type TenantCreateWithoutUserRolesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -12548,6 +13058,9 @@ export type TenantUncheckedCreateWithoutUserRolesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -12632,6 +13145,9 @@ export type TenantUpdateWithoutUserRolesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12700,6 +13216,9 @@ export type TenantUncheckedUpdateWithoutUserRolesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12768,6 +13287,9 @@ export type TenantCreateWithoutVehiclesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -12836,6 +13358,9 @@ export type TenantUncheckedCreateWithoutVehiclesInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -12920,6 +13445,9 @@ export type TenantUpdateWithoutVehiclesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12988,6 +13516,9 @@ export type TenantUncheckedUpdateWithoutVehiclesInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -13056,6 +13587,9 @@ export type TenantCreateWithoutMaintenanceInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -13124,6 +13658,9 @@ export type TenantUncheckedCreateWithoutMaintenanceInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -13208,6 +13745,9 @@ export type TenantUpdateWithoutMaintenanceInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13276,6 +13816,9 @@ export type TenantUncheckedUpdateWithoutMaintenanceInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -13344,6 +13887,9 @@ export type TenantCreateManyInvoiceSequenceInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -13375,6 +13921,9 @@ export type TenantUpdateWithoutInvoiceSequenceInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13443,6 +13992,9 @@ export type TenantUncheckedUpdateWithoutInvoiceSequenceInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -13511,6 +14063,9 @@ export type TenantUncheckedUpdateManyWithoutInvoiceSequenceInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -13542,6 +14097,9 @@ export type TenantCreateManyCurrencyInput = {
   tenantName: string
   email: string
   number: string
+  whatsappNumber?: string | null
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string | null
   logo?: string | null
@@ -13573,6 +14131,9 @@ export type TenantUpdateWithoutCurrencyInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13641,6 +14202,9 @@ export type TenantUncheckedUpdateWithoutCurrencyInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13709,6 +14273,9 @@ export type TenantUncheckedUpdateManyWithoutCurrencyInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13740,6 +14307,9 @@ export type TenantUpdateWithoutPaymentMethodsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13808,6 +14378,9 @@ export type TenantUncheckedUpdateWithoutPaymentMethodsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -13876,6 +14449,9 @@ export type TenantUncheckedUpdateManyWithoutPaymentMethodsInput = {
   tenantName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14227,6 +14803,9 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   tenantName?: boolean
   email?: boolean
   number?: boolean
+  whatsappNumber?: boolean
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -14301,6 +14880,9 @@ export type TenantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   tenantName?: boolean
   email?: boolean
   number?: boolean
+  whatsappNumber?: boolean
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -14337,6 +14919,9 @@ export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   tenantName?: boolean
   email?: boolean
   number?: boolean
+  whatsappNumber?: boolean
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -14373,6 +14958,9 @@ export type TenantSelectScalar = {
   tenantName?: boolean
   email?: boolean
   number?: boolean
+  whatsappNumber?: boolean
+  whatsappNotifications?: boolean
+  emailNotifications?: boolean
   currencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -14399,7 +14987,7 @@ export type TenantSelectScalar = {
   startTime?: boolean
 }
 
-export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantCode" | "tenantName" | "email" | "number" | "currencyId" | "createdAt" | "updatedAt" | "logo" | "setupCompleted" | "financialYearStart" | "invoiceSequenceId" | "invoiceFootNotes" | "storefrontEnabled" | "subscriptionId" | "securityDeposit" | "rating" | "description" | "cancellationPolicyId" | "latePolicyId" | "additionalDriverFee" | "daysInMonth" | "slug" | "merchantId" | "businessVerified" | "emailVerified" | "isDeleted" | "endTime" | "startTime", ExtArgs["result"]["tenant"]>
+export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantCode" | "tenantName" | "email" | "number" | "whatsappNumber" | "whatsappNotifications" | "emailNotifications" | "currencyId" | "createdAt" | "updatedAt" | "logo" | "setupCompleted" | "financialYearStart" | "invoiceSequenceId" | "invoiceFootNotes" | "storefrontEnabled" | "subscriptionId" | "securityDeposit" | "rating" | "description" | "cancellationPolicyId" | "latePolicyId" | "additionalDriverFee" | "daysInMonth" | "slug" | "merchantId" | "businessVerified" | "emailVerified" | "isDeleted" | "endTime" | "startTime", ExtArgs["result"]["tenant"]>
 export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   address?: boolean | Prisma.Tenant$addressArgs<ExtArgs>
   customers?: boolean | Prisma.Tenant$customersArgs<ExtArgs>
@@ -14508,6 +15096,9 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     tenantName: string
     email: string
     number: string
+    whatsappNumber: string | null
+    whatsappNotifications: boolean
+    emailNotifications: boolean
     currencyId: string | null
     createdAt: Date
     updatedAt: Date | null
@@ -15001,6 +15592,9 @@ export interface TenantFieldRefs {
   readonly tenantName: Prisma.FieldRef<"Tenant", 'String'>
   readonly email: Prisma.FieldRef<"Tenant", 'String'>
   readonly number: Prisma.FieldRef<"Tenant", 'String'>
+  readonly whatsappNumber: Prisma.FieldRef<"Tenant", 'String'>
+  readonly whatsappNotifications: Prisma.FieldRef<"Tenant", 'Boolean'>
+  readonly emailNotifications: Prisma.FieldRef<"Tenant", 'Boolean'>
   readonly currencyId: Prisma.FieldRef<"Tenant", 'String'>
   readonly createdAt: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Tenant", 'DateTime'>

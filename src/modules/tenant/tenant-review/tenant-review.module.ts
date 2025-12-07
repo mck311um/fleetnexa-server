@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TenantReviewService } from './tenant-review.service.js';
 import { TenantReviewController } from './tenant-review.controller.js';
 import { TenantRepository } from '../tenant.repository.js';
-import { TenantUserRepository } from '../../../modules/user/tenant/tenant-user.repository.js';
+import { TenantUserRepository } from '../../user/tenant-user/tenant-user.repository.js';
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 
 @Module({

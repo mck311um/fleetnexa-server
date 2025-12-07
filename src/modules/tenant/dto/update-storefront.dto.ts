@@ -7,4 +7,10 @@ export class UpdateStorefrontDto {
   @IsString()
   @ValidateIf((o) => o.storefrontEnabled === true)
   description: string;
+
+  @IsBoolean()
+  whatsappNotifications: boolean;
+
+  @IsBoolean()
+  emailNotifications: boolean;
 }

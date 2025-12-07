@@ -5,7 +5,7 @@ import { StorageService } from './storage.service.js';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
 import { ApiGuard } from '../../common/guards/api.guard.js';
 import { TenantRepository } from '../tenant/tenant.repository.js';
-import { TenantUserRepository } from '../user/tenant/tenant-user.repository.js';
+import { TenantUserRepository } from '../user/tenant-user/tenant-user.repository.js';
 
 @Module({
   imports: [AwsModule],

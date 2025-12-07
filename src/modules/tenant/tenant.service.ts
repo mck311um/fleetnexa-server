@@ -7,14 +7,15 @@ import {
 import { GeneratorService } from '../../common/generator/generator.service.js';
 import { Tenant, User } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { TenantUserService } from '../user/tenant/tenant-user.service.js';
+import { TenantUserService } from '../user/tenant-user/tenant-user.service.js';
 import { UserRoleService } from '../user/user-role/user-role.service.js';
 import { CreateTenantDto } from './dto/create-tenant.dto.js';
 import { TenantExtraService } from './tenant-extra/tenant-extra.service.js';
 import { TenantLocationService } from './tenant-location/tenant-location.service.js';
 import { TenantRepository } from './tenant.repository.js';
 import { UpdateTenantDto } from './dto/update-tenant.dto.js';
-import { UpdateStorefrontDto } from './dto/update-storefont.dto.js';
+import { UpdateStorefrontDto } from './dto/update-storefront.dto.js';
+import { TenantNotificationService } from './tenant-notification/tenant-notification.service.js';
 
 @Injectable()
 export class TenantService {
@@ -28,16 +29,23 @@ export class TenantService {
     private readonly userService: TenantUserService,
     private readonly extraService: TenantExtraService,
     private readonly tenantRepo: TenantRepository,
+    private readonly notifications: TenantNotificationService,
   ) {}
 
-  async getCurrentTenant(tenant: Tenant) {
+  async getCurrentTenant(tenant: Tenant, user: User) {
     try {
       const extras = await this.extraService.getTenantExtras(tenant);
+      const notifications = await this.notifications.getTenantNotifications(
+        tenant,
+        user,
+      );
 
       const data = {
         tenant,
         extras,
+        notifications,
       };
+
       return data;
     } catch (error) {
       this.logger.error('Failed to get current tenant', error);
@@ -142,7 +150,10 @@ export class TenantService {
 
       return tenant;
     } catch (error) {
-      this.logger.error('Failed to create tenant', error);
+      this.logger.error(error, 'Failed to create tenant', {
+        email: data.companyEmail,
+        tenantName: data.tenantName,
+      });
       throw error;
     }
   }
@@ -176,6 +187,7 @@ export class TenantService {
             invoiceSequenceId: data.invoiceSequenceId,
             logo: data.logo,
             number: data.number,
+            whatsappNumber: data.whatsappNumber,
             tenantName: data.tenantName,
             financialYearStart: data.financialYearStart,
             setupCompleted: true,
@@ -268,6 +280,13 @@ export class TenantService {
           });
         }
       });
+
+      const updateTenant = await this.tenantRepo.getTenantById(tenant.id);
+
+      return {
+        message: 'Settings updated successfully',
+        tenant: updateTenant,
+      };
     } catch (error) {
       this.logger.error('Failed to update tenant', error);
       throw error;
@@ -281,6 +300,8 @@ export class TenantService {
         data: {
           storefrontEnabled: data.storefrontEnabled,
           description: data.description,
+          whatsappNotifications: data.whatsappNotifications,
+          emailNotifications: data.emailNotifications,
         },
       });
 
@@ -290,8 +311,19 @@ export class TenantService {
           data: { storefrontEnabled: false },
         });
       }
+
+      const updatedTenant = await this.tenantRepo.getTenantById(tenant.id);
+
+      return {
+        message: 'Storefront settings updated successfully',
+        tenant: updatedTenant,
+      };
     } catch (error) {
-      this.logger.error('Failed to update storefront settings', error);
+      this.logger.error(error, 'Failed to update storefront settings', {
+        tenantCode: tenant.tenantCode,
+        tenantId: tenant.id,
+        data,
+      });
       throw error;
     }
   }

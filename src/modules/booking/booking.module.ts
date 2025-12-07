@@ -4,7 +4,7 @@ import { PrismaModule } from '../../prisma/prisma.module.js';
 import { BookingRepository } from './booking.repository.js';
 import { BookingController } from './booking.controller.js';
 import { TenantRepository } from '../tenant/tenant.repository.js';
-import { TenantUserRepository } from '../user/tenant/tenant-user.repository.js';
+import { TenantUserRepository } from '../user/tenant-user/tenant-user.repository.js';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
 import { StorefrontGuard } from '../../common/guards/storefront.guard.js';
 

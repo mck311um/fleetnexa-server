@@ -59,6 +59,10 @@ export class UpdateTenantDto {
   @IsNotEmpty()
   number: string;
 
+  @IsString()
+  @IsNotEmpty()
+  whatsappNumber: string;
+
   @IsUrl()
   @IsNotEmpty()
   logo: string;
@@ -99,8 +103,8 @@ export class UpdateTenantDto {
   payableTo: string;
 
   @IsString()
-  @IsNotEmpty()
-  invoiceFootNotes: string;
+  @IsOptional()
+  invoiceFootNotes?: string;
 
   @IsNumber()
   @IsNotEmpty()

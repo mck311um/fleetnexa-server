@@ -21,6 +21,7 @@ import { VehicleModule } from './modules/vehicles/vehicle.module.js';
 import { StorefrontAuthModule } from './modules/auth/storefront-auth/storefront-auth.module.js';
 import { StorefrontUserModule } from './modules/user/storefront-user/storefront-user.module.js';
 import { StorageModule } from './modules/storage/storage.module.js';
+import { TenantUserModule } from './modules/user/tenant-user/tenant-user.module.js';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { StorageModule } from './modules/storage/storage.module.js';
     StorefrontAuthModule,
     StorefrontUserModule,
     AuthModule,
+    TenantUserModule,
     TenantLocationModule,
     TenantRatesModule,
     TenantActivityModule,

@@ -14,7 +14,7 @@ import { AuthGuard } from '../../common/guards/auth.guard.js';
 import type { AuthenticatedRequest } from '../../types/authenticated-request.js';
 import { CreateTenantDto } from './dto/create-tenant.dto.js';
 import { UpdateTenantDto } from './dto/update-tenant.dto.js';
-import { UpdateStorefrontDto } from './dto/update-storefont.dto.js';
+import { UpdateStorefrontDto } from './dto/update-storefront.dto.js';
 import { ApiGuard } from '../../common/guards/api.guard.js';
 
 @Controller('tenant')
@@ -24,8 +24,8 @@ export class TenantController {
   @Get()
   @UseGuards(AuthGuard)
   getCurrentTenant(@Req() req: AuthenticatedRequest) {
-    const tenant = req.context.tenant!;
-    return this.tenantService.getCurrentTenant(tenant);
+    const { tenant, user } = req.context;
+    return this.tenantService.getCurrentTenant(tenant, user);
   }
 
   @Get('storefront')
@@ -40,7 +40,7 @@ export class TenantController {
   }
 
   @Post()
-  createTenant(@Body('data') data: CreateTenantDto) {
+  createTenant(@Body() data: CreateTenantDto) {
     return this.tenantService.createTenant(data);
   }
 
@@ -48,7 +48,7 @@ export class TenantController {
   @UseGuards(AuthGuard)
   updateTenant(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: UpdateTenantDto,
+    @Body() data: UpdateTenantDto,
   ) {
     const tenant = req.context.tenant!;
     return this.tenantService.updateTenant(data, tenant);
@@ -58,7 +58,7 @@ export class TenantController {
   @UseGuards(AuthGuard)
   updateStorefront(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: UpdateStorefrontDto,
+    @Body() data: UpdateStorefrontDto,
   ) {
     const tenant = req.context.tenant!;
     return this.tenantService.updateStorefront(data, tenant);

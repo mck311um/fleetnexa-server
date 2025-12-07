@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TenantRepository } from '../../modules/tenant/tenant.repository.js';
-import { TenantUserRepository } from '../../modules/user/tenant/tenant-user.repository.js';
+import { TenantUserRepository } from '../../modules/user/tenant-user/tenant-user.repository.js';
 import {
   AuthenticatedRequest,
   UserPayload,

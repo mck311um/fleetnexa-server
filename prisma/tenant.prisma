@@ -4,6 +4,9 @@ model Tenant {
   tenantName           String
   email                String                     @unique
   number               String                     @unique
+  whatsappNumber       String?                    @unique
+  whatsappNotifications Boolean                    @default(false)
+  emailNotifications    Boolean                    @default(true)
   currencyId           String?
   createdAt            DateTime                   @default(now())
   updatedAt            DateTime?                  @updatedAt
@@ -23,8 +26,8 @@ model Tenant {
   daysInMonth          Int                        @default(28)
   slug                 String?                    @unique
   merchantId           String?
-  businessVerified     Boolean                    @default(false)
-  emailVerified        Boolean                    @default(false)
+  businessVerified      Boolean                    @default(false)
+  emailVerified         Boolean                    @default(false)
   isDeleted            Boolean                    @default(false)
   endTime              String?                    @default("11:30 PM")
   startTime            String?                    @default("12:00 AM")
@@ -53,7 +56,7 @@ model Tenant {
   tenantLocations      TenantLocation[]
   monthlyRentalStats   TenantMonthlyRentalStats[]
   monthlyStats         TenantMonthlyStats[]
-  notifications        TenantNotification[]
+  notifications         TenantNotification[]
   ratings              TenantRatings[]
   reminders            TenantReminders[]
   services             TenantService[]
@@ -67,7 +70,7 @@ model Tenant {
   userRoles            UserRole[]
   vehicles             Vehicle[]
   maintenance          VehicleMaintenance[]
-  verificationRequest  VerificationRequest?
+  verificationRequest   VerificationRequest?
   paymentMethods       PaymentMethod[]            @relation("PaymentMethodToTenant")
 }
 
