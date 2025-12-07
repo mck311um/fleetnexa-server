@@ -30,11 +30,13 @@ export class TenantService {
     private readonly extraService: TenantExtraService,
     private readonly tenantRepo: TenantRepository,
     private readonly notifications: TenantNotificationService,
+    private readonly locations: TenantLocationService,
   ) {}
 
   async getCurrentTenant(tenant: Tenant, user: User) {
     try {
       const extras = await this.extraService.getTenantExtras(tenant);
+      const locations = await this.locations.getAllTenantLocations(tenant);
       const notifications = await this.notifications.getTenantNotifications(
         tenant,
         user,
@@ -43,6 +45,7 @@ export class TenantService {
       const data = {
         tenant,
         extras,
+        locations,
         notifications,
       };
 

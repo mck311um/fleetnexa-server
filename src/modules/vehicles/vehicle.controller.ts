@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { ApiGuard } from '../../common/guards/api.guard.js';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
 import type { AuthenticatedRequest } from '../../types/authenticated-request.js';
 import { VehicleStatusDto } from './dto/vehicle-status.dto.js';
+import { VehicleDto } from './dto/vehicle.dto.js';
 
 @Controller('vehicle')
 export class VehicleController {
@@ -44,6 +46,26 @@ export class VehicleController {
   ) {
     const { tenant } = req.context;
     return this.service.getVehicleById(id, tenant);
+  }
+
+  @Post()
+  @UseGuards(AuthGuard)
+  async createVehicle(
+    @Req() req: AuthenticatedRequest,
+    @Body() data: VehicleDto,
+  ) {
+    const { tenant, user } = req.context;
+    return this.service.addVehicle(data, tenant, user);
+  }
+
+  @Put()
+  @UseGuards(AuthGuard)
+  async updateVehicle(
+    @Req() req: AuthenticatedRequest,
+    @Body() data: VehicleDto,
+  ) {
+    const { tenant, user } = req.context;
+    return this.service.updateVehicle(data, tenant, user);
   }
 
   @Patch('status')

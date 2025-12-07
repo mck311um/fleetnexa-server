@@ -184,6 +184,12 @@ export class VehicleService {
           );
         }
       });
+
+      const vehicles = await this.vehicleRepo.getVehicles(tenant.id);
+      return {
+        message: 'Vehicle added successfully',
+        vehicles,
+      };
     } catch (error) {
       this.logger.error(error, 'Failed to add vehicle', {
         tenantId: tenant.id,
