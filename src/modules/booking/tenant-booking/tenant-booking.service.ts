@@ -328,18 +328,19 @@ export class TenantBookingService {
         throw new NotFoundException('Booking not found');
       }
 
-      const updatedBooking = await this.prisma.$transaction(async (tx) => {
-        await this.updateBookingStatus(
-          data.bookingId,
-          RentalStatus.CONFIRMED,
-          tenant,
-          user,
-        );
+      await this.updateBookingStatus(
+        data.bookingId,
+        RentalStatus.CONFIRMED,
+        tenant,
+        user,
+      );
 
-        await this.createRentalActivity(data, tenant, user, new Date());
+      await this.createRentalActivity(data, tenant, user, new Date());
 
-        return this.bookingRepo.getBookingById(data.bookingId, tenant.id);
-      });
+      const updatedBooking = await this.bookingRepo.getBookingById(
+        data.bookingId,
+        tenant.id,
+      );
 
       await this.documentService.generateInvoice(
         updatedBooking?.id || '',

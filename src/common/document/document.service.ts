@@ -1,5 +1,5 @@
-import { Logger, NotFoundException } from '@nestjs/common';
-import { PrismaClient, Tenant, User } from '../../generated/prisma/client.js';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Tenant, User } from '../../generated/prisma/client.js';
 import { GeneratorService } from '../generator/generator.service.js';
 import { TenantExtraService } from '../../modules/tenant/tenant-extra/tenant-extra.service.js';
 import { CustomerService } from '../../modules/customer/customer.service.js';
@@ -13,11 +13,13 @@ import {
 import { format, toZonedTime } from 'date-fns-tz';
 import { FormatterService } from '../formatter/formatter.service.js';
 import { PdfService } from '../pdf/pdf.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 
+@Injectable()
 export class DocumentService {
   private readonly logger = new Logger(DocumentService.name);
   constructor(
-    private readonly prisma: PrismaClient,
+    private readonly prisma: PrismaService,
     private readonly generator: GeneratorService,
     private readonly formatter: FormatterService,
     private readonly tenantExtraService: TenantExtraService,
