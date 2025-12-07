@@ -34,6 +34,30 @@ export interface NewBookingEmailDto {
   securityDeposit: string;
 }
 
+export interface BookingConfirmationEmailDto {
+  bookingId: string;
+  startDate: string;
+  endDate: string;
+  pickupTime: string;
+  pickupLocation: string;
+  totalPrice: string;
+  tenantName: string;
+  phone: string;
+  vehicle: string;
+  email: string;
+  invoiceUrl?: string;
+  agreementUrl?: string;
+}
+
+export interface BookingDeclinedEmailDto {
+  bookingId: string;
+  startDate: string;
+  endDate: string;
+  vehicle: string;
+  tenantName: string;
+  declineReason?: string;
+}
+
 interface BookingAddition {
   name: string;
   quantity: number;

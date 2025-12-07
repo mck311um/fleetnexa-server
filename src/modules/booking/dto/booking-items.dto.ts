@@ -26,6 +26,17 @@ export class BookingExtrasDto {
   valuesId: string;
 }
 
+export class BookingDriverDto {
+  @IsUUID()
+  id: string;
+
+  @IsString()
+  driverId: string;
+
+  @IsBoolean()
+  isPrimary: boolean;
+}
+
 export class BookingValuesDto {
   @IsUUID()
   id: string;

@@ -7,6 +7,8 @@ import { SendEmailDto } from '../notify/dto/send-email.dto.js';
 import { CustomerService } from '../../modules/customer/customer.service.js';
 import {
   BookingCompletedEmailDto,
+  BookingConfirmationEmailDto,
+  BookingDeclinedEmailDto,
   NewBookingEmailDto,
 } from '../../types/email.js';
 
@@ -20,6 +22,153 @@ export class EmailService {
     private readonly formatter: FormatterService,
     private readonly customerService: CustomerService,
   ) {}
+
+  async sendBookingConfirmationEmail(
+    bookingId: string,
+    includeInvoice: boolean,
+    includeAgreement: boolean,
+    tenant: Tenant,
+  ) {
+    try {
+      let currency;
+
+      if (!tenant.currencyId) {
+        currency = await this.prisma.currency.findFirst({
+          where: { code: 'USD' },
+        });
+      } else {
+        currency = await this.prisma.currency.findUnique({
+          where: { id: tenant.currencyId },
+        });
+      }
+
+      const booking = await this.prisma.rental.findUnique({
+        where: { id: bookingId },
+        include: {
+          pickup: true,
+          vehicle: {
+            include: {
+              brand: true,
+              model: {
+                include: {
+                  bodyType: true,
+                },
+              },
+              transmission: true,
+            },
+          },
+          invoice: true,
+          agreement: true,
+          values: true,
+        },
+      });
+
+      if (!booking) {
+        throw new NotFoundException('Booking not found');
+      }
+
+      const primaryDriver = await this.customerService.getPrimaryDriver(
+        booking.id,
+      );
+
+      const templateData: BookingConfirmationEmailDto = {
+        bookingId: booking?.bookingCode || '',
+        startDate:
+          this.formatter.formatDateToFriendlyDate(booking?.startDate) || '',
+        pickupTime:
+          this.formatter.formatDateToFriendlyTime(booking?.startDate) || '',
+        endDate:
+          this.formatter.formatDateToFriendlyDate(booking?.endDate) || '',
+        pickupLocation: booking?.pickup.location || '',
+        totalPrice: this.formatter.formatNumberToTenantCurrency(
+          booking?.values?.netTotal || 0,
+          currency?.code || 'USD',
+        ),
+        tenantName: tenant?.tenantName || '',
+        phone: tenant?.number || '',
+        vehicle: this.formatter.formatVehicleToFriendly(booking?.vehicle) || '',
+        email: tenant?.email || '',
+        invoiceUrl: includeInvoice
+          ? booking?.invoice?.invoiceUrl || ''
+          : undefined,
+        agreementUrl: includeAgreement
+          ? booking?.agreement?.agreementUrl || ''
+          : undefined,
+      };
+
+      const payload: SendEmailDto = {
+        recipients: [primaryDriver?.customer.email || ''],
+        cc: [],
+        templateName: 'FleetNexaBookingConfirmation',
+        templateData,
+        sender: 'no-reply@fleetnexa.com',
+        senderName: 'FleetNexa',
+      };
+
+      await this.notify.sendEmail(payload);
+    } catch (error) {
+      this.logger.error('Error sending booking confirmation email', error);
+      throw error;
+    }
+  }
+
+  async sendBookingDeclinedEmail(
+    bookingId: string,
+    tenant: Tenant,
+    declineReason?: string,
+  ) {
+    try {
+      const booking = await this.prisma.rental.findUnique({
+        where: { id: bookingId },
+        include: {
+          vehicle: {
+            include: {
+              brand: true,
+              model: {
+                include: {
+                  bodyType: true,
+                },
+              },
+              transmission: true,
+            },
+          },
+        },
+      });
+
+      if (!booking) {
+        throw new NotFoundException('Booking not found');
+      }
+
+      const primaryDriver = await this.customerService.getPrimaryDriver(
+        booking.id,
+      );
+
+      const templateData: BookingDeclinedEmailDto = {
+        bookingId: booking?.bookingCode || '',
+        startDate:
+          this.formatter.formatDateToFriendlyDate(booking?.startDate) || '',
+        endDate:
+          this.formatter.formatDateToFriendlyDate(booking?.endDate) || '',
+        tenantName: tenant?.tenantName || '',
+        vehicle: this.formatter.formatVehicleToFriendly(booking?.vehicle) || '',
+        declineReason: declineReason || undefined,
+      };
+
+      const payload: SendEmailDto = {
+        recipients: [primaryDriver?.customer.email || ''],
+        cc: [],
+        templateName: 'FleetNexaBookingDeclined',
+        templateData,
+        sender: 'no-reply@fleetnexa.com',
+        senderName: 'FleetNexa',
+      };
+
+      await this.notify.sendEmail(payload);
+    } catch (error) {
+      this.logger.error('Error sending booking confirmation email', error);
+      throw error;
+    }
+  }
 
   async sendBookingCompletedEmail(bookingId: string, tenant: Tenant) {
     try {

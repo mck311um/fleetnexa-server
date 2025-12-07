@@ -25,7 +25,7 @@ export class DocumentService {
     private readonly pdfService: PdfService,
   ) {}
 
-  async generateInvoice(bookingId: any, tenant: Tenant, user: User) {
+  async generateInvoice(bookingId: string, tenant: Tenant, user: User) {
     try {
       let invoiceNumber;
 

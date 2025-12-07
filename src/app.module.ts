@@ -23,6 +23,7 @@ import { StorefrontUserModule } from './modules/user/storefront-user/storefront-
 import { StorageModule } from './modules/storage/storage.module.js';
 import { TenantUserModule } from './modules/user/tenant-user/tenant-user.module.js';
 import { VehicleMaintenanceModule } from './modules/vehicle/modules/vehicle-maintenance/vehicle-maintenance.module.js';
+import { TenantBookingModule } from './modules/booking/tenant-booking/tenant-booking.module.js';
 
 @Module({
   imports: [
@@ -36,6 +37,9 @@ import { VehicleMaintenanceModule } from './modules/vehicle/modules/vehicle-main
     AuthModule,
     TenantAuthModule,
 
+    StorefrontBookingModule,
+    TenantBookingModule,
+
     TenantUserModule,
     TenantLocationModule,
     TenantRatesModule,
@@ -46,9 +50,6 @@ import { VehicleMaintenanceModule } from './modules/vehicle/modules/vehicle-main
     TenantVendorModule,
     TenantViolationModule,
     TenantModule,
-
-    StorefrontBookingModule,
-    BookingModule,
 
     VehicleMaintenanceModule,
     VehicleModule,
