@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  GoneException,
   Injectable,
   Logger,
   NotFoundException,
@@ -29,6 +30,11 @@ export class StorefrontAuthService {
       if (!user) {
         this.logger.warn('Invalid email or password', { email: data.email });
         throw new NotFoundException('Invalid email or password');
+      }
+
+      if (!user.isDeleted) {
+        this.logger.warn('User account is deleted', { email: data.email });
+        throw new GoneException('User account is deleted');
       }
 
       const isMatch = await bcrypt.compare(data.password, user.password);

@@ -6,6 +6,11 @@ import { ApiGuard } from '../../common/guards/api.guard.js';
 export class AdminController {
   constructor(private readonly service: AdminService) {}
 
+  @Get()
+  async getAdminData() {
+    return this.service.getClientData();
+  }
+
   @Get('storefront')
   @UseGuards(ApiGuard)
   async getStorefrontData() {

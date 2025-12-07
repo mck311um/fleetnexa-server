@@ -7,7 +7,7 @@ export class TenantAuthController {
   constructor(private readonly authService: TenantAuthService) {}
 
   @Post('login')
-  createTenant(@Body('data') data: TenantLoginDto) {
+  createTenant(@Body() data: TenantLoginDto) {
     return this.authService.login(data);
   }
 }
