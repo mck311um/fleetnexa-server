@@ -184,7 +184,7 @@ export class StorefrontBookingService {
           tx.rentalExtra.create({
             data: {
               ...extra,
-              valueId: createdValue.id,
+              valuesId: createdValue.id,
             },
           }),
         ),

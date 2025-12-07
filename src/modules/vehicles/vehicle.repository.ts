@@ -207,6 +207,7 @@ export class VehicleRepository {
       minimumRental: true,
       drivingExperience: true,
       discounts: true,
+      tenantId: true,
       model: {
         include: {
           bodyType: true,
