@@ -50,7 +50,14 @@ export class TenantVendorService {
           createdAt: new Date(),
         },
       });
-      return newVendor;
+
+      const vendors = await this.getTenantVendors(tenant);
+
+      return {
+        message: 'Vendor added successfully',
+        vendor: newVendor,
+        vendors,
+      };
     } catch (error) {
       this.logger.error(error, 'Error adding tenant vendor:', {
         tenantId: tenant.id,
@@ -89,7 +96,14 @@ export class TenantVendorService {
           updatedBy: user.username,
         },
       });
-      return updatedVendor;
+
+      const vendors = await this.getTenantVendors(tenant);
+
+      return {
+        message: 'Vendor updated successfully',
+        vendor: updatedVendor,
+        vendors,
+      };
     } catch (error) {
       this.logger.error(error, 'Error updating tenant vendor:', {
         tenantId: tenant.id,
@@ -121,6 +135,12 @@ export class TenantVendorService {
           updatedAt: new Date(),
         },
       });
+
+      const vendors = await this.getTenantVendors(tenant);
+      return {
+        message: 'Vendor deleted successfully',
+        vendors,
+      };
     } catch (error) {
       this.logger.error(error, 'Error deleting tenant vendor:', {
         tenantId: tenant.id,

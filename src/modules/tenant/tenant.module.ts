@@ -12,6 +12,8 @@ import { TenantController } from './tenant.controller.js';
 import { TenantRepository } from './tenant.repository.js';
 import { TenantService } from './tenant.service.js';
 import { TenantNotificationModule } from './tenant-notification/tenant-notification.module.js';
+import { TenantVendorModule } from './tenant-vendor/tenant-vendor.module.js';
+import { VehicleModule } from '../vehicle/vehicle.module.js';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { TenantNotificationModule } from './tenant-notification/tenant-notificat
     TenantUserModule,
     TenantNotificationModule,
     UserRoleModule,
+    TenantVendorModule,
+    VehicleModule,
   ],
   controllers: [TenantController],
   providers: [

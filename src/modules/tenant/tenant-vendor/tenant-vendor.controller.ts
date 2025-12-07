@@ -28,7 +28,7 @@ export class TenantVendorController {
   @Post()
   async createTenantVendor(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: TenantVendorDto,
+    @Body() data: TenantVendorDto,
   ) {
     const tenant = req.context.tenant;
     return this.service.createTenantVendor(data, tenant);
@@ -37,7 +37,7 @@ export class TenantVendorController {
   @Put()
   async updateTenantVendor(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: TenantVendorDto,
+    @Body() data: TenantVendorDto,
   ) {
     const { tenant, user } = req.context;
     return this.service.updateTenantVendor(data, tenant, user);
