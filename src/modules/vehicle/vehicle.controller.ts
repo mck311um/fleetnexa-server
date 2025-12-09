@@ -28,6 +28,18 @@ export class VehicleController {
     return this.service.getTenantVehicles(tenant);
   }
 
+  @Get('storefront')
+  @UseGuards(ApiGuard)
+  async getStorefrontVehicles() {
+    return this.service.getStorefrontVehicles();
+  }
+
+  @Get('storefront/:id')
+  @UseGuards(ApiGuard)
+  async getVehicleForStorefrontById(@Param('id') id: string) {
+    return this.service.getVehicleForStorefrontById(id);
+  }
+
   @Get('plate/:plate')
   @UseGuards(AuthGuard)
   async getVehicleByLicensePlate(
@@ -94,17 +106,5 @@ export class VehicleController {
     const { tenant, user } = req.context;
     const { vehicleId } = req.body;
     return this.service.updateVehicleStorefrontStatus(vehicleId, tenant, user);
-  }
-
-  @Get('storefront')
-  @UseGuards(ApiGuard)
-  async getStorefrontVehicles() {
-    return this.service.getStorefrontVehicles();
-  }
-
-  @Get('storefront/:id')
-  @UseGuards(ApiGuard)
-  async getVehicleForStorefrontById(@Param('id') id: string) {
-    return this.service.getVehicleForStorefrontById(id);
   }
 }
