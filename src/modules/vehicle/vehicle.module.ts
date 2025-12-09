@@ -8,6 +8,7 @@ import { AuthGuard } from '../../common/guards/auth.guard.js';
 import { TenantRepository } from '../tenant/tenant.repository.js';
 import { TenantUserRepository } from '../user/tenant-user/tenant-user.repository.js';
 import { StorageModule } from '../storage/storage.module.js';
+import { ApiGuard } from 'src/common/guards/api.guard.js';
 
 @Module({
   imports: [PrismaModule, TenantExtrasModule, StorageModule],
@@ -16,6 +17,7 @@ import { StorageModule } from '../storage/storage.module.js';
     VehicleService,
     VehicleRepository,
     AuthGuard,
+    ApiGuard,
     TenantRepository,
     TenantUserRepository,
   ],
