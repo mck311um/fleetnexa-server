@@ -23,6 +23,8 @@ async function bootstrap() {
       'https://dev.rentnexa.com',
       'https://rentnexa.com',
       'https://dev.fleetnexa.com',
+      'https://dev.app.fleetnexa.com',
+      'https://app.fleetnexa.com',
       'https://fleetnexa.com',
       'https://admin.rentnexa.com',
     ],
