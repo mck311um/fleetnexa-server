@@ -81,7 +81,7 @@ export class StorefrontCustomerService {
             updatedAt: new Date(),
             tenantId: tenant.id,
             status: 'ACTIVE',
-            storefrontId: data.storefrontId || '',
+            storefrontId: data.storefrontId || null,
           },
         });
 
