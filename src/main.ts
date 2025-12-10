@@ -2,10 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { config } from 'dotenv';
 import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
+import { WinstonModule } from 'nest-winston';
+import { winstonConfig } from './config/winston.config.js';
 config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger(winstonConfig),
+  });
   app.setGlobalPrefix('api');
 
   app.useGlobalPipes(

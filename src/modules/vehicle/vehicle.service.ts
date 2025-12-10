@@ -11,7 +11,6 @@ import { TenantExtraService } from '../tenant/tenant-extra/tenant-extra.service.
 import { Tenant, User, Vehicle } from '../../generated/prisma/client.js';
 import { VehicleDto } from './dto/vehicle.dto.js';
 import { StorageService } from '../storage/storage.service.js';
-import { of } from 'rxjs';
 import { VehicleStatusDto } from './dto/vehicle-status.dto.js';
 
 @Injectable()
