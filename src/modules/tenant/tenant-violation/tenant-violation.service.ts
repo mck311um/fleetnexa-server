@@ -26,7 +26,7 @@ export class TenantViolationService {
 
   async createViolation(data: TenantViolationDto, tenant: Tenant) {
     try {
-      const violations = await this.prisma.$transaction(async (tx) => {
+      await this.prisma.$transaction(async (tx) => {
         const existingViolation = await tx.tenantViolation.findFirst({
           where: { tenantId: tenant.id, violation: data.violation },
         });
@@ -50,7 +50,12 @@ export class TenantViolationService {
         });
       });
 
-      return violations;
+      const violations = await this.getTenantViolations(tenant);
+
+      return {
+        message: 'Violation created successfully',
+        violations,
+      };
     } catch (error) {
       this.logger.error(error, 'Failed to create violation', {
         tenantId: tenant.id,
@@ -88,7 +93,10 @@ export class TenantViolationService {
         });
       });
 
-      return violations;
+      return {
+        message: 'Violation updated successfully',
+        violations,
+      };
     } catch (error) {
       this.logger.error(error, 'Failed to update violation', {
         tenantId: tenant.id,
@@ -123,7 +131,10 @@ export class TenantViolationService {
         });
       });
 
-      return violations;
+      return {
+        message: 'Violation deleted successfully',
+        violations,
+      };
     } catch (error) {
       this.logger.error(error, 'Failed to delete violation', {
         tenantId: tenant.id,
