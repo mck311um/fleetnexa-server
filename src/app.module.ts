@@ -27,6 +27,7 @@ import { TenantBookingModule } from './modules/booking/tenant-booking/tenant-boo
 import { TenantCustomerModule } from './modules/customer/tenant-customer/tenant-customer.module.js';
 import { PaymentModule } from './modules/transaction/modules/payment/payment.module.js';
 import { UserRoleModule } from './modules/user/tenant-user/modules/user-role/user-role.module.js';
+import { RefundModule } from './modules/transaction/modules/refund/refund.module.js';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { UserRoleModule } from './modules/user/tenant-user/modules/user-role/use
     TenantModule,
 
     PaymentModule,
+    RefundModule,
 
     VehicleMaintenanceModule,
     VehicleModule,

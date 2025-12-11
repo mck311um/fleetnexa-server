@@ -12,7 +12,7 @@ import type { AuthenticatedRequest } from '../../../../types/authenticated-reque
 import { PaymentDto } from './payment.dto.js';
 import { AuthGuard } from '../../../../common/guards/auth.guard.js';
 
-@Controller('payment')
+@Controller('transaction/payment')
 @UseGuards(AuthGuard)
 export class PaymentController {
   constructor(private readonly service: PaymentService) {}
