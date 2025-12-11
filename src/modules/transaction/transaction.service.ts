@@ -2,25 +2,20 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService, TxClient } from '../../prisma/prisma.service.js';
 import { TransactionDto } from './transaction.dto.js';
 import { Tenant, User } from '../../generated/prisma/client.js';
+import { TransactionRepository } from './transaction.repository.js';
 
 @Injectable()
 export class TransactionService {
   private readonly logger = new Logger(TransactionService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly transactionRepo: TransactionRepository,
+  ) {}
 
   async getTransactions(tenant: Tenant) {
     try {
-      const transactions = await this.prisma.transactions.findMany({
-        where: { tenantId: tenant.id, isDeleted: false },
-        include: {
-          payment: true,
-          refund: true,
-          expense: true,
-          rental: true,
-        },
-      });
-      return transactions;
+      return await this.transactionRepo.getTransactions(tenant.id);
     } catch (error) {
       this.logger.error(error, 'Error fetching transactions', {
         tenantId: tenant.id,

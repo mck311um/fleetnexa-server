@@ -28,6 +28,8 @@ import { TenantCustomerModule } from './modules/customer/tenant-customer/tenant-
 import { PaymentModule } from './modules/transaction/modules/payment/payment.module.js';
 import { UserRoleModule } from './modules/user/tenant-user/modules/user-role/user-role.module.js';
 import { RefundModule } from './modules/transaction/modules/refund/refund.module.js';
+import { ExpenseModule } from './modules/transaction/modules/expense/expense.module.js';
+import { TransactionModule } from './modules/transaction/transaction.module.js';
 
 @Module({
   imports: [
@@ -60,6 +62,8 @@ import { RefundModule } from './modules/transaction/modules/refund/refund.module
 
     PaymentModule,
     RefundModule,
+    ExpenseModule,
+    TransactionModule,
 
     VehicleMaintenanceModule,
     VehicleModule,
