@@ -54,6 +54,29 @@ export class TenantLocationService {
           'Tenant location with this name already exists',
         );
       }
+
+      await this.prisma.tenantLocation.create({
+        data: {
+          id: uuidv4(),
+          location: data.location,
+          tenantId: tenant.id,
+          pickupEnabled: data.pickupEnabled,
+          returnEnabled: data.returnEnabled,
+          storefrontEnabled: data.storefrontEnabled,
+          deliveryFee: data.deliveryFee,
+          collectionFee: data.collectionFee,
+          minimumRentalPeriod: data.minimumRentalPeriod,
+          updatedAt: new Date(),
+          updatedBy: 'SYSTEM',
+          isDeleted: false,
+        },
+      });
+
+      const locations = await this.getAllTenantLocations(tenant);
+      return {
+        message: 'Location created successfully',
+        locations,
+      };
     } catch (error) {
       this.logger.error('Failed to create tenant location', error);
       throw error;
@@ -74,7 +97,7 @@ export class TenantLocationService {
         this.logger.warn(
           `Tenant location with id ${data.id} not found for tenant ${tenant.tenantCode}`,
         );
-        throw new NotFoundException('Tenant location not found');
+        throw new NotFoundException('Location not found');
       }
 
       await this.prisma.tenantLocation.update({
@@ -91,6 +114,12 @@ export class TenantLocationService {
           updatedBy: user.id,
         },
       });
+
+      const locations = await this.getAllTenantLocations(tenant);
+      return {
+        message: 'Location updated successfully',
+        locations,
+      };
     } catch (error) {
       this.logger.error('Failed to update tenant location', error);
       throw error;
