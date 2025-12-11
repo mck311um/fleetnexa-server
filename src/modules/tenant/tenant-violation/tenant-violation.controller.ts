@@ -25,7 +25,7 @@ export class TenantViolationController {
   @Post()
   async createViolation(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: TenantViolationDto,
+    @Body() data: TenantViolationDto,
   ) {
     const tenant = req.context.tenant!;
     return this.service.createViolation(data, tenant);
@@ -34,7 +34,7 @@ export class TenantViolationController {
   @Put()
   async updateViolation(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: TenantViolationDto,
+    @Body() data: TenantViolationDto,
   ) {
     const tenant = req.context.tenant!;
     return this.service.updateViolation(data, tenant);

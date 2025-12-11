@@ -16,6 +16,7 @@ import { TenantVendorModule } from './tenant-vendor/tenant-vendor.module.js';
 import { VehicleModule } from '../vehicle/vehicle.module.js';
 import { TenantCustomerModule } from '../customer/tenant-customer/tenant-customer.module.js';
 import { TenantActivityModule } from './tenant-activity/tenant-activity.module.js';
+import { TenantRatesModule } from './tenant-rates/tenant-rates.module.js';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TenantActivityModule } from './tenant-activity/tenant-activity.module.j
     VehicleModule,
     TenantCustomerModule,
     TenantActivityModule,
+    TenantRatesModule,
   ],
   controllers: [TenantController],
   providers: [

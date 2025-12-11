@@ -18,7 +18,7 @@ export class TenantRatesController {
   @Put()
   async updateTenantRate(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: TenantRateDto,
+    @Body() data: TenantRateDto,
   ) {
     const tenant = req.context.tenant;
     return this.service.updateTenantRate(data, tenant);

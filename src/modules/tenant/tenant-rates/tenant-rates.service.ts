@@ -25,7 +25,7 @@ export class TenantRatesService {
 
   async updateTenantRate(data: TenantRateDto, tenant: Tenant) {
     try {
-      return await this.prisma.$transaction(async (tx) => {
+      const currencyRates = await this.prisma.$transaction(async (tx) => {
         const existing = await tx.tenantCurrencyRate.findFirst({
           where: {
             id: data.id,
@@ -78,6 +78,11 @@ export class TenantRatesService {
           include: { currency: true },
         });
       });
+
+      return {
+        message: 'Currency rates updated successfully',
+        currencyRates,
+      };
     } catch (error) {
       this.logger.error('Failed to update tenant rate', error);
       throw error;

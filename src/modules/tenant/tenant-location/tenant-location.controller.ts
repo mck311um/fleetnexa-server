@@ -28,7 +28,7 @@ export class TenantLocationController {
   @Post()
   async createTenantLocation(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: TenantLocationDto,
+    @Body() data: TenantLocationDto,
   ) {
     const tenant = req.context.tenant;
     return this.service.createTenantLocation(data, tenant);
@@ -37,7 +37,7 @@ export class TenantLocationController {
   @Put()
   async updateTenantLocation(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: TenantLocationDto,
+    @Body() data: TenantLocationDto,
   ) {
     const { tenant, user } = req.context;
     return this.service.updateTenantLocation(data, tenant, user);
