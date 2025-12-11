@@ -472,9 +472,12 @@ export class VehicleService {
         message = 'Vehicle listed on storefront successfully';
       }
 
+      const vehicles = await this.vehicleRepo.getVehicles(tenant.id);
+
       return {
         message,
         vehicle: updatedVehicle,
+        vehicles,
       };
     } catch (error) {
       this.logger.error(error, 'Failed to update vehicle storefront status', {

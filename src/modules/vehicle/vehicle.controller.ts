@@ -102,9 +102,12 @@ export class VehicleController {
 
   @Patch(':id/storefront')
   @UseGuards(AuthGuard)
-  async updateVehicleStorefrontStatus(@Req() req: AuthenticatedRequest) {
+  async updateVehicleStorefrontStatus(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') vehicleId: string,
+  ) {
     const { tenant, user } = req.context;
-    const { vehicleId } = req.body;
+
     return this.service.updateVehicleStorefrontStatus(vehicleId, tenant, user);
   }
 }
