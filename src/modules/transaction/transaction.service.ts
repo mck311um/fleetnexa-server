@@ -9,6 +9,27 @@ export class TransactionService {
 
   constructor(private readonly prisma: PrismaService) {}
 
+  async getTransactions(tenant: Tenant) {
+    try {
+      const transactions = await this.prisma.transactions.findMany({
+        where: { tenantId: tenant.id, isDeleted: false },
+        include: {
+          payment: true,
+          refund: true,
+          expense: true,
+          rental: true,
+        },
+      });
+      return transactions;
+    } catch (error) {
+      this.logger.error(error, 'Error fetching transactions', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw error;
+    }
+  }
+
   async createTransaction(data: TransactionDto, tenant: Tenant, user: User) {
     try {
       await this.prisma.$transaction(async (tx: TxClient) => {
@@ -19,9 +40,9 @@ export class TransactionService {
             type: data.type,
             transactionDate: data.transactionDate,
             createdBy: user.username,
-            paymentId: data.paymentId,
-            refundId: data.refundId,
-            expenseId: data.expenseId,
+            paymentId: data.paymentId || null,
+            refundId: data.refundId || null,
+            expenseId: data.expenseId || null,
             tenantId: tenant.id,
             rentalId: data.rentalId,
           },
@@ -32,6 +53,64 @@ export class TransactionService {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
         data,
+      });
+      throw error;
+    }
+  }
+
+  async updateTransaction(data: TransactionDto, tenant: Tenant, user: User) {
+    try {
+      await this.prisma.$transaction(async (tx: TxClient) => {
+        const existingTransaction = await tx.transactions.findUnique({
+          where: { id: data.id },
+        });
+        if (!existingTransaction) {
+          throw new Error('Transaction not found');
+        }
+        await tx.transactions.update({
+          where: { id: data.id },
+          data: {
+            amount: data.amount,
+            transactionDate: data.transactionDate,
+            updatedAt: new Date(),
+            updatedBy: user.username,
+            rentalId: data.rentalId,
+          },
+        });
+      });
+    } catch (error) {
+      this.logger.error(error, 'Failed to update transaction', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        data,
+      });
+      throw error;
+    }
+  }
+
+  async deleteTransaction(id: string, tenant: Tenant, user: User) {
+    try {
+      await this.prisma.$transaction(async (tx: TxClient) => {
+        const existingTransaction = await tx.transactions.findUnique({
+          where: { id },
+        });
+        if (!existingTransaction) {
+          throw new Error('Transaction not found');
+        }
+        await tx.transactions.update({
+          where: { id },
+          data: {
+            isDeleted: true,
+            updatedAt: new Date(),
+            updatedBy: user.username,
+          },
+        });
+      });
+    } catch (error) {
+      this.logger.error(error, 'Failed to delete transaction', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        transactionId: id,
       });
       throw error;
     }

@@ -394,9 +394,10 @@ export class TenantBookingService {
         user,
       );
 
-      await this.documentService.generateAgreementData(
+      await this.documentService.generateAgreement(
         updatedBooking?.id || '',
-        tenant.id,
+        tenant,
+        user,
       );
 
       if (data.sendEmail) {
@@ -516,30 +517,30 @@ export class TenantBookingService {
         throw new NotFoundException('Booking not found');
       }
 
-      const updatedBooking = await this.prisma.$transaction(async (tx) => {
-        await this.updateBookingStatus(
-          data.bookingId,
-          RentalStatus.ACTIVE,
-          tenant,
-          user,
-        );
+      await this.updateBookingStatus(
+        data.bookingId,
+        RentalStatus.ACTIVE,
+        tenant,
+        user,
+      );
 
-        const vehicleStatus: VehicleStatusDto = {
-          vehicleId: booking.vehicleId,
-          status: data.vehicleStatus,
-        };
+      const vehicleStatus: VehicleStatusDto = {
+        vehicleId: booking.vehicleId,
+        status: 'RENTED',
+      };
 
-        await this.vehicleService.updateVehicleStatus(
-          vehicleStatus,
-          tenant,
-          user,
-        );
+      await this.vehicleService.updateVehicleStatus(
+        vehicleStatus,
+        tenant,
+        user,
+      );
 
-        await this.createRentalActivity(data, tenant, user);
+      await this.createRentalActivity(data, tenant, user);
 
-        return this.bookingRepo.getBookingById(data.bookingId, tenant.id);
-      });
-
+      const updatedBooking = await this.bookingRepo.getBookingById(
+        data.bookingId,
+        tenant.id,
+      );
       const bookings = await this.bookingRepo.getBookings(tenant.id);
 
       return {
@@ -572,34 +573,30 @@ export class TenantBookingService {
         throw new NotFoundException('Booking not found');
       }
 
-      const updatedBooking = await this.prisma.$transaction(async (tx) => {
-        await this.updateBookingStatus(
-          data.bookingId,
-          data.status,
-          tenant,
-          user,
-        );
+      const updatedBooking = await this.bookingRepo.getBookingById(
+        data.bookingId,
+        tenant.id,
+      );
 
-        const vehicleStatus: VehicleStatusDto = {
-          vehicleId: booking.vehicleId,
-          status: data.vehicleStatus,
-        };
+      await this.updateBookingStatus(data.bookingId, data.status, tenant, user);
 
-        await this.vehicleService.updateVehicleStatus(
-          vehicleStatus,
-          tenant,
-          user,
-        );
+      const vehicleStatus: VehicleStatusDto = {
+        vehicleId: booking.vehicleId,
+        status: 'PENDING INSPECTION',
+      };
 
-        await this.createRentalActivity(
-          data,
-          tenant,
-          user,
-          data.returnDate ? new Date(data.returnDate) : undefined,
-        );
+      await this.vehicleService.updateVehicleStatus(
+        vehicleStatus,
+        tenant,
+        user,
+      );
 
-        return this.bookingRepo.getBookingById(data.bookingId, tenant.id);
-      });
+      await this.createRentalActivity(
+        data,
+        tenant,
+        user,
+        data.returnDate ? new Date(data.returnDate) : undefined,
+      );
 
       const bookings = await this.bookingRepo.getBookings(tenant.id);
 

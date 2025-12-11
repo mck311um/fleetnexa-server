@@ -28,7 +28,7 @@ export class TenantExtraController {
   @Post()
   async addTenantExtra(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: TenantExtraDto,
+    @Body() data: TenantExtraDto,
   ) {
     const tenant = req.context.tenant;
     const user = req.context.user;
@@ -38,7 +38,7 @@ export class TenantExtraController {
   @Put()
   async updateTenantExtra(
     @Req() req: AuthenticatedRequest,
-    @Body('data') data: TenantExtraDto,
+    @Body() data: TenantExtraDto,
   ) {
     const tenant = req.context.tenant;
     const user = req.context.user;

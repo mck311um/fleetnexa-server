@@ -15,6 +15,7 @@ import { TenantNotificationModule } from './tenant-notification/tenant-notificat
 import { TenantVendorModule } from './tenant-vendor/tenant-vendor.module.js';
 import { VehicleModule } from '../vehicle/vehicle.module.js';
 import { TenantCustomerModule } from '../customer/tenant-customer/tenant-customer.module.js';
+import { TenantActivityModule } from './tenant-activity/tenant-activity.module.js';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TenantCustomerModule } from '../customer/tenant-customer/tenant-custome
     TenantVendorModule,
     VehicleModule,
     TenantCustomerModule,
+    TenantActivityModule,
   ],
   controllers: [TenantController],
   providers: [

@@ -10,12 +10,11 @@ import {
   IsObject,
   IsOptional,
 } from 'class-validator';
-import { Agent } from 'http';
 import {
   BookingDriverDto,
   BookingValuesDto,
 } from '../../dto/booking-items.dto.js';
-import { RentalStatus } from '../../../../generated/prisma/client.js';
+import { Agent, RentalStatus } from '../../../../generated/prisma/client.js';
 
 export class UpdateBookingDto {
   @IsUUID()
@@ -28,7 +27,7 @@ export class UpdateBookingDto {
   startDate: string;
 
   @IsString()
-  bookingNumber: string;
+  rentalNumber: string;
 
   @IsEnum(RentalStatus)
   status: RentalStatus;

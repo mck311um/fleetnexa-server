@@ -19,6 +19,7 @@ import { TenantNotificationService } from './tenant-notification/tenant-notifica
 import { TenantVendorService } from './tenant-vendor/tenant-vendor.service.js';
 import { VehicleService } from '../vehicle/vehicle.service.js';
 import { TenantCustomerService } from '../customer/tenant-customer/tenant-customer.service.js';
+import { TenantActivityService } from './tenant-activity/tenant-activity.service.js';
 
 @Injectable()
 export class TenantService {
@@ -37,6 +38,7 @@ export class TenantService {
     private readonly vendors: TenantVendorService,
     private readonly vehicles: VehicleService,
     private readonly customers: TenantCustomerService,
+    private readonly activities: TenantActivityService,
   ) {}
 
   async getCurrentTenant(tenant: Tenant, user: User) {
@@ -46,6 +48,7 @@ export class TenantService {
       const vendors = await this.vendors.getTenantVendors(tenant);
       const vehicles = await this.vehicles.getTenantVehicles(tenant);
       const customers = await this.customers.getCustomers(tenant);
+      const activity = await this.activities.getTenantActivities(tenant);
       const notifications = await this.notifications.getTenantNotifications(
         tenant,
         user,
@@ -58,6 +61,8 @@ export class TenantService {
         notifications,
         vendors,
         vehicles,
+        customers,
+        activity,
       };
 
       return data;

@@ -99,6 +99,80 @@ export class DocumentService {
     }
   }
 
+  async generateAgreement(bookingId: string, tenant: Tenant, user: User) {
+    try {
+      let agreementNumber;
+
+      const booking = await this.prisma.rental.findUnique({
+        where: { id: bookingId },
+        include: { values: true },
+      });
+
+      if (!booking) {
+        throw new Error('Booking not found');
+      }
+
+      const existingAgreement = await this.prisma.rentalAgreement.findUnique({
+        where: { rentalId: bookingId },
+      });
+
+      if (existingAgreement) {
+        agreementNumber = existingAgreement.number;
+      } else {
+        agreementNumber = await this.generator.generateRentalAgreementNumber(
+          tenant.id!,
+        );
+      }
+
+      const data = await this.generateAgreementData(bookingId, tenant.id);
+
+      data.agreementNumber = agreementNumber;
+      const pdfResult = await this.pdfService.createAgreement(
+        data,
+        agreementNumber,
+        tenant.tenantCode,
+      );
+
+      const primaryDriver =
+        await this.customerService.getPrimaryDriver(bookingId);
+
+      if (!primaryDriver) {
+        throw new NotFoundException('Primary driver not found');
+      }
+
+      const agreement = await this.prisma.rentalAgreement.upsert({
+        where: { rentalId: bookingId },
+        create: {
+          number: agreementNumber,
+          customerId: primaryDriver?.driverId || '',
+          rentalId: bookingId,
+          tenantId: tenant.id,
+          createdAt: new Date(),
+          createdBy: user.username,
+          agreementUrl: pdfResult.publicUrl,
+          signableUrl: pdfResult.signablePublicUrl,
+        },
+        update: {
+          customerId: primaryDriver?.driverId || '',
+          tenantId: tenant.id,
+          agreementUrl: pdfResult.publicUrl,
+          signableUrl: pdfResult.signablePublicUrl,
+          updatedAt: new Date(),
+          updatedBy: user.username,
+        },
+      });
+
+      return agreement;
+    } catch (error) {
+      this.logger.error(error, 'Failed to generate agreement', {
+        bookingId,
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to generate agreement');
+    }
+  }
+
   async generateInvoiceData(bookingId: string, tenantId: string) {
     try {
       const tenant = await this.prisma.tenant.findUnique({
@@ -306,7 +380,7 @@ export class DocumentService {
     }
   }
 
-  generateAgreementData = async (bookingId: string, tenantId: string) => {
+  async generateAgreementData(bookingId: string, tenantId: string) {
     try {
       const tenant = await this.prisma.tenant.findUnique({
         where: { id: tenantId },
@@ -592,5 +666,5 @@ export class DocumentService {
       });
       throw new Error('Failed to generate agreement data');
     }
-  };
+  }
 }

@@ -122,5 +122,6 @@ export class VehicleDto {
   drivingExperience: number;
 
   @IsArray()
-  discounts: VehicleDiscountDto[];
+  @IsOptional()
+  discounts?: VehicleDiscountDto[];
 }

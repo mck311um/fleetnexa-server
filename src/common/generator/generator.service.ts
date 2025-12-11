@@ -161,4 +161,26 @@ export class GeneratorService {
 
     return `${cleanedTenantCode}-${paddedRentalNumber}`;
   }
+
+  async generateRentalAgreementNumber(tenantId: string): Promise<string> {
+    const lastAgreement = await this.prisma.rentalAgreement.findFirst({
+      where: { tenantId },
+      orderBy: { number: 'desc' },
+      select: { number: true },
+    });
+
+    const currentYear = new Date().getFullYear().toString();
+    let sequenceNumber = 1;
+
+    if (lastAgreement?.number) {
+      const match = lastAgreement.number.match(/BA-\d{4}-(\d{4})/);
+      if (match && match[1]) {
+        sequenceNumber = parseInt(match[1], 10) + 1;
+      }
+    }
+
+    const formattedSequence = sequenceNumber.toString().padStart(4, '0');
+
+    return `BA-${currentYear}-${formattedSequence}`;
+  }
 }

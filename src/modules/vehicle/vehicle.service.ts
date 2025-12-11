@@ -91,98 +91,101 @@ export class VehicleService {
 
   async addVehicle(data: VehicleDto, tenant: Tenant, user: User) {
     try {
-      await this.prisma.$transaction(async (tx) => {
-        const existingPlate = await tx.vehicle.findFirst({
-          where: {
-            licensePlate: data.licensePlate,
-          },
-        });
+      await this.prisma.$transaction(
+        async (tx) => {
+          const existingPlate = await tx.vehicle.findFirst({
+            where: {
+              licensePlate: data.licensePlate,
+            },
+          });
 
-        if (existingPlate) {
-          this.logger.warn(
-            `Conflict: Vehicle with license plate ${data.licensePlate} already exists`,
-          );
-          throw new ConflictException(
-            'A vehicle with this license plate already exists',
-          );
-        }
+          if (existingPlate) {
+            this.logger.warn(
+              `Conflict: Vehicle with license plate ${data.licensePlate} already exists`,
+            );
+            throw new ConflictException(
+              'A vehicle with this license plate already exists',
+            );
+          }
 
-        await tx.vehicle.create({
-          data: {
-            id: data.id,
-            tenantId: tenant.id,
-            color: data.color,
-            engineVolume: data.engineVolume,
-            featuredImage: data.featuredImage,
-            features:
-              data.features && data.features.length > 0
-                ? {
-                    connect: data.features.map((feature) => ({
-                      id: feature.id,
-                    })),
-                  }
-                : undefined,
-            fuelLevel: data.fuelLevel,
-            images: data.images || [],
-            licensePlate: data.licensePlate,
-            brandId: data.brandId,
-            modelId: data.modelId,
-            numberOfSeats: data.numberOfSeats,
-            numberOfDoors: data.numberOfDoors,
-            odometer: data.odometer || 0,
-            steering: data.steering,
-            vin: data.vin || '',
-            year: data.year,
-            transmissionId: data.transmissionId,
-            vehicleStatusId: data.vehicleStatusId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            updatedBy: user.username,
-            wheelDriveId: data.wheelDriveId,
-            fuelTypeId: data.fuelTypeId,
-            isDeleted: false,
-            dayPrice: data.dayPrice,
-            weekPrice: data.weekPrice,
-            monthPrice: data.monthPrice,
-            timeBetweenRentals: data.timeBetweenRentals,
-            minimumAge: data.minimumAge,
-            minimumRental: data.minimumRental,
-            fuelPolicyId: data.fuelPolicyId,
-            locationId: data.locationId,
-            drivingExperience: data.drivingExperience,
-            createdBy: user.username,
-          },
-        });
+          await tx.vehicle.create({
+            data: {
+              id: data.id,
+              tenantId: tenant.id,
+              color: data.color,
+              engineVolume: data.engineVolume,
+              featuredImage: data.featuredImage,
+              features:
+                data.features && data.features.length > 0
+                  ? {
+                      connect: data.features.map((feature) => ({
+                        id: feature.id,
+                      })),
+                    }
+                  : undefined,
+              fuelLevel: data.fuelLevel,
+              images: data.images || [],
+              licensePlate: data.licensePlate,
+              brandId: data.brandId,
+              modelId: data.modelId,
+              numberOfSeats: data.numberOfSeats,
+              numberOfDoors: data.numberOfDoors,
+              odometer: data.odometer || 0,
+              steering: data.steering,
+              vin: data.vin || '',
+              year: data.year,
+              transmissionId: data.transmissionId,
+              vehicleStatusId: data.vehicleStatusId,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              updatedBy: user.username,
+              wheelDriveId: data.wheelDriveId,
+              fuelTypeId: data.fuelTypeId,
+              isDeleted: false,
+              dayPrice: data.dayPrice,
+              weekPrice: data.weekPrice,
+              monthPrice: data.monthPrice,
+              timeBetweenRentals: data.timeBetweenRentals,
+              minimumAge: data.minimumAge,
+              minimumRental: data.minimumRental,
+              fuelPolicyId: data.fuelPolicyId,
+              locationId: data.locationId,
+              drivingExperience: data.drivingExperience,
+              createdBy: user.username,
+            },
+          });
 
-        if (data.discounts && data.discounts.length > 0) {
-          await Promise.all(
-            data.discounts.map((discount) =>
-              tx.vehicleDiscount.upsert({
-                where: { id: discount.id },
-                create: {
-                  id: discount.id,
-                  vehicleId: data.id,
-                  period: Number(discount.period),
-                  periodPolicy: discount.periodPolicy,
-                  amount: discount.amount,
-                  discountPolicy: discount.discountPolicy,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  createdBy: user.username,
-                },
-                update: {
-                  amount: discount.amount,
-                  period: Number(discount.period),
-                  periodPolicy: discount.periodPolicy,
-                  discountPolicy: discount.discountPolicy,
-                  updatedAt: new Date(),
-                  updatedBy: user.username,
-                },
-              }),
-            ),
-          );
-        }
-      });
+          if (data.discounts && data.discounts.length > 0) {
+            await Promise.all(
+              data.discounts.map((discount) =>
+                tx.vehicleDiscount.upsert({
+                  where: { id: discount.id },
+                  create: {
+                    id: discount.id,
+                    vehicleId: data.id,
+                    period: Number(discount.period),
+                    periodPolicy: discount.periodPolicy,
+                    amount: discount.amount,
+                    discountPolicy: discount.discountPolicy,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    createdBy: user.username,
+                  },
+                  update: {
+                    amount: discount.amount,
+                    period: Number(discount.period),
+                    periodPolicy: discount.periodPolicy,
+                    discountPolicy: discount.discountPolicy,
+                    updatedAt: new Date(),
+                    updatedBy: user.username,
+                  },
+                }),
+              ),
+            );
+          }
+        },
+        { maxWait: 5000, timeout: 10000 },
+      );
 
       const vehicles = await this.vehicleRepo.getVehicles(tenant.id);
       return {
@@ -214,92 +217,95 @@ export class VehicleService {
         (img) => !data.images.includes(img),
       );
 
-      const updatedVehicle = await this.prisma.$transaction(async (tx) => {
-        await tx.vehicle.update({
-          where: { id: data.id },
-          data: {
-            color: data.color,
-            engineVolume: data.engineVolume,
-            featuredImage: data.featuredImage,
-            features:
-              data.features && data.features.length > 0
-                ? {
-                    set: data.features.map((feature) => ({
-                      id: feature.id,
-                    })),
-                  }
-                : { set: [] },
-            fuelLevel: data.fuelLevel,
-            images: data.images || [],
-            licensePlate: data.licensePlate,
-            brandId: data.brandId,
-            modelId: data.modelId,
-            numberOfSeats: data.numberOfSeats,
-            numberOfDoors: data.numberOfDoors,
-            odometer: data.odometer || 0,
-            steering: data.steering,
-            vin: data.vin || '',
-            year: data.year,
-            transmissionId: data.transmissionId,
-            vehicleStatusId: data.vehicleStatusId,
-            updatedAt: new Date(),
-            updatedBy: user.username,
-            wheelDriveId: data.wheelDriveId,
-            fuelTypeId: data.fuelTypeId,
-            dayPrice: data.dayPrice,
-            weekPrice: data.weekPrice,
-            monthPrice: data.monthPrice,
-            timeBetweenRentals: data.timeBetweenRentals,
-            minimumAge: data.minimumAge,
-            minimumRental: data.minimumRental,
-            fuelPolicyId: data.fuelPolicyId,
-            locationId: data.locationId,
-            drivingExperience: data.drivingExperience,
-          },
-        });
-
-        if (data.discounts && data.discounts.length > 0) {
-          const newDiscountIds = data.discounts
-            .map((discount: any) => discount.id)
-            .filter(Boolean);
-
-          await tx.vehicleDiscount.deleteMany({
-            where: {
-              vehicleId: vehicle.id,
-              NOT: { id: { in: newDiscountIds } },
+      const updatedVehicle = await this.prisma.$transaction(
+        async (tx) => {
+          await tx.vehicle.update({
+            where: { id: data.id },
+            data: {
+              color: data.color,
+              engineVolume: data.engineVolume,
+              featuredImage: data.featuredImage,
+              features:
+                data.features && data.features.length > 0
+                  ? {
+                      set: data.features.map((feature) => ({
+                        id: feature.id,
+                      })),
+                    }
+                  : { set: [] },
+              fuelLevel: data.fuelLevel,
+              images: data.images || [],
+              licensePlate: data.licensePlate,
+              brandId: data.brandId,
+              modelId: data.modelId,
+              numberOfSeats: data.numberOfSeats,
+              numberOfDoors: data.numberOfDoors,
+              odometer: data.odometer || 0,
+              steering: data.steering,
+              vin: data.vin || '',
+              year: data.year,
+              transmissionId: data.transmissionId,
+              vehicleStatusId: data.vehicleStatusId,
+              updatedAt: new Date(),
+              updatedBy: user.username,
+              wheelDriveId: data.wheelDriveId,
+              fuelTypeId: data.fuelTypeId,
+              dayPrice: data.dayPrice,
+              weekPrice: data.weekPrice,
+              monthPrice: data.monthPrice,
+              timeBetweenRentals: data.timeBetweenRentals,
+              minimumAge: data.minimumAge,
+              minimumRental: data.minimumRental,
+              fuelPolicyId: data.fuelPolicyId,
+              locationId: data.locationId,
+              drivingExperience: data.drivingExperience,
             },
           });
 
-          await Promise.all(
-            data.discounts.map((discount) =>
-              tx.vehicleDiscount.upsert({
-                where: { id: discount.id },
-                create: {
-                  id: discount.id,
-                  vehicleId: data.id,
-                  amount: discount.amount,
-                  discountPolicy: discount.discountPolicy,
-                  period: Number(discount.period),
-                  periodPolicy: discount.periodPolicy,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  createdBy: user.username,
-                },
-                update: {
-                  amount: discount.amount,
-                  discountPolicy: discount.discountPolicy,
-                  period: Number(discount.period),
-                  periodPolicy: discount.periodPolicy,
-                  updatedAt: new Date(),
-                  updatedBy: user.username,
-                },
-              }),
-            ),
-          );
-        }
+          if (data.discounts && data.discounts.length > 0) {
+            const newDiscountIds = data.discounts
+              .map((discount: any) => discount.id)
+              .filter(Boolean);
 
-        return tx.vehicle.findUnique({ where: { id: data.id } });
-      });
+            await tx.vehicleDiscount.deleteMany({
+              where: {
+                vehicleId: vehicle.id,
+                NOT: { id: { in: newDiscountIds } },
+              },
+            });
+
+            await Promise.all(
+              data.discounts.map((discount) =>
+                tx.vehicleDiscount.upsert({
+                  where: { id: discount.id },
+                  create: {
+                    id: discount.id,
+                    vehicleId: data.id,
+                    amount: discount.amount,
+                    discountPolicy: discount.discountPolicy,
+                    period: Number(discount.period),
+                    periodPolicy: discount.periodPolicy,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    createdBy: user.username,
+                  },
+                  update: {
+                    amount: discount.amount,
+                    discountPolicy: discount.discountPolicy,
+                    period: Number(discount.period),
+                    periodPolicy: discount.periodPolicy,
+                    updatedAt: new Date(),
+                    updatedBy: user.username,
+                  },
+                }),
+              ),
+            );
+          }
+
+          return tx.vehicle.findUnique({ where: { id: data.id } });
+        },
+        { maxWait: 5000, timeout: 10000 },
+      );
 
       for (const img of imagesToDelete) {
         try {
@@ -347,12 +353,17 @@ export class VehicleService {
       }
 
       await this.prisma.$transaction(async (tx) => {
-        const foundStatus = await tx.vehicleStatus.findUnique({
-          where: { id: data.status },
+        const foundStatus = await tx.vehicleStatus.findFirst({
+          where: {
+            status: {
+              equals: data.status,
+              mode: 'insensitive',
+            },
+          },
         });
 
         if (!foundStatus) {
-          this.logger.warn(`Vehicle status with id ${data.status} not found`);
+          this.logger.warn(`Vehicle status ${data.status} not found`);
           throw new NotFoundException('Vehicle status not found');
         }
 

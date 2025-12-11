@@ -146,6 +146,12 @@ export class TenantExtraService {
         this.logger.warn(`Invalid tenant extra type: ${data.type}`);
         throw new BadRequestException('Invalid tenant extra type');
       }
+
+      const extras = await this.getTenantExtras(tenant);
+      return {
+        message: 'Tenant extra created successfully',
+        extras,
+      };
     } catch (error) {
       this.logger.error('Failed to create tenant extra', error);
       throw error;
@@ -225,6 +231,12 @@ export class TenantExtraService {
         this.logger.warn(`Invalid tenant extra type: ${data.type}`);
         throw new BadRequestException('Invalid tenant extra type');
       }
+
+      const extras = await this.getTenantExtras(tenant);
+      return {
+        message: 'Tenant extra created successfully',
+        extras,
+      };
     } catch (error) {
       this.logger.error('Failed to update tenant extra', error);
       throw error;
@@ -253,6 +265,12 @@ export class TenantExtraService {
           updatedBy: user.username,
         },
       });
+
+      const extras = await this.getTenantExtras(tenant);
+      return {
+        message: 'Tenant extra created successfully',
+        extras,
+      };
     } catch (error) {
       this.logger.error('Failed to delete tenant service', error);
       throw new Error('Failed to delete tenant service');
@@ -281,6 +299,12 @@ export class TenantExtraService {
           updatedBy: user.username,
         },
       });
+
+      const extras = await this.getTenantExtras(tenant);
+      return {
+        message: 'Tenant extra created successfully',
+        extras,
+      };
     } catch (error) {
       this.logger.error('Failed to delete tenant equipment', error);
       throw new Error('Failed to delete tenant equipment');
@@ -309,6 +333,12 @@ export class TenantExtraService {
           updatedBy: user.username,
         },
       });
+
+      const extras = await this.getTenantExtras(tenant);
+      return {
+        message: 'Tenant extra created successfully',
+        extras,
+      };
     } catch (error) {
       this.logger.error('Failed to delete tenant insurance', error);
       throw new Error('Failed to delete tenant insurance');
