@@ -33,6 +33,10 @@ export class BookingDriverDto {
   @IsString()
   driverId: string;
 
+  @IsUUID()
+  @IsOptional()
+  rentalId: string;
+
   @IsBoolean()
   isPrimary: boolean;
 }

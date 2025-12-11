@@ -36,4 +36,31 @@ export class TransactionService {
       throw error;
     }
   }
+
+  async deleteBookingTransaction(id: string, tx: TxClient) {
+    try {
+      const booking = await tx.rental.findUnique({
+        where: { id },
+      });
+      if (!booking) {
+        this.logger.error('Booking not found', 'Failed to delete booking');
+        return;
+      }
+      await tx.transactions.updateMany({
+        where: { rentalId: id },
+        data: { isDeleted: true },
+      });
+      await tx.payment.updateMany({
+        where: { rentalId: id },
+        data: { isDeleted: true },
+      });
+      await tx.refund.updateMany({
+        where: { rentalId: id },
+        data: { isDeleted: true },
+      });
+    } catch (error) {
+      this.logger.error(error, 'Failed to delete booking transaction', { id });
+      throw error;
+    }
+  }
 }

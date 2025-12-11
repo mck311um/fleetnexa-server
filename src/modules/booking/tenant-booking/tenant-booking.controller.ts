@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -105,5 +106,14 @@ export class TenantBookingController {
   ) {
     const { tenant, user } = req.context;
     return this.service.updateBooking(data, tenant, user);
+  }
+
+  @Delete(':id')
+  async deleteBooking(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+  ) {
+    const { tenant, user } = req.context;
+    return this.service.deleteBooking(id, tenant, user);
   }
 }

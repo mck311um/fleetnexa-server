@@ -1,7 +1,18 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { TenantCustomerService } from './tenant-customer.service.js';
 import type { AuthenticatedRequest } from '../../../types/authenticated-request.js';
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
+import { TenantCustomerDto } from './tenant-customer.dto.js';
 
 @Controller('tenant/customer')
 @UseGuards(AuthGuard)
@@ -12,5 +23,41 @@ export class TenantCustomerController {
   async getCustomers(@Req() req: AuthenticatedRequest) {
     const { tenant } = req.context;
     return this.service.getCustomers(tenant);
+  }
+
+  @Get(':id')
+  async getCustomerById(
+    @Param('id') id: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const { tenant } = req.context;
+    return this.service.getCustomerById(id, tenant);
+  }
+
+  @Post()
+  async createCustomer(
+    @Req() req: AuthenticatedRequest,
+    @Body() data: TenantCustomerDto,
+  ) {
+    const { tenant, user } = req.context;
+    return this.service.createCustomer(data, tenant, user);
+  }
+
+  @Put()
+  async updateCustomer(
+    @Req() req: AuthenticatedRequest,
+    @Body() data: TenantCustomerDto,
+  ) {
+    const { tenant, user } = req.context;
+    return this.service.updateCustomer(data, tenant, user);
+  }
+
+  @Delete(':id')
+  async deleteCustomer(
+    @Param('id') id: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const { tenant, user } = req.context;
+    return this.service.deleteCustomer(id, tenant, user);
   }
 }

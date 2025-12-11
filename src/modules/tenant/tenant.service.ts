@@ -18,6 +18,7 @@ import { UpdateStorefrontDto } from './dto/update-storefront.dto.js';
 import { TenantNotificationService } from './tenant-notification/tenant-notification.service.js';
 import { TenantVendorService } from './tenant-vendor/tenant-vendor.service.js';
 import { VehicleService } from '../vehicle/vehicle.service.js';
+import { TenantCustomerService } from '../customer/tenant-customer/tenant-customer.service.js';
 
 @Injectable()
 export class TenantService {
@@ -35,6 +36,7 @@ export class TenantService {
     private readonly locations: TenantLocationService,
     private readonly vendors: TenantVendorService,
     private readonly vehicles: VehicleService,
+    private readonly customers: TenantCustomerService,
   ) {}
 
   async getCurrentTenant(tenant: Tenant, user: User) {
@@ -43,6 +45,7 @@ export class TenantService {
       const locations = await this.locations.getAllTenantLocations(tenant);
       const vendors = await this.vendors.getTenantVendors(tenant);
       const vehicles = await this.vehicles.getTenantVehicles(tenant);
+      const customers = await this.customers.getCustomers(tenant);
       const notifications = await this.notifications.getTenantNotifications(
         tenant,
         user,

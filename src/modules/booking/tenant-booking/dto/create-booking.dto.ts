@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsEnum,
   IsObject,
+  IsOptional,
   IsString,
   IsUUID,
   Max,
@@ -42,7 +43,7 @@ export class CreateBookingDto {
   agent: Agent;
 
   @IsString()
-  @Max(500)
+  @IsOptional()
   notes?: string;
 
   @IsArray()

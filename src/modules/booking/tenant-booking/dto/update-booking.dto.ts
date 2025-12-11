@@ -8,6 +8,7 @@ import {
   ArrayMinSize,
   ValidateNested,
   IsObject,
+  IsOptional,
 } from 'class-validator';
 import { Agent } from 'http';
 import {
@@ -51,7 +52,7 @@ export class UpdateBookingDto {
   agent: Agent;
 
   @IsString()
-  @Max(500)
+  @IsOptional()
   notes?: string;
 
   @IsArray()

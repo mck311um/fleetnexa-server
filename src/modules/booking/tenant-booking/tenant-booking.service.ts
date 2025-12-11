@@ -17,6 +17,7 @@ import { DocumentService } from '../../../common/document/document.service.js';
 import { EmailService } from '../../../common/email/email.service.js';
 import { VehicleService } from '../../../modules/vehicle/vehicle.service.js';
 import { VehicleStatusDto } from '../../../modules/vehicle/dto/vehicle-status.dto.js';
+import { TransactionService } from '../../../modules/transaction/transaction.service.js';
 
 @Injectable()
 export class TenantBookingService {
@@ -30,6 +31,7 @@ export class TenantBookingService {
     private readonly documentService: DocumentService,
     private readonly emailService: EmailService,
     private readonly vehicleService: VehicleService,
+    private readonly transactions: TransactionService,
   ) {}
 
   async getBookings(tenant: Tenant) {
@@ -118,7 +120,7 @@ export class TenantBookingService {
             chargeTypeId: data.chargeTypeId,
             bookingCode,
             createdAt: new Date(),
-            createdBy: user.username,
+            createdBy: user.id,
             rentalNumber: bookingNumber,
             tenantId: tenant.id,
             status: RentalStatus.PENDING,
@@ -308,6 +310,50 @@ export class TenantBookingService {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
         data,
+      });
+      throw error;
+    }
+  }
+
+  async deleteBooking(id: string, tenant: Tenant, user: User) {
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        const existingRecord = await tx.rental.findUnique({
+          where: { id },
+        });
+
+        if (!existingRecord) {
+          this.logger.warn('Booking not found for deletion', {
+            tenantId: tenant.id,
+            tenantCode: tenant.tenantCode,
+            bookingId: id,
+          });
+          throw new NotFoundException('Booking not found');
+        }
+
+        await tx.rental.update({
+          where: { id },
+          data: {
+            isDeleted: true,
+            deletedAt: new Date(),
+            updatedBy: user.id,
+          },
+        });
+
+        await this.transactions.deleteBookingTransaction(id, tx);
+      });
+
+      const bookings = await this.bookingRepo.getBookings(tenant.id);
+
+      return {
+        message: 'Booking deleted successfully',
+        bookings,
+      };
+    } catch (error) {
+      this.logger.error(error, 'Failed to delete booking', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        bookingId: id,
       });
       throw error;
     }

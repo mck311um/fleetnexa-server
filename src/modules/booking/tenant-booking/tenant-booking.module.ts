@@ -11,6 +11,7 @@ import { DocumentModule } from '../../../common/document/document.module.js';
 import { EmailModule } from '../../../common/email/email.module.js';
 import { VehicleModule } from '../../../modules/vehicle/vehicle.module.js';
 import { CustomerModule } from '../../../modules/customer/customer.module.js';
+import { TransactionModule } from '../../../modules/transaction/transaction.module.js';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CustomerModule } from '../../../modules/customer/customer.module.js';
     EmailModule,
     VehicleModule,
     CustomerModule,
+    TransactionModule,
   ],
   controllers: [TenantBookingController],
   providers: [
