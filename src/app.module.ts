@@ -26,6 +26,7 @@ import { VehicleMaintenanceModule } from './modules/vehicle/modules/vehicle-main
 import { TenantBookingModule } from './modules/booking/tenant-booking/tenant-booking.module.js';
 import { TenantCustomerModule } from './modules/customer/tenant-customer/tenant-customer.module.js';
 import { PaymentModule } from './modules/transaction/modules/payment/payment.module.js';
+import { UserRoleModule } from './modules/user/tenant-user/modules/user-role/user-role.module.js';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { PaymentModule } from './modules/transaction/modules/payment/payment.mod
 
     TenantCustomerModule,
 
+    UserRoleModule,
     TenantUserModule,
     TenantLocationModule,
     TenantRatesModule,

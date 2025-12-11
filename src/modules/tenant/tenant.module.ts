@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
 import { TenantUserModule } from '../user/tenant-user/tenant-user.module.js';
 import { TenantUserRepository } from '../user/tenant-user/tenant-user.repository.js';
-import { UserRoleModule } from '../user/user-role/user-role.module.js';
+import { UserRoleModule } from '../user/tenant-user/modules/user-role/user-role.module.js';
 import { TenantExtrasModule } from './tenant-extra/tenant-extra.module.js';
 import { TenantController } from './tenant.controller.js';
 import { TenantRepository } from './tenant.repository.js';

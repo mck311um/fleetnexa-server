@@ -8,7 +8,7 @@ import { GeneratorService } from '../../common/generator/generator.service.js';
 import { Tenant, User } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { TenantUserService } from '../user/tenant-user/tenant-user.service.js';
-import { UserRoleService } from '../user/user-role/user-role.service.js';
+import { UserRoleService } from '../user/tenant-user/modules/user-role/user-role.service.js';
 import { CreateTenantDto } from './dto/create-tenant.dto.js';
 import { TenantExtraService } from './tenant-extra/tenant-extra.service.js';
 import { TenantLocationService } from './tenant-location/tenant-location.service.js';
