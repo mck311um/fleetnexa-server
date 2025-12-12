@@ -10,6 +10,7 @@ import {
   BookingConfirmationEmailDto,
   BookingDeclinedEmailDto,
   NewBookingEmailDto,
+  PasswordResetEmailDto,
 } from '../../types/email.js';
 
 @Injectable()
@@ -333,6 +334,28 @@ export class EmailService {
       await this.notify.sendEmail(payload);
     } catch (error) {
       this.logger.error('Error sending booking completed email', error);
+      throw error;
+    }
+  }
+
+  async sendStorefrontPasswordResetEmail(token: string, email: string) {
+    try {
+      const templateData: PasswordResetEmailDto = {
+        verificationCode: token,
+      };
+
+      const payload: SendEmailDto = {
+        recipients: [email],
+        cc: [],
+        templateName: 'RentNexaPasswordReset',
+        templateData,
+        sender: 'no-reply@rentnexa.com',
+        senderName: 'RentNexa',
+      };
+
+      await this.notify.sendEmail(payload);
+    } catch (error) {
+      this.logger.error('Error sending storefront password reset email', error);
       throw error;
     }
   }

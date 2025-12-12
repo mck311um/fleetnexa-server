@@ -64,3 +64,7 @@ interface BookingAddition {
   price: string;
   total: string;
 }
+
+interface PasswordResetEmailDto {
+  verificationCode: token;
+}

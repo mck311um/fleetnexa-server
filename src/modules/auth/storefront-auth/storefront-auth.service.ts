@@ -11,6 +11,10 @@ import { StorefrontAuthDto } from './storefront-auth.dto.js';
 import bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { EmailLoginDto } from '../dto/email-login.dto.js';
+import { GeneratorService } from '../../../common/generator/generator.service.js';
+import { EmailService } from '../../../common/email/email.service.js';
+import { VerifyEmailTokenDto } from '../dto/verify-email-token.dto.js';
+import { ResetPasswordDto } from '../dto/reset-password.dto.js';
 
 @Injectable()
 export class StorefrontAuthService {
@@ -19,6 +23,8 @@ export class StorefrontAuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
+    private readonly generator: GeneratorService,
+    private readonly email: EmailService,
   ) {}
 
   async loginUser(data: EmailLoginDto) {
@@ -187,6 +193,114 @@ export class StorefrontAuthService {
       return { user: userData, token };
     } catch (error) {
       this.logger.error('Error creating user', { error });
+      throw error;
+    }
+  }
+
+  async requestPasswordReset(email: string) {
+    try {
+      const user = await this.prisma.storefrontUser.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        this.logger.warn('Password reset requested for non-existent email', {
+          email,
+        });
+        throw new NotFoundException('No account found with that email.');
+      }
+
+      await this.prisma.emailTokens.updateMany({
+        where: { email, expired: false },
+        data: { expired: true },
+      });
+
+      const resetToken = await this.generator.generateVerificationCode();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+      await this.prisma.emailTokens.create({
+        data: {
+          email,
+          token: resetToken,
+          expiresAt,
+        },
+      });
+
+      await this.email.sendStorefrontPasswordResetEmail(resetToken, email);
+    } catch (error) {
+      this.logger.error(error, 'Failed to request password reset', { email });
+      throw error;
+    }
+  }
+
+  async validatePasswordResetToken(data: VerifyEmailTokenDto) {
+    try {
+      const tokenRecord = await this.prisma.emailTokens.findFirst({
+        where: {
+          email: data.email,
+          token: data.token,
+          expired: false,
+        },
+      });
+
+      if (!tokenRecord) {
+        this.logger.warn('Invalid password reset token', data);
+        throw new NotFoundException('The password reset token is invalid.');
+      }
+
+      const now = new Date();
+      if (tokenRecord && tokenRecord.expiresAt < now) {
+        await this.prisma.emailTokens.updateMany({
+          where: { email: data.email, token: data.token },
+          data: { expired: true },
+        });
+        this.logger.warn('Expired password reset token', data);
+        throw new GoneException('The password reset token has expired.');
+      }
+
+      await this.prisma.emailTokens.updateMany({
+        where: { email: data.email, token: data.token },
+        data: { expired: true, verified: true },
+      });
+
+      return { message: 'Token verified successfully' };
+    } catch (error) {
+      this.logger.error(error, 'Failed to verify password reset token', {
+        email: data.email,
+        token: data.token,
+      });
+      throw error;
+    }
+  }
+
+  async resetPassword(data: ResetPasswordDto) {
+    try {
+      const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+      const user = await this.prisma.storefrontUser.findUnique({
+        where: { email: data.email },
+      });
+
+      const passwordCompare = await bcrypt.compare(
+        data.newPassword,
+        user?.password || '',
+      );
+
+      if (passwordCompare) {
+        throw new ConflictException(
+          'New password must be different from the old password',
+        );
+      }
+
+      await this.prisma.storefrontUser.updateMany({
+        where: { email: data.email },
+        data: { password: hashedPassword },
+      });
+
+      return { message: 'Password reset successfully' };
+    } catch (error) {
+      this.logger.error(error, 'Failed to reset storefront password', {
+        data,
+      });
       throw error;
     }
   }

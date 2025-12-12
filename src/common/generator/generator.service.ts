@@ -183,4 +183,9 @@ export class GeneratorService {
 
     return `BA-${currentYear}-${formattedSequence}`;
   }
+
+  async generateVerificationCode(): Promise<string> {
+    const code = Math.floor(100000 + Math.random() * 900000);
+    return code.toString();
+  }
 }
