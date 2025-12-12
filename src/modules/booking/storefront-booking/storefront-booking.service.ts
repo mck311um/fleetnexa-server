@@ -13,6 +13,7 @@ import { GeneratorService } from '../../../common/generator/generator.service.js
 import { EmailService } from '../../../common/email/email.service.js';
 import { TenantNotificationService } from '../../../modules/tenant/tenant-notification/tenant-notification.service.js';
 import { StorefrontGuestBookingDto } from './dto/storefront-guest-booking.dto.js';
+import { WhatsappService } from '../../../common/whatsapp/whatsapp.service.js';
 
 @Injectable()
 export class StorefrontBookingService {
@@ -24,6 +25,7 @@ export class StorefrontBookingService {
     private readonly generator: GeneratorService,
     private readonly emailService: EmailService,
     private readonly tenantNotification: TenantNotificationService,
+    private readonly whatsapp: WhatsappService,
   ) {}
 
   async getStorefrontUserBookings(id: string) {
@@ -209,9 +211,8 @@ export class StorefrontBookingService {
 
   private async createBooking({ tenantId, customer, data }) {
     try {
+      const tenant = await this.getTenant(this.prisma, tenantId);
       const booking = await this.prisma.$transaction(async (tx) => {
-        const tenant = await this.getTenant(tx, tenantId);
-
         const customerRecord = await this.storefrontCustomer.getCustomer(
           customer,
           tenant,
@@ -253,6 +254,7 @@ export class StorefrontBookingService {
       });
 
       await this.sendNotifications(booking);
+
       return this.getBookingDetails(booking.id);
     } catch (error) {
       this.logger.error(error, 'Failed to create storefront booking', {
@@ -333,6 +335,7 @@ export class StorefrontBookingService {
     const tasks = [
       this.emailService.sendBookingCompletedEmail(booking.id, booking.tenant),
       this.emailService.sendNewBookingEmail(booking.id, booking.tenant),
+      this.whatsapp.sendBookingNotification(booking.id),
       this.tenantNotification.sendBookingNotification(
         booking.id,
         booking.tenant,

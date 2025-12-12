@@ -5,6 +5,7 @@ import { StorefrontCustomerModule } from '../../../modules/customer/storefront-c
 import { GeneratorModule } from '../../../common/generator/generator.module.js';
 import { EmailModule } from '../../../common/email/email.module.js';
 import { TenantNotificationModule } from '../../../modules/tenant/tenant-notification/tenant-notification.module.js';
+import { WhatsappModule } from '../../../common/whatsapp/whatsapp.module.js';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { TenantNotificationModule } from '../../../modules/tenant/tenant-notific
     GeneratorModule,
     EmailModule,
     TenantNotificationModule,
+    WhatsappModule,
   ],
   controllers: [StorefrontBookingController],
   providers: [StorefrontBookingService],
