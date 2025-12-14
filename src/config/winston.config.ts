@@ -13,11 +13,11 @@ export const winstonConfig = {
       ),
     }),
 
-    // new WinstonCloudWatch({
-    //   logGroupName: 'fleetnexa-server-dev',
-    //   logStreamName: logStreamName,
-    //   awsRegion: 'us-east-1',
-    //   jsonMessage: true,
-    // }),
+    new WinstonCloudWatch({
+      logGroupName: process.env.CLOUDWATCH_LOG_GROUP || 'fleetnexa-server',
+      logStreamName: logStreamName,
+      awsRegion: process.env.AWS_REGION || 'us-east-1',
+      jsonMessage: true,
+    }),
   ],
 };
