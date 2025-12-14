@@ -697,6 +697,23 @@ export type EnumMaintenanceStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumMaintenanceStatusFilter<$PrismaModel>
 }
 
+export type EnumVehicleEventTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VehicleEventType | Prisma.EnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VehicleEventType[] | Prisma.ListEnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VehicleEventType[] | Prisma.ListEnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVehicleEventTypeFilter<$PrismaModel> | $Enums.VehicleEventType
+}
+
+export type EnumVehicleEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VehicleEventType | Prisma.EnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VehicleEventType[] | Prisma.ListEnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VehicleEventType[] | Prisma.ListEnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVehicleEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.VehicleEventType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVehicleEventTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVehicleEventTypeFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1340,6 +1357,23 @@ export type NestedEnumMaintenanceStatusWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumMaintenanceStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumMaintenanceStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumVehicleEventTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VehicleEventType | Prisma.EnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VehicleEventType[] | Prisma.ListEnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VehicleEventType[] | Prisma.ListEnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVehicleEventTypeFilter<$PrismaModel> | $Enums.VehicleEventType
+}
+
+export type NestedEnumVehicleEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VehicleEventType | Prisma.EnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VehicleEventType[] | Prisma.ListEnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VehicleEventType[] | Prisma.ListEnumVehicleEventTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVehicleEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.VehicleEventType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVehicleEventTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVehicleEventTypeFilter<$PrismaModel>
 }
 
 

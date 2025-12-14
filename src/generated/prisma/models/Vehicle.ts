@@ -538,6 +538,9 @@ export type VehicleWhereInput = {
   serviceLogs?: Prisma.VehicleServiceLogListRelationFilter
   scheduledServices?: Prisma.VehicleServiceScheduleListRelationFilter
   features?: Prisma.VehicleFeatureListRelationFilter
+  swapFromHistory?: Prisma.BookingVehicleHistoryListRelationFilter
+  swapToHistory?: Prisma.BookingVehicleHistoryListRelationFilter
+  events?: Prisma.VehicleEventListRelationFilter
 }
 
 export type VehicleOrderByWithRelationInput = {
@@ -596,6 +599,9 @@ export type VehicleOrderByWithRelationInput = {
   serviceLogs?: Prisma.VehicleServiceLogOrderByRelationAggregateInput
   scheduledServices?: Prisma.VehicleServiceScheduleOrderByRelationAggregateInput
   features?: Prisma.VehicleFeatureOrderByRelationAggregateInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryOrderByRelationAggregateInput
+  swapToHistory?: Prisma.BookingVehicleHistoryOrderByRelationAggregateInput
+  events?: Prisma.VehicleEventOrderByRelationAggregateInput
 }
 
 export type VehicleWhereUniqueInput = Prisma.AtLeast<{
@@ -657,6 +663,9 @@ export type VehicleWhereUniqueInput = Prisma.AtLeast<{
   serviceLogs?: Prisma.VehicleServiceLogListRelationFilter
   scheduledServices?: Prisma.VehicleServiceScheduleListRelationFilter
   features?: Prisma.VehicleFeatureListRelationFilter
+  swapFromHistory?: Prisma.BookingVehicleHistoryListRelationFilter
+  swapToHistory?: Prisma.BookingVehicleHistoryListRelationFilter
+  events?: Prisma.VehicleEventListRelationFilter
 }, "id" | "licensePlate">
 
 export type VehicleOrderByWithAggregationInput = {
@@ -794,6 +803,9 @@ export type VehicleCreateInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateInput = {
@@ -843,6 +855,9 @@ export type VehicleUncheckedCreateInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUpdateInput = {
@@ -892,6 +907,9 @@ export type VehicleUpdateInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateInput = {
@@ -941,6 +959,9 @@ export type VehicleUncheckedUpdateInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleCreateManyInput = {
@@ -1765,6 +1786,48 @@ export type VehicleUpdateOneRequiredWithoutScheduledServicesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.VehicleUpdateToOneWithWhereWithoutScheduledServicesInput, Prisma.VehicleUpdateWithoutScheduledServicesInput>, Prisma.VehicleUncheckedUpdateWithoutScheduledServicesInput>
 }
 
+export type VehicleCreateNestedOneWithoutSwapFromHistoryInput = {
+  create?: Prisma.XOR<Prisma.VehicleCreateWithoutSwapFromHistoryInput, Prisma.VehicleUncheckedCreateWithoutSwapFromHistoryInput>
+  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutSwapFromHistoryInput
+  connect?: Prisma.VehicleWhereUniqueInput
+}
+
+export type VehicleCreateNestedOneWithoutSwapToHistoryInput = {
+  create?: Prisma.XOR<Prisma.VehicleCreateWithoutSwapToHistoryInput, Prisma.VehicleUncheckedCreateWithoutSwapToHistoryInput>
+  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutSwapToHistoryInput
+  connect?: Prisma.VehicleWhereUniqueInput
+}
+
+export type VehicleUpdateOneRequiredWithoutSwapFromHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.VehicleCreateWithoutSwapFromHistoryInput, Prisma.VehicleUncheckedCreateWithoutSwapFromHistoryInput>
+  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutSwapFromHistoryInput
+  upsert?: Prisma.VehicleUpsertWithoutSwapFromHistoryInput
+  connect?: Prisma.VehicleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VehicleUpdateToOneWithWhereWithoutSwapFromHistoryInput, Prisma.VehicleUpdateWithoutSwapFromHistoryInput>, Prisma.VehicleUncheckedUpdateWithoutSwapFromHistoryInput>
+}
+
+export type VehicleUpdateOneRequiredWithoutSwapToHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.VehicleCreateWithoutSwapToHistoryInput, Prisma.VehicleUncheckedCreateWithoutSwapToHistoryInput>
+  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutSwapToHistoryInput
+  upsert?: Prisma.VehicleUpsertWithoutSwapToHistoryInput
+  connect?: Prisma.VehicleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VehicleUpdateToOneWithWhereWithoutSwapToHistoryInput, Prisma.VehicleUpdateWithoutSwapToHistoryInput>, Prisma.VehicleUncheckedUpdateWithoutSwapToHistoryInput>
+}
+
+export type VehicleCreateNestedOneWithoutEventsInput = {
+  create?: Prisma.XOR<Prisma.VehicleCreateWithoutEventsInput, Prisma.VehicleUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutEventsInput
+  connect?: Prisma.VehicleWhereUniqueInput
+}
+
+export type VehicleUpdateOneRequiredWithoutEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.VehicleCreateWithoutEventsInput, Prisma.VehicleUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutEventsInput
+  upsert?: Prisma.VehicleUpsertWithoutEventsInput
+  connect?: Prisma.VehicleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VehicleUpdateToOneWithWhereWithoutEventsInput, Prisma.VehicleUpdateWithoutEventsInput>, Prisma.VehicleUncheckedUpdateWithoutEventsInput>
+}
+
 export type VehicleCreateWithoutBrandInput = {
   id?: string
   year: number
@@ -1811,6 +1874,9 @@ export type VehicleCreateWithoutBrandInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutBrandInput = {
@@ -1859,6 +1925,9 @@ export type VehicleUncheckedCreateWithoutBrandInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutBrandInput = {
@@ -1976,6 +2045,9 @@ export type VehicleCreateWithoutModelInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutModelInput = {
@@ -2024,6 +2096,9 @@ export type VehicleUncheckedCreateWithoutModelInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutModelInput = {
@@ -2098,6 +2173,9 @@ export type VehicleCreateWithoutVehicleStatusInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutVehicleStatusInput = {
@@ -2146,6 +2224,9 @@ export type VehicleUncheckedCreateWithoutVehicleStatusInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutVehicleStatusInput = {
@@ -2220,6 +2301,9 @@ export type VehicleCreateWithoutFuelTypeInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutFuelTypeInput = {
@@ -2268,6 +2352,9 @@ export type VehicleUncheckedCreateWithoutFuelTypeInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutFuelTypeInput = {
@@ -2342,6 +2429,9 @@ export type VehicleCreateWithoutTransmissionInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutTransmissionInput = {
@@ -2390,6 +2480,9 @@ export type VehicleUncheckedCreateWithoutTransmissionInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutTransmissionInput = {
@@ -2464,6 +2557,9 @@ export type VehicleCreateWithoutFeaturesInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutVehicleInput
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutFeaturesInput = {
@@ -2512,6 +2608,9 @@ export type VehicleUncheckedCreateWithoutFeaturesInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutVehicleInput
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutFeaturesInput = {
@@ -2581,6 +2680,9 @@ export type VehicleCreateWithoutWheelDriveInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutWheelDriveInput = {
@@ -2629,6 +2731,9 @@ export type VehicleUncheckedCreateWithoutWheelDriveInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutWheelDriveInput = {
@@ -2703,6 +2808,9 @@ export type VehicleCreateWithoutRentalActivityInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutRentalActivityInput = {
@@ -2751,6 +2859,9 @@ export type VehicleUncheckedCreateWithoutRentalActivityInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutRentalActivityInput = {
@@ -2815,6 +2926,9 @@ export type VehicleUpdateWithoutRentalActivityInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutRentalActivityInput = {
@@ -2863,6 +2977,9 @@ export type VehicleUncheckedUpdateWithoutRentalActivityInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleCreateWithoutRentalsInput = {
@@ -2911,6 +3028,9 @@ export type VehicleCreateWithoutRentalsInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutRentalsInput = {
@@ -2959,6 +3079,9 @@ export type VehicleUncheckedCreateWithoutRentalsInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutRentalsInput = {
@@ -3023,6 +3146,9 @@ export type VehicleUpdateWithoutRentalsInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutRentalsInput = {
@@ -3071,6 +3197,9 @@ export type VehicleUncheckedUpdateWithoutRentalsInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleCreateWithoutTenantInput = {
@@ -3119,6 +3248,9 @@ export type VehicleCreateWithoutTenantInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutTenantInput = {
@@ -3167,6 +3299,9 @@ export type VehicleUncheckedCreateWithoutTenantInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutTenantInput = {
@@ -3241,6 +3376,9 @@ export type VehicleCreateWithoutLocationInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutLocationInput = {
@@ -3289,6 +3427,9 @@ export type VehicleUncheckedCreateWithoutLocationInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutLocationInput = {
@@ -3363,6 +3504,9 @@ export type VehicleCreateWithoutExpensesInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutExpensesInput = {
@@ -3411,6 +3555,9 @@ export type VehicleUncheckedCreateWithoutExpensesInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutExpensesInput = {
@@ -3475,6 +3622,9 @@ export type VehicleUpdateWithoutExpensesInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutExpensesInput = {
@@ -3523,6 +3673,9 @@ export type VehicleUncheckedUpdateWithoutExpensesInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleCreateWithoutDiscountsInput = {
@@ -3571,6 +3724,9 @@ export type VehicleCreateWithoutDiscountsInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutDiscountsInput = {
@@ -3619,6 +3775,9 @@ export type VehicleUncheckedCreateWithoutDiscountsInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutDiscountsInput = {
@@ -3683,6 +3842,9 @@ export type VehicleUpdateWithoutDiscountsInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutDiscountsInput = {
@@ -3731,6 +3893,9 @@ export type VehicleUncheckedUpdateWithoutDiscountsInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleCreateWithoutDamagesInput = {
@@ -3779,6 +3944,9 @@ export type VehicleCreateWithoutDamagesInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutDamagesInput = {
@@ -3827,6 +3995,9 @@ export type VehicleUncheckedCreateWithoutDamagesInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutDamagesInput = {
@@ -3891,6 +4062,9 @@ export type VehicleUpdateWithoutDamagesInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutDamagesInput = {
@@ -3939,6 +4113,9 @@ export type VehicleUncheckedUpdateWithoutDamagesInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleCreateWithoutFuelPolicyInput = {
@@ -3987,6 +4164,9 @@ export type VehicleCreateWithoutFuelPolicyInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutFuelPolicyInput = {
@@ -4035,6 +4215,9 @@ export type VehicleUncheckedCreateWithoutFuelPolicyInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutFuelPolicyInput = {
@@ -4109,6 +4292,9 @@ export type VehicleCreateWithoutServiceLogsInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutServiceLogsInput = {
@@ -4157,6 +4343,9 @@ export type VehicleUncheckedCreateWithoutServiceLogsInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutServiceLogsInput = {
@@ -4221,6 +4410,9 @@ export type VehicleUpdateWithoutServiceLogsInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutServiceLogsInput = {
@@ -4269,6 +4461,9 @@ export type VehicleUncheckedUpdateWithoutServiceLogsInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleCreateWithoutScheduledMaintenanceInput = {
@@ -4317,6 +4512,9 @@ export type VehicleCreateWithoutScheduledMaintenanceInput = {
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutScheduledMaintenanceInput = {
@@ -4365,6 +4563,9 @@ export type VehicleUncheckedCreateWithoutScheduledMaintenanceInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutScheduledMaintenanceInput = {
@@ -4429,6 +4630,9 @@ export type VehicleUpdateWithoutScheduledMaintenanceInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutScheduledMaintenanceInput = {
@@ -4477,6 +4681,9 @@ export type VehicleUncheckedUpdateWithoutScheduledMaintenanceInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleCreateWithoutScheduledServicesInput = {
@@ -4525,6 +4732,9 @@ export type VehicleCreateWithoutScheduledServicesInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutVehicleInput
   serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleUncheckedCreateWithoutScheduledServicesInput = {
@@ -4573,6 +4783,9 @@ export type VehicleUncheckedCreateWithoutScheduledServicesInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutVehicleInput
   serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
   features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
 }
 
 export type VehicleCreateOrConnectWithoutScheduledServicesInput = {
@@ -4637,6 +4850,9 @@ export type VehicleUpdateWithoutScheduledServicesInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutVehicleNestedInput
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutScheduledServicesInput = {
@@ -4685,6 +4901,669 @@ export type VehicleUncheckedUpdateWithoutScheduledServicesInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleCreateWithoutSwapFromHistoryInput = {
+  id?: string
+  year: number
+  color: string
+  licensePlate: string
+  engineVolume: number
+  fuelLevel: number
+  odometer: number
+  steering?: string
+  featuredImage: string
+  images?: Prisma.VehicleCreateimagesInput | string[]
+  numberOfSeats: number
+  numberOfDoors: number
+  vin: string
+  isActive?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  drivingExperience?: number
+  minimumAge: number
+  minimumRental: number
+  refundAmount?: number
+  timeBetweenRentals: number
+  dayPrice?: number
+  monthPrice?: number
+  weekPrice?: number
+  storefrontEnabled?: boolean
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutVehicleInput
+  rentals?: Prisma.RentalCreateNestedManyWithoutVehicleInput
+  rentalActivity?: Prisma.RentalActivityCreateNestedManyWithoutVehicleInput
+  brand: Prisma.VehicleBrandCreateNestedOneWithoutVehicleInput
+  fuelPolicy?: Prisma.FuelPolicyCreateNestedOneWithoutVehiclesInput
+  fuelType: Prisma.FuelTypeCreateNestedOneWithoutVehicleInput
+  location?: Prisma.TenantLocationCreateNestedOneWithoutVehiclesInput
+  model: Prisma.VehicleModelCreateNestedOneWithoutVehiclesInput
+  tenant?: Prisma.TenantCreateNestedOneWithoutVehiclesInput
+  transmission: Prisma.TransmissionCreateNestedOneWithoutVehiclesInput
+  vehicleStatus: Prisma.VehicleStatusCreateNestedOneWithoutVehiclesInput
+  wheelDrive: Prisma.WheelDriveCreateNestedOneWithoutVehiclesInput
+  damages?: Prisma.VehicleDamageCreateNestedManyWithoutVehicleInput
+  discounts?: Prisma.VehicleDiscountCreateNestedManyWithoutVehicleInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutVehicleInput
+  serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
+  scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
+  features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleUncheckedCreateWithoutSwapFromHistoryInput = {
+  id?: string
+  year: number
+  color: string
+  licensePlate: string
+  engineVolume: number
+  vehicleStatusId: string
+  fuelTypeId: string
+  transmissionId: string
+  wheelDriveId: string
+  fuelLevel: number
+  odometer: number
+  steering?: string
+  featuredImage: string
+  images?: Prisma.VehicleCreateimagesInput | string[]
+  numberOfSeats: number
+  numberOfDoors: number
+  vin: string
+  brandId: string
+  modelId: string
+  tenantId?: string | null
+  locationId?: string | null
+  isActive?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  drivingExperience?: number
+  fuelPolicyId?: string | null
+  minimumAge: number
+  minimumRental: number
+  refundAmount?: number
+  timeBetweenRentals: number
+  dayPrice?: number
+  monthPrice?: number
+  weekPrice?: number
+  storefrontEnabled?: boolean
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutVehicleInput
+  rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutVehicleInput
+  rentalActivity?: Prisma.RentalActivityUncheckedCreateNestedManyWithoutVehicleInput
+  damages?: Prisma.VehicleDamageUncheckedCreateNestedManyWithoutVehicleInput
+  discounts?: Prisma.VehicleDiscountUncheckedCreateNestedManyWithoutVehicleInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutVehicleInput
+  serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
+  scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
+  features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleCreateOrConnectWithoutSwapFromHistoryInput = {
+  where: Prisma.VehicleWhereUniqueInput
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutSwapFromHistoryInput, Prisma.VehicleUncheckedCreateWithoutSwapFromHistoryInput>
+}
+
+export type VehicleCreateWithoutSwapToHistoryInput = {
+  id?: string
+  year: number
+  color: string
+  licensePlate: string
+  engineVolume: number
+  fuelLevel: number
+  odometer: number
+  steering?: string
+  featuredImage: string
+  images?: Prisma.VehicleCreateimagesInput | string[]
+  numberOfSeats: number
+  numberOfDoors: number
+  vin: string
+  isActive?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  drivingExperience?: number
+  minimumAge: number
+  minimumRental: number
+  refundAmount?: number
+  timeBetweenRentals: number
+  dayPrice?: number
+  monthPrice?: number
+  weekPrice?: number
+  storefrontEnabled?: boolean
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutVehicleInput
+  rentals?: Prisma.RentalCreateNestedManyWithoutVehicleInput
+  rentalActivity?: Prisma.RentalActivityCreateNestedManyWithoutVehicleInput
+  brand: Prisma.VehicleBrandCreateNestedOneWithoutVehicleInput
+  fuelPolicy?: Prisma.FuelPolicyCreateNestedOneWithoutVehiclesInput
+  fuelType: Prisma.FuelTypeCreateNestedOneWithoutVehicleInput
+  location?: Prisma.TenantLocationCreateNestedOneWithoutVehiclesInput
+  model: Prisma.VehicleModelCreateNestedOneWithoutVehiclesInput
+  tenant?: Prisma.TenantCreateNestedOneWithoutVehiclesInput
+  transmission: Prisma.TransmissionCreateNestedOneWithoutVehiclesInput
+  vehicleStatus: Prisma.VehicleStatusCreateNestedOneWithoutVehiclesInput
+  wheelDrive: Prisma.WheelDriveCreateNestedOneWithoutVehiclesInput
+  damages?: Prisma.VehicleDamageCreateNestedManyWithoutVehicleInput
+  discounts?: Prisma.VehicleDiscountCreateNestedManyWithoutVehicleInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutVehicleInput
+  serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
+  scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
+  features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  events?: Prisma.VehicleEventCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleUncheckedCreateWithoutSwapToHistoryInput = {
+  id?: string
+  year: number
+  color: string
+  licensePlate: string
+  engineVolume: number
+  vehicleStatusId: string
+  fuelTypeId: string
+  transmissionId: string
+  wheelDriveId: string
+  fuelLevel: number
+  odometer: number
+  steering?: string
+  featuredImage: string
+  images?: Prisma.VehicleCreateimagesInput | string[]
+  numberOfSeats: number
+  numberOfDoors: number
+  vin: string
+  brandId: string
+  modelId: string
+  tenantId?: string | null
+  locationId?: string | null
+  isActive?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  drivingExperience?: number
+  fuelPolicyId?: string | null
+  minimumAge: number
+  minimumRental: number
+  refundAmount?: number
+  timeBetweenRentals: number
+  dayPrice?: number
+  monthPrice?: number
+  weekPrice?: number
+  storefrontEnabled?: boolean
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutVehicleInput
+  rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutVehicleInput
+  rentalActivity?: Prisma.RentalActivityUncheckedCreateNestedManyWithoutVehicleInput
+  damages?: Prisma.VehicleDamageUncheckedCreateNestedManyWithoutVehicleInput
+  discounts?: Prisma.VehicleDiscountUncheckedCreateNestedManyWithoutVehicleInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutVehicleInput
+  serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
+  scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
+  features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  events?: Prisma.VehicleEventUncheckedCreateNestedManyWithoutVehicleInput
+}
+
+export type VehicleCreateOrConnectWithoutSwapToHistoryInput = {
+  where: Prisma.VehicleWhereUniqueInput
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutSwapToHistoryInput, Prisma.VehicleUncheckedCreateWithoutSwapToHistoryInput>
+}
+
+export type VehicleUpsertWithoutSwapFromHistoryInput = {
+  update: Prisma.XOR<Prisma.VehicleUpdateWithoutSwapFromHistoryInput, Prisma.VehicleUncheckedUpdateWithoutSwapFromHistoryInput>
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutSwapFromHistoryInput, Prisma.VehicleUncheckedCreateWithoutSwapFromHistoryInput>
+  where?: Prisma.VehicleWhereInput
+}
+
+export type VehicleUpdateToOneWithWhereWithoutSwapFromHistoryInput = {
+  where?: Prisma.VehicleWhereInput
+  data: Prisma.XOR<Prisma.VehicleUpdateWithoutSwapFromHistoryInput, Prisma.VehicleUncheckedUpdateWithoutSwapFromHistoryInput>
+}
+
+export type VehicleUpdateWithoutSwapFromHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
+  engineVolume?: Prisma.IntFieldUpdateOperationsInput | number
+  fuelLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  odometer?: Prisma.IntFieldUpdateOperationsInput | number
+  steering?: Prisma.StringFieldUpdateOperationsInput | string
+  featuredImage?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.VehicleUpdateimagesInput | string[]
+  numberOfSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfDoors?: Prisma.IntFieldUpdateOperationsInput | number
+  vin?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drivingExperience?: Prisma.IntFieldUpdateOperationsInput | number
+  minimumAge?: Prisma.IntFieldUpdateOperationsInput | number
+  minimumRental?: Prisma.IntFieldUpdateOperationsInput | number
+  refundAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBetweenRentals?: Prisma.IntFieldUpdateOperationsInput | number
+  dayPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  monthPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  weekPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  storefrontEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  expenses?: Prisma.ExpenseUpdateManyWithoutVehicleNestedInput
+  rentals?: Prisma.RentalUpdateManyWithoutVehicleNestedInput
+  rentalActivity?: Prisma.RentalActivityUpdateManyWithoutVehicleNestedInput
+  brand?: Prisma.VehicleBrandUpdateOneRequiredWithoutVehicleNestedInput
+  fuelPolicy?: Prisma.FuelPolicyUpdateOneWithoutVehiclesNestedInput
+  fuelType?: Prisma.FuelTypeUpdateOneRequiredWithoutVehicleNestedInput
+  location?: Prisma.TenantLocationUpdateOneWithoutVehiclesNestedInput
+  model?: Prisma.VehicleModelUpdateOneRequiredWithoutVehiclesNestedInput
+  tenant?: Prisma.TenantUpdateOneWithoutVehiclesNestedInput
+  transmission?: Prisma.TransmissionUpdateOneRequiredWithoutVehiclesNestedInput
+  vehicleStatus?: Prisma.VehicleStatusUpdateOneRequiredWithoutVehiclesNestedInput
+  wheelDrive?: Prisma.WheelDriveUpdateOneRequiredWithoutVehiclesNestedInput
+  damages?: Prisma.VehicleDamageUpdateManyWithoutVehicleNestedInput
+  discounts?: Prisma.VehicleDiscountUpdateManyWithoutVehicleNestedInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutVehicleNestedInput
+  serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
+  scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
+  features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleUncheckedUpdateWithoutSwapFromHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
+  engineVolume?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleStatusId?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  transmissionId?: Prisma.StringFieldUpdateOperationsInput | string
+  wheelDriveId?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  odometer?: Prisma.IntFieldUpdateOperationsInput | number
+  steering?: Prisma.StringFieldUpdateOperationsInput | string
+  featuredImage?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.VehicleUpdateimagesInput | string[]
+  numberOfSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfDoors?: Prisma.IntFieldUpdateOperationsInput | number
+  vin?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
+  modelId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drivingExperience?: Prisma.IntFieldUpdateOperationsInput | number
+  fuelPolicyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minimumAge?: Prisma.IntFieldUpdateOperationsInput | number
+  minimumRental?: Prisma.IntFieldUpdateOperationsInput | number
+  refundAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBetweenRentals?: Prisma.IntFieldUpdateOperationsInput | number
+  dayPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  monthPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  weekPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  storefrontEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutVehicleNestedInput
+  rentals?: Prisma.RentalUncheckedUpdateManyWithoutVehicleNestedInput
+  rentalActivity?: Prisma.RentalActivityUncheckedUpdateManyWithoutVehicleNestedInput
+  damages?: Prisma.VehicleDamageUncheckedUpdateManyWithoutVehicleNestedInput
+  discounts?: Prisma.VehicleDiscountUncheckedUpdateManyWithoutVehicleNestedInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
+  serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
+  scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
+  features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleUpsertWithoutSwapToHistoryInput = {
+  update: Prisma.XOR<Prisma.VehicleUpdateWithoutSwapToHistoryInput, Prisma.VehicleUncheckedUpdateWithoutSwapToHistoryInput>
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutSwapToHistoryInput, Prisma.VehicleUncheckedCreateWithoutSwapToHistoryInput>
+  where?: Prisma.VehicleWhereInput
+}
+
+export type VehicleUpdateToOneWithWhereWithoutSwapToHistoryInput = {
+  where?: Prisma.VehicleWhereInput
+  data: Prisma.XOR<Prisma.VehicleUpdateWithoutSwapToHistoryInput, Prisma.VehicleUncheckedUpdateWithoutSwapToHistoryInput>
+}
+
+export type VehicleUpdateWithoutSwapToHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
+  engineVolume?: Prisma.IntFieldUpdateOperationsInput | number
+  fuelLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  odometer?: Prisma.IntFieldUpdateOperationsInput | number
+  steering?: Prisma.StringFieldUpdateOperationsInput | string
+  featuredImage?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.VehicleUpdateimagesInput | string[]
+  numberOfSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfDoors?: Prisma.IntFieldUpdateOperationsInput | number
+  vin?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drivingExperience?: Prisma.IntFieldUpdateOperationsInput | number
+  minimumAge?: Prisma.IntFieldUpdateOperationsInput | number
+  minimumRental?: Prisma.IntFieldUpdateOperationsInput | number
+  refundAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBetweenRentals?: Prisma.IntFieldUpdateOperationsInput | number
+  dayPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  monthPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  weekPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  storefrontEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  expenses?: Prisma.ExpenseUpdateManyWithoutVehicleNestedInput
+  rentals?: Prisma.RentalUpdateManyWithoutVehicleNestedInput
+  rentalActivity?: Prisma.RentalActivityUpdateManyWithoutVehicleNestedInput
+  brand?: Prisma.VehicleBrandUpdateOneRequiredWithoutVehicleNestedInput
+  fuelPolicy?: Prisma.FuelPolicyUpdateOneWithoutVehiclesNestedInput
+  fuelType?: Prisma.FuelTypeUpdateOneRequiredWithoutVehicleNestedInput
+  location?: Prisma.TenantLocationUpdateOneWithoutVehiclesNestedInput
+  model?: Prisma.VehicleModelUpdateOneRequiredWithoutVehiclesNestedInput
+  tenant?: Prisma.TenantUpdateOneWithoutVehiclesNestedInput
+  transmission?: Prisma.TransmissionUpdateOneRequiredWithoutVehiclesNestedInput
+  vehicleStatus?: Prisma.VehicleStatusUpdateOneRequiredWithoutVehiclesNestedInput
+  wheelDrive?: Prisma.WheelDriveUpdateOneRequiredWithoutVehiclesNestedInput
+  damages?: Prisma.VehicleDamageUpdateManyWithoutVehicleNestedInput
+  discounts?: Prisma.VehicleDiscountUpdateManyWithoutVehicleNestedInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutVehicleNestedInput
+  serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
+  scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
+  features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleUncheckedUpdateWithoutSwapToHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
+  engineVolume?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleStatusId?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  transmissionId?: Prisma.StringFieldUpdateOperationsInput | string
+  wheelDriveId?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  odometer?: Prisma.IntFieldUpdateOperationsInput | number
+  steering?: Prisma.StringFieldUpdateOperationsInput | string
+  featuredImage?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.VehicleUpdateimagesInput | string[]
+  numberOfSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfDoors?: Prisma.IntFieldUpdateOperationsInput | number
+  vin?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
+  modelId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drivingExperience?: Prisma.IntFieldUpdateOperationsInput | number
+  fuelPolicyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minimumAge?: Prisma.IntFieldUpdateOperationsInput | number
+  minimumRental?: Prisma.IntFieldUpdateOperationsInput | number
+  refundAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBetweenRentals?: Prisma.IntFieldUpdateOperationsInput | number
+  dayPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  monthPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  weekPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  storefrontEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutVehicleNestedInput
+  rentals?: Prisma.RentalUncheckedUpdateManyWithoutVehicleNestedInput
+  rentalActivity?: Prisma.RentalActivityUncheckedUpdateManyWithoutVehicleNestedInput
+  damages?: Prisma.VehicleDamageUncheckedUpdateManyWithoutVehicleNestedInput
+  discounts?: Prisma.VehicleDiscountUncheckedUpdateManyWithoutVehicleNestedInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
+  serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
+  scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
+  features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
+}
+
+export type VehicleCreateWithoutEventsInput = {
+  id?: string
+  year: number
+  color: string
+  licensePlate: string
+  engineVolume: number
+  fuelLevel: number
+  odometer: number
+  steering?: string
+  featuredImage: string
+  images?: Prisma.VehicleCreateimagesInput | string[]
+  numberOfSeats: number
+  numberOfDoors: number
+  vin: string
+  isActive?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  drivingExperience?: number
+  minimumAge: number
+  minimumRental: number
+  refundAmount?: number
+  timeBetweenRentals: number
+  dayPrice?: number
+  monthPrice?: number
+  weekPrice?: number
+  storefrontEnabled?: boolean
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutVehicleInput
+  rentals?: Prisma.RentalCreateNestedManyWithoutVehicleInput
+  rentalActivity?: Prisma.RentalActivityCreateNestedManyWithoutVehicleInput
+  brand: Prisma.VehicleBrandCreateNestedOneWithoutVehicleInput
+  fuelPolicy?: Prisma.FuelPolicyCreateNestedOneWithoutVehiclesInput
+  fuelType: Prisma.FuelTypeCreateNestedOneWithoutVehicleInput
+  location?: Prisma.TenantLocationCreateNestedOneWithoutVehiclesInput
+  model: Prisma.VehicleModelCreateNestedOneWithoutVehiclesInput
+  tenant?: Prisma.TenantCreateNestedOneWithoutVehiclesInput
+  transmission: Prisma.TransmissionCreateNestedOneWithoutVehiclesInput
+  vehicleStatus: Prisma.VehicleStatusCreateNestedOneWithoutVehiclesInput
+  wheelDrive: Prisma.WheelDriveCreateNestedOneWithoutVehiclesInput
+  damages?: Prisma.VehicleDamageCreateNestedManyWithoutVehicleInput
+  discounts?: Prisma.VehicleDiscountCreateNestedManyWithoutVehicleInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutVehicleInput
+  serviceLogs?: Prisma.VehicleServiceLogCreateNestedManyWithoutVehicleInput
+  scheduledServices?: Prisma.VehicleServiceScheduleCreateNestedManyWithoutVehicleInput
+  features?: Prisma.VehicleFeatureCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutToVehicleInput
+}
+
+export type VehicleUncheckedCreateWithoutEventsInput = {
+  id?: string
+  year: number
+  color: string
+  licensePlate: string
+  engineVolume: number
+  vehicleStatusId: string
+  fuelTypeId: string
+  transmissionId: string
+  wheelDriveId: string
+  fuelLevel: number
+  odometer: number
+  steering?: string
+  featuredImage: string
+  images?: Prisma.VehicleCreateimagesInput | string[]
+  numberOfSeats: number
+  numberOfDoors: number
+  vin: string
+  brandId: string
+  modelId: string
+  tenantId?: string | null
+  locationId?: string | null
+  isActive?: boolean
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  drivingExperience?: number
+  fuelPolicyId?: string | null
+  minimumAge: number
+  minimumRental: number
+  refundAmount?: number
+  timeBetweenRentals: number
+  dayPrice?: number
+  monthPrice?: number
+  weekPrice?: number
+  storefrontEnabled?: boolean
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutVehicleInput
+  rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutVehicleInput
+  rentalActivity?: Prisma.RentalActivityUncheckedCreateNestedManyWithoutVehicleInput
+  damages?: Prisma.VehicleDamageUncheckedCreateNestedManyWithoutVehicleInput
+  discounts?: Prisma.VehicleDiscountUncheckedCreateNestedManyWithoutVehicleInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutVehicleInput
+  serviceLogs?: Prisma.VehicleServiceLogUncheckedCreateNestedManyWithoutVehicleInput
+  scheduledServices?: Prisma.VehicleServiceScheduleUncheckedCreateNestedManyWithoutVehicleInput
+  features?: Prisma.VehicleFeatureUncheckedCreateNestedManyWithoutVehiclesInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutFromVehicleInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutToVehicleInput
+}
+
+export type VehicleCreateOrConnectWithoutEventsInput = {
+  where: Prisma.VehicleWhereUniqueInput
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutEventsInput, Prisma.VehicleUncheckedCreateWithoutEventsInput>
+}
+
+export type VehicleUpsertWithoutEventsInput = {
+  update: Prisma.XOR<Prisma.VehicleUpdateWithoutEventsInput, Prisma.VehicleUncheckedUpdateWithoutEventsInput>
+  create: Prisma.XOR<Prisma.VehicleCreateWithoutEventsInput, Prisma.VehicleUncheckedCreateWithoutEventsInput>
+  where?: Prisma.VehicleWhereInput
+}
+
+export type VehicleUpdateToOneWithWhereWithoutEventsInput = {
+  where?: Prisma.VehicleWhereInput
+  data: Prisma.XOR<Prisma.VehicleUpdateWithoutEventsInput, Prisma.VehicleUncheckedUpdateWithoutEventsInput>
+}
+
+export type VehicleUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
+  engineVolume?: Prisma.IntFieldUpdateOperationsInput | number
+  fuelLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  odometer?: Prisma.IntFieldUpdateOperationsInput | number
+  steering?: Prisma.StringFieldUpdateOperationsInput | string
+  featuredImage?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.VehicleUpdateimagesInput | string[]
+  numberOfSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfDoors?: Prisma.IntFieldUpdateOperationsInput | number
+  vin?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drivingExperience?: Prisma.IntFieldUpdateOperationsInput | number
+  minimumAge?: Prisma.IntFieldUpdateOperationsInput | number
+  minimumRental?: Prisma.IntFieldUpdateOperationsInput | number
+  refundAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBetweenRentals?: Prisma.IntFieldUpdateOperationsInput | number
+  dayPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  monthPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  weekPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  storefrontEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  expenses?: Prisma.ExpenseUpdateManyWithoutVehicleNestedInput
+  rentals?: Prisma.RentalUpdateManyWithoutVehicleNestedInput
+  rentalActivity?: Prisma.RentalActivityUpdateManyWithoutVehicleNestedInput
+  brand?: Prisma.VehicleBrandUpdateOneRequiredWithoutVehicleNestedInput
+  fuelPolicy?: Prisma.FuelPolicyUpdateOneWithoutVehiclesNestedInput
+  fuelType?: Prisma.FuelTypeUpdateOneRequiredWithoutVehicleNestedInput
+  location?: Prisma.TenantLocationUpdateOneWithoutVehiclesNestedInput
+  model?: Prisma.VehicleModelUpdateOneRequiredWithoutVehiclesNestedInput
+  tenant?: Prisma.TenantUpdateOneWithoutVehiclesNestedInput
+  transmission?: Prisma.TransmissionUpdateOneRequiredWithoutVehiclesNestedInput
+  vehicleStatus?: Prisma.VehicleStatusUpdateOneRequiredWithoutVehiclesNestedInput
+  wheelDrive?: Prisma.WheelDriveUpdateOneRequiredWithoutVehiclesNestedInput
+  damages?: Prisma.VehicleDamageUpdateManyWithoutVehicleNestedInput
+  discounts?: Prisma.VehicleDiscountUpdateManyWithoutVehicleNestedInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutVehicleNestedInput
+  serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
+  scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
+  features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+}
+
+export type VehicleUncheckedUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
+  engineVolume?: Prisma.IntFieldUpdateOperationsInput | number
+  vehicleStatusId?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  transmissionId?: Prisma.StringFieldUpdateOperationsInput | string
+  wheelDriveId?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  odometer?: Prisma.IntFieldUpdateOperationsInput | number
+  steering?: Prisma.StringFieldUpdateOperationsInput | string
+  featuredImage?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.VehicleUpdateimagesInput | string[]
+  numberOfSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfDoors?: Prisma.IntFieldUpdateOperationsInput | number
+  vin?: Prisma.StringFieldUpdateOperationsInput | string
+  brandId?: Prisma.StringFieldUpdateOperationsInput | string
+  modelId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  drivingExperience?: Prisma.IntFieldUpdateOperationsInput | number
+  fuelPolicyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minimumAge?: Prisma.IntFieldUpdateOperationsInput | number
+  minimumRental?: Prisma.IntFieldUpdateOperationsInput | number
+  refundAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  timeBetweenRentals?: Prisma.IntFieldUpdateOperationsInput | number
+  dayPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  monthPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  weekPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  storefrontEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutVehicleNestedInput
+  rentals?: Prisma.RentalUncheckedUpdateManyWithoutVehicleNestedInput
+  rentalActivity?: Prisma.RentalActivityUncheckedUpdateManyWithoutVehicleNestedInput
+  damages?: Prisma.VehicleDamageUncheckedUpdateManyWithoutVehicleNestedInput
+  discounts?: Prisma.VehicleDiscountUncheckedUpdateManyWithoutVehicleNestedInput
+  scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
+  serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
+  scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
+  features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
 }
 
 export type VehicleCreateManyBrandInput = {
@@ -4772,6 +5651,9 @@ export type VehicleUpdateWithoutBrandInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutBrandInput = {
@@ -4820,6 +5702,9 @@ export type VehicleUncheckedUpdateWithoutBrandInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutBrandInput = {
@@ -4946,6 +5831,9 @@ export type VehicleUpdateWithoutModelInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutModelInput = {
@@ -4994,6 +5882,9 @@ export type VehicleUncheckedUpdateWithoutModelInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutModelInput = {
@@ -5120,6 +6011,9 @@ export type VehicleUpdateWithoutVehicleStatusInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutVehicleStatusInput = {
@@ -5168,6 +6062,9 @@ export type VehicleUncheckedUpdateWithoutVehicleStatusInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutVehicleStatusInput = {
@@ -5294,6 +6191,9 @@ export type VehicleUpdateWithoutFuelTypeInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutFuelTypeInput = {
@@ -5342,6 +6242,9 @@ export type VehicleUncheckedUpdateWithoutFuelTypeInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutFuelTypeInput = {
@@ -5468,6 +6371,9 @@ export type VehicleUpdateWithoutTransmissionInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutTransmissionInput = {
@@ -5516,6 +6422,9 @@ export type VehicleUncheckedUpdateWithoutTransmissionInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutTransmissionInput = {
@@ -5603,6 +6512,9 @@ export type VehicleUpdateWithoutFeaturesInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutVehicleNestedInput
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutFeaturesInput = {
@@ -5651,6 +6563,9 @@ export type VehicleUncheckedUpdateWithoutFeaturesInput = {
   scheduledMaintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutVehicleNestedInput
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutFeaturesInput = {
@@ -5778,6 +6693,9 @@ export type VehicleUpdateWithoutWheelDriveInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutWheelDriveInput = {
@@ -5826,6 +6744,9 @@ export type VehicleUncheckedUpdateWithoutWheelDriveInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutWheelDriveInput = {
@@ -5952,6 +6873,9 @@ export type VehicleUpdateWithoutTenantInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutTenantInput = {
@@ -6000,6 +6924,9 @@ export type VehicleUncheckedUpdateWithoutTenantInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutTenantInput = {
@@ -6126,6 +7053,9 @@ export type VehicleUpdateWithoutLocationInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutLocationInput = {
@@ -6174,6 +7104,9 @@ export type VehicleUncheckedUpdateWithoutLocationInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutLocationInput = {
@@ -6300,6 +7233,9 @@ export type VehicleUpdateWithoutFuelPolicyInput = {
   serviceLogs?: Prisma.VehicleServiceLogUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateWithoutFuelPolicyInput = {
@@ -6348,6 +7284,9 @@ export type VehicleUncheckedUpdateWithoutFuelPolicyInput = {
   serviceLogs?: Prisma.VehicleServiceLogUncheckedUpdateManyWithoutVehicleNestedInput
   scheduledServices?: Prisma.VehicleServiceScheduleUncheckedUpdateManyWithoutVehicleNestedInput
   features?: Prisma.VehicleFeatureUncheckedUpdateManyWithoutVehiclesNestedInput
+  swapFromHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutFromVehicleNestedInput
+  swapToHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutToVehicleNestedInput
+  events?: Prisma.VehicleEventUncheckedUpdateManyWithoutVehicleNestedInput
 }
 
 export type VehicleUncheckedUpdateManyWithoutFuelPolicyInput = {
@@ -6404,6 +7343,9 @@ export type VehicleCountOutputType = {
   serviceLogs: number
   scheduledServices: number
   features: number
+  swapFromHistory: number
+  swapToHistory: number
+  events: number
 }
 
 export type VehicleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6416,6 +7358,9 @@ export type VehicleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   serviceLogs?: boolean | VehicleCountOutputTypeCountServiceLogsArgs
   scheduledServices?: boolean | VehicleCountOutputTypeCountScheduledServicesArgs
   features?: boolean | VehicleCountOutputTypeCountFeaturesArgs
+  swapFromHistory?: boolean | VehicleCountOutputTypeCountSwapFromHistoryArgs
+  swapToHistory?: boolean | VehicleCountOutputTypeCountSwapToHistoryArgs
+  events?: boolean | VehicleCountOutputTypeCountEventsArgs
 }
 
 /**
@@ -6491,6 +7436,27 @@ export type VehicleCountOutputTypeCountFeaturesArgs<ExtArgs extends runtime.Type
   where?: Prisma.VehicleFeatureWhereInput
 }
 
+/**
+ * VehicleCountOutputType without action
+ */
+export type VehicleCountOutputTypeCountSwapFromHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingVehicleHistoryWhereInput
+}
+
+/**
+ * VehicleCountOutputType without action
+ */
+export type VehicleCountOutputTypeCountSwapToHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingVehicleHistoryWhereInput
+}
+
+/**
+ * VehicleCountOutputType without action
+ */
+export type VehicleCountOutputTypeCountEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VehicleEventWhereInput
+}
+
 
 export type VehicleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -6548,6 +7514,9 @@ export type VehicleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   serviceLogs?: boolean | Prisma.Vehicle$serviceLogsArgs<ExtArgs>
   scheduledServices?: boolean | Prisma.Vehicle$scheduledServicesArgs<ExtArgs>
   features?: boolean | Prisma.Vehicle$featuresArgs<ExtArgs>
+  swapFromHistory?: boolean | Prisma.Vehicle$swapFromHistoryArgs<ExtArgs>
+  swapToHistory?: boolean | Prisma.Vehicle$swapToHistoryArgs<ExtArgs>
+  events?: boolean | Prisma.Vehicle$eventsArgs<ExtArgs>
   _count?: boolean | Prisma.VehicleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vehicle"]>
 
@@ -6709,6 +7678,9 @@ export type VehicleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   serviceLogs?: boolean | Prisma.Vehicle$serviceLogsArgs<ExtArgs>
   scheduledServices?: boolean | Prisma.Vehicle$scheduledServicesArgs<ExtArgs>
   features?: boolean | Prisma.Vehicle$featuresArgs<ExtArgs>
+  swapFromHistory?: boolean | Prisma.Vehicle$swapFromHistoryArgs<ExtArgs>
+  swapToHistory?: boolean | Prisma.Vehicle$swapToHistoryArgs<ExtArgs>
+  events?: boolean | Prisma.Vehicle$eventsArgs<ExtArgs>
   _count?: boolean | Prisma.VehicleCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VehicleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6755,6 +7727,9 @@ export type $VehiclePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     serviceLogs: Prisma.$VehicleServiceLogPayload<ExtArgs>[]
     scheduledServices: Prisma.$VehicleServiceSchedulePayload<ExtArgs>[]
     features: Prisma.$VehicleFeaturePayload<ExtArgs>[]
+    swapFromHistory: Prisma.$BookingVehicleHistoryPayload<ExtArgs>[]
+    swapToHistory: Prisma.$BookingVehicleHistoryPayload<ExtArgs>[]
+    events: Prisma.$VehicleEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -7206,6 +8181,9 @@ export interface Prisma__VehicleClient<T, Null = never, ExtArgs extends runtime.
   serviceLogs<T extends Prisma.Vehicle$serviceLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vehicle$serviceLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehicleServiceLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   scheduledServices<T extends Prisma.Vehicle$scheduledServicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vehicle$scheduledServicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehicleServiceSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   features<T extends Prisma.Vehicle$featuresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vehicle$featuresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehicleFeaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  swapFromHistory<T extends Prisma.Vehicle$swapFromHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vehicle$swapFromHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingVehicleHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  swapToHistory<T extends Prisma.Vehicle$swapToHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vehicle$swapToHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingVehicleHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  events<T extends Prisma.Vehicle$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vehicle$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehicleEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7938,6 +8916,78 @@ export type Vehicle$featuresArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.VehicleFeatureScalarFieldEnum | Prisma.VehicleFeatureScalarFieldEnum[]
+}
+
+/**
+ * Vehicle.swapFromHistory
+ */
+export type Vehicle$swapFromHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BookingVehicleHistory
+   */
+  select?: Prisma.BookingVehicleHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BookingVehicleHistory
+   */
+  omit?: Prisma.BookingVehicleHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingVehicleHistoryInclude<ExtArgs> | null
+  where?: Prisma.BookingVehicleHistoryWhereInput
+  orderBy?: Prisma.BookingVehicleHistoryOrderByWithRelationInput | Prisma.BookingVehicleHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.BookingVehicleHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingVehicleHistoryScalarFieldEnum | Prisma.BookingVehicleHistoryScalarFieldEnum[]
+}
+
+/**
+ * Vehicle.swapToHistory
+ */
+export type Vehicle$swapToHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BookingVehicleHistory
+   */
+  select?: Prisma.BookingVehicleHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BookingVehicleHistory
+   */
+  omit?: Prisma.BookingVehicleHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingVehicleHistoryInclude<ExtArgs> | null
+  where?: Prisma.BookingVehicleHistoryWhereInput
+  orderBy?: Prisma.BookingVehicleHistoryOrderByWithRelationInput | Prisma.BookingVehicleHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.BookingVehicleHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingVehicleHistoryScalarFieldEnum | Prisma.BookingVehicleHistoryScalarFieldEnum[]
+}
+
+/**
+ * Vehicle.events
+ */
+export type Vehicle$eventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VehicleEvent
+   */
+  select?: Prisma.VehicleEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VehicleEvent
+   */
+  omit?: Prisma.VehicleEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VehicleEventInclude<ExtArgs> | null
+  where?: Prisma.VehicleEventWhereInput
+  orderBy?: Prisma.VehicleEventOrderByWithRelationInput | Prisma.VehicleEventOrderByWithRelationInput[]
+  cursor?: Prisma.VehicleEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VehicleEventScalarFieldEnum | Prisma.VehicleEventScalarFieldEnum[]
 }
 
 /**

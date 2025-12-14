@@ -21,6 +21,8 @@ model User {
   transactions             Transactions[]
   role                     UserRole?                @relation(fields: [roleId], references: [id], onDelete: Cascade)
   tenant                   Tenant?                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  bookingVehicleHistory    BookingVehicleHistory[]
+
 
   @@unique([username, tenantId])
 }

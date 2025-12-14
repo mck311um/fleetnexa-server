@@ -6,6 +6,7 @@ import {
   RentalStatus,
   Tenant,
   User,
+  VehicleEventType,
 } from '../../../generated/prisma/client.js';
 import { CreateBookingDto } from './dto/create-booking.dto.js';
 import { GeneratorService } from '../../../common/generator/generator.service.js';
@@ -13,11 +14,13 @@ import { UpdateBookingDto } from './dto/update-booking.dto.js';
 import { ActionBookingDto } from '../dto/action-booking.dto.js';
 import { RentalActivityDto } from '../dto/rental-activity.dto.js';
 import { CustomerService } from '../../../modules/customer/customer.service.js';
-import { DocumentService } from '../../../common/document/document.service.js';
+import { DocumentService } from '../../document/document.service.js';
 import { EmailService } from '../../../common/email/email.service.js';
 import { VehicleService } from '../../../modules/vehicle/vehicle.service.js';
 import { VehicleStatusDto } from '../../../modules/vehicle/dto/vehicle-status.dto.js';
 import { TransactionService } from '../../../modules/transaction/transaction.service.js';
+import { VehicleEventService } from '../../../modules/vehicle/modules/vehicle-event/vehicle-event.service.js';
+import { VehicleEventDto } from '../../../modules/vehicle/dto/vehicle-event.dto.js';
 
 @Injectable()
 export class TenantBookingService {
@@ -32,6 +35,7 @@ export class TenantBookingService {
     private readonly emailService: EmailService,
     private readonly vehicleService: VehicleService,
     private readonly transactions: TransactionService,
+    private readonly vehicleEvent: VehicleEventService,
   ) {}
 
   async getBookings(tenant: Tenant) {
@@ -190,6 +194,16 @@ export class TenantBookingService {
         tenant.id,
       );
       const bookings = await this.bookingRepo.getBookings(tenant.id);
+
+      const vehicleEvent: VehicleEventDto = {
+        vehicleId: booking!.vehicleId,
+        event: `Vehicle rented for booking #${booking!.rentalNumber}`,
+        type: VehicleEventType.ASSIGNED_TO_BOOKING,
+        date: new Date().toISOString(),
+        notes: `Booking #${booking!.rentalNumber} created by ${user.username}`,
+      };
+
+      await this.vehicleEvent.createEvent(vehicleEvent);
 
       return { message: 'Booking created successfully', booking, bookings };
     } catch (error) {

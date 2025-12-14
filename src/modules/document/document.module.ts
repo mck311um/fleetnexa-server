@@ -1,0 +1,32 @@
+import { Module } from '@nestjs/common';
+import { PrismaModule } from '../../prisma/prisma.module.js';
+import { GeneratorModule } from '../../common/generator/generator.module.js';
+import { FormatterModule } from '../../common/formatter/formatter.module.js';
+import { PdfModule } from '../../common/pdf/pdf.module.js';
+import { TenantExtrasModule } from '../tenant/tenant-extra/tenant-extra.module.js';
+import { CustomerModule } from '../customer/customer.module.js';
+import { DocumentService } from './document.service.js';
+import { AuthGuard } from '../../common/guards/auth.guard.js';
+import { TenantRepository } from '../tenant/tenant.repository.js';
+import { TenantUserRepository } from '../user/tenant-user/tenant-user.repository.js';
+import { DocumentController } from './document.controller.js';
+
+@Module({
+  imports: [
+    PrismaModule,
+    GeneratorModule,
+    FormatterModule,
+    PdfModule,
+    TenantExtrasModule,
+    CustomerModule,
+  ],
+  controllers: [DocumentController],
+  providers: [
+    DocumentService,
+    AuthGuard,
+    TenantRepository,
+    TenantUserRepository,
+  ],
+  exports: [DocumentService],
+})
+export class DocumentModule {}

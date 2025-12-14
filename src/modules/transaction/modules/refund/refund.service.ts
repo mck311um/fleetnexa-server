@@ -223,7 +223,7 @@ export class RefundService {
       const transactions = await this.transaction.getTransactions(tenant);
 
       return {
-        message: 'Refund created successfully',
+        message: 'Refund updated successfully',
         bookings,
         updatedBooking,
         refunds,
@@ -282,7 +282,7 @@ export class RefundService {
       const transactions = await this.transaction.getTransactions(tenant);
 
       return {
-        message: 'Refund created successfully',
+        message: 'Refund deleted successfully',
         refund,
         bookings,
         refunds,

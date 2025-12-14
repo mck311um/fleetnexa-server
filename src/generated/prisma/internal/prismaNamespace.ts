@@ -483,7 +483,9 @@ export const ModelName = {
   FuelPolicy: 'FuelPolicy',
   VehicleServiceLog: 'VehicleServiceLog',
   VehicleMaintenance: 'VehicleMaintenance',
-  VehicleServiceSchedule: 'VehicleServiceSchedule'
+  VehicleServiceSchedule: 'VehicleServiceSchedule',
+  BookingVehicleHistory: 'BookingVehicleHistory',
+  VehicleEvent: 'VehicleEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -499,7 +501,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "service" | "chargeType" | "vehicleBrand" | "vehicleModel" | "vehicleBodyType" | "vehicleStatus" | "fuelType" | "transmission" | "vehicleFeature" | "wheelDrive" | "invoiceSequence" | "country" | "state" | "village" | "maintenanceService" | "documentType" | "presetLocation" | "licenseClass" | "messengerApp" | "equipment" | "contactType" | "paymentType" | "vendorType" | "port" | "customer" | "customerMessengerApp" | "customerAddress" | "customerDocument" | "driverLicense" | "customerViolation" | "caribbeanCountry" | "shopDMMerchant" | "currency" | "tenantCurrencyRate" | "exchangeRate" | "form" | "formResponse" | "rentalActivity" | "tenantNotification" | "notificationReadStatus" | "appPermission" | "permissionCategory" | "rental" | "storefrontBooking" | "rentalDriver" | "invoice" | "rentalAgreement" | "values" | "rentalExtra" | "rentalCharge" | "vesselInfo" | "tenantWeeklyStats" | "tenantYearlyStats" | "tenantMonthlyStats" | "tenantMonthlyRentalStats" | "tenantRatings" | "siteRatings" | "subscriptionPlan" | "planFeatures" | "planDetails" | "tenant" | "emailVerification" | "paymentMethod" | "address" | "tenantLocation" | "tenantInsurance" | "tenantEquipment" | "tenantService" | "tenantSubscription" | "tenantContact" | "tenantReminders" | "cancellationPolicy" | "latePolicy" | "tenantViolation" | "tenantVendor" | "verificationRequest" | "transactions" | "payment" | "refund" | "expense" | "user" | "storefrontUser" | "adminUser" | "userRole" | "userRolePermission" | "emailTokens" | "vehicle" | "vehicleDiscount" | "vehicleDamage" | "vehiclePart" | "fuelPolicy" | "vehicleServiceLog" | "vehicleMaintenance" | "vehicleServiceSchedule"
+    modelProps: "service" | "chargeType" | "vehicleBrand" | "vehicleModel" | "vehicleBodyType" | "vehicleStatus" | "fuelType" | "transmission" | "vehicleFeature" | "wheelDrive" | "invoiceSequence" | "country" | "state" | "village" | "maintenanceService" | "documentType" | "presetLocation" | "licenseClass" | "messengerApp" | "equipment" | "contactType" | "paymentType" | "vendorType" | "port" | "customer" | "customerMessengerApp" | "customerAddress" | "customerDocument" | "driverLicense" | "customerViolation" | "caribbeanCountry" | "shopDMMerchant" | "currency" | "tenantCurrencyRate" | "exchangeRate" | "form" | "formResponse" | "rentalActivity" | "tenantNotification" | "notificationReadStatus" | "appPermission" | "permissionCategory" | "rental" | "storefrontBooking" | "rentalDriver" | "invoice" | "rentalAgreement" | "values" | "rentalExtra" | "rentalCharge" | "vesselInfo" | "tenantWeeklyStats" | "tenantYearlyStats" | "tenantMonthlyStats" | "tenantMonthlyRentalStats" | "tenantRatings" | "siteRatings" | "subscriptionPlan" | "planFeatures" | "planDetails" | "tenant" | "emailVerification" | "paymentMethod" | "address" | "tenantLocation" | "tenantInsurance" | "tenantEquipment" | "tenantService" | "tenantSubscription" | "tenantContact" | "tenantReminders" | "cancellationPolicy" | "latePolicy" | "tenantViolation" | "tenantVendor" | "verificationRequest" | "transactions" | "payment" | "refund" | "expense" | "user" | "storefrontUser" | "adminUser" | "userRole" | "userRolePermission" | "emailTokens" | "vehicle" | "vehicleDiscount" | "vehicleDamage" | "vehiclePart" | "fuelPolicy" | "vehicleServiceLog" | "vehicleMaintenance" | "vehicleServiceSchedule" | "bookingVehicleHistory" | "vehicleEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -7459,6 +7461,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BookingVehicleHistory: {
+      payload: Prisma.$BookingVehicleHistoryPayload<ExtArgs>
+      fields: Prisma.BookingVehicleHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingVehicleHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingVehicleHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.BookingVehicleHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingVehicleHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.BookingVehicleHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.BookingVehicleHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.BookingVehicleHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingVehicleHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.BookingVehicleHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload>
+        }
+        update: {
+          args: Prisma.BookingVehicleHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingVehicleHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingVehicleHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingVehicleHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingVehicleHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingVehicleHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.BookingVehicleHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookingVehicleHistory>
+        }
+        groupBy: {
+          args: Prisma.BookingVehicleHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingVehicleHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingVehicleHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingVehicleHistoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    VehicleEvent: {
+      payload: Prisma.$VehicleEventPayload<ExtArgs>
+      fields: Prisma.VehicleEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VehicleEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VehicleEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload>
+        }
+        findFirst: {
+          args: Prisma.VehicleEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VehicleEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload>
+        }
+        findMany: {
+          args: Prisma.VehicleEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload>[]
+        }
+        create: {
+          args: Prisma.VehicleEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload>
+        }
+        createMany: {
+          args: Prisma.VehicleEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VehicleEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload>[]
+        }
+        delete: {
+          args: Prisma.VehicleEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload>
+        }
+        update: {
+          args: Prisma.VehicleEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.VehicleEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VehicleEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VehicleEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.VehicleEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleEventPayload>
+        }
+        aggregate: {
+          args: Prisma.VehicleEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVehicleEvent>
+        }
+        groupBy: {
+          args: Prisma.VehicleEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VehicleEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VehicleEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VehicleEventCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -7968,6 +8118,8 @@ export const RentalScalarFieldEnum = {
   pickupLocationId: 'pickupLocationId',
   returnLocationId: 'returnLocationId',
   vehicleId: 'vehicleId',
+  originalVehicleId: 'originalVehicleId',
+  vehicleSwapped: 'vehicleSwapped',
   agent: 'agent',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -8835,6 +8987,31 @@ export const VehicleServiceScheduleScalarFieldEnum = {
 export type VehicleServiceScheduleScalarFieldEnum = (typeof VehicleServiceScheduleScalarFieldEnum)[keyof typeof VehicleServiceScheduleScalarFieldEnum]
 
 
+export const BookingVehicleHistoryScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  fromVehicleId: 'fromVehicleId',
+  toVehicleId: 'toVehicleId',
+  reason: 'reason',
+  swappedAt: 'swappedAt',
+  swappedBy: 'swappedBy'
+} as const
+
+export type BookingVehicleHistoryScalarFieldEnum = (typeof BookingVehicleHistoryScalarFieldEnum)[keyof typeof BookingVehicleHistoryScalarFieldEnum]
+
+
+export const VehicleEventScalarFieldEnum = {
+  id: 'id',
+  vehicleId: 'vehicleId',
+  event: 'event',
+  type: 'type',
+  date: 'date',
+  notes: 'notes'
+} as const
+
+export type VehicleEventScalarFieldEnum = (typeof VehicleEventScalarFieldEnum)[keyof typeof VehicleEventScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -9237,6 +9414,20 @@ export type EnumMaintenanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 export type ListEnumMaintenanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'VehicleEventType'
+ */
+export type EnumVehicleEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VehicleEventType'>
+    
+
+
+/**
+ * Reference to a field of type 'VehicleEventType[]'
+ */
+export type ListEnumVehicleEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VehicleEventType[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -9418,6 +9609,8 @@ export type GlobalOmitConfig = {
   vehicleServiceLog?: Prisma.VehicleServiceLogOmit
   vehicleMaintenance?: Prisma.VehicleMaintenanceOmit
   vehicleServiceSchedule?: Prisma.VehicleServiceScheduleOmit
+  bookingVehicleHistory?: Prisma.BookingVehicleHistoryOmit
+  vehicleEvent?: Prisma.VehicleEventOmit
 }
 
 /* Types for Logging */

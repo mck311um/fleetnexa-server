@@ -54,6 +54,9 @@ model Vehicle {
   serviceLogs          VehicleServiceLog[]
   scheduledServices    VehicleServiceSchedule[]
   features             VehicleFeature[]         @relation("VehicleToVehicleFeature")
+  swapFromHistory      BookingVehicleHistory[]  @relation("FromVehicleHistory")
+  swapToHistory        BookingVehicleHistory[]  @relation("ToVehicleHistory")
+  events               VehicleEvent[]
 }
 
 model VehicleDiscount {
@@ -162,4 +165,29 @@ model VehicleServiceSchedule {
   serviceLogs        VehicleServiceLog[] @relation("ScheduleToLogs")
   maintenanceService MaintenanceService  @relation(fields: [serviceId], references: [id])
   vehicle            Vehicle             @relation(fields: [vehicleId], references: [id])
+}
+
+model BookingVehicleHistory {
+  id              String   @id @default(dbgenerated("gen_random_uuid()"))
+  bookingId       String
+  fromVehicleId   String
+  toVehicleId     String
+  reason          String
+  swappedAt       DateTime @default(now())
+  swappedBy       String
+
+  booking         Rental   @relation(fields: [bookingId], references: [id])
+  fromVehicle     Vehicle @relation("FromVehicleHistory", fields: [fromVehicleId], references: [id])
+  toVehicle       Vehicle @relation("ToVehicleHistory", fields: [toVehicleId], references: [id])
+  user            User     @relation(fields: [swappedBy], references: [username])
+}
+
+model VehicleEvent {
+  id              String    @id @default(dbgenerated("gen_random_uuid()"))
+  vehicleId       String
+  event           String
+  type            VehicleEventType
+  date            DateTime
+  notes           String?
+  vehicle         Vehicle   @relation(fields: [vehicleId], references: [id])
 }

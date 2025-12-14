@@ -146,9 +146,22 @@ export class TenantCustomerService {
         });
 
         if (data.address) {
-          await tx.customerAddress.update({
+          await tx.customerAddress.upsert({
             where: { customerId: data.id },
-            data: {
+            update: {
+              street: data.address.street,
+              village: data.address.villageId
+                ? { connect: { id: data.address.villageId } }
+                : undefined,
+              state: data.address.stateId
+                ? { connect: { id: data.address.stateId } }
+                : undefined,
+              country: data.address.countryId
+                ? { connect: { id: data.address.countryId } }
+                : undefined,
+            },
+            create: {
+              customer: { connect: { id: data.id } },
               street: data.address.street,
               village: data.address.villageId
                 ? { connect: { id: data.address.villageId } }

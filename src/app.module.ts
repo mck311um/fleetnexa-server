@@ -30,6 +30,7 @@ import { UserRoleModule } from './modules/user/tenant-user/modules/user-role/use
 import { RefundModule } from './modules/transaction/modules/refund/refund.module.js';
 import { ExpenseModule } from './modules/transaction/modules/expense/expense.module.js';
 import { TransactionModule } from './modules/transaction/transaction.module.js';
+import { DocumentModule } from './modules/document/document.module.js';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { TransactionModule } from './modules/transaction/transaction.module.js';
 
     SocketModule,
     StorageModule,
+    DocumentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

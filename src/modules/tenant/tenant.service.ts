@@ -66,6 +66,7 @@ export class TenantService {
         vehicles,
         customers,
         activity,
+        currencyRates,
       };
 
       return data;
@@ -298,6 +299,15 @@ export class TenantService {
               currencyId: usd.id,
               toRate: data.fromUSDRate || 1.0,
               fromRate: 1 / (data.fromUSDRate || 1.0),
+            },
+          });
+
+          await tx.tenantCurrencyRate.create({
+            data: {
+              tenantId: tenant.id,
+              currencyId: data.currencyId,
+              toRate: 1,
+              fromRate: 1,
             },
           });
         }

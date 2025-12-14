@@ -1,8 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Tenant, User } from '../../generated/prisma/client.js';
-import { GeneratorService } from '../generator/generator.service.js';
-import { TenantExtraService } from '../../modules/tenant/tenant-extra/tenant-extra.service.js';
-import { CustomerService } from '../../modules/customer/customer.service.js';
+import { GeneratorService } from '../../common/generator/generator.service.js';
+import { TenantExtraService } from '../tenant/tenant-extra/tenant-extra.service.js';
+import { CustomerService } from '../customer/customer.service.js';
 import {
   InvoiceData,
   InvoiceItem,
@@ -11,8 +11,8 @@ import {
   RentalService,
 } from 'src/types/pdf.js';
 import { format, toZonedTime } from 'date-fns-tz';
-import { FormatterService } from '../formatter/formatter.service.js';
-import { PdfService } from '../pdf/pdf.service.js';
+import { FormatterService } from '../../common/formatter/formatter.service.js';
+import { PdfService } from '../../common/pdf/pdf.service.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 
 @Injectable()

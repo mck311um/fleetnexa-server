@@ -142,7 +142,9 @@ export const ModelName = {
   FuelPolicy: 'FuelPolicy',
   VehicleServiceLog: 'VehicleServiceLog',
   VehicleMaintenance: 'VehicleMaintenance',
-  VehicleServiceSchedule: 'VehicleServiceSchedule'
+  VehicleServiceSchedule: 'VehicleServiceSchedule',
+  BookingVehicleHistory: 'BookingVehicleHistory',
+  VehicleEvent: 'VehicleEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -631,6 +633,8 @@ export const RentalScalarFieldEnum = {
   pickupLocationId: 'pickupLocationId',
   returnLocationId: 'returnLocationId',
   vehicleId: 'vehicleId',
+  originalVehicleId: 'originalVehicleId',
+  vehicleSwapped: 'vehicleSwapped',
   agent: 'agent',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -1496,6 +1500,31 @@ export const VehicleServiceScheduleScalarFieldEnum = {
 } as const
 
 export type VehicleServiceScheduleScalarFieldEnum = (typeof VehicleServiceScheduleScalarFieldEnum)[keyof typeof VehicleServiceScheduleScalarFieldEnum]
+
+
+export const BookingVehicleHistoryScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  fromVehicleId: 'fromVehicleId',
+  toVehicleId: 'toVehicleId',
+  reason: 'reason',
+  swappedAt: 'swappedAt',
+  swappedBy: 'swappedBy'
+} as const
+
+export type BookingVehicleHistoryScalarFieldEnum = (typeof BookingVehicleHistoryScalarFieldEnum)[keyof typeof BookingVehicleHistoryScalarFieldEnum]
+
+
+export const VehicleEventScalarFieldEnum = {
+  id: 'id',
+  vehicleId: 'vehicleId',
+  event: 'event',
+  type: 'type',
+  date: 'date',
+  notes: 'notes'
+} as const
+
+export type VehicleEventScalarFieldEnum = (typeof VehicleEventScalarFieldEnum)[keyof typeof VehicleEventScalarFieldEnum]
 
 
 export const SortOrder = {

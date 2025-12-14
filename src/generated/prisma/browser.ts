@@ -487,3 +487,13 @@ export type VehicleMaintenance = Prisma.VehicleMaintenanceModel
  * 
  */
 export type VehicleServiceSchedule = Prisma.VehicleServiceScheduleModel
+/**
+ * Model BookingVehicleHistory
+ * 
+ */
+export type BookingVehicleHistory = Prisma.BookingVehicleHistoryModel
+/**
+ * Model VehicleEvent
+ * 
+ */
+export type VehicleEvent = Prisma.VehicleEventModel
