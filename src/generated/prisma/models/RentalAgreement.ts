@@ -411,11 +411,6 @@ export type RentalAgreementOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type RentalAgreementNullableScalarRelationFilter = {
-  is?: Prisma.RentalAgreementWhereInput | null
-  isNot?: Prisma.RentalAgreementWhereInput | null
-}
-
 export type RentalAgreementCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   number?: Prisma.SortOrder
@@ -456,6 +451,11 @@ export type RentalAgreementMinOrderByAggregateInput = {
   createdBy?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   signableUrl?: Prisma.SortOrder
+}
+
+export type RentalAgreementNullableScalarRelationFilter = {
+  is?: Prisma.RentalAgreementWhereInput | null
+  isNot?: Prisma.RentalAgreementWhereInput | null
 }
 
 export type RentalAgreementCreateNestedManyWithoutCustomerInput = {

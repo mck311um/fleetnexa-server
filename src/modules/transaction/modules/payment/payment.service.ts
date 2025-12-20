@@ -10,6 +10,7 @@ import { PaymentDto } from './payment.dto.js';
 import { TransactionDto } from '../../transaction.dto.js';
 import { v4 as uuidv4 } from 'uuid';
 import { TenantBookingRepository } from '../../../../modules/booking/tenant-booking/tenant-booking.repository.js';
+import { DocumentService } from '../../../../modules/document/document.service.js';
 
 @Injectable()
 export class PaymentService {
@@ -19,6 +20,7 @@ export class PaymentService {
     private readonly prisma: PrismaService,
     private readonly transactionService: TransactionService,
     private readonly bookingRepo: TenantBookingRepository,
+    private readonly document: DocumentService,
   ) {}
 
   async getPayments(tenant: Tenant) {
@@ -29,6 +31,7 @@ export class PaymentService {
           rental: true,
           paymentMethod: true,
           paymentType: true,
+          receipts: true,
           customer: {
             select: {
               id: true,
@@ -113,6 +116,13 @@ export class PaymentService {
 
       await this.transactionService.createTransaction(
         transaction,
+        tenant,
+        user,
+      );
+
+      await this.document.generatePaymentReceipt(
+        payment.id,
+        data.bookingId,
         tenant,
         user,
       );

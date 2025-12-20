@@ -6,6 +6,7 @@ import { CustomerService } from '../customer/customer.service.js';
 import {
   InvoiceData,
   InvoiceItem,
+  PaymentReceiptData,
   RentalAgreementData,
   RentalAgreementDriver,
   RentalService,
@@ -101,6 +102,85 @@ export class DocumentService {
     }
   }
 
+  async generatePaymentReceipt(
+    paymentId: string,
+    bookingId: string,
+    tenant: Tenant,
+    user: User,
+  ) {
+    try {
+      let receiptNumber: string;
+
+      const payment = await this.prisma.payment.findUnique({
+        where: { id: paymentId },
+      });
+
+      const existingPaymentReceipt =
+        await this.prisma.paymentReceipt.findUnique({
+          where: { paymentId, tenantId: tenant.id },
+        });
+
+      if (existingPaymentReceipt) {
+        receiptNumber = existingPaymentReceipt.receiptNumber;
+      } else {
+        receiptNumber = await this.generator.generatePaymentReceiptNumber(
+          tenant.id,
+        );
+      }
+
+      const data = await this.generatePaymentReceiptData(
+        paymentId,
+        tenant.id,
+        bookingId,
+      );
+
+      data.receiptNumber = receiptNumber;
+      const pdfResult = await this.pdfService.createPaymentReceipt(
+        data,
+        receiptNumber,
+        tenant.tenantCode,
+      );
+
+      const primaryDriver =
+        await this.customerService.getPrimaryDriver(bookingId);
+
+      if (!primaryDriver) {
+        throw new NotFoundException('Primary driver not found');
+      }
+
+      const receipt = await this.prisma.paymentReceipt.upsert({
+        where: { paymentId },
+        create: {
+          receiptNumber,
+          paymentId,
+          bookingId,
+          tenantId: tenant.id!,
+          createdAt: new Date(),
+          receiptUrl: pdfResult.publicUrl,
+          customerId: primaryDriver?.driverId || '',
+          amount: payment?.amount || 0,
+          createdBy: user.username,
+        },
+        update: {
+          receiptUrl: pdfResult.publicUrl,
+          amount: payment?.amount || 0,
+          updatedAt: new Date(),
+          updatedBy: user.username,
+        },
+      });
+
+      return receipt;
+    } catch (error) {
+      this.logger.error(error, 'Failed to generate payment receipt', {
+        paymentId,
+        bookingId,
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw error;
+    }
+  }
+
   async generateAgreement(bookingId: string, tenant: Tenant, user: User) {
     try {
       let agreementNumber;
@@ -191,6 +271,72 @@ export class DocumentService {
         tenantCode: tenant.tenantCode,
       });
       throw new Error('Failed to send agreement for signature');
+    }
+  }
+
+  async generatePaymentReceiptData(
+    paymentId: string,
+    tenantId: string,
+    bookingId: string,
+  ): Promise<PaymentReceiptData> {
+    try {
+      const tenant = await this.prisma.tenant.findUnique({
+        where: { id: tenantId },
+        include: {
+          currency: true,
+        },
+      });
+
+      if (!tenant) {
+        throw new NotFoundException('Tenant not found');
+      }
+
+      const payment = await this.prisma.payment.findUnique({
+        where: { id: paymentId },
+        include: {
+          rental: true,
+          transaction: true,
+          paymentMethod: true,
+        },
+      });
+
+      if (!payment) {
+        throw new NotFoundException('Payment not found');
+      }
+
+      const booking = await this.prisma.rental.findUnique({
+        where: { id: bookingId },
+      });
+
+      const receiptNo = await this.generator.generatePaymentReceiptNumber(
+        tenant.id,
+      );
+
+      const data: PaymentReceiptData = {
+        logoUrl: tenant.logo || '',
+        companyName: tenant.tenantName || '',
+        email: tenant.email || '',
+        phone: tenant.number || '',
+        transactionNumber: payment?.transaction?.tenantId || '',
+        receiptNumber: '',
+        bookingCode: booking?.bookingCode || '',
+        paymentDate: this.formatter.formatDateToFriendly(
+          payment.createdAt || '',
+        ),
+        paymentMethod: payment.paymentMethod?.method || '',
+        handledBy: payment.transaction?.createdBy || '',
+        notes: payment.notes || '',
+        currency: tenant.currency?.code || 'XCD',
+        amount: payment.amount || 0,
+      };
+
+      return data;
+    } catch (error) {
+      this.logger.error(error, 'Failed to generate payment receipt data', {
+        paymentId,
+        tenantId,
+      });
+      throw new Error('Failed to generate payment receipt data');
     }
   }
 

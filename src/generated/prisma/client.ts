@@ -199,6 +199,21 @@ export type DriverLicense = Prisma.DriverLicenseModel
  */
 export type CustomerViolation = Prisma.CustomerViolationModel
 /**
+ * Model RentalAgreement
+ * 
+ */
+export type RentalAgreement = Prisma.RentalAgreementModel
+/**
+ * Model Invoice
+ * 
+ */
+export type Invoice = Prisma.InvoiceModel
+/**
+ * Model PaymentReceipt
+ * 
+ */
+export type PaymentReceipt = Prisma.PaymentReceiptModel
+/**
  * Model CaribbeanCountry
  * 
  */
@@ -273,16 +288,6 @@ export type StorefrontBooking = Prisma.StorefrontBookingModel
  * 
  */
 export type RentalDriver = Prisma.RentalDriverModel
-/**
- * Model Invoice
- * 
- */
-export type Invoice = Prisma.InvoiceModel
-/**
- * Model RentalAgreement
- * 
- */
-export type RentalAgreement = Prisma.RentalAgreementModel
 /**
  * Model Values
  * 

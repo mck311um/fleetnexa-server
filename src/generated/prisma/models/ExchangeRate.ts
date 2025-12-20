@@ -475,14 +475,6 @@ export type ExchangeRateUncheckedUpdateManyWithoutTargetCurrencyNestedInput = {
   deleteMany?: Prisma.ExchangeRateScalarWhereInput | Prisma.ExchangeRateScalarWhereInput[]
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ExchangeRateCreateWithoutBaseCurrencyInput = {
   id?: string
   rate: number

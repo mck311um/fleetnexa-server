@@ -31,6 +31,7 @@ model Customer {
   charges        RentalCharge[]
   drivers        RentalDriver[]
   damages        VehicleDamage[]
+  paymentReceipts PaymentReceipt[]
 
   @@unique([tenantId, storefrontId])
 }

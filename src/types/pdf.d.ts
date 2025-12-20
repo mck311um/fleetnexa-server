@@ -171,6 +171,20 @@ interface CreateDocumentParams {
   tenantCode: string;
 }
 
-interface PaymentReceiptData {}
+interface PaymentReceiptData {
+  logoUrl: string;
+  companyName: string;
+  email: string;
+  phone: string;
+  transactionNumber: string;
+  receiptNumber: string;
+  bookingCode: string;
+  paymentDate: string;
+  paymentMethod: string;
+  handledBy: string;
+  notes: string;
+  currency: string;
+  amount: number;
+}
 
 type DocumentType = 'invoice' | 'agreement' | 'payment_receipt';

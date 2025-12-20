@@ -36,6 +36,7 @@ export type TransactionsSumAggregateOutputType = {
 
 export type TransactionsMinAggregateOutputType = {
   id: string | null
+  number: string | null
   amount: number | null
   type: $Enums.TransactionType | null
   isDeleted: boolean | null
@@ -54,6 +55,7 @@ export type TransactionsMinAggregateOutputType = {
 
 export type TransactionsMaxAggregateOutputType = {
   id: string | null
+  number: string | null
   amount: number | null
   type: $Enums.TransactionType | null
   isDeleted: boolean | null
@@ -72,6 +74,7 @@ export type TransactionsMaxAggregateOutputType = {
 
 export type TransactionsCountAggregateOutputType = {
   id: number
+  number: number
   amount: number
   type: number
   isDeleted: number
@@ -100,6 +103,7 @@ export type TransactionsSumAggregateInputType = {
 
 export type TransactionsMinAggregateInputType = {
   id?: true
+  number?: true
   amount?: true
   type?: true
   isDeleted?: true
@@ -118,6 +122,7 @@ export type TransactionsMinAggregateInputType = {
 
 export type TransactionsMaxAggregateInputType = {
   id?: true
+  number?: true
   amount?: true
   type?: true
   isDeleted?: true
@@ -136,6 +141,7 @@ export type TransactionsMaxAggregateInputType = {
 
 export type TransactionsCountAggregateInputType = {
   id?: true
+  number?: true
   amount?: true
   type?: true
   isDeleted?: true
@@ -241,6 +247,7 @@ export type TransactionsGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type TransactionsGroupByOutputType = {
   id: string
+  number: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted: boolean
@@ -282,6 +289,7 @@ export type TransactionsWhereInput = {
   OR?: Prisma.TransactionsWhereInput[]
   NOT?: Prisma.TransactionsWhereInput | Prisma.TransactionsWhereInput[]
   id?: Prisma.StringFilter<"Transactions"> | string
+  number?: Prisma.StringNullableFilter<"Transactions"> | string | null
   amount?: Prisma.FloatFilter<"Transactions"> | number
   type?: Prisma.EnumTransactionTypeFilter<"Transactions"> | $Enums.TransactionType
   isDeleted?: Prisma.BoolFilter<"Transactions"> | boolean
@@ -306,6 +314,7 @@ export type TransactionsWhereInput = {
 
 export type TransactionsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  number?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -330,9 +339,11 @@ export type TransactionsOrderByWithRelationInput = {
 
 export type TransactionsWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  number?: string
   paymentId?: string
   refundId?: string
   expenseId?: string
+  transactionNumber_tenantId?: Prisma.TransactionsTransactionNumber_tenantIdCompoundUniqueInput
   AND?: Prisma.TransactionsWhereInput | Prisma.TransactionsWhereInput[]
   OR?: Prisma.TransactionsWhereInput[]
   NOT?: Prisma.TransactionsWhereInput | Prisma.TransactionsWhereInput[]
@@ -353,10 +364,11 @@ export type TransactionsWhereUniqueInput = Prisma.AtLeast<{
   refund?: Prisma.XOR<Prisma.RefundNullableScalarRelationFilter, Prisma.RefundWhereInput> | null
   rental?: Prisma.XOR<Prisma.RentalNullableScalarRelationFilter, Prisma.RentalWhereInput> | null
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
-}, "id" | "paymentId" | "refundId" | "expenseId">
+}, "id" | "number" | "paymentId" | "refundId" | "expenseId" | "transactionNumber_tenantId">
 
 export type TransactionsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  number?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -383,6 +395,7 @@ export type TransactionsScalarWhereWithAggregatesInput = {
   OR?: Prisma.TransactionsScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TransactionsScalarWhereWithAggregatesInput | Prisma.TransactionsScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Transactions"> | string
+  number?: Prisma.StringNullableWithAggregatesFilter<"Transactions"> | string | null
   amount?: Prisma.FloatWithAggregatesFilter<"Transactions"> | number
   type?: Prisma.EnumTransactionTypeWithAggregatesFilter<"Transactions"> | $Enums.TransactionType
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Transactions"> | boolean
@@ -401,6 +414,7 @@ export type TransactionsScalarWhereWithAggregatesInput = {
 
 export type TransactionsCreateInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -419,6 +433,7 @@ export type TransactionsCreateInput = {
 
 export type TransactionsUncheckedCreateInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -437,6 +452,7 @@ export type TransactionsUncheckedCreateInput = {
 
 export type TransactionsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -455,6 +471,7 @@ export type TransactionsUpdateInput = {
 
 export type TransactionsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -473,6 +490,7 @@ export type TransactionsUncheckedUpdateInput = {
 
 export type TransactionsCreateManyInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -491,6 +509,7 @@ export type TransactionsCreateManyInput = {
 
 export type TransactionsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -503,6 +522,7 @@ export type TransactionsUpdateManyMutationInput = {
 
 export type TransactionsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -529,8 +549,14 @@ export type TransactionsOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type TransactionsTransactionNumber_tenantIdCompoundUniqueInput = {
+  number: string
+  tenantId: string
+}
+
 export type TransactionsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  number?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -553,6 +579,7 @@ export type TransactionsAvgOrderByAggregateInput = {
 
 export type TransactionsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  number?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -571,6 +598,7 @@ export type TransactionsMaxOrderByAggregateInput = {
 
 export type TransactionsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  number?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -824,6 +852,7 @@ export type TransactionsUncheckedUpdateManyWithoutUserNestedInput = {
 
 export type TransactionsCreateWithoutRentalInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -841,6 +870,7 @@ export type TransactionsCreateWithoutRentalInput = {
 
 export type TransactionsUncheckedCreateWithoutRentalInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -887,6 +917,7 @@ export type TransactionsScalarWhereInput = {
   OR?: Prisma.TransactionsScalarWhereInput[]
   NOT?: Prisma.TransactionsScalarWhereInput | Prisma.TransactionsScalarWhereInput[]
   id?: Prisma.StringFilter<"Transactions"> | string
+  number?: Prisma.StringNullableFilter<"Transactions"> | string | null
   amount?: Prisma.FloatFilter<"Transactions"> | number
   type?: Prisma.EnumTransactionTypeFilter<"Transactions"> | $Enums.TransactionType
   isDeleted?: Prisma.BoolFilter<"Transactions"> | boolean
@@ -905,6 +936,7 @@ export type TransactionsScalarWhereInput = {
 
 export type TransactionsCreateWithoutTenantInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -922,6 +954,7 @@ export type TransactionsCreateWithoutTenantInput = {
 
 export type TransactionsUncheckedCreateWithoutTenantInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -965,6 +998,7 @@ export type TransactionsUpdateManyWithWhereWithoutTenantInput = {
 
 export type TransactionsCreateWithoutPaymentInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -982,6 +1016,7 @@ export type TransactionsCreateWithoutPaymentInput = {
 
 export type TransactionsUncheckedCreateWithoutPaymentInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1015,6 +1050,7 @@ export type TransactionsUpdateToOneWithWhereWithoutPaymentInput = {
 
 export type TransactionsUpdateWithoutPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1032,6 +1068,7 @@ export type TransactionsUpdateWithoutPaymentInput = {
 
 export type TransactionsUncheckedUpdateWithoutPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1049,6 +1086,7 @@ export type TransactionsUncheckedUpdateWithoutPaymentInput = {
 
 export type TransactionsCreateWithoutRefundInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1066,6 +1104,7 @@ export type TransactionsCreateWithoutRefundInput = {
 
 export type TransactionsUncheckedCreateWithoutRefundInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1099,6 +1138,7 @@ export type TransactionsUpdateToOneWithWhereWithoutRefundInput = {
 
 export type TransactionsUpdateWithoutRefundInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1116,6 +1156,7 @@ export type TransactionsUpdateWithoutRefundInput = {
 
 export type TransactionsUncheckedUpdateWithoutRefundInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1133,6 +1174,7 @@ export type TransactionsUncheckedUpdateWithoutRefundInput = {
 
 export type TransactionsCreateWithoutExpenseInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1150,6 +1192,7 @@ export type TransactionsCreateWithoutExpenseInput = {
 
 export type TransactionsUncheckedCreateWithoutExpenseInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1183,6 +1226,7 @@ export type TransactionsUpdateToOneWithWhereWithoutExpenseInput = {
 
 export type TransactionsUpdateWithoutExpenseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1200,6 +1244,7 @@ export type TransactionsUpdateWithoutExpenseInput = {
 
 export type TransactionsUncheckedUpdateWithoutExpenseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1217,6 +1262,7 @@ export type TransactionsUncheckedUpdateWithoutExpenseInput = {
 
 export type TransactionsCreateWithoutUserInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1234,6 +1280,7 @@ export type TransactionsCreateWithoutUserInput = {
 
 export type TransactionsUncheckedCreateWithoutUserInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1277,6 +1324,7 @@ export type TransactionsUpdateManyWithWhereWithoutUserInput = {
 
 export type TransactionsCreateManyRentalInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1294,6 +1342,7 @@ export type TransactionsCreateManyRentalInput = {
 
 export type TransactionsUpdateWithoutRentalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1311,6 +1360,7 @@ export type TransactionsUpdateWithoutRentalInput = {
 
 export type TransactionsUncheckedUpdateWithoutRentalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1328,6 +1378,7 @@ export type TransactionsUncheckedUpdateWithoutRentalInput = {
 
 export type TransactionsUncheckedUpdateManyWithoutRentalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1345,6 +1396,7 @@ export type TransactionsUncheckedUpdateManyWithoutRentalInput = {
 
 export type TransactionsCreateManyTenantInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1362,6 +1414,7 @@ export type TransactionsCreateManyTenantInput = {
 
 export type TransactionsUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1379,6 +1432,7 @@ export type TransactionsUpdateWithoutTenantInput = {
 
 export type TransactionsUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1396,6 +1450,7 @@ export type TransactionsUncheckedUpdateWithoutTenantInput = {
 
 export type TransactionsUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1413,6 +1468,7 @@ export type TransactionsUncheckedUpdateManyWithoutTenantInput = {
 
 export type TransactionsCreateManyUserInput = {
   id?: string
+  number?: string | null
   amount: number
   type: $Enums.TransactionType
   isDeleted?: boolean
@@ -1430,6 +1486,7 @@ export type TransactionsCreateManyUserInput = {
 
 export type TransactionsUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1447,6 +1504,7 @@ export type TransactionsUpdateWithoutUserInput = {
 
 export type TransactionsUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1464,6 +1522,7 @@ export type TransactionsUncheckedUpdateWithoutUserInput = {
 
 export type TransactionsUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1483,6 +1542,7 @@ export type TransactionsUncheckedUpdateManyWithoutUserInput = {
 
 export type TransactionsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  number?: boolean
   amount?: boolean
   type?: boolean
   isDeleted?: boolean
@@ -1507,6 +1567,7 @@ export type TransactionsSelect<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type TransactionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  number?: boolean
   amount?: boolean
   type?: boolean
   isDeleted?: boolean
@@ -1531,6 +1592,7 @@ export type TransactionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type TransactionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  number?: boolean
   amount?: boolean
   type?: boolean
   isDeleted?: boolean
@@ -1555,6 +1617,7 @@ export type TransactionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type TransactionsSelectScalar = {
   id?: boolean
+  number?: boolean
   amount?: boolean
   type?: boolean
   isDeleted?: boolean
@@ -1571,7 +1634,7 @@ export type TransactionsSelectScalar = {
   updatedBy?: boolean
 }
 
-export type TransactionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "amount" | "type" | "isDeleted" | "transactionDate" | "createdAt" | "createdBy" | "paymentId" | "tenantId" | "rentalId" | "details" | "refundId" | "expenseId" | "updatedAt" | "updatedBy", ExtArgs["result"]["transactions"]>
+export type TransactionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "number" | "amount" | "type" | "isDeleted" | "transactionDate" | "createdAt" | "createdBy" | "paymentId" | "tenantId" | "rentalId" | "details" | "refundId" | "expenseId" | "updatedAt" | "updatedBy", ExtArgs["result"]["transactions"]>
 export type TransactionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Transactions$userArgs<ExtArgs>
   expense?: boolean | Prisma.Transactions$expenseArgs<ExtArgs>
@@ -1609,6 +1672,7 @@ export type $TransactionsPayload<ExtArgs extends runtime.Types.Extensions.Intern
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    number: string | null
     amount: number
     type: $Enums.TransactionType
     isDeleted: boolean
@@ -2053,6 +2117,7 @@ export interface Prisma__TransactionsClient<T, Null = never, ExtArgs extends run
  */
 export interface TransactionsFieldRefs {
   readonly id: Prisma.FieldRef<"Transactions", 'String'>
+  readonly number: Prisma.FieldRef<"Transactions", 'String'>
   readonly amount: Prisma.FieldRef<"Transactions", 'Float'>
   readonly type: Prisma.FieldRef<"Transactions", 'TransactionType'>
   readonly isDeleted: Prisma.FieldRef<"Transactions", 'Boolean'>

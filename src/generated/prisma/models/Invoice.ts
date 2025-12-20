@@ -466,11 +466,6 @@ export type InvoiceOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type InvoiceNullableScalarRelationFilter = {
-  is?: Prisma.InvoiceWhereInput | null
-  isNot?: Prisma.InvoiceWhereInput | null
-}
-
 export type InvoiceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   invoiceNumber?: Prisma.SortOrder
@@ -524,6 +519,11 @@ export type InvoiceSumOrderByAggregateInput = {
   amount?: Prisma.SortOrder
 }
 
+export type InvoiceNullableScalarRelationFilter = {
+  is?: Prisma.InvoiceWhereInput | null
+  isNot?: Prisma.InvoiceWhereInput | null
+}
+
 export type InvoiceCreateNestedManyWithoutCustomerInput = {
   create?: Prisma.XOR<Prisma.InvoiceCreateWithoutCustomerInput, Prisma.InvoiceUncheckedCreateWithoutCustomerInput> | Prisma.InvoiceCreateWithoutCustomerInput[] | Prisma.InvoiceUncheckedCreateWithoutCustomerInput[]
   connectOrCreate?: Prisma.InvoiceCreateOrConnectWithoutCustomerInput | Prisma.InvoiceCreateOrConnectWithoutCustomerInput[]
@@ -564,6 +564,14 @@ export type InvoiceUncheckedUpdateManyWithoutCustomerNestedInput = {
   update?: Prisma.InvoiceUpdateWithWhereUniqueWithoutCustomerInput | Prisma.InvoiceUpdateWithWhereUniqueWithoutCustomerInput[]
   updateMany?: Prisma.InvoiceUpdateManyWithWhereWithoutCustomerInput | Prisma.InvoiceUpdateManyWithWhereWithoutCustomerInput[]
   deleteMany?: Prisma.InvoiceScalarWhereInput | Prisma.InvoiceScalarWhereInput[]
+}
+
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type InvoiceCreateNestedOneWithoutRentalInput = {

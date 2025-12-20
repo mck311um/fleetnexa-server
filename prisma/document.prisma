@@ -36,8 +36,9 @@ model Invoice {
 model PaymentReceipt {
   id               String    @id @default(dbgenerated("gen_random_uuid()"))
   receiptNumber    String
+  paymentId        String    @unique
   amount           Float
-  rentalId         String    @unique
+  bookingId        String?   
   tenantId         String
   customerId       String
   receiptUrl       String?
@@ -45,8 +46,10 @@ model PaymentReceipt {
   updatedAt        DateTime? @updatedAt
   createdBy        String?
   updatedBy        String?
-  rental           Rental    @relation(fields: [rentalId], references: [id])
+  customer         Customer  @relation(fields: [customerId], references: [id])
+  rental           Rental?    @relation(fields: [bookingId], references: [id])
   tenant           Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  payment          Payment   @relation(fields: [paymentId], references: [id])
 
   @@unique([receiptNumber, tenantId], name: "receiptNumber_tenantId")
 }

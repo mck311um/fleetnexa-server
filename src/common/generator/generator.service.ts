@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Global, Injectable, Logger } from '@nestjs/common';
 import slugify from 'slugify';
 import { PrismaService } from '../../prisma/prisma.service.js';
 
+@Global()
 @Injectable()
 export class GeneratorService {
   private readonly logger = new Logger(GeneratorService.name);
@@ -182,6 +183,52 @@ export class GeneratorService {
     const formattedSequence = sequenceNumber.toString().padStart(4, '0');
 
     return `BA-${currentYear}-${formattedSequence}`;
+  }
+
+  async generatePaymentReceiptNumber(tenantId: string): Promise<string> {
+    try {
+      const prefix = 'RCPT';
+      const lastReceipt = await this.prisma.paymentReceipt.findFirst({
+        where: { tenantId },
+        orderBy: { createdAt: 'desc' },
+        select: { receiptNumber: true },
+      });
+
+      const lastNumber = lastReceipt?.receiptNumber
+        ? parseInt(lastReceipt.receiptNumber.match(/\d+$/)?.[0] || '0', 10)
+        : 0;
+      const nextNumber = lastNumber + 1;
+
+      const sequenceNumber = nextNumber.toString().padStart(6, '0');
+
+      return `${prefix}-${sequenceNumber}`;
+    } catch (error) {
+      this.logger.error('Failed to generate payment receipt number', error);
+      throw error;
+    }
+  }
+
+  async generateTransactionNumber(tenantId: string): Promise<string> {
+    try {
+      const prefix = 'TXN';
+      const lastTransaction = await this.prisma.transactions.findFirst({
+        where: { tenantId },
+        orderBy: { createdAt: 'desc' },
+        select: { number: true },
+      });
+
+      const lastNumber = lastTransaction?.number
+        ? parseInt(lastTransaction.number.match(/\d+$/)?.[0] || '0', 10)
+        : 0;
+      const nextNumber = lastNumber + 1;
+
+      const sequenceNumber = nextNumber.toString().padStart(8, '0');
+
+      return `${prefix}-${sequenceNumber}`;
+    } catch (error) {
+      this.logger.error('Failed to generate transaction number', error);
+      throw error;
+    }
   }
 
   async generateVerificationCode(): Promise<string> {

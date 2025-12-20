@@ -79,6 +79,9 @@ export const ModelName = {
   CustomerDocument: 'CustomerDocument',
   DriverLicense: 'DriverLicense',
   CustomerViolation: 'CustomerViolation',
+  RentalAgreement: 'RentalAgreement',
+  Invoice: 'Invoice',
+  PaymentReceipt: 'PaymentReceipt',
   CaribbeanCountry: 'CaribbeanCountry',
   ShopDMMerchant: 'ShopDMMerchant',
   Currency: 'Currency',
@@ -94,8 +97,6 @@ export const ModelName = {
   Rental: 'Rental',
   StorefrontBooking: 'StorefrontBooking',
   RentalDriver: 'RentalDriver',
-  Invoice: 'Invoice',
-  RentalAgreement: 'RentalAgreement',
   Values: 'Values',
   RentalExtra: 'RentalExtra',
   RentalCharge: 'RentalCharge',
@@ -483,6 +484,59 @@ export const CustomerViolationScalarFieldEnum = {
 export type CustomerViolationScalarFieldEnum = (typeof CustomerViolationScalarFieldEnum)[keyof typeof CustomerViolationScalarFieldEnum]
 
 
+export const RentalAgreementScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  rentalId: 'rentalId',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  agreementUrl: 'agreementUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  signableUrl: 'signableUrl'
+} as const
+
+export type RentalAgreementScalarFieldEnum = (typeof RentalAgreementScalarFieldEnum)[keyof typeof RentalAgreementScalarFieldEnum]
+
+
+export const InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  amount: 'amount',
+  rentalId: 'rentalId',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  status: 'status',
+  invoiceUrl: 'invoiceUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy'
+} as const
+
+export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
+
+
+export const PaymentReceiptScalarFieldEnum = {
+  id: 'id',
+  receiptNumber: 'receiptNumber',
+  paymentId: 'paymentId',
+  amount: 'amount',
+  bookingId: 'bookingId',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  receiptUrl: 'receiptUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy'
+} as const
+
+export type PaymentReceiptScalarFieldEnum = (typeof PaymentReceiptScalarFieldEnum)[keyof typeof PaymentReceiptScalarFieldEnum]
+
+
 export const CaribbeanCountryScalarFieldEnum = {
   id: 'id',
   countryId: 'countryId',
@@ -671,41 +725,6 @@ export const RentalDriverScalarFieldEnum = {
 } as const
 
 export type RentalDriverScalarFieldEnum = (typeof RentalDriverScalarFieldEnum)[keyof typeof RentalDriverScalarFieldEnum]
-
-
-export const InvoiceScalarFieldEnum = {
-  id: 'id',
-  invoiceNumber: 'invoiceNumber',
-  amount: 'amount',
-  rentalId: 'rentalId',
-  tenantId: 'tenantId',
-  customerId: 'customerId',
-  status: 'status',
-  invoiceUrl: 'invoiceUrl',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdBy: 'createdBy',
-  updatedBy: 'updatedBy'
-} as const
-
-export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
-
-
-export const RentalAgreementScalarFieldEnum = {
-  id: 'id',
-  number: 'number',
-  rentalId: 'rentalId',
-  tenantId: 'tenantId',
-  customerId: 'customerId',
-  agreementUrl: 'agreementUrl',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdBy: 'createdBy',
-  updatedBy: 'updatedBy',
-  signableUrl: 'signableUrl'
-} as const
-
-export type RentalAgreementScalarFieldEnum = (typeof RentalAgreementScalarFieldEnum)[keyof typeof RentalAgreementScalarFieldEnum]
 
 
 export const ValuesScalarFieldEnum = {
@@ -1165,6 +1184,7 @@ export type VerificationRequestScalarFieldEnum = (typeof VerificationRequestScal
 
 export const TransactionsScalarFieldEnum = {
   id: 'id',
+  number: 'number',
   amount: 'amount',
   type: 'type',
   isDeleted: 'isDeleted',

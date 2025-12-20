@@ -3,6 +3,7 @@ import { PrismaService, TxClient } from '../../prisma/prisma.service.js';
 import { TransactionDto } from './transaction.dto.js';
 import { Tenant, User } from '../../generated/prisma/client.js';
 import { TransactionRepository } from './transaction.repository.js';
+import { GeneratorService } from '../../common/generator/generator.service.js';
 
 @Injectable()
 export class TransactionService {
@@ -11,6 +12,7 @@ export class TransactionService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly transactionRepo: TransactionRepository,
+    private readonly generator: GeneratorService,
   ) {}
 
   async getTransactions(tenant: Tenant) {
@@ -27,6 +29,10 @@ export class TransactionService {
 
   async createTransaction(data: TransactionDto, tenant: Tenant, user: User) {
     try {
+      const transactionNumber = await this.generator.generateTransactionNumber(
+        tenant.id,
+      );
+
       await this.prisma.$transaction(async (tx: TxClient) => {
         await tx.transactions.create({
           data: {
@@ -62,6 +68,7 @@ export class TransactionService {
         if (!existingTransaction) {
           throw new Error('Transaction not found');
         }
+
         await tx.transactions.update({
           where: { id: data.id },
           data: {

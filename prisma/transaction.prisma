@@ -1,5 +1,6 @@
 model Transactions {
   id              String          @id @default(dbgenerated("gen_random_uuid()"))
+  number          String?         @unique
   amount          Float
   type            TransactionType
   isDeleted       Boolean         @default(false)
@@ -20,6 +21,8 @@ model Transactions {
   refund          Refund?         @relation(fields: [refundId], references: [id])
   rental          Rental?         @relation(fields: [rentalId], references: [id])
   tenant          Tenant          @relation(fields: [tenantId], references: [id])
+
+  @@unique([number, tenantId], name: "transactionNumber_tenantId")
 }
 
 model Payment {
@@ -46,6 +49,7 @@ model Payment {
   rental          Rental        @relation(fields: [rentalId], references: [id])
   tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   transaction     Transactions?
+  receipts        PaymentReceipt[]
 }
 
 model Refund {

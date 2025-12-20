@@ -420,6 +420,9 @@ export const ModelName = {
   CustomerDocument: 'CustomerDocument',
   DriverLicense: 'DriverLicense',
   CustomerViolation: 'CustomerViolation',
+  RentalAgreement: 'RentalAgreement',
+  Invoice: 'Invoice',
+  PaymentReceipt: 'PaymentReceipt',
   CaribbeanCountry: 'CaribbeanCountry',
   ShopDMMerchant: 'ShopDMMerchant',
   Currency: 'Currency',
@@ -435,8 +438,6 @@ export const ModelName = {
   Rental: 'Rental',
   StorefrontBooking: 'StorefrontBooking',
   RentalDriver: 'RentalDriver',
-  Invoice: 'Invoice',
-  RentalAgreement: 'RentalAgreement',
   Values: 'Values',
   RentalExtra: 'RentalExtra',
   RentalCharge: 'RentalCharge',
@@ -501,7 +502,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "service" | "chargeType" | "vehicleBrand" | "vehicleModel" | "vehicleBodyType" | "vehicleStatus" | "fuelType" | "transmission" | "vehicleFeature" | "wheelDrive" | "invoiceSequence" | "country" | "state" | "village" | "maintenanceService" | "documentType" | "presetLocation" | "licenseClass" | "messengerApp" | "equipment" | "contactType" | "paymentType" | "vendorType" | "port" | "customer" | "customerMessengerApp" | "customerAddress" | "customerDocument" | "driverLicense" | "customerViolation" | "caribbeanCountry" | "shopDMMerchant" | "currency" | "tenantCurrencyRate" | "exchangeRate" | "form" | "formResponse" | "rentalActivity" | "tenantNotification" | "notificationReadStatus" | "appPermission" | "permissionCategory" | "rental" | "storefrontBooking" | "rentalDriver" | "invoice" | "rentalAgreement" | "values" | "rentalExtra" | "rentalCharge" | "vesselInfo" | "tenantWeeklyStats" | "tenantYearlyStats" | "tenantMonthlyStats" | "tenantMonthlyRentalStats" | "tenantRatings" | "siteRatings" | "subscriptionPlan" | "planFeatures" | "planDetails" | "tenant" | "emailVerification" | "paymentMethod" | "address" | "tenantLocation" | "tenantInsurance" | "tenantEquipment" | "tenantService" | "tenantSubscription" | "tenantContact" | "tenantReminders" | "cancellationPolicy" | "latePolicy" | "tenantViolation" | "tenantVendor" | "verificationRequest" | "transactions" | "payment" | "refund" | "expense" | "user" | "storefrontUser" | "adminUser" | "userRole" | "userRolePermission" | "emailTokens" | "vehicle" | "vehicleDiscount" | "vehicleDamage" | "vehiclePart" | "fuelPolicy" | "vehicleServiceLog" | "vehicleMaintenance" | "vehicleServiceSchedule" | "bookingVehicleHistory" | "vehicleEvent"
+    modelProps: "service" | "chargeType" | "vehicleBrand" | "vehicleModel" | "vehicleBodyType" | "vehicleStatus" | "fuelType" | "transmission" | "vehicleFeature" | "wheelDrive" | "invoiceSequence" | "country" | "state" | "village" | "maintenanceService" | "documentType" | "presetLocation" | "licenseClass" | "messengerApp" | "equipment" | "contactType" | "paymentType" | "vendorType" | "port" | "customer" | "customerMessengerApp" | "customerAddress" | "customerDocument" | "driverLicense" | "customerViolation" | "rentalAgreement" | "invoice" | "paymentReceipt" | "caribbeanCountry" | "shopDMMerchant" | "currency" | "tenantCurrencyRate" | "exchangeRate" | "form" | "formResponse" | "rentalActivity" | "tenantNotification" | "notificationReadStatus" | "appPermission" | "permissionCategory" | "rental" | "storefrontBooking" | "rentalDriver" | "values" | "rentalExtra" | "rentalCharge" | "vesselInfo" | "tenantWeeklyStats" | "tenantYearlyStats" | "tenantMonthlyStats" | "tenantMonthlyRentalStats" | "tenantRatings" | "siteRatings" | "subscriptionPlan" | "planFeatures" | "planDetails" | "tenant" | "emailVerification" | "paymentMethod" | "address" | "tenantLocation" | "tenantInsurance" | "tenantEquipment" | "tenantService" | "tenantSubscription" | "tenantContact" | "tenantReminders" | "cancellationPolicy" | "latePolicy" | "tenantViolation" | "tenantVendor" | "verificationRequest" | "transactions" | "payment" | "refund" | "expense" | "user" | "storefrontUser" | "adminUser" | "userRole" | "userRolePermission" | "emailTokens" | "vehicle" | "vehicleDiscount" | "vehicleDamage" | "vehiclePart" | "fuelPolicy" | "vehicleServiceLog" | "vehicleMaintenance" | "vehicleServiceSchedule" | "bookingVehicleHistory" | "vehicleEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2725,6 +2726,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RentalAgreement: {
+      payload: Prisma.$RentalAgreementPayload<ExtArgs>
+      fields: Prisma.RentalAgreementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RentalAgreementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RentalAgreementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
+        }
+        findFirst: {
+          args: Prisma.RentalAgreementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RentalAgreementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
+        }
+        findMany: {
+          args: Prisma.RentalAgreementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>[]
+        }
+        create: {
+          args: Prisma.RentalAgreementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
+        }
+        createMany: {
+          args: Prisma.RentalAgreementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RentalAgreementCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>[]
+        }
+        delete: {
+          args: Prisma.RentalAgreementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
+        }
+        update: {
+          args: Prisma.RentalAgreementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
+        }
+        deleteMany: {
+          args: Prisma.RentalAgreementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RentalAgreementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RentalAgreementUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>[]
+        }
+        upsert: {
+          args: Prisma.RentalAgreementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
+        }
+        aggregate: {
+          args: Prisma.RentalAgreementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRentalAgreement>
+        }
+        groupBy: {
+          args: Prisma.RentalAgreementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RentalAgreementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RentalAgreementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RentalAgreementCountAggregateOutputType> | number
+        }
+      }
+    }
+    Invoice: {
+      payload: Prisma.$InvoicePayload<ExtArgs>
+      fields: Prisma.InvoiceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.InvoiceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.InvoiceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
+        }
+        findFirst: {
+          args: Prisma.InvoiceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.InvoiceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
+        }
+        findMany: {
+          args: Prisma.InvoiceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>[]
+        }
+        create: {
+          args: Prisma.InvoiceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
+        }
+        createMany: {
+          args: Prisma.InvoiceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.InvoiceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>[]
+        }
+        delete: {
+          args: Prisma.InvoiceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
+        }
+        update: {
+          args: Prisma.InvoiceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
+        }
+        deleteMany: {
+          args: Prisma.InvoiceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.InvoiceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.InvoiceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>[]
+        }
+        upsert: {
+          args: Prisma.InvoiceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
+        }
+        aggregate: {
+          args: Prisma.InvoiceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInvoice>
+        }
+        groupBy: {
+          args: Prisma.InvoiceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InvoiceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.InvoiceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InvoiceCountAggregateOutputType> | number
+        }
+      }
+    }
+    PaymentReceipt: {
+      payload: Prisma.$PaymentReceiptPayload<ExtArgs>
+      fields: Prisma.PaymentReceiptFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PaymentReceiptFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PaymentReceiptFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+        }
+        findFirst: {
+          args: Prisma.PaymentReceiptFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PaymentReceiptFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+        }
+        findMany: {
+          args: Prisma.PaymentReceiptFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>[]
+        }
+        create: {
+          args: Prisma.PaymentReceiptCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+        }
+        createMany: {
+          args: Prisma.PaymentReceiptCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PaymentReceiptCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>[]
+        }
+        delete: {
+          args: Prisma.PaymentReceiptDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+        }
+        update: {
+          args: Prisma.PaymentReceiptUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+        }
+        deleteMany: {
+          args: Prisma.PaymentReceiptDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PaymentReceiptUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PaymentReceiptUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>[]
+        }
+        upsert: {
+          args: Prisma.PaymentReceiptUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+        }
+        aggregate: {
+          args: Prisma.PaymentReceiptAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePaymentReceipt>
+        }
+        groupBy: {
+          args: Prisma.PaymentReceiptGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PaymentReceiptGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PaymentReceiptCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PaymentReceiptCountAggregateOutputType> | number
+        }
+      }
+    }
     CaribbeanCountry: {
       payload: Prisma.$CaribbeanCountryPayload<ExtArgs>
       fields: Prisma.CaribbeanCountryFieldRefs
@@ -3832,154 +4055,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.RentalDriverCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.RentalDriverCountAggregateOutputType> | number
-        }
-      }
-    }
-    Invoice: {
-      payload: Prisma.$InvoicePayload<ExtArgs>
-      fields: Prisma.InvoiceFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.InvoiceFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.InvoiceFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
-        }
-        findFirst: {
-          args: Prisma.InvoiceFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.InvoiceFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
-        }
-        findMany: {
-          args: Prisma.InvoiceFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>[]
-        }
-        create: {
-          args: Prisma.InvoiceCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
-        }
-        createMany: {
-          args: Prisma.InvoiceCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.InvoiceCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>[]
-        }
-        delete: {
-          args: Prisma.InvoiceDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
-        }
-        update: {
-          args: Prisma.InvoiceUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
-        }
-        deleteMany: {
-          args: Prisma.InvoiceDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.InvoiceUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.InvoiceUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>[]
-        }
-        upsert: {
-          args: Prisma.InvoiceUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicePayload>
-        }
-        aggregate: {
-          args: Prisma.InvoiceAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateInvoice>
-        }
-        groupBy: {
-          args: Prisma.InvoiceGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.InvoiceGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.InvoiceCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.InvoiceCountAggregateOutputType> | number
-        }
-      }
-    }
-    RentalAgreement: {
-      payload: Prisma.$RentalAgreementPayload<ExtArgs>
-      fields: Prisma.RentalAgreementFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.RentalAgreementFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.RentalAgreementFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
-        }
-        findFirst: {
-          args: Prisma.RentalAgreementFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.RentalAgreementFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
-        }
-        findMany: {
-          args: Prisma.RentalAgreementFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>[]
-        }
-        create: {
-          args: Prisma.RentalAgreementCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
-        }
-        createMany: {
-          args: Prisma.RentalAgreementCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.RentalAgreementCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>[]
-        }
-        delete: {
-          args: Prisma.RentalAgreementDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
-        }
-        update: {
-          args: Prisma.RentalAgreementUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
-        }
-        deleteMany: {
-          args: Prisma.RentalAgreementDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.RentalAgreementUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.RentalAgreementUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>[]
-        }
-        upsert: {
-          args: Prisma.RentalAgreementUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RentalAgreementPayload>
-        }
-        aggregate: {
-          args: Prisma.RentalAgreementAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateRentalAgreement>
-        }
-        groupBy: {
-          args: Prisma.RentalAgreementGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RentalAgreementGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.RentalAgreementCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RentalAgreementCountAggregateOutputType> | number
         }
       }
     }
@@ -7968,6 +8043,59 @@ export const CustomerViolationScalarFieldEnum = {
 export type CustomerViolationScalarFieldEnum = (typeof CustomerViolationScalarFieldEnum)[keyof typeof CustomerViolationScalarFieldEnum]
 
 
+export const RentalAgreementScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  rentalId: 'rentalId',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  agreementUrl: 'agreementUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  signableUrl: 'signableUrl'
+} as const
+
+export type RentalAgreementScalarFieldEnum = (typeof RentalAgreementScalarFieldEnum)[keyof typeof RentalAgreementScalarFieldEnum]
+
+
+export const InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  amount: 'amount',
+  rentalId: 'rentalId',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  status: 'status',
+  invoiceUrl: 'invoiceUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy'
+} as const
+
+export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
+
+
+export const PaymentReceiptScalarFieldEnum = {
+  id: 'id',
+  receiptNumber: 'receiptNumber',
+  paymentId: 'paymentId',
+  amount: 'amount',
+  bookingId: 'bookingId',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  receiptUrl: 'receiptUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy'
+} as const
+
+export type PaymentReceiptScalarFieldEnum = (typeof PaymentReceiptScalarFieldEnum)[keyof typeof PaymentReceiptScalarFieldEnum]
+
+
 export const CaribbeanCountryScalarFieldEnum = {
   id: 'id',
   countryId: 'countryId',
@@ -8156,41 +8284,6 @@ export const RentalDriverScalarFieldEnum = {
 } as const
 
 export type RentalDriverScalarFieldEnum = (typeof RentalDriverScalarFieldEnum)[keyof typeof RentalDriverScalarFieldEnum]
-
-
-export const InvoiceScalarFieldEnum = {
-  id: 'id',
-  invoiceNumber: 'invoiceNumber',
-  amount: 'amount',
-  rentalId: 'rentalId',
-  tenantId: 'tenantId',
-  customerId: 'customerId',
-  status: 'status',
-  invoiceUrl: 'invoiceUrl',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdBy: 'createdBy',
-  updatedBy: 'updatedBy'
-} as const
-
-export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
-
-
-export const RentalAgreementScalarFieldEnum = {
-  id: 'id',
-  number: 'number',
-  rentalId: 'rentalId',
-  tenantId: 'tenantId',
-  customerId: 'customerId',
-  agreementUrl: 'agreementUrl',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdBy: 'createdBy',
-  updatedBy: 'updatedBy',
-  signableUrl: 'signableUrl'
-} as const
-
-export type RentalAgreementScalarFieldEnum = (typeof RentalAgreementScalarFieldEnum)[keyof typeof RentalAgreementScalarFieldEnum]
 
 
 export const ValuesScalarFieldEnum = {
@@ -8650,6 +8743,7 @@ export type VerificationRequestScalarFieldEnum = (typeof VerificationRequestScal
 
 export const TransactionsScalarFieldEnum = {
   id: 'id',
+  number: 'number',
   amount: 'amount',
   type: 'type',
   isDeleted: 'isDeleted',
@@ -9546,6 +9640,9 @@ export type GlobalOmitConfig = {
   customerDocument?: Prisma.CustomerDocumentOmit
   driverLicense?: Prisma.DriverLicenseOmit
   customerViolation?: Prisma.CustomerViolationOmit
+  rentalAgreement?: Prisma.RentalAgreementOmit
+  invoice?: Prisma.InvoiceOmit
+  paymentReceipt?: Prisma.PaymentReceiptOmit
   caribbeanCountry?: Prisma.CaribbeanCountryOmit
   shopDMMerchant?: Prisma.ShopDMMerchantOmit
   currency?: Prisma.CurrencyOmit
@@ -9561,8 +9658,6 @@ export type GlobalOmitConfig = {
   rental?: Prisma.RentalOmit
   storefrontBooking?: Prisma.StorefrontBookingOmit
   rentalDriver?: Prisma.RentalDriverOmit
-  invoice?: Prisma.InvoiceOmit
-  rentalAgreement?: Prisma.RentalAgreementOmit
   values?: Prisma.ValuesOmit
   rentalExtra?: Prisma.RentalExtraOmit
   rentalCharge?: Prisma.RentalChargeOmit
