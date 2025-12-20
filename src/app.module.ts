@@ -33,6 +33,7 @@ import { TransactionModule } from './modules/transaction/transaction.module.js';
 import { DocumentModule } from './modules/document/document.module.js';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module.js';
+import { HealthModule } from './modules/health/health.module.js';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CronModule } from './cron/cron.module.js';
     }),
     ScheduleModule.forRoot(),
     CronModule,
+    HealthModule,
 
     AdminModule,
 
