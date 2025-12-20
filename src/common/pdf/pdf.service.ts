@@ -1,16 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {
-  GetObjectCommand,
-  PutObjectCommand,
-  S3Client,
-} from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { AwsService } from '../aws/aws.service.js';
-import axios, { Axios, AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { ConfigService } from '@nestjs/config';
 import {
   AgreementData,
   CreateDocumentParams,
   InvoiceData,
+  PaymentReceiptData,
 } from '../../types/pdf.js';
 import { PDFDocument } from 'pdf-lib';
 
@@ -21,6 +18,7 @@ export class PdfService {
   private readonly invoiceId: string;
   private readonly agreementId: string;
   private readonly awsBucketName: string;
+  private readonly paymentReceiptId: string;
 
   constructor(
     private readonly aws: AwsService,
@@ -29,6 +27,8 @@ export class PdfService {
     const apiKey = this.config.get<string>('PDFMONKEY_API_KEY');
     this.invoiceId = this.config.get<string>('PDFMONKEY_INVOICE_ID') ?? '';
     this.agreementId = this.config.get<string>('PDFMONKEY_AGREEMENT_ID') ?? '';
+    this.paymentReceiptId =
+      this.config.get<string>('PDFMONKEY_PAYMENT_RECEIPT_ID') ?? '';
     this.awsBucketName = this.config.get<string>('AWS_BUCKET_NAME') ?? '';
 
     this.pdfMonkeyApi = axios.create({
@@ -50,6 +50,20 @@ export class PdfService {
       data: invoiceData,
       documentType: 'invoice',
       documentNumber: invoiceNumber,
+      tenantCode,
+    });
+    return { s3Key, documentId, publicUrl };
+  };
+
+  createPaymentReceipt = async (
+    paymentReceiptData: PaymentReceiptData,
+    receiptNumber: string,
+    tenantCode: string,
+  ) => {
+    const { s3Key, documentId, publicUrl } = await this.createDocument({
+      data: paymentReceiptData,
+      documentType: 'payment_receipt',
+      documentNumber: receiptNumber,
       tenantCode,
     });
     return { s3Key, documentId, publicUrl };
@@ -103,9 +117,36 @@ export class PdfService {
     documentNumber,
     tenantCode,
   }: CreateDocumentParams) {
-    const templateId =
-      documentType === 'invoice' ? this.invoiceId : this.agreementId;
-    const folder = documentType === 'invoice' ? 'Invoices' : 'Agreements';
+    let templateId: string;
+    let folder: string;
+
+    switch (documentType) {
+      case 'invoice':
+        templateId = this.invoiceId;
+        break;
+      case 'agreement':
+        templateId = this.agreementId;
+        break;
+      case 'payment_receipt':
+        templateId = this.paymentReceiptId;
+        break;
+      default:
+        throw new Error(`Unknown document type: ${documentType}`);
+    }
+
+    switch (documentType) {
+      case 'invoice':
+        folder = 'Invoices';
+        break;
+      case 'agreement':
+        folder = 'Agreements';
+        break;
+      case 'payment_receipt':
+        folder = 'PaymentReceipts';
+        break;
+      default:
+        throw new Error(`Unknown document type: ${documentType}`);
+    }
 
     try {
       const res = await this.pdfMonkeyApi.post('/documents', {

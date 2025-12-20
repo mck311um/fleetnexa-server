@@ -8205,6 +8205,7 @@ export const ValuesScalarFieldEnum = {
   totalExtras: 'totalExtras',
   subTotal: 'subTotal',
   netTotal: 'netTotal',
+  amountDue: 'amountDue',
   rentalId: 'rentalId',
   discountAmount: 'discountAmount',
   discountPolicy: 'discountPolicy',

@@ -38,6 +38,7 @@ model Rental {
   values            Values?
   vessels           VesselInfo[]
   vehicleHistory    BookingVehicleHistory[]
+  paymentReceipts   PaymentReceipt[]
 }
 
 model StorefrontBooking {
@@ -61,41 +62,6 @@ model RentalDriver {
   @@unique([rentalId, driverId], name: "rentalId_driverId")
 }
 
-model Invoice {
-  id            String    @id @default(dbgenerated("gen_random_uuid()"))
-  invoiceNumber String
-  amount        Float
-  rentalId      String    @unique
-  tenantId      String
-  customerId    String
-  status        String    @default("pending")
-  invoiceUrl    String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime? @updatedAt
-  createdBy     String?
-  updatedBy     String?
-  customer      Customer  @relation(fields: [customerId], references: [id])
-  rental        Rental    @relation(fields: [rentalId], references: [id])
-  tenant        Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-}
-
-model RentalAgreement {
-  id           String    @id @default(dbgenerated("gen_random_uuid()"))
-  number       String
-  rentalId     String    @unique
-  tenantId     String
-  customerId   String
-  agreementUrl String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime? @updatedAt
-  createdBy    String?
-  updatedBy    String?
-  signableUrl  String?
-  customer     Customer  @relation(fields: [customerId], references: [id])
-  rental       Rental    @relation(fields: [rentalId], references: [id])
-  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-}
-
 model Values {
   id                   String        @id @default(dbgenerated("gen_random_uuid()"))
   numberOfDays         Int
@@ -106,8 +72,9 @@ model Values {
   collectionFee        Float
   deposit              Float
   totalExtras          Float
-  subTotal             Float
-  netTotal             Float
+  subTotal             Float         @default(0.0)
+  netTotal             Float         @default(0.0)
+  amountDue            Float         @default(0.0)
   rentalId             String        @unique
   discountAmount       Float
   discountPolicy       String

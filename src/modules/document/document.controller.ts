@@ -25,4 +25,14 @@ export class DocumentController {
     const { tenant, user } = req.context;
     return await this.service.generateAgreement(id, tenant, user);
   }
+
+  @Post('agreement/:id/signature')
+  async sendAgreementForSignature(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+  ) {
+    const { tenant, user } = req.context;
+    console.log('Sending agreement for signature:', { id });
+    return await this.service.sendAgreementForSignature(id, tenant, user);
+  }
 }

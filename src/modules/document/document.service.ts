@@ -14,6 +14,7 @@ import { format, toZonedTime } from 'date-fns-tz';
 import { FormatterService } from '../../common/formatter/formatter.service.js';
 import { PdfService } from '../../common/pdf/pdf.service.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { FirmaService } from '../../common/firma/firma.service.js';
 
 @Injectable()
 export class DocumentService {
@@ -25,6 +26,7 @@ export class DocumentService {
     private readonly tenantExtraService: TenantExtraService,
     private readonly customerService: CustomerService,
     private readonly pdfService: PdfService,
+    private readonly firma: FirmaService,
   ) {}
 
   async generateInvoice(bookingId: string, tenant: Tenant, user: User) {
@@ -170,6 +172,25 @@ export class DocumentService {
         tenantCode: tenant.tenantCode,
       });
       throw new Error('Failed to generate agreement');
+    }
+  }
+
+  async sendAgreementForSignature(
+    bookingId: string,
+    tenant: Tenant,
+    user: User,
+  ) {
+    try {
+      const res = await this.firma.createTemplate(bookingId);
+
+      return res;
+    } catch (error) {
+      this.logger.error(error, 'Failed to send agreement for signature', {
+        bookingId,
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw new Error('Failed to send agreement for signature');
     }
   }
 

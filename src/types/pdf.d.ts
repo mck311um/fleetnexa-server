@@ -165,10 +165,12 @@ interface RentalAgreementDriver {
 }
 
 interface CreateDocumentParams {
-  data: InvoiceData | AgreementData;
+  data: InvoiceData | AgreementData | PaymentReceiptData;
   documentType: DocumentType;
   documentNumber: string;
   tenantCode: string;
 }
 
-type DocumentType = 'invoice' | 'agreement';
+interface PaymentReceiptData {}
+
+type DocumentType = 'invoice' | 'agreement' | 'payment_receipt';

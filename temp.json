@@ -1,0 +1,19 @@
+{
+  "id": "2d154abb-5457-4fe3-96e5-60c7e1aa77fa",
+  "name": "BA-2025-0006",
+  "description": null,
+  "document_url": "https://ielmshcswdhuacyjlpiy.supabase.co/storage/v1/object/sign/template-documents/3763c810-6ff4-4db8-95f3-d35f94c97670/040ff411-b6d9-49e8-88fc-7b517ddf6798/1765744722343-9b9dfb5d-5792-46b5-9be0-1adc2c9bb39c.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85YjM2OTkwMi04NzRhLTQ1OTItODAxMi0zY2IxZWZkNTZkNTMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0ZW1wbGF0ZS1kb2N1bWVudHMvMzc2M2M4MTAtNmZmNC00ZGI4LTk1ZjMtZDM1Zjk0Yzk3NjcwLzA0MGZmNDExLWI2ZDktNDllOC04OGZjLTdiNTE3ZGRmNjc5OC8xNzY1NzQ0NzIyMzQzLTliOWRmYjVkLTU3OTItNDZiNS05YmUwLTFhZGMyYzliYjM5Yy5wZGYiLCJpYXQiOjE3NjU3NDQ3MjMsImV4cCI6MTc2NTc0ODMyM30.Qn2gfRs2B5DbmpmI_7Ak742IUQMxIpWHi0irN-YfD2o",
+  "document_url_expires_at": "2025-12-14T21:38:43.308+00:00",
+  "page_count": 4,
+  "expiration_hours": 168,
+  "settings": {
+    "allow_editing_before_sending": false,
+    "attach_pdf_on_finish": true,
+    "allow_download": true,
+    "use_signing_order": true
+  },
+  "created_date": "2025-12-14T20:38:43.388357+00:00",
+  "updated_date": "2025-12-14T20:38:43.388357+00:00",
+  "recipients": [],
+  "fields": []
+}

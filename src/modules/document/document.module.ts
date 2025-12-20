@@ -10,6 +10,7 @@ import { AuthGuard } from '../../common/guards/auth.guard.js';
 import { TenantRepository } from '../tenant/tenant.repository.js';
 import { TenantUserRepository } from '../user/tenant-user/tenant-user.repository.js';
 import { DocumentController } from './document.controller.js';
+import { FirmaModule } from '../../common/firma/firma.module.js';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DocumentController } from './document.controller.js';
     PdfModule,
     TenantExtrasModule,
     CustomerModule,
+    FirmaModule,
   ],
   controllers: [DocumentController],
   providers: [

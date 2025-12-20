@@ -101,6 +101,9 @@ export class BookingValuesDto {
   netTotal: number;
 
   @IsNumber()
+  amountDue: number;
+
+  @IsNumber()
   discountAmount: number;
 
   @IsString()
