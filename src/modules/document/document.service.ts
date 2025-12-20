@@ -317,7 +317,7 @@ export class DocumentService {
         companyName: tenant.tenantName || '',
         email: tenant.email || '',
         phone: tenant.number || '',
-        transactionNumber: payment?.transaction?.tenantId || '',
+        transactionNumber: payment?.transaction?.number || '',
         receiptNumber: '',
         bookingCode: booking?.bookingCode || '',
         paymentDate: this.formatter.formatDateToFriendly(

@@ -84,7 +84,7 @@ export class TenantBookingRepository {
               customer: true,
               paymentMethod: true,
               paymentType: true,
-              receipts: true,
+              receipt: true,
             },
           },
           refund: true,
@@ -148,6 +148,7 @@ export class TenantBookingRepository {
         include: {
           paymentMethod: true,
           paymentType: true,
+          receipt: true,
         },
       },
       values: {

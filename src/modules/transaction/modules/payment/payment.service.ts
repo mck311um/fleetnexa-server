@@ -31,7 +31,7 @@ export class PaymentService {
           rental: true,
           paymentMethod: true,
           paymentType: true,
-          receipts: true,
+          receipt: true,
           customer: {
             select: {
               id: true,

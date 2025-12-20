@@ -4,7 +4,6 @@ import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import { winstonConfig } from './config/winston.config.js';
-import * as crypto from 'crypto';
 
 config();
 
@@ -21,8 +20,6 @@ async function bootstrap() {
       transform: true,
     }),
   );
-
-  (globalThis as any).crypto = crypto;
 
   app.enableCors({
     origin: [
