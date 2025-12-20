@@ -15,6 +15,7 @@ import type { AuthenticatedRequest } from 'src/types/authenticated-request.js';
 import { CreateBookingDto } from './dto/create-booking.dto.js';
 import { UpdateBookingDto } from './dto/update-booking.dto.js';
 import { ActionBookingDto } from '../dto/action-booking.dto.js';
+import { SendDocumentsDto } from './dto/send-documents.dto.js';
 
 @Controller('tenant/booking')
 @UseGuards(AuthGuard)
@@ -97,6 +98,15 @@ export class TenantBookingController {
   ) {
     const { tenant, user } = req.context;
     return this.service.createBooking(data, tenant, user);
+  }
+
+  @Post('send-documents')
+  async sendBookingDocuments(
+    @Req() req: AuthenticatedRequest,
+    @Body() data: SendDocumentsDto,
+  ) {
+    const { tenant } = req.context;
+    return this.service.sendBookingDocuments(data, tenant);
   }
 
   @Put()

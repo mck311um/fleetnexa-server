@@ -15,6 +15,17 @@ export class WhatsappService {
     private readonly customer: CustomerService,
   ) {}
 
+  async sendBookingDocuments(data: SendWhatsAppDto) {
+    try {
+      await this.notify.sendWhatsapp(data);
+    } catch (error) {
+      this.logger.error(error, 'Failed to send booking documents', {
+        data,
+      });
+      throw error;
+    }
+  }
+
   async sendBookingNotification(bookingId: string) {
     try {
       const booking = await this.prisma.rental.findUnique({

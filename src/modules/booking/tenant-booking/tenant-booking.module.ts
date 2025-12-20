@@ -13,6 +13,7 @@ import { VehicleModule } from '../../../modules/vehicle/vehicle.module.js';
 import { CustomerModule } from '../../../modules/customer/customer.module.js';
 import { TransactionModule } from '../../../modules/transaction/transaction.module.js';
 import { VehicleEventModule } from '../../../modules/vehicle/modules/vehicle-event/vehicle-event.module.js';
+import { WhatsappModule } from '../../../common/whatsapp/whatsapp.module.js';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { VehicleEventModule } from '../../../modules/vehicle/modules/vehicle-eve
     CustomerModule,
     TransactionModule,
     VehicleEventModule,
+    WhatsappModule,
   ],
   controllers: [TenantBookingController],
   providers: [

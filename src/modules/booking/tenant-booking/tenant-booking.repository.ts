@@ -61,6 +61,7 @@ export class TenantBookingRepository {
       invoice: true,
       agreement: true,
       chargeType: true,
+      paymentReceipts: true,
       user: {
         select: {
           id: true,

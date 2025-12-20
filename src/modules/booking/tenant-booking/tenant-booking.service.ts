@@ -21,6 +21,9 @@ import { VehicleStatusDto } from '../../../modules/vehicle/dto/vehicle-status.dt
 import { TransactionService } from '../../../modules/transaction/transaction.service.js';
 import { VehicleEventService } from '../../../modules/vehicle/modules/vehicle-event/vehicle-event.service.js';
 import { VehicleEventDto } from '../../../modules/vehicle/dto/vehicle-event.dto.js';
+import { SendDocumentsDto } from './dto/send-documents.dto.js';
+import { SendWhatsAppDto } from '../../../common/notify/dto/send-whatsapp.dto.js';
+import { WhatsappService } from '../../../common/whatsapp/whatsapp.service.js';
 
 @Injectable()
 export class TenantBookingService {
@@ -36,6 +39,7 @@ export class TenantBookingService {
     private readonly vehicleService: VehicleService,
     private readonly transactions: TransactionService,
     private readonly vehicleEvent: VehicleEventService,
+    private readonly whatsapp: WhatsappService,
   ) {}
 
   async getBookings(tenant: Tenant) {
@@ -729,6 +733,29 @@ export class TenantBookingService {
         status,
       });
       throw new Error('Failed to update booking status');
+    }
+  }
+
+  async sendBookingDocuments(data: SendDocumentsDto, tenant: Tenant) {
+    try {
+      this.logger.log(data);
+
+      if (data.method === 'WHATSAPP') {
+        const payload: SendWhatsAppDto = {
+          recipient: data.recipient,
+          message: `Please find your attached booking documents from ${tenant.tenantName}`,
+          documents: data.documents,
+        };
+
+        await this.whatsapp.sendBookingDocuments(payload);
+      }
+
+      return { message: 'Booking documents sent successfully' };
+    } catch (error) {
+      this.logger.error(error, 'Failed to send booking documents', {
+        data,
+      });
+      throw error;
     }
   }
 }

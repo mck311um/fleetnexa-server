@@ -1,9 +1,11 @@
 import {
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
+  IsUUID,
 } from 'class-validator';
 
 export class DocumentDto {
@@ -16,14 +18,18 @@ export class DocumentDto {
   fileName: string;
 }
 
-export class SendWhatsAppDto {
+export class SendDocumentsDto {
+  @IsUUID()
+  @IsNotEmpty()
+  bookingId: string;
+
   @IsString()
   @IsNotEmpty()
   recipient: string;
 
-  @IsString()
+  @IsEnum(['WHATSAPP', 'EMAIL'])
   @IsNotEmpty()
-  message: string;
+  method: 'WHATSAPP' | 'EMAIL';
 
   @IsArray()
   @IsOptional()
