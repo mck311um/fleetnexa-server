@@ -345,10 +345,12 @@ export class TenantService {
       }
 
       const updatedTenant = await this.tenantRepo.getTenantById(tenant.id);
+      const vehicles = await this.vehicles.getTenantVehicles(tenant);
 
       return {
         message: 'Storefront settings updated successfully',
         tenant: updatedTenant,
+        vehicles,
       };
     } catch (error) {
       this.logger.error(error, 'Failed to update storefront settings', {
