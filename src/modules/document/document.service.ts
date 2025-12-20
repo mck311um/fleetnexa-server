@@ -524,13 +524,9 @@ export class DocumentService {
         pickupLocation: booking?.pickup?.location || '',
         returnLocation: booking?.return?.location || '',
         rentalAmount: parseFloat((booking?.values?.totalCost || 0).toFixed(2)),
-        subTotal: parseFloat(
-          (
-            (booking?.values?.subTotal || 0) - (booking?.values?.deposit || 0)
-          ).toFixed(2),
-        ),
+        subTotal: parseFloat((booking?.values?.subTotal || 0).toFixed(2)),
         deposit: parseFloat((booking?.values?.deposit || 0).toFixed(2)),
-        total: parseFloat((booking?.values?.netTotal || 0).toFixed(2)),
+        total: parseFloat((booking?.values?.amountDue || 0).toFixed(2)),
         discount: parseFloat((booking?.values?.discount || 0).toFixed(2)),
         invoiceNotes: tenant?.invoiceFootNotes || '',
         services: filteredServices,
@@ -811,7 +807,7 @@ export class DocumentService {
           (extrasTotal + pickupItem.amount + returnItem.amount).toFixed(2),
         ),
         securityDeposit: parseFloat((booking?.values?.deposit || 0).toFixed(2)),
-        total: parseFloat((booking?.values?.netTotal || 0).toFixed(2)),
+        total: parseFloat((booking?.values?.amountDue || 0).toFixed(2)),
         currency: tenant?.currency?.code || 'USD',
         minimumDays: tenant?.cancellationPolicy?.minimumDays || 0,
         bookingMinimumDays: tenant?.cancellationPolicy?.bookingMinimumDays || 0,
