@@ -58,6 +58,25 @@ export interface BookingDeclinedEmailDto {
   declineReason?: string;
 }
 
+export interface BookingDocumentsEmailDto {
+  bookingId: string;
+  startDate: string;
+  endDate: string;
+  pickupTime: string;
+  pickupLocation: string;
+  totalPrice: string;
+  tenantName: string;
+  phone: string;
+  vehicle: string;
+  email: string;
+  documents: DocumentDto[];
+}
+
+interface DocumentDto {
+  fileName: string;
+  url: string;
+}
+
 interface BookingAddition {
   name: string;
   quantity: number;

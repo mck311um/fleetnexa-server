@@ -9,9 +9,11 @@ import {
   BookingCompletedEmailDto,
   BookingConfirmationEmailDto,
   BookingDeclinedEmailDto,
+  BookingDocumentsEmailDto,
   NewBookingEmailDto,
   PasswordResetEmailDto,
 } from '../../types/email.js';
+import { SendDocumentsDto } from 'src/modules/booking/tenant-booking/dto/send-documents.dto.js';
 
 @Injectable()
 export class EmailService {
@@ -356,6 +358,70 @@ export class EmailService {
       await this.notify.sendEmail(payload);
     } catch (error) {
       this.logger.error('Error sending storefront password reset email', error);
+      throw error;
+    }
+  }
+
+  async sendBookingDocuments(data: SendDocumentsDto, tenant: Tenant) {
+    try {
+      const booking = await this.prisma.rental.findUnique({
+        where: { id: data.bookingId },
+        include: {
+          pickup: true,
+          vehicle: {
+            include: {
+              brand: true,
+              model: {
+                include: {
+                  bodyType: true,
+                },
+              },
+              transmission: true,
+            },
+          },
+          invoice: true,
+          agreement: true,
+          values: true,
+        },
+      });
+
+      if (!booking) {
+        throw new NotFoundException('Booking not found');
+      }
+
+      const currency = await this.prisma.currency.findUnique({
+        where: { id: tenant.currencyId! },
+      });
+
+      const templateData: BookingDocumentsEmailDto = {
+        bookingId: booking.bookingCode || '',
+        startDate: this.formatter.formatDateToFriendlyDate(booking.startDate),
+        endDate: this.formatter.formatDateToFriendlyDate(booking.endDate),
+        pickupTime: this.formatter.formatDateToFriendlyTime(booking.startDate),
+        pickupLocation: booking.pickup.location,
+        totalPrice: this.formatter.formatNumberToTenantCurrency(
+          booking.values?.amountDue || 0,
+          currency?.code || 'USD',
+        ),
+        tenantName: tenant.tenantName || '',
+        phone: tenant.number || '',
+        vehicle: this.formatter.formatVehicleToFriendly(booking.vehicle),
+        email: tenant.email || '',
+        documents: data.documents || [],
+      };
+
+      const payload: SendEmailDto = {
+        recipients: [data.recipient],
+        cc: [],
+        templateName: 'FleetNexaBookingDocuments',
+        templateData: templateData,
+        sender: 'no-reply@fleetnexa.com',
+        senderName: 'FleetNexa',
+      };
+
+      await this.notify.sendEmail(payload);
+    } catch (error) {
+      this.logger.error('Error sending booking documents email', error);
       throw error;
     }
   }

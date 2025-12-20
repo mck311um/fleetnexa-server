@@ -748,6 +748,8 @@ export class TenantBookingService {
         };
 
         await this.whatsapp.sendBookingDocuments(payload);
+      } else if (data.method === 'EMAIL') {
+        await this.emailService.sendBookingDocuments(data, tenant);
       }
 
       return { message: 'Booking documents sent successfully' };
