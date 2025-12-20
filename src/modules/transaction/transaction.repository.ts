@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Global, Injectable } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 
+@Global()
 @Injectable()
 export class TransactionRepository {
   constructor(private readonly prisma: PrismaService) {}

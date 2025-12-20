@@ -31,12 +31,17 @@ import { RefundModule } from './modules/transaction/modules/refund/refund.module
 import { ExpenseModule } from './modules/transaction/modules/expense/expense.module.js';
 import { TransactionModule } from './modules/transaction/transaction.module.js';
 import { DocumentModule } from './modules/document/document.module.js';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronModule } from './cron/cron.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
+    CronModule,
+
     AdminModule,
 
     StorefrontAuthModule,

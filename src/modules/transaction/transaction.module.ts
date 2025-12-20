@@ -6,9 +6,10 @@ import { AuthGuard } from '../../common/guards/auth.guard.js';
 import { TenantRepository } from '../tenant/tenant.repository.js';
 import { TenantUserRepository } from '../user/tenant-user/tenant-user.repository.js';
 import { TransactionRepository } from './transaction.repository.js';
+import { GeneratorModule } from '../../common/generator/generator.module.js';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, GeneratorModule],
   providers: [
     TransactionService,
     AuthGuard,

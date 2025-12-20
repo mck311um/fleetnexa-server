@@ -1,3 +1,4 @@
+import { Global } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
   WebSocketGateway,
@@ -7,6 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
+@Global()
 @WebSocketGateway({
   cors: { origin: '*' },
 })
