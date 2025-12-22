@@ -955,7 +955,10 @@ export const TenantScalarFieldEnum = {
   emailVerified: 'emailVerified',
   isDeleted: 'isDeleted',
   endTime: 'endTime',
-  startTime: 'startTime'
+  startTime: 'startTime',
+  firmaWorkspaceId: 'firmaWorkspaceId',
+  firmaApiKey: 'firmaApiKey',
+  firmaApiKeyAt: 'firmaApiKeyAt'
 } as const
 
 export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]

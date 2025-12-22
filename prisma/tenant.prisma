@@ -32,6 +32,9 @@ model Tenant {
   endTime              String?                    @default("11:30 PM")
   startTime            String?                    @default("12:00 AM")
   address              Address?
+  firmaWorkspaceId      String?                    @unique
+  firmaApiKey           String?
+  firmaApiKeyAt         DateTime?
   customers            Customer[]
   customerViolations   CustomerViolation[]
   emailTokens          EmailVerification[]

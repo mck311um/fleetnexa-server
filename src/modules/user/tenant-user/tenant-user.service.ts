@@ -10,6 +10,7 @@ import { GeneratorService } from '../../../common/generator/generator.service.js
 import { PrismaService } from '../../../prisma/prisma.service.js';
 import { CreateTenantUserDto } from './dto/create-tenant-user.dto.js';
 import { Tenant } from '../../../generated/prisma/client.js';
+import { TenantUserRepository } from './tenant-user.repository.js';
 
 @Injectable()
 export class TenantUserService {
@@ -18,7 +19,22 @@ export class TenantUserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly generator: GeneratorService,
+    private readonly repo: TenantUserRepository,
   ) {}
+
+  async getTenantUsers(tenant: Tenant) {
+    try {
+      const users = await this.repo.getUsers(tenant.id);
+
+      return users;
+    } catch (error) {
+      this.logger.error('Error fetching tenant users', error, {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw error;
+    }
+  }
 
   async getCurrentUser(id: string, tenant: Tenant) {
     try {

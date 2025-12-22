@@ -16,6 +16,7 @@ import { FormatterService } from '../../common/formatter/formatter.service.js';
 import { PdfService } from '../../common/pdf/pdf.service.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { FirmaService } from '../../common/firma/firma.service.js';
+import { SendForSigningDto } from './dto/send-for-signing.dto.js';
 
 @Injectable()
 export class DocumentService {
@@ -255,18 +256,14 @@ export class DocumentService {
     }
   }
 
-  async sendAgreementForSignature(
-    bookingId: string,
-    tenant: Tenant,
-    user: User,
-  ) {
+  async sendAgreementForSignature(data: SendForSigningDto, tenant: Tenant) {
     try {
-      const res = await this.firma.createTemplate(bookingId);
+      const res = await this.firma.sendForSigning(data, tenant);
 
       return res;
     } catch (error) {
       this.logger.error(error, 'Failed to send agreement for signature', {
-        bookingId,
+        data,
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
       });

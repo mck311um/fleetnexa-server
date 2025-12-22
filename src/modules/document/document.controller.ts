@@ -1,7 +1,8 @@
-import { Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { DocumentService } from './document.service.js';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
 import type { AuthenticatedRequest } from '../../types/authenticated-request.js';
+import { SendForSigningDto } from './dto/send-for-signing.dto.js';
 
 @Controller('document')
 @UseGuards(AuthGuard)
@@ -17,6 +18,15 @@ export class DocumentController {
     return await this.service.generateInvoice(id, tenant, user);
   }
 
+  @Post('agreement/sign')
+  async sendAgreementForSignature(
+    @Req() req: AuthenticatedRequest,
+    @Body() data: SendForSigningDto,
+  ) {
+    const { tenant } = req.context;
+    return await this.service.sendAgreementForSignature(data, tenant);
+  }
+
   @Post('agreement/:id')
   async generateBookingAgreement(
     @Req() req: AuthenticatedRequest,
@@ -24,15 +34,5 @@ export class DocumentController {
   ) {
     const { tenant, user } = req.context;
     return await this.service.generateAgreement(id, tenant, user);
-  }
-
-  @Post('agreement/:id/signature')
-  async sendAgreementForSignature(
-    @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
-  ) {
-    const { tenant, user } = req.context;
-    console.log('Sending agreement for signature:', { id });
-    return await this.service.sendAgreementForSignature(id, tenant, user);
   }
 }

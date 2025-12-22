@@ -73,6 +73,9 @@ export type TenantMinAggregateOutputType = {
   isDeleted: boolean | null
   endTime: string | null
   startTime: string | null
+  firmaWorkspaceId: string | null
+  firmaApiKey: string | null
+  firmaApiKeyAt: Date | null
 }
 
 export type TenantMaxAggregateOutputType = {
@@ -108,6 +111,9 @@ export type TenantMaxAggregateOutputType = {
   isDeleted: boolean | null
   endTime: string | null
   startTime: string | null
+  firmaWorkspaceId: string | null
+  firmaApiKey: string | null
+  firmaApiKeyAt: Date | null
 }
 
 export type TenantCountAggregateOutputType = {
@@ -143,6 +149,9 @@ export type TenantCountAggregateOutputType = {
   isDeleted: number
   endTime: number
   startTime: number
+  firmaWorkspaceId: number
+  firmaApiKey: number
+  firmaApiKeyAt: number
   _all: number
 }
 
@@ -194,6 +203,9 @@ export type TenantMinAggregateInputType = {
   isDeleted?: true
   endTime?: true
   startTime?: true
+  firmaWorkspaceId?: true
+  firmaApiKey?: true
+  firmaApiKeyAt?: true
 }
 
 export type TenantMaxAggregateInputType = {
@@ -229,6 +241,9 @@ export type TenantMaxAggregateInputType = {
   isDeleted?: true
   endTime?: true
   startTime?: true
+  firmaWorkspaceId?: true
+  firmaApiKey?: true
+  firmaApiKeyAt?: true
 }
 
 export type TenantCountAggregateInputType = {
@@ -264,6 +279,9 @@ export type TenantCountAggregateInputType = {
   isDeleted?: true
   endTime?: true
   startTime?: true
+  firmaWorkspaceId?: true
+  firmaApiKey?: true
+  firmaApiKeyAt?: true
   _all?: true
 }
 
@@ -386,6 +404,9 @@ export type TenantGroupByOutputType = {
   isDeleted: boolean
   endTime: string | null
   startTime: string | null
+  firmaWorkspaceId: string | null
+  firmaApiKey: string | null
+  firmaApiKeyAt: Date | null
   _count: TenantCountAggregateOutputType | null
   _avg: TenantAvgAggregateOutputType | null
   _sum: TenantSumAggregateOutputType | null
@@ -444,6 +465,9 @@ export type TenantWhereInput = {
   isDeleted?: Prisma.BoolFilter<"Tenant"> | boolean
   endTime?: Prisma.StringNullableFilter<"Tenant"> | string | null
   startTime?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  firmaWorkspaceId?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  firmaApiKey?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  firmaApiKeyAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   customers?: Prisma.CustomerListRelationFilter
   customerViolations?: Prisma.CustomerViolationListRelationFilter
@@ -521,6 +545,9 @@ export type TenantOrderByWithRelationInput = {
   isDeleted?: Prisma.SortOrder
   endTime?: Prisma.SortOrderInput | Prisma.SortOrder
   startTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  firmaWorkspaceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  firmaApiKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  firmaApiKeyAt?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.AddressOrderByWithRelationInput
   customers?: Prisma.CustomerOrderByRelationAggregateInput
   customerViolations?: Prisma.CustomerViolationOrderByRelationAggregateInput
@@ -574,6 +601,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   cancellationPolicyId?: string
   latePolicyId?: string
   slug?: string
+  firmaWorkspaceId?: string
   AND?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   OR?: Prisma.TenantWhereInput[]
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
@@ -601,6 +629,8 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   isDeleted?: Prisma.BoolFilter<"Tenant"> | boolean
   endTime?: Prisma.StringNullableFilter<"Tenant"> | string | null
   startTime?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  firmaApiKey?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  firmaApiKeyAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   customers?: Prisma.CustomerListRelationFilter
   customerViolations?: Prisma.CustomerViolationListRelationFilter
@@ -643,7 +673,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   verificationRequest?: Prisma.XOR<Prisma.VerificationRequestNullableScalarRelationFilter, Prisma.VerificationRequestWhereInput> | null
   paymentMethods?: Prisma.PaymentMethodListRelationFilter
   paymentReceipts?: Prisma.PaymentReceiptListRelationFilter
-}, "id" | "tenantCode" | "email" | "number" | "whatsappNumber" | "cancellationPolicyId" | "latePolicyId" | "slug">
+}, "id" | "tenantCode" | "email" | "number" | "whatsappNumber" | "cancellationPolicyId" | "latePolicyId" | "slug" | "firmaWorkspaceId">
 
 export type TenantOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -678,6 +708,9 @@ export type TenantOrderByWithAggregationInput = {
   isDeleted?: Prisma.SortOrder
   endTime?: Prisma.SortOrderInput | Prisma.SortOrder
   startTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  firmaWorkspaceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  firmaApiKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  firmaApiKeyAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TenantCountOrderByAggregateInput
   _avg?: Prisma.TenantAvgOrderByAggregateInput
   _max?: Prisma.TenantMaxOrderByAggregateInput
@@ -721,6 +754,9 @@ export type TenantScalarWhereWithAggregatesInput = {
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Tenant"> | boolean
   endTime?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   startTime?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
+  firmaWorkspaceId?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
+  firmaApiKey?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
+  firmaApiKeyAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
 }
 
 export type TenantCreateInput = {
@@ -752,6 +788,9 @@ export type TenantCreateInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -829,6 +868,9 @@ export type TenantUncheckedCreateInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -898,6 +940,9 @@ export type TenantUpdateInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -975,6 +1020,9 @@ export type TenantUncheckedUpdateInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -1048,6 +1096,9 @@ export type TenantCreateManyInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
 }
 
 export type TenantUpdateManyMutationInput = {
@@ -1079,6 +1130,9 @@ export type TenantUpdateManyMutationInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type TenantUncheckedUpdateManyInput = {
@@ -1114,6 +1168,9 @@ export type TenantUncheckedUpdateManyInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type TenantListRelationFilter = {
@@ -1164,6 +1221,9 @@ export type TenantCountOrderByAggregateInput = {
   isDeleted?: Prisma.SortOrder
   endTime?: Prisma.SortOrder
   startTime?: Prisma.SortOrder
+  firmaWorkspaceId?: Prisma.SortOrder
+  firmaApiKey?: Prisma.SortOrder
+  firmaApiKeyAt?: Prisma.SortOrder
 }
 
 export type TenantAvgOrderByAggregateInput = {
@@ -1206,6 +1266,9 @@ export type TenantMaxOrderByAggregateInput = {
   isDeleted?: Prisma.SortOrder
   endTime?: Prisma.SortOrder
   startTime?: Prisma.SortOrder
+  firmaWorkspaceId?: Prisma.SortOrder
+  firmaApiKey?: Prisma.SortOrder
+  firmaApiKeyAt?: Prisma.SortOrder
 }
 
 export type TenantMinOrderByAggregateInput = {
@@ -1241,6 +1304,9 @@ export type TenantMinOrderByAggregateInput = {
   isDeleted?: Prisma.SortOrder
   endTime?: Prisma.SortOrder
   startTime?: Prisma.SortOrder
+  firmaWorkspaceId?: Prisma.SortOrder
+  firmaApiKey?: Prisma.SortOrder
+  firmaApiKeyAt?: Prisma.SortOrder
 }
 
 export type TenantSumOrderByAggregateInput = {
@@ -1994,6 +2060,9 @@ export type TenantCreateWithoutInvoiceSequenceInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -2069,6 +2138,9 @@ export type TenantUncheckedCreateWithoutInvoiceSequenceInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -2171,6 +2243,9 @@ export type TenantScalarWhereInput = {
   isDeleted?: Prisma.BoolFilter<"Tenant"> | boolean
   endTime?: Prisma.StringNullableFilter<"Tenant"> | string | null
   startTime?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  firmaWorkspaceId?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  firmaApiKey?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  firmaApiKeyAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
 }
 
 export type TenantCreateWithoutCustomersInput = {
@@ -2202,6 +2277,9 @@ export type TenantCreateWithoutCustomersInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
   emailTokens?: Prisma.EmailVerificationCreateNestedManyWithoutTenantInput
@@ -2278,6 +2356,9 @@ export type TenantUncheckedCreateWithoutCustomersInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
   emailTokens?: Prisma.EmailVerificationUncheckedCreateNestedManyWithoutTenantInput
@@ -2362,6 +2443,9 @@ export type TenantUpdateWithoutCustomersInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
   emailTokens?: Prisma.EmailVerificationUpdateManyWithoutTenantNestedInput
@@ -2438,6 +2522,9 @@ export type TenantUncheckedUpdateWithoutCustomersInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
   emailTokens?: Prisma.EmailVerificationUncheckedUpdateManyWithoutTenantNestedInput
@@ -2506,6 +2593,9 @@ export type TenantCreateWithoutCustomerViolationsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   emailTokens?: Prisma.EmailVerificationCreateNestedManyWithoutTenantInput
@@ -2582,6 +2672,9 @@ export type TenantUncheckedCreateWithoutCustomerViolationsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   emailTokens?: Prisma.EmailVerificationUncheckedCreateNestedManyWithoutTenantInput
@@ -2666,6 +2759,9 @@ export type TenantUpdateWithoutCustomerViolationsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   emailTokens?: Prisma.EmailVerificationUpdateManyWithoutTenantNestedInput
@@ -2742,6 +2838,9 @@ export type TenantUncheckedUpdateWithoutCustomerViolationsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   emailTokens?: Prisma.EmailVerificationUncheckedUpdateManyWithoutTenantNestedInput
@@ -2810,6 +2909,9 @@ export type TenantCreateWithoutAgreementsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -2886,6 +2988,9 @@ export type TenantUncheckedCreateWithoutAgreementsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -2970,6 +3075,9 @@ export type TenantUpdateWithoutAgreementsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -3046,6 +3154,9 @@ export type TenantUncheckedUpdateWithoutAgreementsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -3114,6 +3225,9 @@ export type TenantCreateWithoutInvoicesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -3190,6 +3304,9 @@ export type TenantUncheckedCreateWithoutInvoicesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -3274,6 +3391,9 @@ export type TenantUpdateWithoutInvoicesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -3350,6 +3470,9 @@ export type TenantUncheckedUpdateWithoutInvoicesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -3418,6 +3541,9 @@ export type TenantCreateWithoutPaymentReceiptsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -3494,6 +3620,9 @@ export type TenantUncheckedCreateWithoutPaymentReceiptsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -3578,6 +3707,9 @@ export type TenantUpdateWithoutPaymentReceiptsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -3654,6 +3786,9 @@ export type TenantUncheckedUpdateWithoutPaymentReceiptsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -3722,6 +3857,9 @@ export type TenantCreateWithoutMerchantInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -3798,6 +3936,9 @@ export type TenantUncheckedCreateWithoutMerchantInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -3882,6 +4023,9 @@ export type TenantUpdateWithoutMerchantInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -3958,6 +4102,9 @@ export type TenantUncheckedUpdateWithoutMerchantInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -4026,6 +4173,9 @@ export type TenantCreateWithoutCurrencyInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -4101,6 +4251,9 @@ export type TenantUncheckedCreateWithoutCurrencyInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -4196,6 +4349,9 @@ export type TenantCreateWithoutCurrencyRatesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -4272,6 +4428,9 @@ export type TenantUncheckedCreateWithoutCurrencyRatesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -4356,6 +4515,9 @@ export type TenantUpdateWithoutCurrencyRatesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -4432,6 +4594,9 @@ export type TenantUncheckedUpdateWithoutCurrencyRatesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -4500,6 +4665,9 @@ export type TenantCreateWithoutFormsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -4576,6 +4744,9 @@ export type TenantUncheckedCreateWithoutFormsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -4660,6 +4831,9 @@ export type TenantUpdateWithoutFormsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -4736,6 +4910,9 @@ export type TenantUncheckedUpdateWithoutFormsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -4804,6 +4981,9 @@ export type TenantCreateWithoutRentalActivityInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -4880,6 +5060,9 @@ export type TenantUncheckedCreateWithoutRentalActivityInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -4964,6 +5147,9 @@ export type TenantUpdateWithoutRentalActivityInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -5040,6 +5226,9 @@ export type TenantUncheckedUpdateWithoutRentalActivityInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -5108,6 +5297,9 @@ export type TenantCreateWithoutNotificationsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -5184,6 +5376,9 @@ export type TenantUncheckedCreateWithoutNotificationsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -5268,6 +5463,9 @@ export type TenantUpdateWithoutNotificationsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -5344,6 +5542,9 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -5412,6 +5613,9 @@ export type TenantCreateWithoutRentalsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -5488,6 +5692,9 @@ export type TenantUncheckedCreateWithoutRentalsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -5572,6 +5779,9 @@ export type TenantUpdateWithoutRentalsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -5648,6 +5858,9 @@ export type TenantUncheckedUpdateWithoutRentalsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -5716,6 +5929,9 @@ export type TenantCreateWithoutChargesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -5792,6 +6008,9 @@ export type TenantUncheckedCreateWithoutChargesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -5876,6 +6095,9 @@ export type TenantUpdateWithoutChargesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -5952,6 +6174,9 @@ export type TenantUncheckedUpdateWithoutChargesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -6020,6 +6245,9 @@ export type TenantCreateWithoutWeeklyStatsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -6096,6 +6324,9 @@ export type TenantUncheckedCreateWithoutWeeklyStatsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -6180,6 +6411,9 @@ export type TenantUpdateWithoutWeeklyStatsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -6256,6 +6490,9 @@ export type TenantUncheckedUpdateWithoutWeeklyStatsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -6324,6 +6561,9 @@ export type TenantCreateWithoutYearlyStatsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -6400,6 +6640,9 @@ export type TenantUncheckedCreateWithoutYearlyStatsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -6484,6 +6727,9 @@ export type TenantUpdateWithoutYearlyStatsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -6560,6 +6806,9 @@ export type TenantUncheckedUpdateWithoutYearlyStatsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -6628,6 +6877,9 @@ export type TenantCreateWithoutMonthlyStatsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -6704,6 +6956,9 @@ export type TenantUncheckedCreateWithoutMonthlyStatsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -6788,6 +7043,9 @@ export type TenantUpdateWithoutMonthlyStatsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -6864,6 +7122,9 @@ export type TenantUncheckedUpdateWithoutMonthlyStatsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -6932,6 +7193,9 @@ export type TenantCreateWithoutMonthlyRentalStatsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -7008,6 +7272,9 @@ export type TenantUncheckedCreateWithoutMonthlyRentalStatsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -7092,6 +7359,9 @@ export type TenantUpdateWithoutMonthlyRentalStatsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -7168,6 +7438,9 @@ export type TenantUncheckedUpdateWithoutMonthlyRentalStatsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -7236,6 +7509,9 @@ export type TenantCreateWithoutRatingsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -7312,6 +7588,9 @@ export type TenantUncheckedCreateWithoutRatingsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -7396,6 +7675,9 @@ export type TenantUpdateWithoutRatingsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -7472,6 +7754,9 @@ export type TenantUncheckedUpdateWithoutRatingsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -7540,6 +7825,9 @@ export type TenantCreateWithoutEmailTokensInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -7616,6 +7904,9 @@ export type TenantUncheckedCreateWithoutEmailTokensInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -7700,6 +7991,9 @@ export type TenantUpdateWithoutEmailTokensInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -7776,6 +8070,9 @@ export type TenantUncheckedUpdateWithoutEmailTokensInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -7844,6 +8141,9 @@ export type TenantCreateWithoutPaymentMethodsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -7920,6 +8220,9 @@ export type TenantUncheckedCreateWithoutPaymentMethodsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -8009,6 +8312,9 @@ export type TenantCreateWithoutAddressInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
   emailTokens?: Prisma.EmailVerificationCreateNestedManyWithoutTenantInput
@@ -8085,6 +8391,9 @@ export type TenantUncheckedCreateWithoutAddressInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
   emailTokens?: Prisma.EmailVerificationUncheckedCreateNestedManyWithoutTenantInput
@@ -8169,6 +8478,9 @@ export type TenantUpdateWithoutAddressInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
   emailTokens?: Prisma.EmailVerificationUpdateManyWithoutTenantNestedInput
@@ -8245,6 +8557,9 @@ export type TenantUncheckedUpdateWithoutAddressInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
   emailTokens?: Prisma.EmailVerificationUncheckedUpdateManyWithoutTenantNestedInput
@@ -8313,6 +8628,9 @@ export type TenantCreateWithoutTenantLocationsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -8389,6 +8707,9 @@ export type TenantUncheckedCreateWithoutTenantLocationsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -8473,6 +8794,9 @@ export type TenantUpdateWithoutTenantLocationsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -8549,6 +8873,9 @@ export type TenantUncheckedUpdateWithoutTenantLocationsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -8617,6 +8944,9 @@ export type TenantCreateWithoutInsuranceInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -8693,6 +9023,9 @@ export type TenantUncheckedCreateWithoutInsuranceInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -8777,6 +9110,9 @@ export type TenantUpdateWithoutInsuranceInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -8853,6 +9189,9 @@ export type TenantUncheckedUpdateWithoutInsuranceInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -8921,6 +9260,9 @@ export type TenantCreateWithoutEquipmentInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -8997,6 +9339,9 @@ export type TenantUncheckedCreateWithoutEquipmentInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -9081,6 +9426,9 @@ export type TenantUpdateWithoutEquipmentInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -9157,6 +9505,9 @@ export type TenantUncheckedUpdateWithoutEquipmentInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -9225,6 +9576,9 @@ export type TenantCreateWithoutServicesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -9301,6 +9655,9 @@ export type TenantUncheckedCreateWithoutServicesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -9385,6 +9742,9 @@ export type TenantUpdateWithoutServicesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -9461,6 +9821,9 @@ export type TenantUncheckedUpdateWithoutServicesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -9529,6 +9892,9 @@ export type TenantCreateWithoutSubscriptionInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -9605,6 +9971,9 @@ export type TenantUncheckedCreateWithoutSubscriptionInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -9689,6 +10058,9 @@ export type TenantUpdateWithoutSubscriptionInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -9765,6 +10137,9 @@ export type TenantUncheckedUpdateWithoutSubscriptionInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -9833,6 +10208,9 @@ export type TenantCreateWithoutContactsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -9909,6 +10287,9 @@ export type TenantUncheckedCreateWithoutContactsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -9993,6 +10374,9 @@ export type TenantUpdateWithoutContactsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -10069,6 +10453,9 @@ export type TenantUncheckedUpdateWithoutContactsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -10137,6 +10524,9 @@ export type TenantCreateWithoutRemindersInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -10213,6 +10603,9 @@ export type TenantUncheckedCreateWithoutRemindersInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -10297,6 +10690,9 @@ export type TenantUpdateWithoutRemindersInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -10373,6 +10769,9 @@ export type TenantUncheckedUpdateWithoutRemindersInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -10441,6 +10840,9 @@ export type TenantCreateWithoutCancellationPolicyInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -10516,6 +10918,9 @@ export type TenantUncheckedCreateWithoutCancellationPolicyInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -10601,6 +11006,9 @@ export type TenantUpdateWithoutCancellationPolicyInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -10676,6 +11084,9 @@ export type TenantUncheckedUpdateWithoutCancellationPolicyInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -10745,6 +11156,9 @@ export type TenantCreateWithoutLatePolicyInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -10820,6 +11234,9 @@ export type TenantUncheckedCreateWithoutLatePolicyInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -10905,6 +11322,9 @@ export type TenantUpdateWithoutLatePolicyInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -10980,6 +11400,9 @@ export type TenantUncheckedUpdateWithoutLatePolicyInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -11049,6 +11472,9 @@ export type TenantCreateWithoutViolationsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -11125,6 +11551,9 @@ export type TenantUncheckedCreateWithoutViolationsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -11209,6 +11638,9 @@ export type TenantUpdateWithoutViolationsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -11285,6 +11717,9 @@ export type TenantUncheckedUpdateWithoutViolationsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -11353,6 +11788,9 @@ export type TenantCreateWithoutVendorsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -11429,6 +11867,9 @@ export type TenantUncheckedCreateWithoutVendorsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -11513,6 +11954,9 @@ export type TenantUpdateWithoutVendorsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -11589,6 +12033,9 @@ export type TenantUncheckedUpdateWithoutVendorsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -11657,6 +12104,9 @@ export type TenantCreateWithoutVerificationRequestInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -11733,6 +12183,9 @@ export type TenantUncheckedCreateWithoutVerificationRequestInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -11817,6 +12270,9 @@ export type TenantUpdateWithoutVerificationRequestInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -11893,6 +12349,9 @@ export type TenantUncheckedUpdateWithoutVerificationRequestInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -11961,6 +12420,9 @@ export type TenantCreateWithoutTransactionsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -12037,6 +12499,9 @@ export type TenantUncheckedCreateWithoutTransactionsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -12121,6 +12586,9 @@ export type TenantUpdateWithoutTransactionsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -12197,6 +12665,9 @@ export type TenantUncheckedUpdateWithoutTransactionsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -12265,6 +12736,9 @@ export type TenantCreateWithoutPaymentsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -12341,6 +12815,9 @@ export type TenantUncheckedCreateWithoutPaymentsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -12425,6 +12902,9 @@ export type TenantUpdateWithoutPaymentsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -12501,6 +12981,9 @@ export type TenantUncheckedUpdateWithoutPaymentsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -12569,6 +13052,9 @@ export type TenantCreateWithoutRefundsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -12645,6 +13131,9 @@ export type TenantUncheckedCreateWithoutRefundsInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -12729,6 +13218,9 @@ export type TenantUpdateWithoutRefundsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -12805,6 +13297,9 @@ export type TenantUncheckedUpdateWithoutRefundsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -12873,6 +13368,9 @@ export type TenantCreateWithoutExpensesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -12949,6 +13447,9 @@ export type TenantUncheckedCreateWithoutExpensesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -13033,6 +13534,9 @@ export type TenantUpdateWithoutExpensesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -13109,6 +13613,9 @@ export type TenantUncheckedUpdateWithoutExpensesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -13177,6 +13684,9 @@ export type TenantCreateWithoutUsersInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -13253,6 +13763,9 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -13337,6 +13850,9 @@ export type TenantUpdateWithoutUsersInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -13413,6 +13929,9 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -13481,6 +14000,9 @@ export type TenantCreateWithoutUserRolesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -13557,6 +14079,9 @@ export type TenantUncheckedCreateWithoutUserRolesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -13641,6 +14166,9 @@ export type TenantUpdateWithoutUserRolesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -13717,6 +14245,9 @@ export type TenantUncheckedUpdateWithoutUserRolesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -13785,6 +14316,9 @@ export type TenantCreateWithoutVehiclesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -13861,6 +14395,9 @@ export type TenantUncheckedCreateWithoutVehiclesInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -13945,6 +14482,9 @@ export type TenantUpdateWithoutVehiclesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -14021,6 +14561,9 @@ export type TenantUncheckedUpdateWithoutVehiclesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -14089,6 +14632,9 @@ export type TenantCreateWithoutMaintenanceInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
@@ -14165,6 +14711,9 @@ export type TenantUncheckedCreateWithoutMaintenanceInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
   address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
   customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
@@ -14249,6 +14798,9 @@ export type TenantUpdateWithoutMaintenanceInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -14325,6 +14877,9 @@ export type TenantUncheckedUpdateWithoutMaintenanceInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -14396,6 +14951,9 @@ export type TenantCreateManyInvoiceSequenceInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
 }
 
 export type TenantUpdateWithoutInvoiceSequenceInput = {
@@ -14427,6 +14985,9 @@ export type TenantUpdateWithoutInvoiceSequenceInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -14502,6 +15063,9 @@ export type TenantUncheckedUpdateWithoutInvoiceSequenceInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -14574,6 +15138,9 @@ export type TenantUncheckedUpdateManyWithoutInvoiceSequenceInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type TenantCreateManyCurrencyInput = {
@@ -14608,6 +15175,9 @@ export type TenantCreateManyCurrencyInput = {
   isDeleted?: boolean
   endTime?: string | null
   startTime?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
 }
 
 export type TenantUpdateWithoutCurrencyInput = {
@@ -14639,6 +15209,9 @@ export type TenantUpdateWithoutCurrencyInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -14714,6 +15287,9 @@ export type TenantUncheckedUpdateWithoutCurrencyInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -14786,6 +15362,9 @@ export type TenantUncheckedUpdateManyWithoutCurrencyInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type TenantUpdateWithoutPaymentMethodsInput = {
@@ -14817,6 +15396,9 @@ export type TenantUpdateWithoutPaymentMethodsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
@@ -14893,6 +15475,9 @@ export type TenantUncheckedUpdateWithoutPaymentMethodsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
   customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
@@ -14965,6 +15550,9 @@ export type TenantUncheckedUpdateManyWithoutPaymentMethodsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -15328,6 +15916,9 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   isDeleted?: boolean
   endTime?: boolean
   startTime?: boolean
+  firmaWorkspaceId?: boolean
+  firmaApiKey?: boolean
+  firmaApiKeyAt?: boolean
   address?: boolean | Prisma.Tenant$addressArgs<ExtArgs>
   customers?: boolean | Prisma.Tenant$customersArgs<ExtArgs>
   customerViolations?: boolean | Prisma.Tenant$customerViolationsArgs<ExtArgs>
@@ -15406,6 +15997,9 @@ export type TenantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   isDeleted?: boolean
   endTime?: boolean
   startTime?: boolean
+  firmaWorkspaceId?: boolean
+  firmaApiKey?: boolean
+  firmaApiKeyAt?: boolean
   cancellationPolicy?: boolean | Prisma.Tenant$cancellationPolicyArgs<ExtArgs>
   currency?: boolean | Prisma.Tenant$currencyArgs<ExtArgs>
   invoiceSequence?: boolean | Prisma.Tenant$invoiceSequenceArgs<ExtArgs>
@@ -15445,6 +16039,9 @@ export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   isDeleted?: boolean
   endTime?: boolean
   startTime?: boolean
+  firmaWorkspaceId?: boolean
+  firmaApiKey?: boolean
+  firmaApiKeyAt?: boolean
   cancellationPolicy?: boolean | Prisma.Tenant$cancellationPolicyArgs<ExtArgs>
   currency?: boolean | Prisma.Tenant$currencyArgs<ExtArgs>
   invoiceSequence?: boolean | Prisma.Tenant$invoiceSequenceArgs<ExtArgs>
@@ -15484,9 +16081,12 @@ export type TenantSelectScalar = {
   isDeleted?: boolean
   endTime?: boolean
   startTime?: boolean
+  firmaWorkspaceId?: boolean
+  firmaApiKey?: boolean
+  firmaApiKeyAt?: boolean
 }
 
-export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantCode" | "tenantName" | "email" | "number" | "whatsappNumber" | "whatsappNotifications" | "emailNotifications" | "currencyId" | "createdAt" | "updatedAt" | "logo" | "setupCompleted" | "financialYearStart" | "invoiceSequenceId" | "invoiceFootNotes" | "storefrontEnabled" | "subscriptionId" | "securityDeposit" | "rating" | "description" | "cancellationPolicyId" | "latePolicyId" | "additionalDriverFee" | "daysInMonth" | "slug" | "merchantId" | "businessVerified" | "emailVerified" | "isDeleted" | "endTime" | "startTime", ExtArgs["result"]["tenant"]>
+export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantCode" | "tenantName" | "email" | "number" | "whatsappNumber" | "whatsappNotifications" | "emailNotifications" | "currencyId" | "createdAt" | "updatedAt" | "logo" | "setupCompleted" | "financialYearStart" | "invoiceSequenceId" | "invoiceFootNotes" | "storefrontEnabled" | "subscriptionId" | "securityDeposit" | "rating" | "description" | "cancellationPolicyId" | "latePolicyId" | "additionalDriverFee" | "daysInMonth" | "slug" | "merchantId" | "businessVerified" | "emailVerified" | "isDeleted" | "endTime" | "startTime" | "firmaWorkspaceId" | "firmaApiKey" | "firmaApiKeyAt", ExtArgs["result"]["tenant"]>
 export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   address?: boolean | Prisma.Tenant$addressArgs<ExtArgs>
   customers?: boolean | Prisma.Tenant$customersArgs<ExtArgs>
@@ -15624,6 +16224,9 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     isDeleted: boolean
     endTime: string | null
     startTime: string | null
+    firmaWorkspaceId: string | null
+    firmaApiKey: string | null
+    firmaApiKeyAt: Date | null
   }, ExtArgs["result"]["tenant"]>
   composites: {}
 }
@@ -16121,6 +16724,9 @@ export interface TenantFieldRefs {
   readonly isDeleted: Prisma.FieldRef<"Tenant", 'Boolean'>
   readonly endTime: Prisma.FieldRef<"Tenant", 'String'>
   readonly startTime: Prisma.FieldRef<"Tenant", 'String'>
+  readonly firmaWorkspaceId: Prisma.FieldRef<"Tenant", 'String'>
+  readonly firmaApiKey: Prisma.FieldRef<"Tenant", 'String'>
+  readonly firmaApiKeyAt: Prisma.FieldRef<"Tenant", 'DateTime'>
 }
     
 

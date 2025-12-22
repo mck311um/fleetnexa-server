@@ -56,6 +56,7 @@ export class TenantService {
         tenant,
         user,
       );
+      const users = await this.userService.getTenantUsers(tenant);
 
       const data = {
         tenant,
@@ -67,6 +68,7 @@ export class TenantService {
         customers,
         activity,
         currencyRates,
+        users,
       };
 
       return data;

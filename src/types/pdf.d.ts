@@ -188,3 +188,24 @@ interface PaymentReceiptData {
 }
 
 type DocumentType = 'invoice' | 'agreement' | 'payment_receipt';
+
+interface CreateTemplateResult {
+  id: string;
+  name: string;
+  description: string;
+  document_url: string;
+}
+
+interface CreateDocumentResponse {
+  id: string;
+  name: string;
+  description: string;
+  document_url: string;
+  document_url_expires_at: string;
+  date_created: string;
+  date_changed: string;
+}
+
+interface SendingRequestResponse {
+  id: string;
+}
