@@ -39,7 +39,7 @@ export class TenantNotificationController {
     @Req() req: AuthenticatedRequest,
     @Param('id') id: string,
   ) {
-    const { tenant } = req.context;
-    return this.service.deleteNotification(id, tenant);
+    const { tenant, user } = req.context;
+    return this.service.deleteNotification(id, tenant, user);
   }
 }

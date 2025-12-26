@@ -138,6 +138,13 @@ export class TenantNotificationService {
         },
         update: {},
       });
+
+      const allNotifications = await this.getTenantNotifications(tenant, user);
+
+      return {
+        message: 'Notification marked as read successfully',
+        notifications: allNotifications,
+      };
     } catch (error) {
       this.logger.error('Failed to mark notification as read', error);
       throw error;
@@ -167,13 +174,20 @@ export class TenantNotificationService {
       );
 
       await Promise.all(readStatusPromises);
+
+      const allNotifications = await this.getTenantNotifications(tenant, user);
+
+      return {
+        message: 'All notifications marked as read successfully',
+        notifications: allNotifications,
+      };
     } catch (error) {
       this.logger.error('Failed to mark all notifications as read', error);
       throw error;
     }
   }
 
-  async deleteNotification(notificationId: string, tenant: Tenant) {
+  async deleteNotification(notificationId: string, tenant: Tenant, user: User) {
     try {
       const notification = await this.prisma.tenantNotification.findUnique({
         where: { id: notificationId, tenantId: tenant.id },
@@ -188,9 +202,16 @@ export class TenantNotificationService {
       }
 
       await this.prisma.tenantNotification.update({
-        where: { id: notificationId },
+        where: { id: notificationId, tenantId: tenant.id },
         data: { isDeleted: true },
       });
+
+      const allNotifications = await this.getTenantNotifications(tenant, user);
+
+      return {
+        message: 'Notification deleted successfully',
+        notifications: allNotifications,
+      };
     } catch (error) {
       this.logger.error('Failed to delete notification', error);
       throw error;
