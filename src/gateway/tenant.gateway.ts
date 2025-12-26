@@ -1,4 +1,4 @@
-import { Global } from '@nestjs/common';
+import { Global, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
   WebSocketGateway,
@@ -13,6 +13,7 @@ import { Server, Socket } from 'socket.io';
   cors: { origin: '*' },
 })
 export class TenantGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  private readonly logger = new Logger(TenantGateway.name);
   constructor(private readonly jwt: JwtService) {}
 
   @WebSocketServer()
@@ -30,16 +31,14 @@ export class TenantGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const decoded: any = this.jwt.verify(token);
       socket.data.user = decoded.user;
       socket.join(decoded.user.tenantId);
-      console.log('⚡️ Socket connected:', decoded.user);
     } catch (error) {
-      console.log('❌ Invalid socket token');
+      this.logger.error('❌ Invalid socket token');
       socket.disconnect();
     }
   }
 
   handleDisconnect(socket: Socket) {
-    const user = socket.data.user;
-    console.log('🔌 Socket disconnected:', user?.id);
+    this.logger.log(`🔌 Client disconnected: ${socket.id}`);
   }
 
   sendTenantNotification(tenantId: string, data: any) {
