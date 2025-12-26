@@ -1,6 +1,7 @@
 import { Global, Injectable, Logger } from '@nestjs/common';
 import slugify from 'slugify';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import crypto from 'crypto';
 
 @Global()
 @Injectable()
@@ -234,5 +235,9 @@ export class GeneratorService {
   async generateVerificationCode(): Promise<string> {
     const code = Math.floor(100000 + Math.random() * 900000);
     return code.toString();
+  }
+
+  async generateTempPassword(length = 12) {
+    return crypto.randomBytes(length).toString('base64').slice(0, length);
   }
 }

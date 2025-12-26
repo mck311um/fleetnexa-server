@@ -11,6 +11,7 @@ import {
   BookingDeclinedEmailDto,
   BookingDocumentsEmailDto,
   NewBookingEmailDto,
+  NewUserEmailDto,
   PasswordResetEmailDto,
 } from '../../types/email.js';
 import { SendDocumentsDto } from 'src/modules/booking/tenant-booking/dto/send-documents.dto.js';
@@ -422,6 +423,92 @@ export class EmailService {
       await this.notify.sendEmail(payload);
     } catch (error) {
       this.logger.error('Error sending booking documents email', error);
+      throw error;
+    }
+  }
+
+  async sendNewUserWelcomeEmail(
+    userId: string,
+    password: string,
+    tenant: Tenant,
+  ) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId, tenantId: tenant.id },
+      });
+
+      if (!user) {
+        this.logger.warn(
+          `User with ID ${userId} not found for tenant ${tenant.id}`,
+        );
+        throw new NotFoundException('User not found');
+      }
+
+      const templateData: NewUserEmailDto = {
+        tenantName: tenant?.tenantName,
+        name: `${user?.firstName} ${user?.lastName}`,
+        username: user?.username,
+        password,
+      };
+
+      const payload: SendEmailDto = {
+        recipients: [user.email || ''],
+        cc: [],
+        templateName: 'FleetNexaNewUser',
+        templateData,
+        sender: 'no-reply@fleetnexa.com',
+        senderName: 'FleetNexa',
+      };
+
+      await this.notify.sendEmail(payload);
+    } catch (error) {
+      this.logger.error(error, 'Error sending new user welcome email', {
+        userId,
+        tenantId: tenant.id,
+      });
+      throw error;
+    }
+  }
+
+  async sendUserPasswordResetNotification(
+    userId: string,
+    password: string,
+    tenant: Tenant,
+  ) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId, tenantId: tenant.id },
+      });
+
+      if (!user) {
+        this.logger.warn(
+          `User with ID ${userId} not found for tenant ${tenant.id}`,
+        );
+        throw new NotFoundException('User not found');
+      }
+
+      const templateData: NewUserEmailDto = {
+        tenantName: tenant?.tenantName,
+        name: `${user?.firstName} ${user?.lastName}`,
+        username: user?.username,
+        password,
+      };
+
+      const payload: SendEmailDto = {
+        recipients: [user.email || ''],
+        cc: [],
+        templateName: 'FleetNexaUserPasswordReset',
+        templateData,
+        sender: 'no-reply@fleetnexa.com',
+        senderName: 'FleetNexa',
+      };
+
+      await this.notify.sendEmail(payload);
+    } catch (error) {
+      this.logger.error(error, 'Error sending new user welcome email', {
+        userId,
+        tenantId: tenant.id,
+      });
       throw error;
     }
   }

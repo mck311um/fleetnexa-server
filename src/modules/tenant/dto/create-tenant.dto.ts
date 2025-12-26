@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsObject, IsString } from 'class-validator';
-import { CreateTenantUserDto } from '../../user/tenant-user/dto/create-tenant-user.dto.js';
+import { TenantUserDto } from '../../user/tenant-user/dto/tenant-user.dto.js';
 
 export class CreateTenantDto {
   @IsString()
@@ -20,5 +20,5 @@ export class CreateTenantDto {
 
   @IsObject()
   @IsNotEmpty()
-  user: CreateTenantUserDto;
+  user: TenantUserDto;
 }

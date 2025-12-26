@@ -31,8 +31,6 @@ export type UserMinAggregateOutputType = {
   lastName: string | null
   username: string | null
   tenantId: string | null
-  createdAt: Date | null
-  updatedAt: Date | null
   roleId: string | null
   lastChanged: Date | null
   email: string | null
@@ -41,6 +39,9 @@ export type UserMinAggregateOutputType = {
   deletedAt: Date | null
   isDeleted: boolean | null
   requirePasswordChange: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
+  updatedBy: string | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -50,8 +51,6 @@ export type UserMaxAggregateOutputType = {
   lastName: string | null
   username: string | null
   tenantId: string | null
-  createdAt: Date | null
-  updatedAt: Date | null
   roleId: string | null
   lastChanged: Date | null
   email: string | null
@@ -60,6 +59,9 @@ export type UserMaxAggregateOutputType = {
   deletedAt: Date | null
   isDeleted: boolean | null
   requirePasswordChange: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
+  updatedBy: string | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -69,8 +71,6 @@ export type UserCountAggregateOutputType = {
   lastName: number
   username: number
   tenantId: number
-  createdAt: number
-  updatedAt: number
   roleId: number
   lastChanged: number
   email: number
@@ -79,6 +79,9 @@ export type UserCountAggregateOutputType = {
   deletedAt: number
   isDeleted: number
   requirePasswordChange: number
+  createdAt: number
+  updatedAt: number
+  updatedBy: number
   _all: number
 }
 
@@ -90,8 +93,6 @@ export type UserMinAggregateInputType = {
   lastName?: true
   username?: true
   tenantId?: true
-  createdAt?: true
-  updatedAt?: true
   roleId?: true
   lastChanged?: true
   email?: true
@@ -100,6 +101,9 @@ export type UserMinAggregateInputType = {
   deletedAt?: true
   isDeleted?: true
   requirePasswordChange?: true
+  createdAt?: true
+  updatedAt?: true
+  updatedBy?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -109,8 +113,6 @@ export type UserMaxAggregateInputType = {
   lastName?: true
   username?: true
   tenantId?: true
-  createdAt?: true
-  updatedAt?: true
   roleId?: true
   lastChanged?: true
   email?: true
@@ -119,6 +121,9 @@ export type UserMaxAggregateInputType = {
   deletedAt?: true
   isDeleted?: true
   requirePasswordChange?: true
+  createdAt?: true
+  updatedAt?: true
+  updatedBy?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -128,8 +133,6 @@ export type UserCountAggregateInputType = {
   lastName?: true
   username?: true
   tenantId?: true
-  createdAt?: true
-  updatedAt?: true
   roleId?: true
   lastChanged?: true
   email?: true
@@ -138,6 +141,9 @@ export type UserCountAggregateInputType = {
   deletedAt?: true
   isDeleted?: true
   requirePasswordChange?: true
+  createdAt?: true
+  updatedAt?: true
+  updatedBy?: true
   _all?: true
 }
 
@@ -219,10 +225,8 @@ export type UserGroupByOutputType = {
   firstName: string
   lastName: string
   username: string
-  tenantId: string | null
-  createdAt: Date
-  updatedAt: Date | null
-  roleId: string | null
+  tenantId: string
+  roleId: string
   lastChanged: Date | null
   email: string | null
   profilePicture: string
@@ -230,6 +234,9 @@ export type UserGroupByOutputType = {
   deletedAt: Date | null
   isDeleted: boolean
   requirePasswordChange: boolean
+  createdAt: Date
+  updatedAt: Date | null
+  updatedBy: string | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -259,10 +266,8 @@ export type UserWhereInput = {
   firstName?: Prisma.StringFilter<"User"> | string
   lastName?: Prisma.StringFilter<"User"> | string
   username?: Prisma.StringFilter<"User"> | string
-  tenantId?: Prisma.StringNullableFilter<"User"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  updatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  roleId?: Prisma.StringNullableFilter<"User"> | string | null
+  tenantId?: Prisma.StringFilter<"User"> | string
+  roleId?: Prisma.StringFilter<"User"> | string
   lastChanged?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   email?: Prisma.StringNullableFilter<"User"> | string | null
   profilePicture?: Prisma.StringFilter<"User"> | string
@@ -270,6 +275,9 @@ export type UserWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   isDeleted?: Prisma.BoolFilter<"User"> | boolean
   requirePasswordChange?: Prisma.BoolFilter<"User"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  updatedBy?: Prisma.StringNullableFilter<"User"> | string | null
   expenses?: Prisma.ExpenseListRelationFilter
   notificationReadStatuses?: Prisma.NotificationReadStatusListRelationFilter
   rentals?: Prisma.RentalListRelationFilter
@@ -285,10 +293,8 @@ export type UserOrderByWithRelationInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  tenantId?: Prisma.SortOrderInput | Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  roleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
+  roleId?: Prisma.SortOrder
   lastChanged?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   profilePicture?: Prisma.SortOrder
@@ -296,6 +302,9 @@ export type UserOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   requirePasswordChange?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   expenses?: Prisma.ExpenseOrderByRelationAggregateInput
   notificationReadStatuses?: Prisma.NotificationReadStatusOrderByRelationAggregateInput
   rentals?: Prisma.RentalOrderByRelationAggregateInput
@@ -316,16 +325,17 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringFilter<"User"> | string
   firstName?: Prisma.StringFilter<"User"> | string
   lastName?: Prisma.StringFilter<"User"> | string
-  tenantId?: Prisma.StringNullableFilter<"User"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  updatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  roleId?: Prisma.StringNullableFilter<"User"> | string | null
+  tenantId?: Prisma.StringFilter<"User"> | string
+  roleId?: Prisma.StringFilter<"User"> | string
   lastChanged?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   profilePicture?: Prisma.StringFilter<"User"> | string
   show?: Prisma.BoolFilter<"User"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   isDeleted?: Prisma.BoolFilter<"User"> | boolean
   requirePasswordChange?: Prisma.BoolFilter<"User"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  updatedBy?: Prisma.StringNullableFilter<"User"> | string | null
   expenses?: Prisma.ExpenseListRelationFilter
   notificationReadStatuses?: Prisma.NotificationReadStatusListRelationFilter
   rentals?: Prisma.RentalListRelationFilter
@@ -341,10 +351,8 @@ export type UserOrderByWithAggregationInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  tenantId?: Prisma.SortOrderInput | Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  roleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
+  roleId?: Prisma.SortOrder
   lastChanged?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   profilePicture?: Prisma.SortOrder
@@ -352,6 +360,9 @@ export type UserOrderByWithAggregationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   requirePasswordChange?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -366,10 +377,8 @@ export type UserScalarWhereWithAggregatesInput = {
   firstName?: Prisma.StringWithAggregatesFilter<"User"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"User"> | string
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
-  tenantId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
-  updatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-  roleId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  tenantId?: Prisma.StringWithAggregatesFilter<"User"> | string
+  roleId?: Prisma.StringWithAggregatesFilter<"User"> | string
   lastChanged?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   profilePicture?: Prisma.StringWithAggregatesFilter<"User"> | string
@@ -377,6 +386,9 @@ export type UserScalarWhereWithAggregatesInput = {
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   isDeleted?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   requirePasswordChange?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  updatedBy?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
@@ -385,8 +397,6 @@ export type UserCreateInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -394,6 +404,9 @@ export type UserCreateInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
@@ -409,10 +422,8 @@ export type UserUncheckedCreateInput = {
   firstName: string
   lastName: string
   username: string
-  tenantId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
-  roleId?: string | null
+  tenantId: string
+  roleId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -420,6 +431,9 @@ export type UserUncheckedCreateInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
@@ -433,8 +447,6 @@ export type UserUpdateInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -442,6 +454,9 @@ export type UserUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
@@ -457,10 +472,8 @@ export type UserUncheckedUpdateInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -468,6 +481,9 @@ export type UserUncheckedUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
@@ -481,10 +497,8 @@ export type UserCreateManyInput = {
   firstName: string
   lastName: string
   username: string
-  tenantId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
-  roleId?: string | null
+  tenantId: string
+  roleId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -492,6 +506,9 @@ export type UserCreateManyInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -500,8 +517,6 @@ export type UserUpdateManyMutationInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -509,6 +524,9 @@ export type UserUpdateManyMutationInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -517,10 +535,8 @@ export type UserUncheckedUpdateManyInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -528,6 +544,9 @@ export type UserUncheckedUpdateManyInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserScalarRelationFilter = {
@@ -562,8 +581,6 @@ export type UserCountOrderByAggregateInput = {
   lastName?: Prisma.SortOrder
   username?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
   lastChanged?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -572,6 +589,9 @@ export type UserCountOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   requirePasswordChange?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  updatedBy?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -581,8 +601,6 @@ export type UserMaxOrderByAggregateInput = {
   lastName?: Prisma.SortOrder
   username?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
   lastChanged?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -591,6 +609,9 @@ export type UserMaxOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   requirePasswordChange?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  updatedBy?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -600,8 +621,6 @@ export type UserMinOrderByAggregateInput = {
   lastName?: Prisma.SortOrder
   username?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
   lastChanged?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -610,6 +629,9 @@ export type UserMinOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   requirePasswordChange?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  updatedBy?: Prisma.SortOrder
 }
 
 export type UserCreateNestedOneWithoutNotificationReadStatusesInput = {
@@ -778,8 +800,6 @@ export type UserCreateWithoutNotificationReadStatusesInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -787,6 +807,9 @@ export type UserCreateWithoutNotificationReadStatusesInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
@@ -801,10 +824,8 @@ export type UserUncheckedCreateWithoutNotificationReadStatusesInput = {
   firstName: string
   lastName: string
   username: string
-  tenantId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
-  roleId?: string | null
+  tenantId: string
+  roleId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -812,6 +833,9 @@ export type UserUncheckedCreateWithoutNotificationReadStatusesInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
@@ -840,8 +864,6 @@ export type UserUpdateWithoutNotificationReadStatusesInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -849,6 +871,9 @@ export type UserUpdateWithoutNotificationReadStatusesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
@@ -863,10 +888,8 @@ export type UserUncheckedUpdateWithoutNotificationReadStatusesInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -874,6 +897,9 @@ export type UserUncheckedUpdateWithoutNotificationReadStatusesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
@@ -886,8 +912,6 @@ export type UserCreateWithoutRentalsInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -895,6 +919,9 @@ export type UserCreateWithoutRentalsInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
@@ -909,10 +936,8 @@ export type UserUncheckedCreateWithoutRentalsInput = {
   firstName: string
   lastName: string
   username: string
-  tenantId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
-  roleId?: string | null
+  tenantId: string
+  roleId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -920,6 +945,9 @@ export type UserUncheckedCreateWithoutRentalsInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
@@ -948,8 +976,6 @@ export type UserUpdateWithoutRentalsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -957,6 +983,9 @@ export type UserUpdateWithoutRentalsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
@@ -971,10 +1000,8 @@ export type UserUncheckedUpdateWithoutRentalsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -982,6 +1009,9 @@ export type UserUncheckedUpdateWithoutRentalsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
@@ -994,8 +1024,6 @@ export type UserCreateWithoutTenantInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1003,6 +1031,9 @@ export type UserCreateWithoutTenantInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
@@ -1017,9 +1048,7 @@ export type UserUncheckedCreateWithoutTenantInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
-  roleId?: string | null
+  roleId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1027,6 +1056,9 @@ export type UserUncheckedCreateWithoutTenantInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
@@ -1069,10 +1101,8 @@ export type UserScalarWhereInput = {
   firstName?: Prisma.StringFilter<"User"> | string
   lastName?: Prisma.StringFilter<"User"> | string
   username?: Prisma.StringFilter<"User"> | string
-  tenantId?: Prisma.StringNullableFilter<"User"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  updatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
-  roleId?: Prisma.StringNullableFilter<"User"> | string | null
+  tenantId?: Prisma.StringFilter<"User"> | string
+  roleId?: Prisma.StringFilter<"User"> | string
   lastChanged?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   email?: Prisma.StringNullableFilter<"User"> | string | null
   profilePicture?: Prisma.StringFilter<"User"> | string
@@ -1080,6 +1110,9 @@ export type UserScalarWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   isDeleted?: Prisma.BoolFilter<"User"> | boolean
   requirePasswordChange?: Prisma.BoolFilter<"User"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  updatedBy?: Prisma.StringNullableFilter<"User"> | string | null
 }
 
 export type UserCreateWithoutTransactionsInput = {
@@ -1088,8 +1121,6 @@ export type UserCreateWithoutTransactionsInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1097,6 +1128,9 @@ export type UserCreateWithoutTransactionsInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
@@ -1111,10 +1145,8 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   firstName: string
   lastName: string
   username: string
-  tenantId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
-  roleId?: string | null
+  tenantId: string
+  roleId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1122,6 +1154,9 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
@@ -1150,8 +1185,6 @@ export type UserUpdateWithoutTransactionsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1159,6 +1192,9 @@ export type UserUpdateWithoutTransactionsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
@@ -1173,10 +1209,8 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1184,6 +1218,9 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
@@ -1196,8 +1233,6 @@ export type UserCreateWithoutExpensesInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1205,6 +1240,9 @@ export type UserCreateWithoutExpensesInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   notificationReadStatuses?: Prisma.NotificationReadStatusCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
@@ -1219,10 +1257,8 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   firstName: string
   lastName: string
   username: string
-  tenantId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
-  roleId?: string | null
+  tenantId: string
+  roleId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1230,6 +1266,9 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
@@ -1258,8 +1297,6 @@ export type UserUpdateWithoutExpensesInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1267,6 +1304,9 @@ export type UserUpdateWithoutExpensesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificationReadStatuses?: Prisma.NotificationReadStatusUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
@@ -1281,10 +1321,8 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1292,6 +1330,9 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
@@ -1304,8 +1345,6 @@ export type UserCreateWithoutRoleInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1313,6 +1352,9 @@ export type UserCreateWithoutRoleInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
@@ -1327,9 +1369,7 @@ export type UserUncheckedCreateWithoutRoleInput = {
   firstName: string
   lastName: string
   username: string
-  tenantId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
+  tenantId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1337,6 +1377,9 @@ export type UserUncheckedCreateWithoutRoleInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
@@ -1376,8 +1419,6 @@ export type UserCreateWithoutBookingVehicleHistoryInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1385,6 +1426,9 @@ export type UserCreateWithoutBookingVehicleHistoryInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
@@ -1399,10 +1443,8 @@ export type UserUncheckedCreateWithoutBookingVehicleHistoryInput = {
   firstName: string
   lastName: string
   username: string
-  tenantId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
-  roleId?: string | null
+  tenantId: string
+  roleId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1410,6 +1452,9 @@ export type UserUncheckedCreateWithoutBookingVehicleHistoryInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
@@ -1438,8 +1483,6 @@ export type UserUpdateWithoutBookingVehicleHistoryInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1447,6 +1490,9 @@ export type UserUpdateWithoutBookingVehicleHistoryInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
@@ -1461,10 +1507,8 @@ export type UserUncheckedUpdateWithoutBookingVehicleHistoryInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1472,6 +1516,9 @@ export type UserUncheckedUpdateWithoutBookingVehicleHistoryInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
@@ -1484,9 +1531,7 @@ export type UserCreateManyTenantInput = {
   firstName: string
   lastName: string
   username: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
-  roleId?: string | null
+  roleId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1494,6 +1539,9 @@ export type UserCreateManyTenantInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
 }
 
 export type UserUpdateWithoutTenantInput = {
@@ -1502,8 +1550,6 @@ export type UserUpdateWithoutTenantInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1511,6 +1557,9 @@ export type UserUpdateWithoutTenantInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
@@ -1525,9 +1574,7 @@ export type UserUncheckedUpdateWithoutTenantInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1535,6 +1582,9 @@ export type UserUncheckedUpdateWithoutTenantInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
@@ -1548,9 +1598,7 @@ export type UserUncheckedUpdateManyWithoutTenantInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1558,6 +1606,9 @@ export type UserUncheckedUpdateManyWithoutTenantInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserCreateManyRoleInput = {
@@ -1566,9 +1617,7 @@ export type UserCreateManyRoleInput = {
   firstName: string
   lastName: string
   username: string
-  tenantId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
+  tenantId: string
   lastChanged?: Date | string | null
   email?: string | null
   profilePicture?: string
@@ -1576,6 +1625,9 @@ export type UserCreateManyRoleInput = {
   deletedAt?: Date | string | null
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  updatedBy?: string | null
 }
 
 export type UserUpdateWithoutRoleInput = {
@@ -1584,8 +1636,6 @@ export type UserUpdateWithoutRoleInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1593,6 +1643,9 @@ export type UserUpdateWithoutRoleInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
@@ -1607,9 +1660,7 @@ export type UserUncheckedUpdateWithoutRoleInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1617,6 +1668,9 @@ export type UserUncheckedUpdateWithoutRoleInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
@@ -1630,9 +1684,7 @@ export type UserUncheckedUpdateManyWithoutRoleInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1640,6 +1692,9 @@ export type UserUncheckedUpdateManyWithoutRoleInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1716,8 +1771,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lastName?: boolean
   username?: boolean
   tenantId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   roleId?: boolean
   lastChanged?: boolean
   email?: boolean
@@ -1726,6 +1779,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   deletedAt?: boolean
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  updatedBy?: boolean
   expenses?: boolean | Prisma.User$expensesArgs<ExtArgs>
   notificationReadStatuses?: boolean | Prisma.User$notificationReadStatusesArgs<ExtArgs>
   rentals?: boolean | Prisma.User$rentalsArgs<ExtArgs>
@@ -1743,8 +1799,6 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastName?: boolean
   username?: boolean
   tenantId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   roleId?: boolean
   lastChanged?: boolean
   email?: boolean
@@ -1753,6 +1807,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   deletedAt?: boolean
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  updatedBy?: boolean
   role?: boolean | Prisma.User$roleArgs<ExtArgs>
   tenant?: boolean | Prisma.User$tenantArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -1764,8 +1821,6 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastName?: boolean
   username?: boolean
   tenantId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   roleId?: boolean
   lastChanged?: boolean
   email?: boolean
@@ -1774,6 +1829,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   deletedAt?: boolean
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  updatedBy?: boolean
   role?: boolean | Prisma.User$roleArgs<ExtArgs>
   tenant?: boolean | Prisma.User$tenantArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -1785,8 +1843,6 @@ export type UserSelectScalar = {
   lastName?: boolean
   username?: boolean
   tenantId?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   roleId?: boolean
   lastChanged?: boolean
   email?: boolean
@@ -1795,9 +1851,12 @@ export type UserSelectScalar = {
   deletedAt?: boolean
   isDeleted?: boolean
   requirePasswordChange?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  updatedBy?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "password" | "firstName" | "lastName" | "username" | "tenantId" | "createdAt" | "updatedAt" | "roleId" | "lastChanged" | "email" | "profilePicture" | "show" | "deletedAt" | "isDeleted" | "requirePasswordChange", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "password" | "firstName" | "lastName" | "username" | "tenantId" | "roleId" | "lastChanged" | "email" | "profilePicture" | "show" | "deletedAt" | "isDeleted" | "requirePasswordChange" | "createdAt" | "updatedAt" | "updatedBy", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   expenses?: boolean | Prisma.User$expensesArgs<ExtArgs>
   notificationReadStatuses?: boolean | Prisma.User$notificationReadStatusesArgs<ExtArgs>
@@ -1834,10 +1893,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     firstName: string
     lastName: string
     username: string
-    tenantId: string | null
-    createdAt: Date
-    updatedAt: Date | null
-    roleId: string | null
+    tenantId: string
+    roleId: string
     lastChanged: Date | null
     email: string | null
     profilePicture: string
@@ -1845,6 +1902,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     deletedAt: Date | null
     isDeleted: boolean
     requirePasswordChange: boolean
+    createdAt: Date
+    updatedAt: Date | null
+    updatedBy: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2281,8 +2341,6 @@ export interface UserFieldRefs {
   readonly lastName: Prisma.FieldRef<"User", 'String'>
   readonly username: Prisma.FieldRef<"User", 'String'>
   readonly tenantId: Prisma.FieldRef<"User", 'String'>
-  readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
-  readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly roleId: Prisma.FieldRef<"User", 'String'>
   readonly lastChanged: Prisma.FieldRef<"User", 'DateTime'>
   readonly email: Prisma.FieldRef<"User", 'String'>
@@ -2291,6 +2349,9 @@ export interface UserFieldRefs {
   readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly isDeleted: Prisma.FieldRef<"User", 'Boolean'>
   readonly requirePasswordChange: Prisma.FieldRef<"User", 'Boolean'>
+  readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly updatedBy: Prisma.FieldRef<"User", 'String'>
 }
     
 

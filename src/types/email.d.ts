@@ -87,3 +87,17 @@ interface BookingAddition {
 interface PasswordResetEmailDto {
   verificationCode: token;
 }
+
+interface NewUserEmailDto {
+  name: string;
+  username: string;
+  password: string;
+  tenantName: string;
+}
+
+interface UserPasswordResetEmailDto {
+  name: string;
+  username: string;
+  password: string;
+  tenantName: string;
+}

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   Logger,
@@ -8,9 +9,10 @@ import {
 import bcrypt from 'bcrypt';
 import { GeneratorService } from '../../../common/generator/generator.service.js';
 import { PrismaService } from '../../../prisma/prisma.service.js';
-import { CreateTenantUserDto } from './dto/create-tenant-user.dto.js';
+import { TenantUserDto } from './dto/tenant-user.dto.js';
 import { Tenant } from '../../../generated/prisma/client.js';
 import { TenantUserRepository } from './tenant-user.repository.js';
+import { EmailService } from '../../../common/email/email.service.js';
 
 @Injectable()
 export class TenantUserService {
@@ -20,6 +22,7 @@ export class TenantUserService {
     private readonly prisma: PrismaService,
     private readonly generator: GeneratorService,
     private readonly repo: TenantUserRepository,
+    private readonly email: EmailService,
   ) {}
 
   async getTenantUsers(tenant: Tenant) {
@@ -105,9 +108,9 @@ export class TenantUserService {
     }
   }
 
-  async createUser(data: CreateTenantUserDto, tenant: Tenant) {
+  async createUser(data: TenantUserDto, tenant: Tenant) {
     try {
-      const user = await this.prisma.$transaction(async (tx) => {
+      const { user, password } = await this.prisma.$transaction(async (tx) => {
         const emailExists = await tx.user.findUnique({
           where: { email: data.email, tenantId: tenant.id },
         });
@@ -127,7 +130,22 @@ export class TenantUserService {
         );
 
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(data.password, salt);
+        let hashedPassword: string;
+        let password: string | undefined;
+
+        if (data.password) {
+          hashedPassword = await bcrypt.hash(data.password, salt);
+        } else {
+          password = await this.generator.generateTempPassword();
+          hashedPassword = await bcrypt.hash(password, salt);
+        }
+
+        if (!data.roleId) {
+          this.logger.warn(
+            `User creation failed: roleId is required but not provided.`,
+          );
+          throw new BadRequestException('Role is required.');
+        }
 
         const user = await tx.user.create({
           data: {
@@ -143,12 +161,107 @@ export class TenantUserService {
           },
         });
 
-        return user;
+        return { user, password };
       });
 
-      return user;
+      if (password) {
+        this.logger.log(`Sending welcome email to new user ${user.email}`);
+        await this.email.sendNewUserWelcomeEmail(user.id, password, tenant);
+      }
+
+      const users = await this.repo.getUsers(tenant.id);
+      return {
+        message: 'User created successfully',
+        user,
+        users,
+      };
     } catch (error) {
       this.logger.error('Failed to create tenant user', error);
+      throw error;
+    }
+  }
+
+  async updateUser(data: TenantUserDto, tenant: Tenant) {
+    try {
+      const user = await this.prisma.$transaction(async (tx) => {
+        const existingUser = await tx.user.findUnique({
+          where: { id: data.id, tenantId: tenant.id },
+        });
+
+        if (!existingUser) {
+          this.logger.warn(
+            `User update failed: User with ID ${data.id} not found.`,
+          );
+          throw new NotFoundException('User not found');
+        }
+
+        const emailOwner = await tx.user.findUnique({
+          where: { email: data.email, tenantId: tenant.id },
+        });
+
+        if (emailOwner && emailOwner.id !== data.id) {
+          this.logger.warn(
+            `User update failed: Email ${data.email} is already in use by another user.`,
+          );
+          throw new ConflictException(
+            'Email is already associated with another user.',
+          );
+        }
+
+        const updatedUser = await tx.user.update({
+          where: { id: data.id },
+          data: {
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            roleId: data.roleId,
+            updatedAt: new Date(),
+          },
+        });
+
+        return updatedUser;
+      });
+
+      const users = await this.repo.getUsers(tenant.id);
+      return {
+        message: 'User updated successfully',
+        user,
+        users,
+      };
+    } catch (error) {
+      this.logger.error('Failed to update tenant user', data);
+      throw error;
+    }
+  }
+
+  async deleteUser(userId: string, tenant: Tenant) {
+    try {
+      const existingUser = await this.prisma.user.findUnique({
+        where: { id: userId, tenantId: tenant.id },
+      });
+
+      if (!existingUser) {
+        this.logger.warn(
+          `User deletion failed: User with ID ${userId} not found.`,
+        );
+        throw new NotFoundException('User not found');
+      }
+
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { isDeleted: true, updatedAt: new Date() },
+      });
+
+      const users = await this.repo.getUsers(tenant.id);
+      return {
+        message: 'User deleted successfully',
+        users,
+      };
+    } catch (error) {
+      this.logger.error('Failed to delete tenant user', error, {
+        userId,
+        tenantId: tenant.id,
+      });
       throw error;
     }
   }

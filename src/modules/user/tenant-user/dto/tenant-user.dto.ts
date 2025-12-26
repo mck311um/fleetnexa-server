@@ -6,7 +6,11 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export class CreateTenantUserDto {
+export class TenantUserDto {
+  @IsUUID()
+  @IsOptional()
+  id?: string;
+
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -20,8 +24,8 @@ export class CreateTenantUserDto {
   lastName: string;
 
   @IsString()
-  @IsNotEmpty()
-  password: string;
+  @IsOptional()
+  password?: string;
 
   @IsUUID()
   @IsOptional()

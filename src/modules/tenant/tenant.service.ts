@@ -41,6 +41,7 @@ export class TenantService {
     private readonly customers: TenantCustomerService,
     private readonly activities: TenantActivityService,
     private readonly rates: TenantRatesService,
+    private readonly roles: UserRoleService,
   ) {}
 
   async getCurrentTenant(tenant: Tenant, user: User) {
@@ -57,6 +58,7 @@ export class TenantService {
         user,
       );
       const users = await this.userService.getTenantUsers(tenant);
+      const roles = await this.roles.getAllRoles(tenant);
 
       const data = {
         tenant,
@@ -69,6 +71,7 @@ export class TenantService {
         activity,
         currencyRates,
         users,
+        roles,
       };
 
       return data;
