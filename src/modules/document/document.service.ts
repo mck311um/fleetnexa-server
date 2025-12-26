@@ -92,7 +92,10 @@ export class DocumentService {
         },
       });
 
-      return invoice;
+      return {
+        message: 'Invoice generated successfully',
+        invoice,
+      };
     } catch (error) {
       this.logger.error(error, 'Failed to generate invoice', {
         bookingId,
@@ -170,7 +173,10 @@ export class DocumentService {
         },
       });
 
-      return receipt;
+      return {
+        message: 'Payment receipt generated successfully',
+        receipt,
+      };
     } catch (error) {
       this.logger.error(error, 'Failed to generate payment receipt', {
         paymentId,
@@ -245,7 +251,10 @@ export class DocumentService {
         },
       });
 
-      return agreement;
+      return {
+        message: 'Agreement generated successfully',
+        agreement,
+      };
     } catch (error) {
       this.logger.error(error, 'Failed to generate agreement', {
         bookingId,
