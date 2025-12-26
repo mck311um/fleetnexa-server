@@ -34,6 +34,7 @@ import { DocumentModule } from './modules/document/document.module.js';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { VehicleDamageModule } from './modules/vehicle/modules/vehicle-damage/vehicle-damage.module.js';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { HealthModule } from './modules/health/health.module.js';
     TransactionModule,
 
     VehicleMaintenanceModule,
+    VehicleDamageModule,
     VehicleModule,
 
     SocketModule,
