@@ -59,6 +59,7 @@ async function bootstrap() {
       'x-timestamp',
       'x-api-key',
       'x-signature',
+      'x-admin-token',
     ],
   });
 

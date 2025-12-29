@@ -41,6 +41,7 @@ import { EmailModule } from './common/email/email.module.js';
 import { WhatsappModule } from './common/whatsapp/whatsapp.module.js';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AdminAuthModule } from './modules/auth/admin-auth/admin-auth.module.js';
+import { DashboardModule } from './modules/dashboard/dashboard.module.js';
 
 @Module({
   imports: [
@@ -66,6 +67,8 @@ import { AdminAuthModule } from './modules/auth/admin-auth/admin-auth.module.js'
     WhatsappModule,
 
     AdminModule,
+
+    DashboardModule,
 
     StorefrontAuthModule,
     StorefrontUserModule,
