@@ -14,7 +14,6 @@ import { SocketModule } from './gateway/socket.module.js';
 import { TenantReviewModule } from './modules/tenant/tenant-review/tenant-review.module.js';
 import { TenantVendorModule } from './modules/tenant/tenant-vendor/tenant-vendor.module.js';
 import { TenantViolationModule } from './modules/tenant/tenant-violation/tenant-violation.module.js';
-import { BookingModule } from './modules/booking/booking.module.js';
 import { StorefrontBookingModule } from './modules/booking/storefront-booking/storefront-booking.module.js';
 import { AdminModule } from './modules/admin/admin.module.js';
 import { VehicleModule } from './modules/vehicle/vehicle.module.js';
@@ -35,6 +34,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { VehicleDamageModule } from './modules/vehicle/modules/vehicle-damage/vehicle-damage.module.js';
+import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
   imports: [
@@ -42,6 +42,7 @@ import { VehicleDamageModule } from './modules/vehicle/modules/vehicle-damage/ve
       isGlobal: true,
     }),
     ScheduleModule.forRoot(),
+    PrismaModule,
     CronModule,
     HealthModule,
 

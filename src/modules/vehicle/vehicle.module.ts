@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '../../prisma/prisma.module.js';
 import { VehicleController } from './vehicle.controller.js';
 import { VehicleService } from './vehicle.service.js';
 import { VehicleRepository } from './vehicle.repository.js';
@@ -11,7 +10,7 @@ import { StorageModule } from '../storage/storage.module.js';
 import { ApiGuard } from '../../common/guards/api.guard.js';
 
 @Module({
-  imports: [PrismaModule, TenantExtrasModule, StorageModule],
+  imports: [TenantExtrasModule, StorageModule],
   controllers: [VehicleController],
   providers: [
     VehicleService,

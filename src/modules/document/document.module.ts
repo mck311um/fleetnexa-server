@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '../../prisma/prisma.module.js';
 import { GeneratorModule } from '../../common/generator/generator.module.js';
 import { FormatterModule } from '../../common/formatter/formatter.module.js';
 import { PdfModule } from '../../common/pdf/pdf.module.js';
@@ -14,7 +13,6 @@ import { FirmaModule } from '../../common/firma/firma.module.js';
 
 @Module({
   imports: [
-    PrismaModule,
     GeneratorModule,
     FormatterModule,
     PdfModule,

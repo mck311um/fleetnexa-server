@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TenantBookingController } from './tenant-booking.controller.js';
 import { TenantBookingService } from './tenant-booking.service.js';
-import { PrismaModule } from '../../../prisma/prisma.module.js';
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { TenantRepository } from '../../../modules/tenant/tenant.repository.js';
 import { TenantUserRepository } from '../../../modules/user/tenant-user/tenant-user.repository.js';
@@ -17,7 +16,6 @@ import { WhatsappModule } from '../../../common/whatsapp/whatsapp.module.js';
 
 @Module({
   imports: [
-    PrismaModule,
     GeneratorModule,
     DocumentModule,
     EmailModule,

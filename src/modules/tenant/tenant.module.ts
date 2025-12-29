@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { GeneratorModule } from '../../common/generator/generator.module.js';
-import { PrismaModule } from '../../prisma/prisma.module.js';
 import { TenantLocationModule } from './tenant-location/tenant-location.module.js';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
@@ -20,7 +19,6 @@ import { TenantRatesModule } from './tenant-rates/tenant-rates.module.js';
 
 @Module({
   imports: [
-    PrismaModule,
     GeneratorModule,
     TenantLocationModule,
     TenantExtrasModule,
@@ -41,11 +39,6 @@ import { TenantRatesModule } from './tenant-rates/tenant-rates.module.js';
     TenantUserRepository,
     AuthGuard,
   ],
-  exports: [
-    PrismaModule,
-    TenantService,
-    TenantRepository,
-    TenantUserRepository,
-  ],
+  exports: [TenantService, TenantRepository, TenantUserRepository],
 })
 export class TenantModule {}

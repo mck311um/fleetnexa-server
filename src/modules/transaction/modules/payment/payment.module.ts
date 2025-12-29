@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PaymentController } from './payment.controller.js';
 import { PaymentService } from './payment.service.js';
-import { PrismaModule } from '../../../../prisma/prisma.module.js';
 import { AuthGuard } from '../../../../common/guards/auth.guard.js';
 import { TenantRepository } from '../../../../modules/tenant/tenant.repository.js';
 import { TenantUserRepository } from '../../../../modules/user/tenant-user/tenant-user.repository.js';
@@ -10,7 +9,7 @@ import { TenantBookingRepository } from '../../../../modules/booking/tenant-book
 import { DocumentModule } from '../../../../modules/document/document.module.js';
 
 @Module({
-  imports: [PrismaModule, TransactionModule, DocumentModule],
+  imports: [TransactionModule, DocumentModule],
   controllers: [PaymentController],
   providers: [
     PaymentService,

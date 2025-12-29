@@ -22,7 +22,9 @@ async function bootstrap() {
     }),
   );
 
-  (globalThis as any).crypto = crypto;
+  if (!(globalThis as any).crypto) {
+    (globalThis as any).crypto = crypto;
+  }
 
   app.enableCors({
     origin: [
