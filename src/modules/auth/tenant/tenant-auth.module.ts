@@ -3,13 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { UserModule } from '../../user/user.module.js';
 import { TenantAuthService } from './tenant-auth.service.js';
 import { TenantAuthController } from './tenant-auth.controller.js';
-import { GeneratorModule } from '../../../common/generator/generator.module.js';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     UserModule,
-    GeneratorModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),

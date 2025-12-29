@@ -35,6 +35,7 @@ import { CronModule } from './cron/cron.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { VehicleDamageModule } from './modules/vehicle/modules/vehicle-damage/vehicle-damage.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { GeneratorModule } from './common/generator/generator.module.js';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     PrismaModule,
     CronModule,
     HealthModule,
+    GeneratorModule,
 
     AdminModule,
 

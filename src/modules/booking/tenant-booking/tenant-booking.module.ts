@@ -5,7 +5,6 @@ import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { TenantRepository } from '../../../modules/tenant/tenant.repository.js';
 import { TenantUserRepository } from '../../../modules/user/tenant-user/tenant-user.repository.js';
 import { TenantBookingRepository } from './tenant-booking.repository.js';
-import { GeneratorModule } from '../../../common/generator/generator.module.js';
 import { DocumentModule } from '../../document/document.module.js';
 import { EmailModule } from '../../../common/email/email.module.js';
 import { VehicleModule } from '../../../modules/vehicle/vehicle.module.js';
@@ -16,7 +15,6 @@ import { WhatsappModule } from '../../../common/whatsapp/whatsapp.module.js';
 
 @Module({
   imports: [
-    GeneratorModule,
     DocumentModule,
     EmailModule,
     VehicleModule,

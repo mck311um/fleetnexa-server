@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { GeneratorModule } from '../../common/generator/generator.module.js';
 import { TenantLocationModule } from './tenant-location/tenant-location.module.js';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
@@ -19,7 +18,6 @@ import { TenantRatesModule } from './tenant-rates/tenant-rates.module.js';
 
 @Module({
   imports: [
-    GeneratorModule,
     TenantLocationModule,
     TenantExtrasModule,
     TenantUserModule,

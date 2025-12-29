@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { GeneratorModule } from '../../common/generator/generator.module.js';
 import { FormatterModule } from '../../common/formatter/formatter.module.js';
 import { PdfModule } from '../../common/pdf/pdf.module.js';
 import { TenantExtrasModule } from '../tenant/tenant-extra/tenant-extra.module.js';
@@ -13,7 +12,6 @@ import { FirmaModule } from '../../common/firma/firma.module.js';
 
 @Module({
   imports: [
-    GeneratorModule,
     FormatterModule,
     PdfModule,
     TenantExtrasModule,
