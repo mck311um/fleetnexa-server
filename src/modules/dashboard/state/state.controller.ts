@@ -1,23 +1,43 @@
 import {
   BadRequestException,
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
+  Put,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { CountryService } from './country.service.js';
+import { StateService } from './state.service.js';
+import { StateDto } from './state.dto.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as XLSX from 'xlsx';
 import { validateExcelColumns } from '../../../utils/excel.utils.js';
 
-@Controller('dashboard/country')
-export class CountryController {
-  constructor(private readonly service: CountryService) {}
+@Controller('dashboard/state')
+export class StateController {
+  constructor(private readonly service: StateService) {}
 
   @Get()
-  async getCountries() {
-    return this.service.getCountries();
+  async getStates() {
+    return this.service.getStates();
+  }
+
+  @Post()
+  async createState(@Body() data: StateDto) {
+    return this.service.createState(data);
+  }
+
+  @Put()
+  async updateState(@Body() data: StateDto) {
+    return this.service.updateState(data);
+  }
+
+  @Delete(':id')
+  async deleteState(@Param('id') id: string) {
+    return this.service.deleteState(id);
   }
 
   @Post('bulk')
@@ -32,13 +52,16 @@ export class CountryController {
     const sheet = workbook.Sheets[sheetName];
     const data = XLSX.utils.sheet_to_json(sheet);
 
-    const { valid, missingColumns } = validateExcelColumns(data, ['brand']);
+    const { valid, missingColumns } = validateExcelColumns(data, [
+      'state',
+      'country',
+    ]);
     if (!valid) {
       throw new BadRequestException(
         `Missing required columns: ${missingColumns?.join(', ') || 'unknown'}`,
       );
     }
 
-    return this.service.bulkCreateCountries(data);
+    return this.service.bulkCreateStates(data);
   }
 }

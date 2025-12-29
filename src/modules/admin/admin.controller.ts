@@ -17,4 +17,9 @@ export class AdminController {
   async getStorefrontData() {
     return this.service.getStorefrontData();
   }
+
+  @Get('dashboard')
+  async getDashboardAdminData() {
+    return this.service.getDashboardAdminData();
+  }
 }
