@@ -106,7 +106,7 @@ export class StateService {
         if (errors.length > 0) {
           failedRows.push({ item, errors });
           this.logger.warn(
-            `Validation failed for country: ${JSON.stringify(item)}`,
+            `Validation failed for state: ${JSON.stringify(item)}`,
           );
           continue;
         }
