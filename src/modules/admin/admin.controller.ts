@@ -1,19 +1,20 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
-import { AdminService } from "./admin.service.js";
-import { ApiGuard } from "../../common/guards/api.guard.js";
+/** biome-ignore-all lint/style/useImportType: <> */
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { ApiGuard } from '../../common/guards/api.guard.js';
+import { AdminService } from './admin.service.js';
 
-@Controller("admin")
+@Controller('admin')
 export class AdminController {
-	constructor(private readonly service: AdminService) {}
+  constructor(private readonly service: AdminService) {}
 
-	@Get()
-	async getAdminData() {
-		return this.service.getClientData();
-	}
+  @Get()
+  async getAdminData() {
+    return this.service.getClientData();
+  }
 
-	@Get("storefront")
-	@UseGuards(ApiGuard)
-	async getStorefrontData() {
-		return this.service.getStorefrontData();
-	}
+  @Get('storefront')
+  @UseGuards(ApiGuard)
+  async getStorefrontData() {
+    return this.service.getStorefrontData();
+  }
 }
