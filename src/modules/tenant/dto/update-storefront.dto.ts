@@ -1,16 +1,16 @@
-import { IsBoolean, IsString, ValidateIf } from 'class-validator';
+import { IsBoolean, IsString, ValidateIf } from "class-validator";
 
 export class UpdateStorefrontDto {
-  @IsBoolean()
-  storefrontEnabled: boolean;
+	@IsBoolean()
+	storefrontEnabled: boolean;
 
-  @IsString()
-  @ValidateIf((o) => o.storefrontEnabled === true)
-  description: string;
+	@IsString()
+	@ValidateIf((o) => o.storefrontEnabled === true)
+	description: string;
 
-  @IsBoolean()
-  whatsappNotifications: boolean;
+	@IsBoolean()
+	whatsappNotifications: boolean;
 
-  @IsBoolean()
-  emailNotifications: boolean;
+	@IsBoolean()
+	emailNotifications: boolean;
 }

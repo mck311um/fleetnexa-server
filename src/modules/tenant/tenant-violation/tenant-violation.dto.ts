@@ -1,16 +1,16 @@
-import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class TenantViolationDto {
-  @IsUUID()
-  id: string;
+	@IsUUID()
+	id: string;
 
-  @IsString()
-  violation: string;
+	@IsString()
+	violation: string;
 
-  @IsString()
-  @IsOptional()
-  description?: string;
+	@IsString()
+	@IsOptional()
+	description?: string;
 
-  @IsNumber()
-  amount: number;
+	@IsNumber()
+	amount: number;
 }

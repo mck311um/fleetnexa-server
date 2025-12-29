@@ -1,24 +1,24 @@
-import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class UserRoleDto {
-  @IsUUID()
-  id: string;
+	@IsUUID()
+	id: string;
 
-  @IsString()
-  name: string;
+	@IsString()
+	name: string;
 
-  @IsString()
-  @IsOptional()
-  description?: string;
+	@IsString()
+	@IsOptional()
+	description?: string;
 
-  @IsBoolean()
-  show?: boolean = true;
+	@IsBoolean()
+	show?: boolean = true;
 }
 
 export class UserRolePermissionsDto {
-  @IsUUID()
-  roleId: string;
+	@IsUUID()
+	roleId: string;
 
-  @IsUUID('all', { each: true })
-  permissions: string[];
+	@IsUUID("all", { each: true })
+	permissions: string[];
 }

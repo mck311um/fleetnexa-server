@@ -1,19 +1,19 @@
-import { IsEnum, IsString, IsUUID } from 'class-validator';
-import { VehicleEventType } from '../../../generated/prisma/client.js';
+import { IsEnum, IsString, IsUUID } from "class-validator";
+import { VehicleEventType } from "../../../generated/prisma/client.js";
 
 export class VehicleEventDto {
-  @IsUUID()
-  vehicleId: string;
+	@IsUUID()
+	vehicleId: string;
 
-  @IsString()
-  event: string;
+	@IsString()
+	event: string;
 
-  @IsEnum(VehicleEventType)
-  type: VehicleEventType;
+	@IsEnum(VehicleEventType)
+	type: VehicleEventType;
 
-  @IsString()
-  date: string;
+	@IsString()
+	date: string;
 
-  @IsString()
-  notes?: string;
+	@IsString()
+	notes?: string;
 }

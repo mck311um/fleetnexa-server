@@ -1,23 +1,23 @@
-import { IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, IsUUID, Min } from "class-validator";
 
 export class RefundDto {
-  @IsUUID()
-  id: string;
+	@IsUUID()
+	id: string;
 
-  @IsNumber()
-  @Min(0)
-  amount: number;
+	@IsNumber()
+	@Min(0)
+	amount: number;
 
-  @IsString()
-  refundDate: string;
+	@IsString()
+	refundDate: string;
 
-  @IsString()
-  @IsOptional()
-  reason?: string;
+	@IsString()
+	@IsOptional()
+	reason?: string;
 
-  @IsUUID()
-  bookingId: string;
+	@IsUUID()
+	bookingId: string;
 
-  @IsUUID()
-  customerId: string;
+	@IsUUID()
+	customerId: string;
 }

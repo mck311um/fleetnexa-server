@@ -1,43 +1,43 @@
 import {
-  IsEnum,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Validate,
-  ValidateIf,
-} from 'class-validator';
-import { TransactionType } from 'src/generated/prisma/enums.js';
+	IsEnum,
+	IsNumber,
+	IsOptional,
+	IsString,
+	IsUUID,
+	Validate,
+	ValidateIf,
+} from "class-validator";
+import { TransactionType } from "src/generated/prisma/enums.js";
 
 export class TransactionDto {
-  @IsUUID()
-  id: string;
+	@IsUUID()
+	id: string;
 
-  @IsNumber()
-  amount: number;
+	@IsNumber()
+	amount: number;
 
-  @IsString()
-  transactionDate: string;
+	@IsString()
+	transactionDate: string;
 
-  @IsEnum(TransactionType)
-  type: TransactionType;
+	@IsEnum(TransactionType)
+	type: TransactionType;
 
-  @IsString()
-  createdBy: string;
+	@IsString()
+	createdBy: string;
 
-  @IsUUID()
-  @ValidateIf((o) => o.transactionType === TransactionType.PAYMENT)
-  paymentId: string;
+	@IsUUID()
+	@ValidateIf((o) => o.transactionType === TransactionType.PAYMENT)
+	paymentId: string;
 
-  @IsUUID()
-  @ValidateIf((o) => o.transactionType === TransactionType.REFUND)
-  refundId: string;
+	@IsUUID()
+	@ValidateIf((o) => o.transactionType === TransactionType.REFUND)
+	refundId: string;
 
-  @IsUUID()
-  @ValidateIf((o) => o.transactionType === TransactionType.EXPENSE)
-  expenseId: string;
+	@IsUUID()
+	@ValidateIf((o) => o.transactionType === TransactionType.EXPENSE)
+	expenseId: string;
 
-  @IsUUID()
-  @IsOptional()
-  rentalId: string;
+	@IsUUID()
+	@IsOptional()
+	rentalId: string;
 }

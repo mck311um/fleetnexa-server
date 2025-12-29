@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { CustomerService } from './customer.service.js';
+import { Module } from "@nestjs/common";
+import { CustomerService } from "./customer.service.js";
 
 @Module({
-  imports: [],
-  providers: [CustomerService],
-  exports: [CustomerService],
+	imports: [],
+	providers: [CustomerService],
+	exports: [CustomerService],
 })
 export class CustomerModule {}

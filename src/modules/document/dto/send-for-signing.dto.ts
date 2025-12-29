@@ -1,12 +1,12 @@
-import { IsEmail, IsUUID } from 'class-validator';
+import { IsEmail, IsUUID } from "class-validator";
 
 export class SendForSigningDto {
-  @IsUUID()
-  bookingId: string;
+	@IsUUID()
+	bookingId: string;
 
-  @IsEmail()
-  recipient: string;
+	@IsEmail()
+	recipient: string;
 
-  @IsEmail()
-  representative: string;
+	@IsEmail()
+	representative: string;
 }

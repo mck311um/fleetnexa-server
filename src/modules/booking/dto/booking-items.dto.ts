@@ -1,118 +1,118 @@
 import {
-  IsBoolean,
-  IsNumber,
-  IsObject,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Min,
-} from 'class-validator';
+	IsBoolean,
+	IsNumber,
+	IsObject,
+	IsOptional,
+	IsString,
+	IsUUID,
+	Min,
+} from "class-validator";
 
 export class BookingExtrasDto {
-  @IsUUID()
-  id: string;
+	@IsUUID()
+	id: string;
 
-  @IsUUID()
-  extraId: string;
+	@IsUUID()
+	extraId: string;
 
-  @IsNumber()
-  amount: number;
+	@IsNumber()
+	amount: number;
 
-  @IsBoolean()
-  @IsOptional()
-  customAmount?: boolean = false;
+	@IsBoolean()
+	@IsOptional()
+	customAmount?: boolean = false;
 
-  @IsUUID()
-  valuesId: string;
+	@IsUUID()
+	valuesId: string;
 }
 
 export class BookingDriverDto {
-  @IsUUID()
-  id: string;
+	@IsUUID()
+	id: string;
 
-  @IsString()
-  driverId: string;
+	@IsString()
+	driverId: string;
 
-  @IsUUID()
-  @IsOptional()
-  rentalId: string;
+	@IsUUID()
+	@IsOptional()
+	rentalId: string;
 
-  @IsBoolean()
-  isPrimary: boolean;
+	@IsBoolean()
+	isPrimary: boolean;
 }
 
 export class BookingValuesDto {
-  @IsUUID()
-  id: string;
+	@IsUUID()
+	id: string;
 
-  @IsNumber()
-  @Min(1)
-  numberOfDays: number;
+	@IsNumber()
+	@Min(1)
+	numberOfDays: number;
 
-  @IsNumber()
-  basePrice: number;
+	@IsNumber()
+	basePrice: number;
 
-  @IsBoolean()
-  @IsOptional()
-  customBasePrice?: boolean = false;
+	@IsBoolean()
+	@IsOptional()
+	customBasePrice?: boolean = false;
 
-  @IsNumber()
-  totalCost: number;
+	@IsNumber()
+	totalCost: number;
 
-  @IsBoolean()
-  @IsOptional()
-  customTotalCost?: boolean = false;
+	@IsBoolean()
+	@IsOptional()
+	customTotalCost?: boolean = false;
 
-  @IsNumber()
-  discount: number;
+	@IsNumber()
+	discount: number;
 
-  @IsBoolean()
-  @IsOptional()
-  customDiscount?: boolean = false;
+	@IsBoolean()
+	@IsOptional()
+	customDiscount?: boolean = false;
 
-  @IsNumber()
-  deliveryFee: number;
+	@IsNumber()
+	deliveryFee: number;
 
-  @IsBoolean()
-  @IsOptional()
-  customDeliveryFee?: boolean = false;
+	@IsBoolean()
+	@IsOptional()
+	customDeliveryFee?: boolean = false;
 
-  @IsNumber()
-  collectionFee: number;
+	@IsNumber()
+	collectionFee: number;
 
-  @IsBoolean()
-  @IsOptional()
-  customCollectionFee?: boolean = false;
+	@IsBoolean()
+	@IsOptional()
+	customCollectionFee?: boolean = false;
 
-  @IsNumber()
-  deposit: number;
+	@IsNumber()
+	deposit: number;
 
-  @IsBoolean()
-  @IsOptional()
-  customDeposit?: boolean = false;
+	@IsBoolean()
+	@IsOptional()
+	customDeposit?: boolean = false;
 
-  @IsNumber()
-  totalExtras: number;
+	@IsNumber()
+	totalExtras: number;
 
-  @IsNumber()
-  subTotal: number;
+	@IsNumber()
+	subTotal: number;
 
-  @IsNumber()
-  netTotal: number;
+	@IsNumber()
+	netTotal: number;
 
-  @IsNumber()
-  amountDue: number;
+	@IsNumber()
+	amountDue: number;
 
-  @IsNumber()
-  discountAmount: number;
+	@IsNumber()
+	discountAmount: number;
 
-  @IsString()
-  discountPolicy: string;
+	@IsString()
+	discountPolicy: string;
 
-  @IsNumber()
-  additionalDriverFees: number;
+	@IsNumber()
+	additionalDriverFees: number;
 
-  @IsObject()
-  @IsOptional()
-  extras?: BookingExtrasDto[];
+	@IsObject()
+	@IsOptional()
+	extras?: BookingExtrasDto[];
 }
