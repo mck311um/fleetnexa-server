@@ -36,6 +36,9 @@ import { HealthModule } from './modules/health/health.module.js';
 import { VehicleDamageModule } from './modules/vehicle/modules/vehicle-damage/vehicle-damage.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { GeneratorModule } from './common/generator/generator.module.js';
+import { FormatterModule } from './common/formatter/formatter.module.js';
+import { EmailModule } from './common/email/email.module.js';
+import { WhatsappModule } from './common/whatsapp/whatsapp.module.js';
 
 @Module({
   imports: [
@@ -47,6 +50,10 @@ import { GeneratorModule } from './common/generator/generator.module.js';
     CronModule,
     HealthModule,
     GeneratorModule,
+    FormatterModule,
+    DocumentModule,
+    EmailModule,
+    WhatsappModule,
 
     AdminModule,
 

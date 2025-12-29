@@ -6,10 +6,9 @@ import { TenantRepository } from '../../../../modules/tenant/tenant.repository.j
 import { TenantUserRepository } from '../../../../modules/user/tenant-user/tenant-user.repository.js';
 import { TransactionModule } from '../../transaction.module.js';
 import { TenantBookingRepository } from '../../../../modules/booking/tenant-booking/tenant-booking.repository.js';
-import { DocumentModule } from '../../../../modules/document/document.module.js';
 
 @Module({
-  imports: [TransactionModule, DocumentModule],
+  imports: [TransactionModule],
   controllers: [PaymentController],
   providers: [
     PaymentService,

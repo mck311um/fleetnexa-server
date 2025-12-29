@@ -1,10 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Global, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotifyService } from '../notify/notify.service.js';
 import { SendWhatsAppDto } from '../notify/dto/send-whatsapp.dto.js';
 import { CustomerService } from '../../modules/customer/customer.service.js';
 import { format, toZonedTime } from 'date-fns-tz';
 
+@Global()
 @Injectable()
 export class WhatsappService {
   private readonly logger = new Logger(WhatsappService.name);

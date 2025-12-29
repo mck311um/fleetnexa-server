@@ -1,6 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Global, Injectable, Logger } from '@nestjs/common';
 import { Decimal } from '@prisma/client/runtime/binary';
 
+@Global()
 @Injectable()
 export class FormatterService {
   private readonly logger = new Logger(FormatterService.name);

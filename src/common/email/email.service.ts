@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Global, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotifyService } from '../notify/notify.service.js';
 import { Tenant } from '../../generated/prisma/client.js';
@@ -16,6 +16,7 @@ import {
 } from '../../types/email.js';
 import { SendDocumentsDto } from 'src/modules/booking/tenant-booking/dto/send-documents.dto.js';
 
+@Global()
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);

@@ -5,23 +5,17 @@ import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { TenantRepository } from '../../../modules/tenant/tenant.repository.js';
 import { TenantUserRepository } from '../../../modules/user/tenant-user/tenant-user.repository.js';
 import { TenantBookingRepository } from './tenant-booking.repository.js';
-import { DocumentModule } from '../../document/document.module.js';
-import { EmailModule } from '../../../common/email/email.module.js';
 import { VehicleModule } from '../../../modules/vehicle/vehicle.module.js';
 import { CustomerModule } from '../../../modules/customer/customer.module.js';
 import { TransactionModule } from '../../../modules/transaction/transaction.module.js';
 import { VehicleEventModule } from '../../../modules/vehicle/modules/vehicle-event/vehicle-event.module.js';
-import { WhatsappModule } from '../../../common/whatsapp/whatsapp.module.js';
 
 @Module({
   imports: [
-    DocumentModule,
-    EmailModule,
     VehicleModule,
     CustomerModule,
     TransactionModule,
     VehicleEventModule,
-    WhatsappModule,
   ],
   controllers: [TenantBookingController],
   providers: [

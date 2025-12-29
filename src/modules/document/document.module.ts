@@ -1,5 +1,4 @@
-import { Module } from '@nestjs/common';
-import { FormatterModule } from '../../common/formatter/formatter.module.js';
+import { Global, Module } from '@nestjs/common';
 import { PdfModule } from '../../common/pdf/pdf.module.js';
 import { TenantExtrasModule } from '../tenant/tenant-extra/tenant-extra.module.js';
 import { CustomerModule } from '../customer/customer.module.js';
@@ -10,14 +9,9 @@ import { TenantUserRepository } from '../user/tenant-user/tenant-user.repository
 import { DocumentController } from './document.controller.js';
 import { FirmaModule } from '../../common/firma/firma.module.js';
 
+@Global()
 @Module({
-  imports: [
-    FormatterModule,
-    PdfModule,
-    TenantExtrasModule,
-    CustomerModule,
-    FirmaModule,
-  ],
+  imports: [PdfModule, TenantExtrasModule, CustomerModule, FirmaModule],
   controllers: [DocumentController],
   providers: [
     DocumentService,
