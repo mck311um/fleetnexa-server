@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TenantModule } from './modules/tenant/tenant.module.js';
-import { TenantAuthModule } from './modules/auth/tenant/tenant-auth.module.js';
+import { TenantAuthModule } from './modules/auth/tenant-auth/tenant-auth.module.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ConfigModule } from '@nestjs/config';
@@ -40,6 +40,7 @@ import { FormatterModule } from './common/formatter/formatter.module.js';
 import { EmailModule } from './common/email/email.module.js';
 import { WhatsappModule } from './common/whatsapp/whatsapp.module.js';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { AdminAuthModule } from './modules/auth/admin-auth/admin-auth.module.js';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     StorefrontUserModule,
     AuthModule,
     TenantAuthModule,
+    AdminAuthModule,
 
     StorefrontBookingModule,
     TenantBookingModule,
