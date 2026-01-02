@@ -11,8 +11,7 @@ import { VillageDto } from './village.dto.js';
 import { Country, State } from '../../../generated/prisma/client.js';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import axios from 'axios';
 import XLSX from 'xlsx';
 
 @Injectable()
@@ -249,12 +248,15 @@ export class VillageService {
   }
 
   async processVillageFile() {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const filePath = path.join(__dirname, '../../../docs/cities.xlsx');
+    const fileUrl =
+      'https://devvize-services.s3.us-east-1.amazonaws.com/cities.xlsx';
 
     try {
-      const workbook = XLSX.readFile(filePath);
+      const response = await axios.get(fileUrl, {
+        responseType: 'arraybuffer',
+      });
+
+      const workbook = XLSX.read(response.data, { type: 'buffer' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const citiesData = XLSX.utils.sheet_to_json(worksheet, {
