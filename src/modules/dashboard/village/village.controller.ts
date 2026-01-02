@@ -25,6 +25,11 @@ export class VillageController {
     return this.service.getVillages();
   }
 
+  @Post('file')
+  async getVillagesFromApi() {
+    return this.service.processVillageFile();
+  }
+
   @Post()
   async createVillage(@Body() data: VillageDto) {
     return this.service.createVillage(data);

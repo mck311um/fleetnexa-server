@@ -5,15 +5,28 @@ import { CountryDto } from './country.dto.js';
 import { FormatterService } from '../../../common/formatter/formatter.service.js';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import axios, { AxiosInstance } from 'axios';
+import { ConfigService } from '@nestjs/config';
+import { CSCCountry } from 'src/types/csc.data.js';
 
 @Injectable()
 export class CountryService {
   private readonly logger = new Logger(CountryService.name);
+  private readonly api: AxiosInstance;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly formatter: FormatterService,
-  ) {}
+    private readonly config: ConfigService,
+  ) {
+    this.api = axios.create({
+      baseURL: this.config.get<string>('CSC_API_URL'),
+      headers: {
+        'X-CSCAPI-KEY': this.config.get<string>('CSC_API_KEY'),
+        'Content-Type': 'application/json',
+      },
+    });
+  }
 
   async getCountries() {
     try {
@@ -28,6 +41,38 @@ export class CountryService {
       });
     } catch (error) {
       this.logger.error('Error fetching countries', error);
+      throw error;
+    }
+  }
+
+  async getCountriesFromApi() {
+    try {
+      const res = await this.api.get('countries');
+
+      for (const item of res.data) {
+        await this.prisma.country.upsert({
+          where: {
+            code: item.iso2,
+          },
+          update: {
+            country: item.name,
+            phoneCode: item.phonecode,
+            iso3: item.iso3,
+            cscId: item.id,
+            currency: item.currency,
+          },
+          create: {
+            cscId: item.id,
+            iso3: item.iso3,
+            country: item.name,
+            code: item.iso2,
+            phoneCode: item.phonecode,
+            currency: item.currency,
+          },
+        });
+      }
+    } catch (error) {
+      this.logger.error('Error fetching countries from external API', error);
       throw error;
     }
   }

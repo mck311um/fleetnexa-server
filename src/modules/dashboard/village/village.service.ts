@@ -11,6 +11,9 @@ import { VillageDto } from './village.dto.js';
 import { Country, State } from '../../../generated/prisma/client.js';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import XLSX from 'xlsx';
 
 @Injectable()
 export class VillageService {
@@ -241,6 +244,86 @@ export class VillageService {
       };
     } catch (error) {
       this.logger.error('Error deleting village', error);
+      throw error;
+    }
+  }
+
+  async processVillageFile() {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const filePath = path.join(__dirname, '../../../docs/cities.xlsx');
+
+    try {
+      const workbook = XLSX.readFile(filePath);
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const citiesData = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1,
+      });
+
+      citiesData.shift();
+
+      for (const row of citiesData) {
+        const [id, village, country, state] = row as any[];
+
+        const foundCountry = await this.prisma.country.findFirst({
+          where: {
+            country: { equals: country, mode: 'insensitive' },
+          },
+        });
+
+        if (!foundCountry) {
+          this.logger.warn(
+            `Country not found for city: ${village}, country: ${country}`,
+          );
+          continue;
+        }
+
+        const foundState = await this.prisma.state.findFirst({
+          where: {
+            state: { equals: state, mode: 'insensitive' },
+            countryId: foundCountry.id,
+          },
+        });
+
+        if (!foundState) {
+          this.logger.warn(
+            `State "${state}" not found for country "${country} while processing city: ${village}"`,
+          );
+          continue;
+        }
+
+        const existingCity = await this.prisma.village.findFirst({
+          where: {
+            village: { equals: village, mode: 'insensitive' },
+            stateId: foundState.id,
+          },
+        });
+
+        if (existingCity) {
+          await this.prisma.village.update({
+            where: { id: existingCity.id },
+            data: {
+              village,
+              cscId: String(id),
+            },
+          });
+          this.logger.log(`Updated existing city: ${village}`);
+        } else {
+          await this.prisma.village.create({
+            data: {
+              village,
+              cscId: String(id),
+              stateId: foundState.id,
+            },
+          });
+          this.logger.log(`Created new city: ${village}`);
+        }
+      }
+
+      return { message: 'City data processed successfully' };
+    } catch (error) {
+      this.logger.error('Error processing cities file', error);
       throw error;
     }
   }

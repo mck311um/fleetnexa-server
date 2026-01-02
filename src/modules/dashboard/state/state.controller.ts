@@ -25,6 +25,11 @@ export class StateController {
     return this.service.getStates();
   }
 
+  @Get('api')
+  async getStatesFromApi() {
+    return this.service.getStatesFromApi();
+  }
+
   @Post()
   async createState(@Body() data: StateDto) {
     return this.service.createState(data);
