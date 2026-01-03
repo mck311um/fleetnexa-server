@@ -302,7 +302,9 @@ export class VillageService {
           },
         });
 
-        if (existingCity) {
+        if (existingCity?.cscId) {
+          this.logger.log(`City already exists with cscId: ${village}`);
+        } else if (existingCity && !existingCity.cscId) {
           await this.prisma.village.update({
             where: { id: existingCity.id },
             data: {
@@ -310,7 +312,7 @@ export class VillageService {
               cscId: String(id),
             },
           });
-          this.logger.log(`Updated existing city: ${village}`);
+          this.logger.log(`Updated existing city with cscId: ${village}`);
         } else {
           await this.prisma.village.create({
             data: {
