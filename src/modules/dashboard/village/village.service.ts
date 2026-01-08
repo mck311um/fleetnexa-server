@@ -1,0 +1,334 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <> */
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { FormatterService } from '../../../common/formatter/formatter.service.js';
+import { PrismaService } from '../../../prisma/prisma.service.js';
+import { VillageDto } from './village.dto.js';
+import { Country, State } from '../../../generated/prisma/client.js';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import axios from 'axios';
+import XLSX from 'xlsx';
+
+@Injectable()
+export class VillageService {
+  private readonly logger = new Logger(VillageService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly formatter: FormatterService,
+  ) {}
+
+  async getVillages() {
+    try {
+      return this.prisma.village.findMany({
+        include: {
+          state: {
+            include: {
+              country: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      this.logger.error('Error fetching villages', error);
+      throw error;
+    }
+  }
+
+  async createVillage(data: VillageDto) {
+    try {
+      let state: State | null = null;
+      let country: Country | null = null;
+
+      if (data.stateId) {
+        state = await this.prisma.state.findUnique({
+          where: { id: data.stateId },
+        });
+      } else if (data.state) {
+        state = await this.prisma.state.findFirst({
+          where: {
+            state: { equals: data.state, mode: 'insensitive' },
+          },
+        });
+      }
+
+      if (!state) {
+        this.logger.warn(`State with ID ${data.stateId} not found`);
+        throw new NotFoundException('State not found');
+      }
+
+      if (data.countryId) {
+        country = await this.prisma.country.findUnique({
+          where: { id: data.countryId },
+        });
+      } else {
+        country = await this.prisma.country.findFirst({
+          where: {
+            country: { equals: data.country, mode: 'insensitive' },
+          },
+        });
+      }
+      if (!country) {
+        this.logger.warn(`Country with ID ${data.countryId} not found`);
+        throw new NotFoundException('Country not found');
+      }
+
+      const existing = await this.prisma.village.findFirst({
+        where: {
+          village: { equals: data.village, mode: 'insensitive' },
+          stateId: state.id,
+          state: {
+            countryId: country.id,
+          },
+        },
+      });
+
+      if (existing) {
+        this.logger.warn(
+          `Village ${data.village} already exists in state ID ${state.id}`,
+        );
+        throw new NotFoundException(
+          'Village already exists in the specified state',
+        );
+      }
+
+      const village = await this.formatter.formatToTitleCase(data.village);
+
+      await this.prisma.village.create({
+        data: {
+          village,
+          stateId: state.id,
+        },
+      });
+
+      const villages = await this.getVillages();
+
+      return {
+        message: 'Village created successfully',
+        villages,
+      };
+    } catch (error) {
+      this.logger.error('Error creating village', error);
+      throw error;
+    }
+  }
+
+  async bulkCreateVillages(data: any[]) {
+    try {
+      const failedRows: { item: any; errors?: any; error?: string }[] = [];
+
+      for (const item of data) {
+        const instance: VillageDto = plainToInstance(VillageDto, item);
+        const errors = await validate(instance);
+
+        if (errors.length > 0) {
+          failedRows.push({ item, errors });
+          this.logger.warn(
+            `Validation failed for village: ${JSON.stringify(item)}`,
+          );
+          continue;
+        }
+
+        try {
+          await this.createVillage(instance);
+        } catch (error) {
+          failedRows.push({ item, error: error.message });
+          this.logger.warn(
+            `Skipping village due to error: ${JSON.stringify(item)} - Error: ${error.message}`,
+          );
+        }
+      }
+
+      const villages = await this.getVillages();
+      return {
+        message: 'Bulk village upload completed',
+        villages,
+      };
+    } catch (error) {
+      this.logger.error('Error in bulk creating villages', error);
+      throw error;
+    }
+  }
+
+  async updateVillage(data: VillageDto) {
+    try {
+      const existing = await this.prisma.village.findUnique({
+        where: { id: data.id },
+      });
+
+      if (!existing) {
+        this.logger.warn(`Village with ID ${data.id} not found`);
+        throw new NotFoundException('Village not found');
+      }
+
+      const stateId = data.stateId || existing.stateId;
+      const state = await this.prisma.state.findUnique({
+        where: { id: stateId },
+      });
+
+      if (!state) {
+        this.logger.warn(`State with ID ${stateId} not found`);
+        throw new NotFoundException('State not found');
+      }
+
+      const village = await this.formatter.formatToTitleCase(data.village);
+
+      await this.prisma.village.update({
+        where: { id: data.id },
+        data: {
+          village,
+          stateId: state.id,
+        },
+      });
+
+      const villages = await this.getVillages();
+
+      return {
+        message: 'Village updated successfully',
+        villages,
+      };
+    } catch (error) {
+      this.logger.error('Error updating village', error);
+      throw error;
+    }
+  }
+
+  async deleteVillage(id: string) {
+    try {
+      const existing = await this.prisma.village.findUnique({
+        where: { id },
+        include: {
+          _count: {
+            select: {
+              customerAddresses: true,
+              presetLocations: true,
+              storefrontUser: true,
+            },
+          },
+        },
+      });
+
+      if (!existing) {
+        this.logger.warn(`Village with ID ${id} not found`);
+        throw new NotFoundException('Village not found');
+      }
+
+      if (
+        existing._count.customerAddresses > 0 ||
+        existing._count.presetLocations > 0 ||
+        existing._count.storefrontUser > 0
+      ) {
+        this.logger.warn(
+          `Village with ID ${id} cannot be deleted due to existing dependencies`,
+        );
+        throw new ConflictException(
+          'Village cannot be deleted due to existing dependencies',
+        );
+      }
+
+      await this.prisma.village.delete({
+        where: { id },
+      });
+
+      const villages = await this.getVillages();
+
+      return {
+        message: 'Village deleted successfully',
+        villages,
+      };
+    } catch (error) {
+      this.logger.error('Error deleting village', error);
+      throw error;
+    }
+  }
+
+  async processVillageFile() {
+    const fileUrl =
+      'https://devvize-services.s3.us-east-1.amazonaws.com/cities.xlsx';
+
+    try {
+      const response = await axios.get(fileUrl, {
+        responseType: 'arraybuffer',
+      });
+
+      const workbook = XLSX.read(response.data, { type: 'buffer' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const citiesData = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1,
+      });
+
+      citiesData.shift();
+
+      for (const row of citiesData) {
+        const [id, village, country, state] = row as any[];
+
+        const foundCountry = await this.prisma.country.findFirst({
+          where: {
+            country: { equals: country, mode: 'insensitive' },
+          },
+        });
+
+        if (!foundCountry) {
+          this.logger.warn(
+            `Country not found for city: ${village}, country: ${country}`,
+          );
+          continue;
+        }
+
+        const foundState = await this.prisma.state.findFirst({
+          where: {
+            state: { equals: state, mode: 'insensitive' },
+            countryId: foundCountry.id,
+          },
+        });
+
+        if (!foundState) {
+          this.logger.warn(
+            `State "${state}" not found for country "${country} while processing city: ${village}"`,
+          );
+          continue;
+        }
+
+        const existingCity = await this.prisma.village.findFirst({
+          where: {
+            village: { equals: village, mode: 'insensitive' },
+            stateId: foundState.id,
+          },
+        });
+
+        if (existingCity?.cscId) {
+          this.logger.log(`City already exists with cscId: ${village}`);
+        } else if (existingCity && !existingCity.cscId) {
+          await this.prisma.village.update({
+            where: { id: existingCity.id },
+            data: {
+              village,
+              cscId: String(id),
+            },
+          });
+          this.logger.log(`Updated existing city with cscId: ${village}`);
+        } else {
+          await this.prisma.village.create({
+            data: {
+              village,
+              cscId: String(id),
+              stateId: foundState.id,
+            },
+          });
+          this.logger.log(`Created new city: ${village}`);
+        }
+      }
+
+      return { message: 'City data processed successfully' };
+    } catch (error) {
+      this.logger.error('Error processing cities file', error);
+      throw error;
+    }
+  }
+}

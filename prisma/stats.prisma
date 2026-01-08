@@ -1,0 +1,63 @@
+model TenantWeeklyStats {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId  String
+  week      Int
+  year      Int
+  stat      StatItem
+  value     Float
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, week, year, stat])
+}
+
+model TenantYearlyStats {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId  String
+  year      Int
+  stat      StatItem
+  value     Float
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, year, stat])
+}
+
+model TenantMonthlyStats {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId  String
+  month     Int
+  year      Int
+  stat      StatItem
+  value     Float
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, month, year, stat])
+}
+
+model TenantMonthlyRentalStats {
+  id        String       @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId  String
+  month     Int
+  year      Int
+  stat      StatItem
+  status    RentalStatus
+  value     Float
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  tenant    Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, status, month, year, stat])
+}

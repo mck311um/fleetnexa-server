@@ -1,0 +1,112 @@
+model Customer {
+  id             String                 @id @default(dbgenerated("gen_random_uuid()"))
+  firstName      String
+  lastName       String
+  gender         String
+  dateOfBirth    DateTime
+  email          String?
+  phone          String
+  tenantId       String
+  profileImage   String?
+  status         CustomerStatus         @default(ACTIVE)
+  experience     Int?
+  isActive       Boolean                @default(false)
+  isDeleted      Boolean                @default(false)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime?              @updatedAt
+  updatedBy      String?
+  storefrontId   String?
+  storefrontUser StorefrontUser?        @relation(fields: [storefrontId], references: [id])
+  tenant         Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  address        CustomerAddress?
+  documents      CustomerDocument?
+  apps           CustomerMessengerApp[]
+  violations     CustomerViolation[]
+  license        DriverLicense?
+  invoices       Invoice[]
+  payments       Payment[]
+  refunds        Refund[]
+  rentalActivity RentalActivity[]
+  agreements     RentalAgreement[]
+  charges        RentalCharge[]
+  drivers        RentalDriver[]
+  damages        VehicleDamage[]
+  paymentReceipts PaymentReceipt[]
+
+  @@unique([tenantId, storefrontId])
+}
+
+model CustomerMessengerApp {
+  id           String       @id @default(dbgenerated("gen_random_uuid()"))
+  customerId   String
+  appId        String
+  account      String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime?    @updatedAt
+  messengerApp MessengerApp @relation(fields: [appId], references: [id])
+  customer     Customer     @relation(fields: [customerId], references: [id])
+}
+
+model CustomerAddress {
+  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  street     String?
+  countryId  String?
+  customerId String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
+  stateId    String?
+  villageId  String?
+  country    Country?  @relation(fields: [countryId], references: [id])
+  customer   Customer  @relation(fields: [customerId], references: [id])
+  state      State?    @relation(fields: [stateId], references: [id])
+  village    Village?  @relation(fields: [villageId], references: [id])
+}
+
+model CustomerDocument {
+  id             String       @id @default(dbgenerated("gen_random_uuid()"))
+  documentId     String
+  customerId     String       @unique
+  documentNumber String
+  issuedDate     DateTime
+  expiryDate     DateTime
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime?    @updatedAt
+  createdBy      String?
+  updatedBy      String?
+  documents      String[]
+  notes          String?
+  customer       Customer     @relation(fields: [customerId], references: [id])
+  document       DocumentType @relation(fields: [documentId], references: [id])
+}
+
+model DriverLicense {
+  id            String        @id @default(dbgenerated("gen_random_uuid()"))
+  classId       String?
+  countryId     String?
+  customerId    String        @unique
+  licenseNumber String        @unique
+  licenseExpiry DateTime
+  licenseIssued DateTime?
+  image         String?
+  class         LicenseClass? @relation(fields: [classId], references: [id])
+  country       Country?      @relation(fields: [countryId], references: [id])
+  customer      Customer      @relation(fields: [customerId], references: [id])
+}
+
+model CustomerViolation {
+  id            String          @id @default(dbgenerated("gen_random_uuid()"))
+  violationId   String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime?       @updatedAt
+  createdBy     String?
+  updatedBy     String?
+  customerId    String
+  tenantId      String
+  notes         String?
+  violationDate DateTime
+  deletedAt     DateTime?
+  isDeleted     Boolean         @default(false)
+  customer      Customer        @relation(fields: [customerId], references: [id])
+  tenant        Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  violation     TenantViolation @relation(fields: [violationId], references: [id])
+}

@@ -1,0 +1,25 @@
+model Form {
+  id        String        @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId  String
+  type      FormType
+  expiresAt DateTime?
+  submitted Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime?     @updatedAt
+  tenant    Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  response  FormResponse?
+}
+
+model FormResponse {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  formId      String   @unique
+  data        Json
+  submittedAt DateTime @default(now())
+  form        Form     @relation(fields: [formId], references: [id])
+}
+
+enum FormType {
+  customer_info
+  driver_registration
+  vehicle_inspection
+}

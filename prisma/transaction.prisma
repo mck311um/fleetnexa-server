@@ -1,0 +1,98 @@
+model Transactions {
+  id              String          @id @default(dbgenerated("gen_random_uuid()"))
+  number          String?         @unique
+  amount          Float
+  type            TransactionType
+  isDeleted       Boolean         @default(false)
+  transactionDate DateTime        @default(now())
+  createdAt       DateTime        @default(now())
+  createdBy       String?
+  paymentId       String?         @unique
+  tenantId        String
+  rentalId        String?
+  details         String?
+  refundId        String?         @unique
+  expenseId       String?         @unique
+  updatedAt       DateTime?       @updatedAt
+  updatedBy       String?
+  user            User?           @relation(fields: [createdBy], references: [username])
+  expense         Expense?        @relation(fields: [expenseId], references: [id])
+  payment         Payment?        @relation(fields: [paymentId], references: [id])
+  refund          Refund?         @relation(fields: [refundId], references: [id])
+  rental          Rental?         @relation(fields: [rentalId], references: [id])
+  tenant          Tenant          @relation(fields: [tenantId], references: [id])
+
+  @@unique([number, tenantId], name: "transactionNumber_tenantId")
+}
+
+model Payment {
+  id              String        @id @default(dbgenerated("gen_random_uuid()"))
+  amount          Float
+  paymentMethodId String
+  paymentTypeId   String
+  tenantId        String
+  rentalId        String
+  notes           String?
+  isDeleted       Boolean       @default(false) 
+  paymentDate     DateTime
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime?     @updatedAt
+  updatedBy       String?
+  customerId      String?
+  currencyId      String?
+  payer           String?
+  payment         String?
+  currency        Currency?     @relation(fields: [currencyId], references: [id])
+  customer        Customer?     @relation(fields: [customerId], references: [id])
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  paymentType     PaymentType   @relation(fields: [paymentTypeId], references: [id])
+  rental          Rental        @relation(fields: [rentalId], references: [id])
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  transaction     Transactions?
+  receipt         PaymentReceipt?
+}
+
+model Refund {
+  id          String        @id @default(dbgenerated("gen_random_uuid()"))
+  amount      Float
+  tenantId    String
+  rentalId    String?
+  reason      String?
+  isDeleted   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?     @updatedAt
+  refundDate  DateTime      @default(now())
+  createdBy   String?
+  customerId  String?
+  payee       String?
+  refund      String?
+  payment     String?
+  updatedBy   String?
+  customer    Customer?     @relation(fields: [customerId], references: [id])
+  rental      Rental?       @relation(fields: [rentalId], references: [id])
+  tenant      Tenant        @relation(fields: [tenantId], references: [id])
+  transaction Transactions?
+}
+
+model Expense {
+  id            String              @id @default(dbgenerated("gen_random_uuid()"))
+  tenantId      String
+  vehicleId     String?
+  vendorId      String?
+  amount        Float
+  expenseDate   DateTime
+  notes         String?
+  isDeleted     Boolean             @default(false)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime?           @updatedAt
+  createdBy     String?
+  maintenanceId String?
+  expense       String?
+  payee         String?
+  user          User?               @relation(fields: [createdBy], references: [username])
+  maintenance   VehicleMaintenance? @relation(fields: [maintenanceId], references: [id])
+  tenant        Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  vehicle       Vehicle?            @relation(fields: [vehicleId], references: [id])
+  vendor        TenantVendor?       @relation(fields: [vendorId], references: [id])
+  Transactions  Transactions?
+}
