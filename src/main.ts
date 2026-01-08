@@ -39,17 +39,26 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentFactory);
 
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:5173',
-      'https://dev.rentnexa.com',
-      'https://rentnexa.com',
-      'https://dev.fleetnexa.com',
-      'https://dev.app.fleetnexa.com',
-      'https://app.fleetnexa.com',
-      'https://fleetnexa.com',
-      'https://admin.rentnexa.com',
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      const allowedDomains = [
+        'localhost:3000',
+        'localhost:5173',
+        'rentnexa.com',
+        'www.rentnexa.com',
+        'fleetnexa.com',
+        'www.fleetnexa.com',
+        'devvize.com',
+        'www.devvize.com',
+      ];
+
+      const isAllowed = allowedDomains.some((domain) =>
+        origin.endsWith(domain),
+      );
+
+      callback(null, isAllowed);
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
     allowedHeaders: [
