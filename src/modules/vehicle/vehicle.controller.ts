@@ -40,6 +40,12 @@ export class VehicleController {
     return this.service.getVehicleForStorefrontById(id);
   }
 
+  @Get('storefront/tenant/:tenantId')
+  @UseGuards(ApiGuard)
+  async getTenantStorefrontVehicles(@Param('tenantId') tenantId: string) {
+    return this.service.getTenantStorefrontVehicles(tenantId);
+  }
+
   @Get('plate/:plate')
   @UseGuards(AuthGuard)
   async getVehicleByLicensePlate(
