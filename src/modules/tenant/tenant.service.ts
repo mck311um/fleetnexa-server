@@ -1,369 +1,378 @@
 import {
-	ConflictException,
-	Injectable,
-	Logger,
-	NotFoundException,
-} from "@nestjs/common";
-import { GeneratorService } from "../../common/generator/generator.service.js";
-import { Tenant, User } from "../../generated/prisma/client.js";
-import { PrismaService } from "../../prisma/prisma.service.js";
-import { TenantUserService } from "../user/tenant-user/tenant-user.service.js";
-import { UserRoleService } from "../user/tenant-user/modules/user-role/user-role.service.js";
-import { CreateTenantDto } from "./dto/create-tenant.dto.js";
-import { TenantExtraService } from "./tenant-extra/tenant-extra.service.js";
-import { TenantLocationService } from "./tenant-location/tenant-location.service.js";
-import { TenantRepository } from "./tenant.repository.js";
-import { UpdateTenantDto } from "./dto/update-tenant.dto.js";
-import { UpdateStorefrontDto } from "./dto/update-storefront.dto.js";
-import { TenantNotificationService } from "./tenant-notification/tenant-notification.service.js";
-import { TenantVendorService } from "./tenant-vendor/tenant-vendor.service.js";
-import { VehicleService } from "../vehicle/vehicle.service.js";
-import { TenantCustomerService } from "../customer/tenant-customer/tenant-customer.service.js";
-import { TenantActivityService } from "./tenant-activity/tenant-activity.service.js";
-import { TenantRatesService } from "./tenant-rates/tenant-rates.service.js";
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { GeneratorService } from '../../common/generator/generator.service.js';
+import { Tenant, User } from '../../generated/prisma/client.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { TenantUserService } from '../user/tenant-user/tenant-user.service.js';
+import { UserRoleService } from '../user/tenant-user/modules/user-role/user-role.service.js';
+import { CreateTenantDto } from './dto/create-tenant.dto.js';
+import { TenantExtraService } from './tenant-extra/tenant-extra.service.js';
+import { TenantLocationService } from './tenant-location/tenant-location.service.js';
+import { TenantRepository } from './tenant.repository.js';
+import { UpdateTenantDto } from './dto/update-tenant.dto.js';
+import { UpdateStorefrontDto } from './dto/update-storefront.dto.js';
+import { TenantNotificationService } from './tenant-notification/tenant-notification.service.js';
+import { TenantVendorService } from './tenant-vendor/tenant-vendor.service.js';
+import { VehicleService } from '../vehicle/vehicle.service.js';
+import { TenantCustomerService } from '../customer/tenant-customer/tenant-customer.service.js';
+import { TenantActivityService } from './tenant-activity/tenant-activity.service.js';
+import { TenantRatesService } from './tenant-rates/tenant-rates.service.js';
 
 @Injectable()
 export class TenantService {
-	private readonly logger = new Logger(TenantService.name);
+  private readonly logger = new Logger(TenantService.name);
 
-	constructor(
-		private readonly prisma: PrismaService,
-		private readonly generator: GeneratorService,
-		private readonly locationService: TenantLocationService,
-		private readonly userRoleService: UserRoleService,
-		private readonly userService: TenantUserService,
-		private readonly extraService: TenantExtraService,
-		private readonly tenantRepo: TenantRepository,
-		private readonly notifications: TenantNotificationService,
-		private readonly locations: TenantLocationService,
-		private readonly vendors: TenantVendorService,
-		private readonly vehicles: VehicleService,
-		private readonly customers: TenantCustomerService,
-		private readonly activities: TenantActivityService,
-		private readonly rates: TenantRatesService,
-		private readonly roles: UserRoleService,
-	) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly generator: GeneratorService,
+    private readonly locationService: TenantLocationService,
+    private readonly userRoleService: UserRoleService,
+    private readonly userService: TenantUserService,
+    private readonly extraService: TenantExtraService,
+    private readonly tenantRepo: TenantRepository,
+    private readonly notifications: TenantNotificationService,
+    private readonly locations: TenantLocationService,
+    private readonly vendors: TenantVendorService,
+    private readonly vehicles: VehicleService,
+    private readonly customers: TenantCustomerService,
+    private readonly activities: TenantActivityService,
+    private readonly rates: TenantRatesService,
+    private readonly roles: UserRoleService,
+  ) {}
 
-	async getCurrentTenant(tenant: Tenant, user: User) {
-		try {
-			const extras = await this.extraService.getTenantExtras(tenant);
-			const locations = await this.locations.getAllTenantLocations(tenant);
-			const vendors = await this.vendors.getTenantVendors(tenant);
-			const vehicles = await this.vehicles.getTenantVehicles(tenant);
-			const customers = await this.customers.getCustomers(tenant);
-			const activity = await this.activities.getTenantActivities(tenant);
-			const currencyRates = await this.rates.getTenantRates(tenant);
-			const notifications = await this.notifications.getTenantNotifications(
-				tenant,
-				user,
-			);
-			const users = await this.userService.getTenantUsers(tenant);
-			const roles = await this.roles.getAllRoles(tenant);
+  async getCurrentTenant(tenant: Tenant, user: User) {
+    try {
+      const extras = await this.extraService.getTenantExtras(tenant);
+      const locations = await this.locations.getAllTenantLocations(tenant);
+      const vendors = await this.vendors.getTenantVendors(tenant);
+      const vehicles = await this.vehicles.getTenantVehicles(tenant);
+      const customers = await this.customers.getCustomers(tenant);
+      const activity = await this.activities.getTenantActivities(tenant);
+      const currencyRates = await this.rates.getTenantRates(tenant);
+      const notifications = await this.notifications.getTenantNotifications(
+        tenant,
+        user,
+      );
+      const users = await this.userService.getTenantUsers(tenant);
+      const roles = await this.roles.getAllRoles(tenant);
 
-			const data = {
-				tenant,
-				extras,
-				locations,
-				notifications,
-				vendors,
-				vehicles,
-				customers,
-				activity,
-				currencyRates,
-				users,
-				roles,
-			};
+      const data = {
+        tenant,
+        extras,
+        locations,
+        notifications,
+        vendors,
+        vehicles,
+        customers,
+        activity,
+        currencyRates,
+        users,
+        roles,
+      };
 
-			return data;
-		} catch (error) {
-			this.logger.error("Failed to get current tenant", error);
-			throw error;
-		}
-	}
+      return data;
+    } catch (error) {
+      this.logger.error('Failed to get current tenant', error);
+      throw error;
+    }
+  }
 
-	async getTenantById(tenantId: string) {
-		try {
-			const tenant = await this.tenantRepo.getTenantById(tenantId);
+  async getTenantById(tenantId: string) {
+    try {
+      const tenant = await this.tenantRepo.getTenantById(tenantId);
 
-			if (!tenant) {
-				this.logger.warn(`Tenant with ID ${tenantId} not found.`);
-				throw new NotFoundException("Tenant not found");
-			}
+      if (!tenant) {
+        this.logger.warn(`Tenant with ID ${tenantId} not found.`);
+        throw new NotFoundException('Tenant not found');
+      }
 
-			return tenant;
-		} catch (error) {
-			this.logger.error("Failed to get tenant by ID", error);
-			throw error;
-		}
-	}
+      return tenant;
+    } catch (error) {
+      this.logger.error('Failed to get tenant by ID', error);
+      throw error;
+    }
+  }
 
-	async getStorefrontTenants() {
-		try {
-			return await this.tenantRepo.getStorefrontTenants();
-		} catch (error) {
-			this.logger.error("Failed to get storefront tenants", error);
-			throw error;
-		}
-	}
+  async getStorefrontTenants() {
+    try {
+      return await this.tenantRepo.getStorefrontTenants();
+    } catch (error) {
+      this.logger.error('Failed to get storefront tenants', error);
+      throw error;
+    }
+  }
 
-	async createTenant(data: CreateTenantDto) {
-		try {
-			const { tenant, country } = await this.prisma.$transaction(async (tx) => {
-				const existingTenant = await tx.tenant.findUnique({
-					where: { email: data.companyEmail },
-				});
+  async getStorefrontTenantBySlug(slug: string) {
+    try {
+      return await this.tenantRepo.getTenantBySlug(slug);
+    } catch (error) {
+      this.logger.error('Failed to get storefront tenant by slug', error);
+      throw error;
+    }
+  }
 
-				if (existingTenant) {
-					this.logger.warn(
-						`Tenant creation failed: Tenant ${existingTenant.tenantName} with email ${data.companyEmail} already exists.`,
-					);
-					throw new ConflictException(
-						"This email is already associated with another Rental Car Company.",
-					);
-				}
+  async createTenant(data: CreateTenantDto) {
+    try {
+      const { tenant, country } = await this.prisma.$transaction(async (tx) => {
+        const existingTenant = await tx.tenant.findUnique({
+          where: { email: data.companyEmail },
+        });
 
-				const country = await tx.country.findUnique({
-					where: { code: data.country },
-				});
-				if (!country) {
-					this.logger.warn(
-						`Tenant creation failed: Country with code ${data.country} not found.`,
-					);
-					throw new NotFoundException("Invalid country code provided.");
-				}
+        if (existingTenant) {
+          this.logger.warn(
+            `Tenant creation failed: Tenant ${existingTenant.tenantName} with email ${data.companyEmail} already exists.`,
+          );
+          throw new ConflictException(
+            'This email is already associated with another Rental Car Company.',
+          );
+        }
 
-				const code = await this.generator.generateTenantCode(data.tenantName);
-				const slug = await this.generator.generateTenantSlug(data.tenantName);
+        const country = await tx.country.findUnique({
+          where: { code: data.country },
+        });
+        if (!country) {
+          this.logger.warn(
+            `Tenant creation failed: Country with code ${data.country} not found.`,
+          );
+          throw new NotFoundException('Invalid country code provided.');
+        }
 
-				const tenant = await tx.tenant.create({
-					data: {
-						tenantCode: code,
-						tenantName: data.tenantName,
-						slug,
-						email: data.companyEmail,
-						number: data.phoneNumber,
-						logo: "https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/placeholder_tenant.jpg",
-						storefrontEnabled: false,
-						createdAt: new Date(),
-					},
-				});
+        const code = await this.generator.generateTenantCode(data.tenantName);
+        const slug = await this.generator.generateTenantSlug(data.tenantName);
 
-				tx.address.create({
-					data: {
-						tenantId: tenant.id,
-						countryId: country.id,
-					},
-				});
+        const tenant = await tx.tenant.create({
+          data: {
+            tenantCode: code,
+            tenantName: data.tenantName,
+            slug,
+            email: data.companyEmail,
+            number: data.phoneNumber,
+            logo: 'https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/placeholder_tenant.jpg',
+            storefrontEnabled: false,
+            createdAt: new Date(),
+          },
+        });
 
-				return { tenant, country };
-			});
+        tx.address.create({
+          data: {
+            tenantId: tenant.id,
+            countryId: country.id,
+          },
+        });
 
-			this.logger.log(data.user);
+        return { tenant, country };
+      });
 
-			await this.locationService.initializeTenantLocation(country, tenant);
-			const role = await this.userRoleService.createDefaultRole(tenant);
+      this.logger.log(data.user);
 
-			data.user.roleId = role.id;
-			const user = await this.userService.createUser(data.user, tenant);
+      await this.locationService.initializeTenantLocation(country, tenant);
+      const role = await this.userRoleService.createDefaultRole(tenant);
 
-			// if (user.email) {
-			//   const emailData: WelcomeEmailDto = {
-			//     username: user.username,
-			//     name: `${user.firstName} ${user.lastName}`,
-			//     email: user.email,
-			//   };
+      data.user.roleId = role.id;
+      const user = await this.userService.createUser(data.user, tenant);
 
-			//   await this.emailService.sendWelcomeEmail(emailData, tenant);
-			// }
+      // if (user.email) {
+      //   const emailData: WelcomeEmailDto = {
+      //     username: user.username,
+      //     name: `${user.firstName} ${user.lastName}`,
+      //     email: user.email,
+      //   };
 
-			return tenant;
-		} catch (error) {
-			this.logger.error(error, "Failed to create tenant", {
-				email: data.companyEmail,
-				tenantName: data.tenantName,
-			});
-			throw error;
-		}
-	}
+      //   await this.emailService.sendWelcomeEmail(emailData, tenant);
+      // }
 
-	async updateTenant(data: UpdateTenantDto, tenant: Tenant) {
-		try {
-			await this.prisma.$transaction(async (tx) => {
-				await tx.address.upsert({
-					where: { tenantId: tenant.id },
-					update: {
-						street: data.address.street,
-						village: { connect: { id: data.address.villageId } },
-						state: { connect: { id: data.address.stateId } },
-						country: { connect: { id: data.address.countryId } },
-					},
-					create: {
-						tenant: { connect: { id: tenant.id } },
-						street: data.address.street,
-						village: { connect: { id: data.address.villageId } },
-						state: { connect: { id: data.address.stateId } },
-						country: { connect: { id: data.address.countryId } },
-					},
-				});
+      return tenant;
+    } catch (error) {
+      this.logger.error(error, 'Failed to create tenant', {
+        email: data.companyEmail,
+        tenantName: data.tenantName,
+      });
+      throw error;
+    }
+  }
 
-				await tx.tenant.update({
-					where: { id: tenant.id },
-					data: {
-						currencyId: data.currencyId,
-						email: data.email,
-						invoiceFootNotes: data.invoiceFootNotes,
-						invoiceSequenceId: data.invoiceSequenceId,
-						logo: data.logo,
-						number: data.number,
-						whatsappNumber: data.whatsappNumber,
-						tenantName: data.tenantName,
-						financialYearStart: data.financialYearStart,
-						setupCompleted: true,
-						securityDeposit: data.securityDeposit,
-						additionalDriverFee: data.additionalDriverFee,
-						daysInMonth: data.daysInMonth,
-						paymentMethods: {
-							set: data.paymentMethods.map((method: any) => ({
-								id: method,
-							})),
-						},
-						startTime: data.startTime,
-						endTime: data.endTime,
-					},
-				});
+  async updateTenant(data: UpdateTenantDto, tenant: Tenant) {
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        await tx.address.upsert({
+          where: { tenantId: tenant.id },
+          update: {
+            street: data.address.street,
+            village: { connect: { id: data.address.villageId } },
+            state: { connect: { id: data.address.stateId } },
+            country: { connect: { id: data.address.countryId } },
+          },
+          create: {
+            tenant: { connect: { id: tenant.id } },
+            street: data.address.street,
+            village: { connect: { id: data.address.villageId } },
+            state: { connect: { id: data.address.stateId } },
+            country: { connect: { id: data.address.countryId } },
+          },
+        });
 
-				const cancellationPolicy = await tx.cancellationPolicy.upsert({
-					where: {
-						tenantId: tenant.id,
-					},
-					update: {
-						amount: data.cancellationPolicy?.amount || 0,
-						policy: data.cancellationPolicy?.policy || "fixed_amount",
-						minimumDays: data.cancellationPolicy?.minimumDays || 0,
-						bookingMinimumDays:
-							data.cancellationPolicy?.bookingMinimumDays || 0,
-					},
-					create: {
-						tenantId: tenant.id,
-						amount: data.cancellationPolicy?.amount || 0,
-						policy: data.cancellationPolicy?.policy || "fixed_amount",
-						minimumDays: data.cancellationPolicy?.minimumDays || 0,
-						bookingMinimumDays:
-							data.cancellationPolicy?.bookingMinimumDays || 0,
-					},
-				});
+        await tx.tenant.update({
+          where: { id: tenant.id },
+          data: {
+            currencyId: data.currencyId,
+            email: data.email,
+            invoiceFootNotes: data.invoiceFootNotes,
+            invoiceSequenceId: data.invoiceSequenceId,
+            logo: data.logo,
+            number: data.number,
+            whatsappNumber: data.whatsappNumber,
+            tenantName: data.tenantName,
+            financialYearStart: data.financialYearStart,
+            setupCompleted: true,
+            securityDeposit: data.securityDeposit,
+            additionalDriverFee: data.additionalDriverFee,
+            daysInMonth: data.daysInMonth,
+            paymentMethods: {
+              set: data.paymentMethods.map((method: any) => ({
+                id: method,
+              })),
+            },
+            startTime: data.startTime,
+            endTime: data.endTime,
+          },
+        });
 
-				const latePolicy = await tx.latePolicy.upsert({
-					where: {
-						tenantId: tenant.id,
-					},
-					update: {
-						amount: data.latePolicy?.amount || 0,
-						maxHours: data.latePolicy?.maxHours || 0,
-					},
-					create: {
-						tenantId: tenant.id,
-						amount: data.latePolicy?.amount || 0,
-						maxHours: data.latePolicy?.maxHours || 0,
-					},
-				});
+        const cancellationPolicy = await tx.cancellationPolicy.upsert({
+          where: {
+            tenantId: tenant.id,
+          },
+          update: {
+            amount: data.cancellationPolicy?.amount || 0,
+            policy: data.cancellationPolicy?.policy || 'fixed_amount',
+            minimumDays: data.cancellationPolicy?.minimumDays || 0,
+            bookingMinimumDays:
+              data.cancellationPolicy?.bookingMinimumDays || 0,
+          },
+          create: {
+            tenantId: tenant.id,
+            amount: data.cancellationPolicy?.amount || 0,
+            policy: data.cancellationPolicy?.policy || 'fixed_amount',
+            minimumDays: data.cancellationPolicy?.minimumDays || 0,
+            bookingMinimumDays:
+              data.cancellationPolicy?.bookingMinimumDays || 0,
+          },
+        });
 
-				await tx.tenant.update({
-					where: { id: tenant.id },
-					data: {
-						cancellationPolicyId: cancellationPolicy.id,
-						latePolicyId: latePolicy.id,
-					},
-				});
+        const latePolicy = await tx.latePolicy.upsert({
+          where: {
+            tenantId: tenant.id,
+          },
+          update: {
+            amount: data.latePolicy?.amount || 0,
+            maxHours: data.latePolicy?.maxHours || 0,
+          },
+          create: {
+            tenantId: tenant.id,
+            amount: data.latePolicy?.amount || 0,
+            maxHours: data.latePolicy?.maxHours || 0,
+          },
+        });
 
-				const usdRate = await tx.tenantCurrencyRate.findFirst({
-					where: { tenantId: tenant.id, currency: { code: "USD" } },
-				});
+        await tx.tenant.update({
+          where: { id: tenant.id },
+          data: {
+            cancellationPolicyId: cancellationPolicy.id,
+            latePolicyId: latePolicy.id,
+          },
+        });
 
-				const usd = await tx.currency.findUnique({
-					where: { code: "USD" },
-				});
+        const usdRate = await tx.tenantCurrencyRate.findFirst({
+          where: { tenantId: tenant.id, currency: { code: 'USD' } },
+        });
 
-				if (!usd) {
-					this.logger.warn(`USD currency not found for tenant ${tenant.id}`);
-					throw new NotFoundException("USD currency not found");
-				}
+        const usd = await tx.currency.findUnique({
+          where: { code: 'USD' },
+        });
 
-				if (usdRate) {
-					await tx.tenantCurrencyRate.update({
-						where: { id: usdRate.id },
-						data: {
-							toRate: data.fromUSDRate || 1.0,
-							fromRate: 1 / (data.fromUSDRate || 1.0),
-						},
-					});
-				} else {
-					await tx.tenantCurrencyRate.create({
-						data: {
-							tenantId: tenant.id,
-							currencyId: usd.id,
-							toRate: data.fromUSDRate || 1.0,
-							fromRate: 1 / (data.fromUSDRate || 1.0),
-						},
-					});
+        if (!usd) {
+          this.logger.warn(`USD currency not found for tenant ${tenant.id}`);
+          throw new NotFoundException('USD currency not found');
+        }
 
-					await tx.tenantCurrencyRate.create({
-						data: {
-							tenantId: tenant.id,
-							currencyId: data.currencyId,
-							toRate: 1,
-							fromRate: 1,
-						},
-					});
-				}
-			});
+        if (usdRate) {
+          await tx.tenantCurrencyRate.update({
+            where: { id: usdRate.id },
+            data: {
+              toRate: data.fromUSDRate || 1.0,
+              fromRate: 1 / (data.fromUSDRate || 1.0),
+            },
+          });
+        } else {
+          await tx.tenantCurrencyRate.create({
+            data: {
+              tenantId: tenant.id,
+              currencyId: usd.id,
+              toRate: data.fromUSDRate || 1.0,
+              fromRate: 1 / (data.fromUSDRate || 1.0),
+            },
+          });
 
-			const updateTenant = await this.tenantRepo.getTenantById(tenant.id);
+          await tx.tenantCurrencyRate.create({
+            data: {
+              tenantId: tenant.id,
+              currencyId: data.currencyId,
+              toRate: 1,
+              fromRate: 1,
+            },
+          });
+        }
+      });
 
-			return {
-				message: "Settings updated successfully",
-				tenant: updateTenant,
-			};
-		} catch (error) {
-			this.logger.error("Failed to update tenant", error);
-			throw error;
-		}
-	}
+      const updateTenant = await this.tenantRepo.getTenantById(tenant.id);
 
-	async updateStorefront(data: UpdateStorefrontDto, tenant: Tenant) {
-		try {
-			await this.prisma.tenant.update({
-				where: { id: tenant.id },
-				data: {
-					storefrontEnabled: data.storefrontEnabled,
-					description: data.description,
-					whatsappNotifications: data.whatsappNotifications,
-					emailNotifications: data.emailNotifications,
-				},
-			});
+      return {
+        message: 'Settings updated successfully',
+        tenant: updateTenant,
+      };
+    } catch (error) {
+      this.logger.error('Failed to update tenant', error);
+      throw error;
+    }
+  }
 
-			if (!data.storefrontEnabled) {
-				await this.prisma.vehicle.updateMany({
-					where: { tenantId: tenant.id, storefrontEnabled: true },
-					data: { storefrontEnabled: false },
-				});
-			}
+  async updateStorefront(data: UpdateStorefrontDto, tenant: Tenant) {
+    try {
+      await this.prisma.tenant.update({
+        where: { id: tenant.id },
+        data: {
+          storefrontEnabled: data.storefrontEnabled,
+          description: data.description,
+          whatsappNotifications: data.whatsappNotifications,
+          emailNotifications: data.emailNotifications,
+        },
+      });
 
-			const updatedTenant = await this.tenantRepo.getTenantById(tenant.id);
-			const vehicles = await this.vehicles.getTenantVehicles(tenant);
+      if (!data.storefrontEnabled) {
+        await this.prisma.vehicle.updateMany({
+          where: { tenantId: tenant.id, storefrontEnabled: true },
+          data: { storefrontEnabled: false },
+        });
+      }
 
-			return {
-				message: "Storefront settings updated successfully",
-				tenant: updatedTenant,
-				vehicles,
-			};
-		} catch (error) {
-			this.logger.error(error, "Failed to update storefront settings", {
-				tenantCode: tenant.tenantCode,
-				tenantId: tenant.id,
-				data,
-			});
-			throw error;
-		}
-	}
+      const updatedTenant = await this.tenantRepo.getTenantById(tenant.id);
+      const vehicles = await this.vehicles.getTenantVehicles(tenant);
+
+      return {
+        message: 'Storefront settings updated successfully',
+        tenant: updatedTenant,
+        vehicles,
+      };
+    } catch (error) {
+      this.logger.error(error, 'Failed to update storefront settings', {
+        tenantCode: tenant.tenantCode,
+        tenantId: tenant.id,
+        data,
+      });
+      throw error;
+    }
+  }
 }
