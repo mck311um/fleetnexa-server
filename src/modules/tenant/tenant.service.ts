@@ -115,6 +115,15 @@ export class TenantService {
     }
   }
 
+  async getStorefrontTenantByDomain(domain: string) {
+    try {
+      return await this.tenantRepo.getTenantByDomain(domain);
+    } catch (error) {
+      this.logger.error('Failed to get storefront tenant by slug', error);
+      throw error;
+    }
+  }
+
   async createTenant(data: CreateTenantDto) {
     try {
       const { tenant, country } = await this.prisma.$transaction(async (tx) => {

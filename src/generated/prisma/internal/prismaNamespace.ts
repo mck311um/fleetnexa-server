@@ -8515,6 +8515,7 @@ export const TenantScalarFieldEnum = {
   additionalDriverFee: 'additionalDriverFee',
   daysInMonth: 'daysInMonth',
   slug: 'slug',
+  subdomain: 'subdomain',
   merchantId: 'merchantId',
   businessVerified: 'businessVerified',
   emailVerified: 'emailVerified',
