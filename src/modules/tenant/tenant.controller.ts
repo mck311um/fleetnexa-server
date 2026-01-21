@@ -40,6 +40,12 @@ export class TenantController {
     return this.tenantService.getStorefrontTenantBySlug(slug);
   }
 
+  @Get('storefront/domain/:domain')
+  @UseGuards(ApiGuard)
+  getStorefrontTenantByDomain(@Param('domain') domain: string) {
+    return this.tenantService.getStorefrontTenantByDomain(domain);
+  }
+
   @Get(':id')
   getTenantById(@Param('id') id: string) {
     return this.tenantService.getTenantById(id);

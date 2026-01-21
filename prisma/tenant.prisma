@@ -25,6 +25,7 @@ model Tenant {
   additionalDriverFee  Float                      @default(0)
   daysInMonth          Int                        @default(28)
   slug                 String?                    @unique
+  subdomain            String?                    @unique
   merchantId           String?
   businessVerified      Boolean                    @default(false)
   emailVerified         Boolean                    @default(false)

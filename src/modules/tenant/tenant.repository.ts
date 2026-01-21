@@ -27,6 +27,13 @@ export class TenantRepository {
     });
   }
 
+  async getTenantByDomain(domain: string) {
+    return this.prisma.tenant.findFirst({
+      where: { subdomain: domain, storefrontEnabled: true, isDeleted: false },
+      select: this.getStorefrontSelectOptions(),
+    });
+  }
+
   private getTenantIncludeOptions(): Prisma.TenantInclude {
     return {
       address: { include: { village: true, state: true, country: true } },
@@ -70,6 +77,7 @@ export class TenantRepository {
       id: true,
       tenantName: true,
       slug: true,
+      subdomain: true,
       logo: true,
       rating: true,
       ratings: true,

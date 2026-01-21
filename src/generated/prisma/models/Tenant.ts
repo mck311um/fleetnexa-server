@@ -67,6 +67,7 @@ export type TenantMinAggregateOutputType = {
   additionalDriverFee: number | null
   daysInMonth: number | null
   slug: string | null
+  subdomain: string | null
   merchantId: string | null
   businessVerified: boolean | null
   emailVerified: boolean | null
@@ -105,6 +106,7 @@ export type TenantMaxAggregateOutputType = {
   additionalDriverFee: number | null
   daysInMonth: number | null
   slug: string | null
+  subdomain: string | null
   merchantId: string | null
   businessVerified: boolean | null
   emailVerified: boolean | null
@@ -143,6 +145,7 @@ export type TenantCountAggregateOutputType = {
   additionalDriverFee: number
   daysInMonth: number
   slug: number
+  subdomain: number
   merchantId: number
   businessVerified: number
   emailVerified: number
@@ -197,6 +200,7 @@ export type TenantMinAggregateInputType = {
   additionalDriverFee?: true
   daysInMonth?: true
   slug?: true
+  subdomain?: true
   merchantId?: true
   businessVerified?: true
   emailVerified?: true
@@ -235,6 +239,7 @@ export type TenantMaxAggregateInputType = {
   additionalDriverFee?: true
   daysInMonth?: true
   slug?: true
+  subdomain?: true
   merchantId?: true
   businessVerified?: true
   emailVerified?: true
@@ -273,6 +278,7 @@ export type TenantCountAggregateInputType = {
   additionalDriverFee?: true
   daysInMonth?: true
   slug?: true
+  subdomain?: true
   merchantId?: true
   businessVerified?: true
   emailVerified?: true
@@ -398,6 +404,7 @@ export type TenantGroupByOutputType = {
   additionalDriverFee: number
   daysInMonth: number
   slug: string | null
+  subdomain: string | null
   merchantId: string | null
   businessVerified: boolean
   emailVerified: boolean
@@ -459,6 +466,7 @@ export type TenantWhereInput = {
   additionalDriverFee?: Prisma.FloatFilter<"Tenant"> | number
   daysInMonth?: Prisma.IntFilter<"Tenant"> | number
   slug?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  subdomain?: Prisma.StringNullableFilter<"Tenant"> | string | null
   merchantId?: Prisma.StringNullableFilter<"Tenant"> | string | null
   businessVerified?: Prisma.BoolFilter<"Tenant"> | boolean
   emailVerified?: Prisma.BoolFilter<"Tenant"> | boolean
@@ -539,6 +547,7 @@ export type TenantOrderByWithRelationInput = {
   additionalDriverFee?: Prisma.SortOrder
   daysInMonth?: Prisma.SortOrder
   slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  subdomain?: Prisma.SortOrderInput | Prisma.SortOrder
   merchantId?: Prisma.SortOrderInput | Prisma.SortOrder
   businessVerified?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
@@ -601,6 +610,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   cancellationPolicyId?: string
   latePolicyId?: string
   slug?: string
+  subdomain?: string
   firmaWorkspaceId?: string
   AND?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   OR?: Prisma.TenantWhereInput[]
@@ -673,7 +683,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   verificationRequest?: Prisma.XOR<Prisma.VerificationRequestNullableScalarRelationFilter, Prisma.VerificationRequestWhereInput> | null
   paymentMethods?: Prisma.PaymentMethodListRelationFilter
   paymentReceipts?: Prisma.PaymentReceiptListRelationFilter
-}, "id" | "tenantCode" | "email" | "number" | "whatsappNumber" | "cancellationPolicyId" | "latePolicyId" | "slug" | "firmaWorkspaceId">
+}, "id" | "tenantCode" | "email" | "number" | "whatsappNumber" | "cancellationPolicyId" | "latePolicyId" | "slug" | "subdomain" | "firmaWorkspaceId">
 
 export type TenantOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -702,6 +712,7 @@ export type TenantOrderByWithAggregationInput = {
   additionalDriverFee?: Prisma.SortOrder
   daysInMonth?: Prisma.SortOrder
   slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  subdomain?: Prisma.SortOrderInput | Prisma.SortOrder
   merchantId?: Prisma.SortOrderInput | Prisma.SortOrder
   businessVerified?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
@@ -748,6 +759,7 @@ export type TenantScalarWhereWithAggregatesInput = {
   additionalDriverFee?: Prisma.FloatWithAggregatesFilter<"Tenant"> | number
   daysInMonth?: Prisma.IntWithAggregatesFilter<"Tenant"> | number
   slug?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
+  subdomain?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   merchantId?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   businessVerified?: Prisma.BoolWithAggregatesFilter<"Tenant"> | boolean
   emailVerified?: Prisma.BoolWithAggregatesFilter<"Tenant"> | boolean
@@ -782,6 +794,7 @@ export type TenantCreateInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -862,6 +875,7 @@ export type TenantUncheckedCreateInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -934,6 +948,7 @@ export type TenantUpdateInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1014,6 +1029,7 @@ export type TenantUncheckedUpdateInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1090,6 +1106,7 @@ export type TenantCreateManyInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -1124,6 +1141,7 @@ export type TenantUpdateManyMutationInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1162,6 +1180,7 @@ export type TenantUncheckedUpdateManyInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1215,6 +1234,7 @@ export type TenantCountOrderByAggregateInput = {
   additionalDriverFee?: Prisma.SortOrder
   daysInMonth?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  subdomain?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
   businessVerified?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
@@ -1260,6 +1280,7 @@ export type TenantMaxOrderByAggregateInput = {
   additionalDriverFee?: Prisma.SortOrder
   daysInMonth?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  subdomain?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
   businessVerified?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
@@ -1298,6 +1319,7 @@ export type TenantMinOrderByAggregateInput = {
   additionalDriverFee?: Prisma.SortOrder
   daysInMonth?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  subdomain?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
   businessVerified?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
@@ -2054,6 +2076,7 @@ export type TenantCreateWithoutInvoiceSequenceInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -2132,6 +2155,7 @@ export type TenantUncheckedCreateWithoutInvoiceSequenceInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -2237,6 +2261,7 @@ export type TenantScalarWhereInput = {
   additionalDriverFee?: Prisma.FloatFilter<"Tenant"> | number
   daysInMonth?: Prisma.IntFilter<"Tenant"> | number
   slug?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  subdomain?: Prisma.StringNullableFilter<"Tenant"> | string | null
   merchantId?: Prisma.StringNullableFilter<"Tenant"> | string | null
   businessVerified?: Prisma.BoolFilter<"Tenant"> | boolean
   emailVerified?: Prisma.BoolFilter<"Tenant"> | boolean
@@ -2271,6 +2296,7 @@ export type TenantCreateWithoutCustomersInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -2350,6 +2376,7 @@ export type TenantUncheckedCreateWithoutCustomersInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -2437,6 +2464,7 @@ export type TenantUpdateWithoutCustomersInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2516,6 +2544,7 @@ export type TenantUncheckedUpdateWithoutCustomersInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2587,6 +2616,7 @@ export type TenantCreateWithoutCustomerViolationsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -2666,6 +2696,7 @@ export type TenantUncheckedCreateWithoutCustomerViolationsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -2753,6 +2784,7 @@ export type TenantUpdateWithoutCustomerViolationsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2832,6 +2864,7 @@ export type TenantUncheckedUpdateWithoutCustomerViolationsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2903,6 +2936,7 @@ export type TenantCreateWithoutAgreementsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -2982,6 +3016,7 @@ export type TenantUncheckedCreateWithoutAgreementsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -3069,6 +3104,7 @@ export type TenantUpdateWithoutAgreementsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3148,6 +3184,7 @@ export type TenantUncheckedUpdateWithoutAgreementsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3219,6 +3256,7 @@ export type TenantCreateWithoutInvoicesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -3298,6 +3336,7 @@ export type TenantUncheckedCreateWithoutInvoicesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -3385,6 +3424,7 @@ export type TenantUpdateWithoutInvoicesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3464,6 +3504,7 @@ export type TenantUncheckedUpdateWithoutInvoicesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3535,6 +3576,7 @@ export type TenantCreateWithoutPaymentReceiptsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -3614,6 +3656,7 @@ export type TenantUncheckedCreateWithoutPaymentReceiptsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -3701,6 +3744,7 @@ export type TenantUpdateWithoutPaymentReceiptsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3780,6 +3824,7 @@ export type TenantUncheckedUpdateWithoutPaymentReceiptsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3851,6 +3896,7 @@ export type TenantCreateWithoutMerchantInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -3930,6 +3976,7 @@ export type TenantUncheckedCreateWithoutMerchantInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -4017,6 +4064,7 @@ export type TenantUpdateWithoutMerchantInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4096,6 +4144,7 @@ export type TenantUncheckedUpdateWithoutMerchantInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4167,6 +4216,7 @@ export type TenantCreateWithoutCurrencyInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -4245,6 +4295,7 @@ export type TenantUncheckedCreateWithoutCurrencyInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -4343,6 +4394,7 @@ export type TenantCreateWithoutCurrencyRatesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -4422,6 +4474,7 @@ export type TenantUncheckedCreateWithoutCurrencyRatesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -4509,6 +4562,7 @@ export type TenantUpdateWithoutCurrencyRatesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4588,6 +4642,7 @@ export type TenantUncheckedUpdateWithoutCurrencyRatesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4659,6 +4714,7 @@ export type TenantCreateWithoutFormsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -4738,6 +4794,7 @@ export type TenantUncheckedCreateWithoutFormsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -4825,6 +4882,7 @@ export type TenantUpdateWithoutFormsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4904,6 +4962,7 @@ export type TenantUncheckedUpdateWithoutFormsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4975,6 +5034,7 @@ export type TenantCreateWithoutRentalActivityInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -5054,6 +5114,7 @@ export type TenantUncheckedCreateWithoutRentalActivityInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -5141,6 +5202,7 @@ export type TenantUpdateWithoutRentalActivityInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5220,6 +5282,7 @@ export type TenantUncheckedUpdateWithoutRentalActivityInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5291,6 +5354,7 @@ export type TenantCreateWithoutNotificationsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -5370,6 +5434,7 @@ export type TenantUncheckedCreateWithoutNotificationsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -5457,6 +5522,7 @@ export type TenantUpdateWithoutNotificationsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5536,6 +5602,7 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5607,6 +5674,7 @@ export type TenantCreateWithoutRentalsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -5686,6 +5754,7 @@ export type TenantUncheckedCreateWithoutRentalsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -5773,6 +5842,7 @@ export type TenantUpdateWithoutRentalsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5852,6 +5922,7 @@ export type TenantUncheckedUpdateWithoutRentalsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5923,6 +5994,7 @@ export type TenantCreateWithoutChargesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -6002,6 +6074,7 @@ export type TenantUncheckedCreateWithoutChargesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -6089,6 +6162,7 @@ export type TenantUpdateWithoutChargesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6168,6 +6242,7 @@ export type TenantUncheckedUpdateWithoutChargesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6239,6 +6314,7 @@ export type TenantCreateWithoutWeeklyStatsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -6318,6 +6394,7 @@ export type TenantUncheckedCreateWithoutWeeklyStatsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -6405,6 +6482,7 @@ export type TenantUpdateWithoutWeeklyStatsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6484,6 +6562,7 @@ export type TenantUncheckedUpdateWithoutWeeklyStatsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6555,6 +6634,7 @@ export type TenantCreateWithoutYearlyStatsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -6634,6 +6714,7 @@ export type TenantUncheckedCreateWithoutYearlyStatsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -6721,6 +6802,7 @@ export type TenantUpdateWithoutYearlyStatsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6800,6 +6882,7 @@ export type TenantUncheckedUpdateWithoutYearlyStatsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6871,6 +6954,7 @@ export type TenantCreateWithoutMonthlyStatsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -6950,6 +7034,7 @@ export type TenantUncheckedCreateWithoutMonthlyStatsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -7037,6 +7122,7 @@ export type TenantUpdateWithoutMonthlyStatsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7116,6 +7202,7 @@ export type TenantUncheckedUpdateWithoutMonthlyStatsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7187,6 +7274,7 @@ export type TenantCreateWithoutMonthlyRentalStatsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -7266,6 +7354,7 @@ export type TenantUncheckedCreateWithoutMonthlyRentalStatsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -7353,6 +7442,7 @@ export type TenantUpdateWithoutMonthlyRentalStatsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7432,6 +7522,7 @@ export type TenantUncheckedUpdateWithoutMonthlyRentalStatsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7503,6 +7594,7 @@ export type TenantCreateWithoutRatingsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -7582,6 +7674,7 @@ export type TenantUncheckedCreateWithoutRatingsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -7669,6 +7762,7 @@ export type TenantUpdateWithoutRatingsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7748,6 +7842,7 @@ export type TenantUncheckedUpdateWithoutRatingsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -7819,6 +7914,7 @@ export type TenantCreateWithoutEmailTokensInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -7898,6 +7994,7 @@ export type TenantUncheckedCreateWithoutEmailTokensInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -7985,6 +8082,7 @@ export type TenantUpdateWithoutEmailTokensInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8064,6 +8162,7 @@ export type TenantUncheckedUpdateWithoutEmailTokensInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8135,6 +8234,7 @@ export type TenantCreateWithoutPaymentMethodsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -8214,6 +8314,7 @@ export type TenantUncheckedCreateWithoutPaymentMethodsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -8306,6 +8407,7 @@ export type TenantCreateWithoutAddressInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -8385,6 +8487,7 @@ export type TenantUncheckedCreateWithoutAddressInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -8472,6 +8575,7 @@ export type TenantUpdateWithoutAddressInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8551,6 +8655,7 @@ export type TenantUncheckedUpdateWithoutAddressInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8622,6 +8727,7 @@ export type TenantCreateWithoutTenantLocationsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -8701,6 +8807,7 @@ export type TenantUncheckedCreateWithoutTenantLocationsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -8788,6 +8895,7 @@ export type TenantUpdateWithoutTenantLocationsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8867,6 +8975,7 @@ export type TenantUncheckedUpdateWithoutTenantLocationsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -8938,6 +9047,7 @@ export type TenantCreateWithoutInsuranceInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -9017,6 +9127,7 @@ export type TenantUncheckedCreateWithoutInsuranceInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -9104,6 +9215,7 @@ export type TenantUpdateWithoutInsuranceInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9183,6 +9295,7 @@ export type TenantUncheckedUpdateWithoutInsuranceInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9254,6 +9367,7 @@ export type TenantCreateWithoutEquipmentInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -9333,6 +9447,7 @@ export type TenantUncheckedCreateWithoutEquipmentInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -9420,6 +9535,7 @@ export type TenantUpdateWithoutEquipmentInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9499,6 +9615,7 @@ export type TenantUncheckedUpdateWithoutEquipmentInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9570,6 +9687,7 @@ export type TenantCreateWithoutServicesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -9649,6 +9767,7 @@ export type TenantUncheckedCreateWithoutServicesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -9736,6 +9855,7 @@ export type TenantUpdateWithoutServicesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9815,6 +9935,7 @@ export type TenantUncheckedUpdateWithoutServicesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -9886,6 +10007,7 @@ export type TenantCreateWithoutSubscriptionInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -9965,6 +10087,7 @@ export type TenantUncheckedCreateWithoutSubscriptionInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -10052,6 +10175,7 @@ export type TenantUpdateWithoutSubscriptionInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -10131,6 +10255,7 @@ export type TenantUncheckedUpdateWithoutSubscriptionInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -10202,6 +10327,7 @@ export type TenantCreateWithoutContactsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -10281,6 +10407,7 @@ export type TenantUncheckedCreateWithoutContactsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -10368,6 +10495,7 @@ export type TenantUpdateWithoutContactsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -10447,6 +10575,7 @@ export type TenantUncheckedUpdateWithoutContactsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -10518,6 +10647,7 @@ export type TenantCreateWithoutRemindersInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -10597,6 +10727,7 @@ export type TenantUncheckedCreateWithoutRemindersInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -10684,6 +10815,7 @@ export type TenantUpdateWithoutRemindersInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -10763,6 +10895,7 @@ export type TenantUncheckedUpdateWithoutRemindersInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -10834,6 +10967,7 @@ export type TenantCreateWithoutCancellationPolicyInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -10912,6 +11046,7 @@ export type TenantUncheckedCreateWithoutCancellationPolicyInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -11000,6 +11135,7 @@ export type TenantUpdateWithoutCancellationPolicyInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -11078,6 +11214,7 @@ export type TenantUncheckedUpdateWithoutCancellationPolicyInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -11150,6 +11287,7 @@ export type TenantCreateWithoutLatePolicyInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -11228,6 +11366,7 @@ export type TenantUncheckedCreateWithoutLatePolicyInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -11316,6 +11455,7 @@ export type TenantUpdateWithoutLatePolicyInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -11394,6 +11534,7 @@ export type TenantUncheckedUpdateWithoutLatePolicyInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -11466,6 +11607,7 @@ export type TenantCreateWithoutViolationsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -11545,6 +11687,7 @@ export type TenantUncheckedCreateWithoutViolationsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -11632,6 +11775,7 @@ export type TenantUpdateWithoutViolationsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -11711,6 +11855,7 @@ export type TenantUncheckedUpdateWithoutViolationsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -11782,6 +11927,7 @@ export type TenantCreateWithoutVendorsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -11861,6 +12007,7 @@ export type TenantUncheckedCreateWithoutVendorsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -11948,6 +12095,7 @@ export type TenantUpdateWithoutVendorsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -12027,6 +12175,7 @@ export type TenantUncheckedUpdateWithoutVendorsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -12098,6 +12247,7 @@ export type TenantCreateWithoutVerificationRequestInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -12177,6 +12327,7 @@ export type TenantUncheckedCreateWithoutVerificationRequestInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -12264,6 +12415,7 @@ export type TenantUpdateWithoutVerificationRequestInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -12343,6 +12495,7 @@ export type TenantUncheckedUpdateWithoutVerificationRequestInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -12414,6 +12567,7 @@ export type TenantCreateWithoutTransactionsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -12493,6 +12647,7 @@ export type TenantUncheckedCreateWithoutTransactionsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -12580,6 +12735,7 @@ export type TenantUpdateWithoutTransactionsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -12659,6 +12815,7 @@ export type TenantUncheckedUpdateWithoutTransactionsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -12730,6 +12887,7 @@ export type TenantCreateWithoutPaymentsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -12809,6 +12967,7 @@ export type TenantUncheckedCreateWithoutPaymentsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -12896,6 +13055,7 @@ export type TenantUpdateWithoutPaymentsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -12975,6 +13135,7 @@ export type TenantUncheckedUpdateWithoutPaymentsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -13046,6 +13207,7 @@ export type TenantCreateWithoutRefundsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -13125,6 +13287,7 @@ export type TenantUncheckedCreateWithoutRefundsInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -13212,6 +13375,7 @@ export type TenantUpdateWithoutRefundsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -13291,6 +13455,7 @@ export type TenantUncheckedUpdateWithoutRefundsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -13362,6 +13527,7 @@ export type TenantCreateWithoutExpensesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -13441,6 +13607,7 @@ export type TenantUncheckedCreateWithoutExpensesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -13528,6 +13695,7 @@ export type TenantUpdateWithoutExpensesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -13607,6 +13775,7 @@ export type TenantUncheckedUpdateWithoutExpensesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -13678,6 +13847,7 @@ export type TenantCreateWithoutUsersInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -13757,6 +13927,7 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -13844,6 +14015,7 @@ export type TenantUpdateWithoutUsersInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -13923,6 +14095,7 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -13994,6 +14167,7 @@ export type TenantCreateWithoutUserRolesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -14073,6 +14247,7 @@ export type TenantUncheckedCreateWithoutUserRolesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -14160,6 +14335,7 @@ export type TenantUpdateWithoutUserRolesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -14239,6 +14415,7 @@ export type TenantUncheckedUpdateWithoutUserRolesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -14310,6 +14487,7 @@ export type TenantCreateWithoutVehiclesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -14389,6 +14567,7 @@ export type TenantUncheckedCreateWithoutVehiclesInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -14476,6 +14655,7 @@ export type TenantUpdateWithoutVehiclesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -14555,6 +14735,7 @@ export type TenantUncheckedUpdateWithoutVehiclesInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -14626,6 +14807,7 @@ export type TenantCreateWithoutMaintenanceInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -14705,6 +14887,7 @@ export type TenantUncheckedCreateWithoutMaintenanceInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -14792,6 +14975,7 @@ export type TenantUpdateWithoutMaintenanceInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -14871,6 +15055,7 @@ export type TenantUncheckedUpdateWithoutMaintenanceInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -14945,6 +15130,7 @@ export type TenantCreateManyInvoiceSequenceInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -14979,6 +15165,7 @@ export type TenantUpdateWithoutInvoiceSequenceInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -15057,6 +15244,7 @@ export type TenantUncheckedUpdateWithoutInvoiceSequenceInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -15132,6 +15320,7 @@ export type TenantUncheckedUpdateManyWithoutInvoiceSequenceInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -15169,6 +15358,7 @@ export type TenantCreateManyCurrencyInput = {
   additionalDriverFee?: number
   daysInMonth?: number
   slug?: string | null
+  subdomain?: string | null
   merchantId?: string | null
   businessVerified?: boolean
   emailVerified?: boolean
@@ -15203,6 +15393,7 @@ export type TenantUpdateWithoutCurrencyInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -15281,6 +15472,7 @@ export type TenantUncheckedUpdateWithoutCurrencyInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -15356,6 +15548,7 @@ export type TenantUncheckedUpdateManyWithoutCurrencyInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -15390,6 +15583,7 @@ export type TenantUpdateWithoutPaymentMethodsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -15469,6 +15663,7 @@ export type TenantUncheckedUpdateWithoutPaymentMethodsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -15544,6 +15739,7 @@ export type TenantUncheckedUpdateManyWithoutPaymentMethodsInput = {
   additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
   daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -15910,6 +16106,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   additionalDriverFee?: boolean
   daysInMonth?: boolean
   slug?: boolean
+  subdomain?: boolean
   merchantId?: boolean
   businessVerified?: boolean
   emailVerified?: boolean
@@ -15991,6 +16188,7 @@ export type TenantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   additionalDriverFee?: boolean
   daysInMonth?: boolean
   slug?: boolean
+  subdomain?: boolean
   merchantId?: boolean
   businessVerified?: boolean
   emailVerified?: boolean
@@ -16033,6 +16231,7 @@ export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   additionalDriverFee?: boolean
   daysInMonth?: boolean
   slug?: boolean
+  subdomain?: boolean
   merchantId?: boolean
   businessVerified?: boolean
   emailVerified?: boolean
@@ -16075,6 +16274,7 @@ export type TenantSelectScalar = {
   additionalDriverFee?: boolean
   daysInMonth?: boolean
   slug?: boolean
+  subdomain?: boolean
   merchantId?: boolean
   businessVerified?: boolean
   emailVerified?: boolean
@@ -16086,7 +16286,7 @@ export type TenantSelectScalar = {
   firmaApiKeyAt?: boolean
 }
 
-export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantCode" | "tenantName" | "email" | "number" | "whatsappNumber" | "whatsappNotifications" | "emailNotifications" | "currencyId" | "createdAt" | "updatedAt" | "logo" | "setupCompleted" | "financialYearStart" | "invoiceSequenceId" | "invoiceFootNotes" | "storefrontEnabled" | "subscriptionId" | "securityDeposit" | "rating" | "description" | "cancellationPolicyId" | "latePolicyId" | "additionalDriverFee" | "daysInMonth" | "slug" | "merchantId" | "businessVerified" | "emailVerified" | "isDeleted" | "endTime" | "startTime" | "firmaWorkspaceId" | "firmaApiKey" | "firmaApiKeyAt", ExtArgs["result"]["tenant"]>
+export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantCode" | "tenantName" | "email" | "number" | "whatsappNumber" | "whatsappNotifications" | "emailNotifications" | "currencyId" | "createdAt" | "updatedAt" | "logo" | "setupCompleted" | "financialYearStart" | "invoiceSequenceId" | "invoiceFootNotes" | "storefrontEnabled" | "subscriptionId" | "securityDeposit" | "rating" | "description" | "cancellationPolicyId" | "latePolicyId" | "additionalDriverFee" | "daysInMonth" | "slug" | "subdomain" | "merchantId" | "businessVerified" | "emailVerified" | "isDeleted" | "endTime" | "startTime" | "firmaWorkspaceId" | "firmaApiKey" | "firmaApiKeyAt", ExtArgs["result"]["tenant"]>
 export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   address?: boolean | Prisma.Tenant$addressArgs<ExtArgs>
   customers?: boolean | Prisma.Tenant$customersArgs<ExtArgs>
@@ -16218,6 +16418,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     additionalDriverFee: number
     daysInMonth: number
     slug: string | null
+    subdomain: string | null
     merchantId: string | null
     businessVerified: boolean
     emailVerified: boolean
@@ -16718,6 +16919,7 @@ export interface TenantFieldRefs {
   readonly additionalDriverFee: Prisma.FieldRef<"Tenant", 'Float'>
   readonly daysInMonth: Prisma.FieldRef<"Tenant", 'Int'>
   readonly slug: Prisma.FieldRef<"Tenant", 'String'>
+  readonly subdomain: Prisma.FieldRef<"Tenant", 'String'>
   readonly merchantId: Prisma.FieldRef<"Tenant", 'String'>
   readonly businessVerified: Prisma.FieldRef<"Tenant", 'Boolean'>
   readonly emailVerified: Prisma.FieldRef<"Tenant", 'Boolean'>
