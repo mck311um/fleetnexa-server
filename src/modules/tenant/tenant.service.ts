@@ -46,6 +46,7 @@ export class TenantService {
 
   async getCurrentTenant(tenant: Tenant, user: User) {
     try {
+      const fetched = await this.tenantRepo.getTenantById(tenant.id);
       const extras = await this.extraService.getTenantExtras(tenant);
       const locations = await this.locations.getAllTenantLocations(tenant);
       const vendors = await this.vendors.getTenantVendors(tenant);
@@ -61,7 +62,7 @@ export class TenantService {
       const roles = await this.roles.getAllRoles(tenant);
 
       const data = {
-        tenant,
+        tenant: fetched,
         extras,
         locations,
         notifications,

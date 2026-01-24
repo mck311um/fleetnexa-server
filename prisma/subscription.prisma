@@ -1,7 +1,7 @@
 model SubscriptionPlan {
   id                 String               @id @default(dbgenerated("gen_random_uuid()"))
   description        String?
-  name               String               @unique
+  name               String               
   planCode           String?              @unique
   planId             String?              @unique
   period             BillingPeriod        @default(MONTHLY)
