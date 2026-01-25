@@ -9,11 +9,13 @@ import {
   Put,
   Delete,
   Param,
+  Patch,
 } from '@nestjs/common';
 import { TenantUserService } from './tenant-user.service.js';
 import type { AuthenticatedRequest } from '../../../types/authenticated-request.js';
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { TenantUserDto } from './dto/tenant-user.dto.js';
+import { ChangePasswordDto } from '../dto/change-password.dto.js';
 
 @Controller('tenant/user')
 @UseGuards(AuthGuard)
@@ -57,5 +59,14 @@ export class TenantUserController {
   async deleteUser(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     const { tenant } = req.context;
     return this.service.deleteUser(id, tenant);
+  }
+
+  @Patch('password')
+  async updateUserPassword(
+    @Req() req: AuthenticatedRequest,
+    @Body() data: ChangePasswordDto,
+  ) {
+    const { tenant, user } = req.context;
+    return this.service.updateUserPassword(data, tenant, user.id);
   }
 }

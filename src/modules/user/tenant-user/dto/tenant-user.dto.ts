@@ -1,33 +1,39 @@
 import {
-	IsEmail,
-	IsNotEmpty,
-	IsOptional,
-	IsString,
-	IsUUID,
-} from "class-validator";
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  IsUUID,
+} from 'class-validator';
 
 export class TenantUserDto {
-	@IsUUID()
-	@IsOptional()
-	id?: string;
+  @IsUUID()
+  @IsOptional()
+  id?: string;
 
-	@IsEmail()
-	@IsNotEmpty()
-	email: string;
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
-	@IsString()
-	@IsNotEmpty()
-	firstName: string;
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
 
-	@IsString()
-	@IsNotEmpty()
-	lastName: string;
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
 
-	@IsString()
-	@IsOptional()
-	password?: string;
+  @IsString()
+  @IsOptional()
+  password?: string;
 
-	@IsUUID()
-	@IsOptional()
-	roleId?: string;
+  @IsUUID()
+  @IsOptional()
+  roleId?: string;
+
+  @IsString()
+  @IsUrl()
+  @IsOptional()
+  profilePicture?: string;
 }
