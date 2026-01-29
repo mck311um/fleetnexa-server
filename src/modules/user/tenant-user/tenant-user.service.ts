@@ -43,6 +43,27 @@ export class TenantUserService {
 
   async getCurrentUser(id: string, tenant: Tenant) {
     try {
+      const subscription = await this.prisma.tenantSubscription.findUnique({
+        where: { tenantId: tenant.id },
+        include: {
+          plan: {
+            include: {
+              categories: {
+                select: { id: true },
+              },
+            },
+          },
+        },
+      });
+
+      if (!subscription?.plan) {
+        throw new BadRequestException(
+          'Tenant does not have an active subscription plan',
+        );
+      }
+
+      const allowedCategoryIds = subscription.plan.categories.map((c) => c.id);
+
       const user = await this.prisma.user.findUnique({
         where: { id, tenantId: tenant.id },
         select: {
@@ -59,8 +80,19 @@ export class TenantUserService {
           role: {
             include: {
               rolePermission: {
+                where: {
+                  permission: {
+                    categoryId: {
+                      in: allowedCategoryIds,
+                    },
+                  },
+                },
                 include: {
-                  permission: true,
+                  permission: {
+                    include: {
+                      category: true,
+                    },
+                  },
                 },
               },
             },

@@ -12,7 +12,7 @@ model Tenant {
   updatedAt            DateTime?                  @updatedAt
   logo                 String?
   setupCompleted       Boolean                    @default(false)
-  financialYearStart   String                     @default("January")
+  financialYearStart    String                     @default("January")
   invoiceSequenceId    String?
   invoiceFootNotes     String                     @default("")
   storefrontEnabled    Boolean                    @default(false)
@@ -190,7 +190,8 @@ model TenantSubscription {
   createdAt DateTime           @default(now())
   updatedAt DateTime?          @updatedAt
   planId    String?
-  plan      SubscriptionPlan?  @relation(fields: [planId], references: [planId])
+
+  plan      SubscriptionPlan?  @relation(fields: [planId], references: [id])
   tenant    Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 

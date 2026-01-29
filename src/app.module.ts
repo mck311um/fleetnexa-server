@@ -42,6 +42,7 @@ import { WhatsappModule } from './common/whatsapp/whatsapp.module.js';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AdminAuthModule } from './modules/auth/admin-auth/admin-auth.module.js';
 import { DashboardModule } from './modules/dashboard/dashboard.module.js';
+import { SubscriptionModule } from './modules/subscription/subscription.module.js';
 
 @Module({
   imports: [
@@ -58,7 +59,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module.js';
     }),
     ScheduleModule.forRoot(),
     PrismaModule,
-    CronModule,
+    // CronModule,
     HealthModule,
     GeneratorModule,
     FormatterModule,
@@ -105,6 +106,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module.js';
     SocketModule,
     StorageModule,
     DocumentModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

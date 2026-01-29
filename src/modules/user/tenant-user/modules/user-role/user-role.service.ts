@@ -1,312 +1,344 @@
 import {
-	BadRequestException,
-	ConflictException,
-	Injectable,
-	Logger,
-	NotFoundException,
-	UnauthorizedException,
-} from "@nestjs/common";
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
-	Tenant,
-	User,
-	UserRole,
-} from "../../../../../generated/prisma/client.js";
-import { PrismaService } from "../../../../../prisma/prisma.service.js";
-import { UserRoleDto, UserRolePermissionsDto } from "./user-role.dto.js";
+  Tenant,
+  User,
+  UserRole,
+} from '../../../../../generated/prisma/client.js';
+import { PrismaService } from '../../../../../prisma/prisma.service.js';
+import { UserRoleDto, UserRolePermissionsDto } from './user-role.dto.js';
 
 @Injectable()
 export class UserRoleService {
-	private readonly logger = new Logger(UserRoleService.name);
+  private readonly logger = new Logger(UserRoleService.name);
 
-	constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-	async getAllRoles(tenant: Tenant) {
-		try {
-			return await this.prisma.userRole.findMany({
-				where: { tenantId: tenant.id, show: true, isDeleted: false },
-				include: {
-					rolePermission: {
-						include: {
-							permission: true,
-						},
-					},
-				},
-			});
-		} catch (error) {
-			this.logger.error(error, "Failed to get user roles", {
-				tenantId: tenant.id,
-				tenantCode: tenant.tenantCode,
-			});
-			throw error;
-		}
-	}
+  async getAllRoles(tenant: Tenant) {
+    try {
+      return await this.prisma.userRole.findMany({
+        where: { tenantId: tenant.id, show: true, isDeleted: false },
+        include: {
+          rolePermission: {
+            include: {
+              permission: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      this.logger.error(error, 'Failed to get user roles', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
+      throw error;
+    }
+  }
 
-	async getRoleByUser(tenant: Tenant, user: User) {
-		try {
-			if (!user.roleId) {
-				this.logger.warn(
-					`User ${user.id} does not have a role assigned in tenant ${tenant.tenantCode}`,
-				);
-				throw new BadRequestException("User does not have a role assigned");
-			}
+  async getRoleByUser(tenant: Tenant, user: User) {
+    try {
+      if (!user.roleId) {
+        this.logger.warn(
+          `User ${user.id} does not have a role assigned in tenant ${tenant.tenantCode}`,
+        );
+        throw new BadRequestException('User does not have a role assigned');
+      }
 
-			const role = await this.prisma.userRole.findUnique({
-				where: { id: user.roleId },
-				include: {
-					rolePermission: {
-						include: {
-							permission: true,
-						},
-					},
-				},
-			});
+      const subscription = await this.prisma.tenantSubscription.findUnique({
+        where: { tenantId: tenant.id },
+        include: {
+          plan: {
+            include: {
+              categories: {
+                select: { id: true },
+              },
+            },
+          },
+        },
+      });
 
-			if (!role) {
-				this.logger.warn(
-					`Role with ID ${user.roleId} not found for user ${user.id} in tenant ${tenant.tenantCode}`,
-				);
-				throw new NotFoundException("User role not found");
-			}
+      if (!subscription?.plan) {
+        throw new BadRequestException(
+          'Tenant does not have an active subscription plan',
+        );
+      }
 
-			return role;
-		} catch (error) {
-			throw error;
-		}
-	}
+      const allowedCategoryIds = subscription.plan.categories.map((c) => c.id);
 
-	async createUserRole(data: UserRoleDto, tenant: Tenant) {
-		try {
-			this.logger.debug("Creating new user role", {
-				data,
-				tenantId: tenant.id,
-				tenantCode: tenant.tenantCode,
-			});
+      const role = await this.prisma.userRole.findUnique({
+        where: { id: user.roleId },
+        include: {
+          rolePermission: {
+            where: {
+              permission: {
+                categoryId: {
+                  in: allowedCategoryIds,
+                },
+              },
+            },
+            include: {
+              permission: {
+                include: {
+                  category: true,
+                },
+              },
+            },
+          },
+        },
+      });
 
-			const existingRole = await this.prisma.userRole.findFirst({
-				where: { name: data.name, tenantId: tenant.id },
-			});
+      if (!role) {
+        this.logger.warn(
+          `Role with ID ${user.roleId} not found for user ${user.id} in tenant ${tenant.tenantCode}`,
+        );
+        throw new NotFoundException('User role not found');
+      }
 
-			if (existingRole) {
-				this.logger.warn("Role with this name already exists", {
-					tenantId: existingRole.tenantId,
-					roleName: existingRole.name,
-				});
-				throw new ConflictException("Role with this name already exists");
-			}
+      return role;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-			const role = await this.prisma.userRole.create({
-				data: {
-					name: data.name,
-					description: data.description,
-					show: data.show,
-					tenantId: tenant.id,
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				},
-			});
+  async createUserRole(data: UserRoleDto, tenant: Tenant) {
+    try {
+      this.logger.debug('Creating new user role', {
+        data,
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+      });
 
-			const roles = await this.getAllRoles(tenant);
+      const existingRole = await this.prisma.userRole.findFirst({
+        where: { name: data.name, tenantId: tenant.id },
+      });
 
-			return {
-				message: "Role created successfully",
-				roles,
-			};
-		} catch (error) {
-			this.logger.error(error, "Error creating role", {
-				tenantId: tenant.id,
-				tenantCode: tenant.tenantCode,
-				data,
-			});
-			throw error;
-		}
-	}
+      if (existingRole) {
+        this.logger.warn('Role with this name already exists', {
+          tenantId: existingRole.tenantId,
+          roleName: existingRole.name,
+        });
+        throw new ConflictException('Role with this name already exists');
+      }
 
-	async updateUserRole(data: UserRoleDto, tenant: Tenant, user: User) {
-		try {
-			const existingRole = await this.prisma.userRole.findUnique({
-				where: { id: data.id, tenantId: tenant.id },
-			});
+      const role = await this.prisma.userRole.create({
+        data: {
+          name: data.name,
+          description: data.description,
+          show: data.show,
+          tenantId: tenant.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
 
-			if (!existingRole) {
-				this.logger.warn(
-					`Role with ID ${data.id} not found for tenant ${tenant.tenantCode}`,
-				);
-				throw new NotFoundException("Role not found");
-			}
+      const roles = await this.getAllRoles(tenant);
 
-			const role = await this.prisma.userRole.update({
-				where: { id: data.id, tenantId: tenant.id },
-				data: {
-					name: data.name,
-					description: data.description,
-					show: data.show,
-					tenantId: tenant.id,
-					createdAt: new Date(),
-					updatedAt: new Date(),
-					updatedBy: user.username,
-				},
-			});
+      return {
+        message: 'Role created successfully',
+        roles,
+      };
+    } catch (error) {
+      this.logger.error(error, 'Error creating role', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        data,
+      });
+      throw error;
+    }
+  }
 
-			const roles = await this.getAllRoles(tenant);
+  async updateUserRole(data: UserRoleDto, tenant: Tenant, user: User) {
+    try {
+      const existingRole = await this.prisma.userRole.findUnique({
+        where: { id: data.id, tenantId: tenant.id },
+      });
 
-			return {
-				message: "Role created successfully",
-				roles,
-			};
-		} catch (error) {
-			this.logger.error(error, "Error updating role", {
-				tenantId: tenant.id,
-				tenantCode: tenant.tenantCode,
-				data,
-			});
-			throw error;
-		}
-	}
+      if (!existingRole) {
+        this.logger.warn(
+          `Role with ID ${data.id} not found for tenant ${tenant.tenantCode}`,
+        );
+        throw new NotFoundException('Role not found');
+      }
 
-	async deleteUserRole(roleId: string, tenant: Tenant, user: User) {
-		try {
-			const existingRole = await this.prisma.userRole.findUnique({
-				where: { id: roleId, tenantId: tenant.id },
-			});
+      const role = await this.prisma.userRole.update({
+        where: { id: data.id, tenantId: tenant.id },
+        data: {
+          name: data.name,
+          description: data.description,
+          show: data.show,
+          tenantId: tenant.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          updatedBy: user.username,
+        },
+      });
 
-			if (!existingRole) {
-				this.logger.warn(
-					`Role with ID ${roleId} not found for tenant ${tenant.tenantCode}`,
-				);
-				throw new NotFoundException("Role not found");
-			}
+      const roles = await this.getAllRoles(tenant);
 
-			const existingUsers = await this.prisma.user.count({
-				where: { roleId, tenantId: tenant.id },
-			});
+      return {
+        message: 'Role created successfully',
+        roles,
+      };
+    } catch (error) {
+      this.logger.error(error, 'Error updating role', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        data,
+      });
+      throw error;
+    }
+  }
 
-			if (existingUsers > 0) {
-				this.logger.warn(
-					`Cannot delete role with ID ${roleId} because it is assigned to users in tenant ${tenant.tenantCode}`,
-				);
-				throw new UnauthorizedException("Cannot delete role assigned to users");
-			}
+  async deleteUserRole(roleId: string, tenant: Tenant, user: User) {
+    try {
+      const existingRole = await this.prisma.userRole.findUnique({
+        where: { id: roleId, tenantId: tenant.id },
+      });
 
-			await this.prisma.userRole.update({
-				where: { id: roleId },
-				data: {
-					isDeleted: true,
-					updatedAt: new Date(),
-					updatedBy: user.username,
-				},
-			});
+      if (!existingRole) {
+        this.logger.warn(
+          `Role with ID ${roleId} not found for tenant ${tenant.tenantCode}`,
+        );
+        throw new NotFoundException('Role not found');
+      }
 
-			const roles = await this.getAllRoles(tenant);
+      const existingUsers = await this.prisma.user.count({
+        where: { roleId, tenantId: tenant.id },
+      });
 
-			return {
-				message: "Role created successfully",
-				roles,
-			};
-		} catch (error) {
-			this.logger.error(error, "Error deleting role", {
-				tenantId: tenant.id,
-				tenantCode: tenant.tenantCode,
-				roleId,
-			});
-			throw error;
-		}
-	}
+      if (existingUsers > 0) {
+        this.logger.warn(
+          `Cannot delete role with ID ${roleId} because it is assigned to users in tenant ${tenant.tenantCode}`,
+        );
+        throw new UnauthorizedException('Cannot delete role assigned to users');
+      }
 
-	async assignPermissionsToRole(
-		data: UserRolePermissionsDto,
-		tenant: Tenant,
-		user: User,
-	) {
-		try {
-			await this.prisma.$transaction(async (tx) => {
-				const role = await tx.userRole.findUnique({
-					where: { id: data.roleId, tenantId: tenant.id },
-				});
+      await this.prisma.userRole.update({
+        where: { id: roleId },
+        data: {
+          isDeleted: true,
+          updatedAt: new Date(),
+          updatedBy: user.username,
+        },
+      });
 
-				if (!role) {
-					throw new Error("Role not found");
-				}
+      const roles = await this.getAllRoles(tenant);
 
-				await tx.userRolePermission.createMany({
-					data: data.permissions.map((permId) => ({
-						roleId: role.id,
-						permissionId: permId,
-						assignedBy: user.username,
-						assignedAt: new Date(),
-					})),
-					skipDuplicates: true,
-				});
-			});
+      return {
+        message: 'Role created successfully',
+        roles,
+      };
+    } catch (error) {
+      this.logger.error(error, 'Error deleting role', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        roleId,
+      });
+      throw error;
+    }
+  }
 
-			const roles = await this.getAllRoles(tenant);
+  async assignPermissionsToRole(
+    data: UserRolePermissionsDto,
+    tenant: Tenant,
+    user: User,
+  ) {
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        const role = await tx.userRole.findUnique({
+          where: { id: data.roleId, tenantId: tenant.id },
+        });
 
-			return {
-				message: "Permissions assigned successfully",
-				roles,
-			};
-		} catch (error) {
-			this.logger.error(error, "Error assigning permissions to role", {
-				tenantId: tenant.id,
-				tenantCode: tenant.tenantCode,
-				data,
-			});
-			throw error;
-		}
-	}
+        if (!role) {
+          throw new Error('Role not found');
+        }
 
-	async createDefaultRole(tenant: Tenant) {
-		try {
-			const existingRole = await this.prisma.userRole.findFirst({
-				where: {
-					tenantId: tenant.id,
-					name: "Admin",
-				},
-			});
+        await tx.userRolePermission.createMany({
+          data: data.permissions.map((permId) => ({
+            roleId: role.id,
+            permissionId: permId,
+            assignedBy: user.username,
+            assignedAt: new Date(),
+          })),
+          skipDuplicates: true,
+        });
+      });
 
-			if (existingRole) {
-				this.logger.warn(
-					`Default role 'Admin' already exists for tenant ${tenant.tenantCode}`,
-				);
-				return existingRole;
-			}
+      const roles = await this.getAllRoles(tenant);
 
-			const role = await this.prisma.userRole.create({
-				data: {
-					name: "Admin",
-					description: "Default admin role with all permissions",
-					tenantId: tenant.id,
-					show: true,
-					createdAt: new Date(),
-				},
-			});
+      return {
+        message: 'Permissions assigned successfully',
+        roles,
+      };
+    } catch (error) {
+      this.logger.error(error, 'Error assigning permissions to role', {
+        tenantId: tenant.id,
+        tenantCode: tenant.tenantCode,
+        data,
+      });
+      throw error;
+    }
+  }
 
-			await this.assignAllPermissionsToRole(role);
+  async createDefaultRole(tenant: Tenant) {
+    try {
+      const existingRole = await this.prisma.userRole.findFirst({
+        where: {
+          tenantId: tenant.id,
+          name: 'Admin',
+        },
+      });
 
-			return role;
-		} catch (error) {
-			this.logger.error("Failed to create default role", error);
-			throw error;
-		}
-	}
+      if (existingRole) {
+        this.logger.warn(
+          `Default role 'Admin' already exists for tenant ${tenant.tenantCode}`,
+        );
+        return existingRole;
+      }
 
-	async assignAllPermissionsToRole(role: UserRole) {
-		try {
-			if (!role) {
-				this.logger.warn("No role provided for permission assignment.");
-				throw new BadRequestException("Role is required to assign permissions");
-			}
+      const role = await this.prisma.userRole.create({
+        data: {
+          name: 'Admin',
+          description: 'Default admin role with all permissions',
+          tenantId: tenant.id,
+          show: true,
+          createdAt: new Date(),
+        },
+      });
 
-			const permissions = await this.prisma.appPermission.findMany();
+      await this.assignAllPermissionsToRole(role);
 
-			await this.prisma.userRolePermission.createMany({
-				data: permissions.map((permission) => ({
-					roleId: role.id,
-					permissionId: permission.id,
-				})),
-			});
-		} catch (error) {
-			this.logger.error("Failed to assign permissions to role", error);
-			throw error;
-		}
-	}
+      return role;
+    } catch (error) {
+      this.logger.error('Failed to create default role', error);
+      throw error;
+    }
+  }
+
+  async assignAllPermissionsToRole(role: UserRole) {
+    try {
+      if (!role) {
+        this.logger.warn('No role provided for permission assignment.');
+        throw new BadRequestException('Role is required to assign permissions');
+      }
+
+      const permissions = await this.prisma.appPermission.findMany();
+
+      await this.prisma.userRolePermission.createMany({
+        data: permissions.map((permission) => ({
+          roleId: role.id,
+          permissionId: permission.id,
+        })),
+      });
+    } catch (error) {
+      this.logger.error('Failed to assign permissions to role', error);
+      throw error;
+    }
+  }
 }
