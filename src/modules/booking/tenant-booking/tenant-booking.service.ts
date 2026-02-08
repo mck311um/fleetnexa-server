@@ -57,6 +57,16 @@ export class TenantBookingService {
   async getBookingsByDate(date: string, tenant: Tenant) {
     try {
       const dateObj = new Date(date);
+      const startOfDay = new Date(
+        dateObj.getFullYear(),
+        dateObj.getMonth(),
+        dateObj.getDate(),
+      );
+      const endOfDay = new Date(
+        dateObj.getFullYear(),
+        dateObj.getMonth(),
+        dateObj.getDate() + 1,
+      );
 
       const bookings = await this.prisma.rental.findMany({
         where: {
@@ -64,30 +74,14 @@ export class TenantBookingService {
           OR: [
             {
               startDate: {
-                gte: new Date(
-                  dateObj.getFullYear(),
-                  dateObj.getMonth(),
-                  dateObj.getDate(),
-                ),
-                lt: new Date(
-                  dateObj.getFullYear(),
-                  dateObj.getMonth(),
-                  dateObj.getDate() + 1,
-                ),
+                gte: startOfDay,
+                lt: endOfDay,
               },
             },
             {
               endDate: {
-                gte: new Date(
-                  dateObj.getFullYear(),
-                  dateObj.getMonth(),
-                  dateObj.getDate(),
-                ),
-                lt: new Date(
-                  dateObj.getFullYear(),
-                  dateObj.getMonth(),
-                  dateObj.getDate() + 1,
-                ),
+                gte: startOfDay,
+                lt: endOfDay,
               },
             },
           ],

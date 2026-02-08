@@ -66,7 +66,6 @@ export class TenantService {
       const users = await this.userService.getTenantUsers(tenant);
       const roles = await this.roles.getAllRoles(tenant);
       const bookings = await this.bookingService.getBookings(tenant);
-      const todayActivities = await this.getTodayActivities(tenant);
 
       const data = {
         tenant: fetched,
@@ -81,7 +80,6 @@ export class TenantService {
         users,
         roles,
         bookings,
-        todayActivities,
       };
 
       return data;
