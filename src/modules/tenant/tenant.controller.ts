@@ -46,6 +46,13 @@ export class TenantController {
     return this.tenantService.getStorefrontTenantByDomain(domain);
   }
 
+  @Get('today')
+  @UseGuards(AuthGuard)
+  getTodayActivities(@Req() req: AuthenticatedRequest) {
+    const tenant = req.context.tenant!;
+    return this.tenantService.getTodayActivities(tenant);
+  }
+
   @Get(':id')
   getTenantById(@Param('id') id: string) {
     return this.tenantService.getTenantById(id);

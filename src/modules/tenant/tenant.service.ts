@@ -21,6 +21,9 @@ import { VehicleService } from '../vehicle/vehicle.service.js';
 import { TenantCustomerService } from '../customer/tenant-customer/tenant-customer.service.js';
 import { TenantActivityService } from './tenant-activity/tenant-activity.service.js';
 import { TenantRatesService } from './tenant-rates/tenant-rates.service.js';
+import { TenantBookingService } from '../booking/tenant-booking/tenant-booking.service.js';
+import { Activity, ActivityType } from 'src/types/tenant.js';
+import { VehicleMaintenanceService } from '../vehicle/modules/vehicle-maintenance/vehicle-maintenance.service.js';
 
 @Injectable()
 export class TenantService {
@@ -42,6 +45,8 @@ export class TenantService {
     private readonly activities: TenantActivityService,
     private readonly rates: TenantRatesService,
     private readonly roles: UserRoleService,
+    private readonly bookingService: TenantBookingService,
+    private readonly maintenanceService: VehicleMaintenanceService,
   ) {}
 
   async getCurrentTenant(tenant: Tenant, user: User) {
@@ -60,6 +65,8 @@ export class TenantService {
       );
       const users = await this.userService.getTenantUsers(tenant);
       const roles = await this.roles.getAllRoles(tenant);
+      const bookings = await this.bookingService.getBookings(tenant);
+      const todayActivities = await this.getTodayActivities(tenant);
 
       const data = {
         tenant: fetched,
@@ -73,6 +80,8 @@ export class TenantService {
         currencyRates,
         users,
         roles,
+        bookings,
+        todayActivities,
       };
 
       return data;
@@ -382,6 +391,154 @@ export class TenantService {
         tenantId: tenant.id,
         data,
       });
+      throw error;
+    }
+  }
+
+  async getTodayActivities(tenant: Tenant) {
+    try {
+      const activities: Activity[] = [];
+      const today = new Date();
+
+      const bookings = await this.bookingService.getBookingsByDate(
+        today.toISOString(),
+        tenant,
+      );
+
+      const maintenances =
+        await this.maintenanceService.getVehicleMaintenanceByDate(
+          today.toISOString(),
+          tenant,
+        );
+
+      const bookingActivities = bookings.map((booking) => {
+        const customer = booking.drivers.find((d) => d.isPrimary)?.customer;
+        const activityType = booking.endDate > today ? 'pickup' : 'return';
+
+        const time =
+          activityType === 'pickup' ? booking.startDate : booking.endDate;
+
+        const vehicleName = `${booking.vehicle.year} ${booking.vehicle.brand.brand} ${booking.vehicle.model.model}`;
+
+        const title = `${activityType === 'pickup' ? 'Vehicle Pickup' : 'Vehicle Return'} - ${vehicleName}`;
+
+        const description = `Booking Ref: ${booking.bookingCode}`;
+
+        const act: Activity = {
+          id: booking.id,
+          time: time.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          }),
+          type: activityType as ActivityType,
+          title,
+          description,
+          vehicle: booking.vehicle,
+          customer: customer,
+          location: activityType === 'pickup' ? booking.pickup : booking.return,
+        };
+
+        return act;
+      });
+
+      const inspectionActivities = bookings
+        .filter((booking) => {
+          const isTodayReturn =
+            booking.endDate.toDateString() === today.toDateString();
+
+          return isTodayReturn;
+        })
+        .map((booking) => {
+          const vehicleName = `${booking.vehicle.year} ${booking.vehicle.brand.brand} ${booking.vehicle.model.model}`;
+
+          const title = `Post-Booking Inspection - ${vehicleName}`;
+
+          const description = `Damage Assessment - Booking Ref: ${booking.bookingCode}`;
+
+          const inspectionTime = new Date(booking.endDate);
+          inspectionTime.setMinutes(inspectionTime.getMinutes() + 5);
+
+          const act: Activity = {
+            id: booking.id,
+            time: inspectionTime.toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+            }),
+            type: 'inspection' as ActivityType,
+            title,
+            description,
+            vehicle: booking.vehicle,
+            location: booking.return,
+          };
+
+          return act;
+        });
+
+      const maintenanceActivities = maintenances.flatMap((maintenance) => {
+        const isStartToday =
+          maintenance.startDate.toDateString() === today.toDateString();
+        const isEndToday =
+          maintenance.endDate.toDateString() === today.toDateString();
+
+        const vehicleName = `${maintenance.vehicle.year} ${maintenance.vehicle.brand.brand} ${maintenance.vehicle.model.model}`;
+        const servicesText = maintenance.services
+          .map((s) => s.service)
+          .join(', ');
+
+        const activities: Activity[] = [];
+
+        if (isStartToday) {
+          activities.push({
+            id: `${maintenance.id}-out`,
+            time: maintenance.startDate.toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+            }),
+            type: 'maintenance',
+            title: `${vehicleName} Out for Maintenance`,
+            description: `Vehicle has to go out for scheduled maintenance: ${servicesText}`,
+            vehicle: maintenance.vehicle,
+            vendor: maintenance.vendor || undefined,
+          });
+        }
+
+        if (isEndToday) {
+          activities.push({
+            id: `${maintenance.id}-in`,
+            time: maintenance.endDate.toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+            }),
+            type: 'maintenance',
+            title: `${vehicleName} Returns from Maintenance`,
+            description: `Vehicle has to be returned from scheduled maintenance: ${servicesText}`,
+            vehicle: maintenance.vehicle,
+            vendor: maintenance.vendor || undefined,
+          });
+        }
+
+        return activities;
+      });
+
+      activities.push(
+        ...bookingActivities,
+        ...maintenanceActivities,
+        ...inspectionActivities,
+      );
+
+      activities.sort((a, b) => {
+        const timeA = new Date(`1970-01-01 ${a.time}`);
+        const timeB = new Date(`1970-01-01 ${b.time}`);
+        return timeA.getTime() - timeB.getTime();
+      });
+
+      return activities;
+    } catch (error) {
+      this.logger.error('Failed to get tenant activities for today', error);
       throw error;
     }
   }
