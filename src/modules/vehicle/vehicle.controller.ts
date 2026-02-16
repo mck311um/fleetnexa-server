@@ -17,6 +17,7 @@ import type { AuthenticatedRequest } from '../../types/authenticated-request.js'
 import { VehicleStatusDto } from './dto/vehicle-status.dto.js';
 import { VehicleDto } from './dto/vehicle.dto.js';
 import { VehicleLocationDto } from './dto/vehicle-location.dto.js';
+import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
 
 @Controller('vehicle')
 export class VehicleController {
@@ -105,6 +106,16 @@ export class VehicleController {
   ) {
     const { tenant, user } = req.context;
     return this.service.updateVehicleLocation(data, tenant, user);
+  }
+
+  @Post('swap')
+  @UseGuards(AuthGuard)
+  async swapVehicle(
+    @Req() req: AuthenticatedRequest,
+    @Body() data: SwapVehicleDto,
+  ) {
+    const { tenant, user } = req.context;
+    return this.service.swapBookingVehicle(data, tenant, user);
   }
 
   @Delete(':id')

@@ -177,8 +177,8 @@ model BookingVehicleHistory {
   swappedBy       String
 
   booking         Rental   @relation(fields: [bookingId], references: [id])
-  fromVehicle     Vehicle @relation("FromVehicleHistory", fields: [fromVehicleId], references: [id])
-  toVehicle       Vehicle @relation("ToVehicleHistory", fields: [toVehicleId], references: [id])
+  fromVehicle     Vehicle  @relation("FromVehicleHistory", fields: [fromVehicleId], references: [id])
+  toVehicle       Vehicle  @relation("ToVehicleHistory", fields: [toVehicleId], references: [id])
   user            User     @relation(fields: [swappedBy], references: [username])
 }
 
