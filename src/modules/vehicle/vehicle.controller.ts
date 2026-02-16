@@ -16,6 +16,7 @@ import { AuthGuard } from '../../common/guards/auth.guard.js';
 import type { AuthenticatedRequest } from '../../types/authenticated-request.js';
 import { VehicleStatusDto } from './dto/vehicle-status.dto.js';
 import { VehicleDto } from './dto/vehicle.dto.js';
+import { VehicleLocationDto } from './dto/vehicle-location.dto.js';
 
 @Controller('vehicle')
 export class VehicleController {
@@ -94,6 +95,16 @@ export class VehicleController {
   ) {
     const { tenant, user } = req.context;
     return this.service.updateVehicleStatus(data, tenant, user);
+  }
+
+  @Patch('location')
+  @UseGuards(AuthGuard)
+  async updateVehicleLocation(
+    @Req() req: AuthenticatedRequest,
+    @Body() data: VehicleLocationDto,
+  ) {
+    const { tenant, user } = req.context;
+    return this.service.updateVehicleLocation(data, tenant, user);
   }
 
   @Delete(':id')
