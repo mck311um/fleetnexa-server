@@ -17,6 +17,7 @@ import {
   ResetPasswordDto,
   ResetPasswordRequestDto,
 } from './dto/reset-password.dto.js';
+import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 
 @Controller('auth')
 export class AuthController {
@@ -181,6 +182,14 @@ export class AuthController {
     });
 
     return { message: 'Logged out successfully' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('session')
+  async getSession() {
+    return {
+      authenticated: true,
+    };
   }
 
   @Post('password/forgot')
