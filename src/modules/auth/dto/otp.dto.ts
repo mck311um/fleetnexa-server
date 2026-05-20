@@ -20,3 +20,17 @@ export class VerifyOTPDto {
   @IsNotEmpty()
   userType: UserType;
 }
+
+export class ResendOTPDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsEnum(OtpType)
+  @IsNotEmpty()
+  type: OtpType;
+
+  @IsEnum(UserType)
+  @IsNotEmpty()
+  userType: UserType;
+}

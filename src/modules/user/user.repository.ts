@@ -55,7 +55,7 @@ export class UserRepository {
     } else if (userType === 'STOREFRONT') {
       return await this.prisma.storefrontUser.findUnique({
         where: { email: username },
-        select: this.getStorefrontUserSelectOptions(),
+        select: this.getStorefrontUserAuthSelectOptions(),
       });
     } else {
       return await this.prisma.adminUser.findUnique({
@@ -77,6 +77,21 @@ export class UserRepository {
     } else if (userType === 'STOREFRONT') {
       return await this.prisma.storefrontUser.findUnique({
         where: { email },
+        select: this.getStorefrontUserAuthSelectOptions(),
+      });
+    } else {
+      return await this.prisma.adminUser.findUnique({
+        where: { email },
+      });
+    }
+  };
+
+  getAnyUserByEmailWithPassword = async (email: string, userType: UserType) => {
+    if (userType === 'TENANT') {
+      return await this.getTenantUserByEmail(email);
+    } else if (userType === 'STOREFRONT') {
+      return await this.prisma.storefrontUser.findUnique({
+        where: { email },
         select: this.getStorefrontUserSelectOptions(),
       });
     } else {
@@ -92,7 +107,7 @@ export class UserRepository {
     } else if (userType === 'STOREFRONT') {
       return await this.prisma.storefrontUser.findUnique({
         where: { id },
-        select: this.getStorefrontUserSelectOptions(),
+        select: this.getStorefrontUserAuthSelectOptions(),
       });
     } else {
       return await this.prisma.adminUser.findUnique({
@@ -145,6 +160,13 @@ export class UserRepository {
       state: true,
       stateId: true,
       phone: true,
+    };
+  }
+
+  private getStorefrontUserAuthSelectOptions(): Prisma.StorefrontUserSelect {
+    return {
+      ...this.getStorefrontUserSelectOptions(),
+      password: true,
     };
   }
 

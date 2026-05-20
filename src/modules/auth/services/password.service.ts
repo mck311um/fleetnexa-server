@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserType } from '../../../generated/prisma/client.js';
 import { UserRepository } from '../../../modules/user/user.repository.js';
@@ -83,6 +88,15 @@ export class PasswordService {
         throw new NotFoundException('User not found');
       }
 
+      if (!user.password) {
+        this.logger.error(
+          `Password change failed: password hash missing for user ${data.email}.`,
+        );
+        throw new InternalServerErrorException(
+          'Unable to verify current password',
+        );
+      }
+
       const isSamePassword = await bcrypt.compare(data.password, user.password);
 
       if (isSamePassword) {
@@ -129,6 +143,17 @@ export class PasswordService {
           data: { password: hash },
         });
       }
+
+      await this.addToPasswordHistory(user.id, user.password, data.userType);
+
+      await this.auditLogService.logEvent({
+        userId: user.id,
+        userType: data.userType,
+        action: 'PASSWORD_CHANGED',
+        ip: '',
+        meta: { email: data.email },
+        userAgent: '',
+      });
 
       return {
         status: 'PASSWORD_CHANGED',

@@ -3,7 +3,8 @@ import { PrismaService } from '../../../prisma/prisma.service.js';
 import { GeneratorService } from '../../../common/generator/generator.service.js';
 import * as bcrypt from 'bcrypt';
 import { OtpType, UserType } from '../../../generated/prisma/enums.js';
-import { VerifyOTPDto } from '../dto/verify-otp.dto.js';
+import { ResendOTPDto, VerifyOTPDto } from '../dto/otp.dto.js';
+import { UserRepository } from '../../../modules/user/user.repository.js';
 
 @Global()
 @Injectable()
@@ -13,13 +14,15 @@ export class OtpService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly generator: GeneratorService,
+    private readonly userRepo: UserRepository,
   ) {}
 
   async verifyOTP(data: VerifyOTPDto) {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { email: data.email },
-      });
+      const user = await this.userRepo.getAnyUserByEmail(
+        data.email,
+        data.userType,
+      );
 
       const expired = await this.isExpired(
         user?.id || '',
@@ -78,17 +81,59 @@ export class OtpService {
       });
 
       const token = await this.generator.generateVerificationCode();
-      const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
-
+      const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
       const codeHash = await bcrypt.hash(token, 10);
 
-      await this.prisma.otp.create({
+      const created = await this.prisma.otp.create({
         data: { userId, codeHash, expiresAt, type, userType },
       });
+
+      this.logger.debug(
+        `Created OTP for user ${userId} with type ${type} and userType ${userType} it expires at ${expiresAt}. OTP ID: ${created.id}`,
+      );
 
       return token;
     } catch (error) {
       this.logger.error(`Failed to create OTP for user ${userId}`, error.stack);
+      throw error;
+    }
+  }
+
+  async resendOTP(data: ResendOTPDto) {
+    try {
+      const user = await this.userRepo.getAnyUserByEmail(
+        data.email,
+        data.userType,
+      );
+
+      if (!user) {
+        this.logger.warn(
+          `Email verification failed: User with email ${data.email} not found.`,
+        );
+        throw new NotFoundException('User not found');
+      }
+
+      await this.prisma.otp.updateMany({
+        where: {
+          userId: user?.id || '',
+          type: data.type,
+          userType: data.userType,
+          expiresAt: { gt: new Date() },
+        },
+        data: { expiresAt: new Date() },
+      });
+
+      await this.createOTP(user?.id || '', data.type, data.userType);
+
+      return {
+        status: 'OTP_SENT',
+        message: 'A new OTP has been sent to your email address.',
+      };
+    } catch (error) {
+      this.logger.error(
+        `Failed to resend OTP for email ${data.email}`,
+        error.stack,
+      );
       throw error;
     }
   }

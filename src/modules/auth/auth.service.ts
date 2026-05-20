@@ -11,14 +11,14 @@ import { UserRepository } from '../user/user.repository.js';
 import { StorefrontAuthDto } from './dto/storefront-auth.dto.js';
 import { SessionService } from './services/session.service.js';
 import { AuditLogService } from './services/audit-log.service.js';
-import { VerifyOTPDto } from './dto/verify-otp.dto.js';
+import { ResendOTPDto, VerifyOTPDto } from './dto/otp.dto.js';
 import { OtpService } from './services/otp.service.js';
 import {
   ResetPasswordDto,
   ResetPasswordRequestDto,
 } from './dto/reset-password.dto.js';
 import { PasswordService } from './services/password.service.js';
-import { UserType } from 'src/generated/prisma/enums.js';
+import { OtpType, UserType } from 'src/generated/prisma/enums.js';
 
 @Injectable()
 export class AuthService {
@@ -157,6 +157,10 @@ export class AuthService {
 
   async verifyOTP(data: VerifyOTPDto) {
     return this.otpService.verifyOTP(data);
+  }
+
+  async resendOTP(data: ResendOTPDto) {
+    return this.otpService.resendOTP(data);
   }
 
   async createStorefrontUser(data: StorefrontAuthDto) {

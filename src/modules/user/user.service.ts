@@ -10,7 +10,7 @@ import bcrypt from 'bcrypt';
 import { EmailService } from '../../common/email/email.service.js';
 import { GeneratorService } from '../../common/generator/generator.service.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { VerifyOTPDto } from '../auth/dto/verify-otp.dto.js';
+import { VerifyOTPDto } from '../auth/dto/otp.dto.js';
 import { NewPasswordDto } from '../auth/dto/new-password.dto.js';
 import { Tenant } from '../../generated/prisma/browser.js';
 import { UserRepository } from './user.repository.js';
