@@ -304,7 +304,7 @@ export class BookingCreationService {
     const tasks = [
       this.emailService.sendBookingCompletedEmail(booking.id, booking.tenant),
       this.emailService.sendNewBookingEmail(booking.id, booking.tenant),
-      this.whatsapp.sendBookingNotification(booking.id),
+      this.whatsapp.sendBookingRequestNotification(booking.id),
       this.tenantNotification.sendBookingNotification(
         booking.id,
         booking.tenant,

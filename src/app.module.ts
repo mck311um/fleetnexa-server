@@ -28,6 +28,7 @@ import { UserModule } from './modules/user/user.module.js';
 import { CustomerModule } from './modules/customer/customer.module.js';
 import { NotificationModule } from './common/notification/notification.module.js';
 import { PaymentModule } from './modules/payment/payment.module.js';
+import { SentDmModule } from './sentdm/sentdm.module.js';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { PaymentModule } from './modules/payment/payment.module.js';
     WhatsappModule,
     NotificationModule,
     PaymentModule,
+    SentDmModule,
 
     AdminModule,
 

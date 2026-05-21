@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import SentDm from '@sentdm/sentdm';
+import { SentDmDto } from './sentdm.dto.js';
+import { BookingRequestTemplate } from './sent-dm-templates.js';
 
 @Injectable()
-export class SentdmService {
+export class SentDmService {
   private readonly client: SentDm;
 
   constructor(private readonly configService: ConfigService) {
@@ -15,12 +17,17 @@ export class SentdmService {
     });
   }
 
-  async sendBookingRequest() {
+  async sendBookingRequest(data: BookingRequestTemplate, dm: SentDmDto) {
     try {
       await this.client.messages.send({
+        to: [dm.to],
         channel: ['whatsapp'],
+        'x-profile-id': dm.profileId,
         template: {
-          id: 'cbcd4b5c-2153-4b48-83ed-7f08aafec6d6',
+          id: dm.templateId,
+          parameters: {
+            ...data,
+          },
         },
       });
     } catch (error) {
