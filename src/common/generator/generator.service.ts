@@ -1,5 +1,5 @@
 import { Global, Injectable, Logger } from '@nestjs/common';
-import slug from 'slug';
+import slugify from 'slugify';
 import crypto from 'crypto';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
@@ -40,7 +40,11 @@ export class GeneratorService {
 
   async generateTenantSlug(tenantName: string): Promise<string> {
     let tenantSlug = '';
-    tenantSlug = slug(tenantName);
+    tenantSlug = slugify(tenantName, {
+      lower: true,
+      strict: true,
+      trim: true,
+    });
 
     const existingTenant = await this.prisma.tenant.findUnique({
       where: { slug: tenantSlug },
