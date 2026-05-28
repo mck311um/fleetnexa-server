@@ -6,7 +6,7 @@ import {
   User,
 } from '../../../../generated/prisma/client.js';
 import { TransactionDto } from '../../transaction.dto.js';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { TransactionService } from '../../transaction.service.js';
 import { PrismaService } from '../../../../infrastructure/prisma/prisma.service.js';
 
@@ -58,7 +58,7 @@ export class ExpenseService {
       });
 
       const transaction: TransactionDto = {
-        id: uuidv4(),
+        id: randomUUID(),
         amount: data.amount,
         type: TransactionType.EXPENSE,
         transactionDate: data.expenseDate,

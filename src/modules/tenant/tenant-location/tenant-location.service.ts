@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Country, Tenant, User } from '../../../generated/prisma/client.js';
 
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { TenantLocationDto } from './tenant.location.dto.js';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
@@ -174,7 +174,7 @@ export class TenantLocationService {
 
         await tx.tenantLocation.create({
           data: {
-            id: uuidv4(),
+            id: randomUUID(),
             location: 'Main Office',
             countryId: country.id,
             tenantId: tenant.id,
@@ -193,7 +193,7 @@ export class TenantLocationService {
         for (const location of presetLocations) {
           await tx.tenantLocation.create({
             data: {
-              id: uuidv4(),
+              id: randomUUID(),
               location: location.location,
               tenantId: tenant.id,
               countryId: country.id,
