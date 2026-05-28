@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Tenant, User } from '../../../generated/prisma/client.js';
 import { FormatterService } from '../../../common/formatter/formatter.service.js';
-import { NotificationService } from '../../../common/notification/notification.service.js';
+import { NotificationService } from '../../../infrastructure/notification/notification.service.js';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()

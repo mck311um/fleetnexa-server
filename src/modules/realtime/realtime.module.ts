@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
+import { RealtimeGateway } from './realtime.gateway';
 import { ConfigModule } from '@nestjs/config';
+import jwtConfig from 'src/config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
-import { TenantGateway } from './tenant.gateway.js';
-import jwtConfig from '../config/jwt.config.js';
 
 @Global()
 @Module({
@@ -10,7 +10,7 @@ import jwtConfig from '../config/jwt.config.js';
     ConfigModule.forFeature(jwtConfig),
     JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
-  providers: [TenantGateway],
-  exports: [TenantGateway],
+  providers: [RealtimeGateway],
+  exports: [RealtimeGateway],
 })
-export class SocketModule {}
+export class RealtimeModule {}

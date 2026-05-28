@@ -8,7 +8,7 @@ import {
   endOfYear,
   eachMonthOfInterval,
 } from 'date-fns';
-import { NotificationService } from '../../common/notification/notification.service.js';
+import { NotificationService } from '../../infrastructure/notification/notification.service.js';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()

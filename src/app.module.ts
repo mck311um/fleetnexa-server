@@ -4,7 +4,6 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module.js';
-import { SocketModule } from './gateway/socket.module.js';
 import { AdminModule } from './modules/admin/admin.module.js';
 import { VehicleModule } from './modules/vehicle/vehicle.module.js';
 import { StorageModule } from './modules/storage/storage.module.js';
@@ -25,11 +24,12 @@ import { RolesGuard } from './modules/auth/guards/roles.guard.js';
 import { BookingModule } from './modules/booking/booking.module.js';
 import { UserModule } from './modules/user/user.module.js';
 import { CustomerModule } from './modules/customer/customer.module.js';
-import { NotificationModule } from './common/notification/notification.module.js';
+import { NotificationModule } from './infrastructure/notification/notification.module.js';
 import { PaymentModule } from './modules/payment/payment.module.js';
 import { SentDmModule } from './infrastructure/sentdm/sentdm.module.js';
 import { ResendModule } from './infrastructure/resend/resend.module.js';
 import { PrismaModule } from './infrastructure/prisma/prisma.module.js';
+import { RealtimeModule } from './modules/realtime/realtime.module.js';
 
 @Module({
   imports: [
@@ -58,6 +58,7 @@ import { PrismaModule } from './infrastructure/prisma/prisma.module.js';
 
     ResendModule,
     SentDmModule,
+    RealtimeModule,
 
     AdminModule,
 
@@ -75,7 +76,6 @@ import { PrismaModule } from './infrastructure/prisma/prisma.module.js';
     TransactionModule,
     VehicleModule,
 
-    SocketModule,
     StorageModule,
     DocumentModule,
     SubscriptionModule,

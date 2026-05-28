@@ -1,9 +1,9 @@
 import { Global, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
-import { TenantGateway } from '../../gateway/tenant.gateway.js';
 import { TenantNotification } from '../../generated/prisma/client.js';
 import { UserRepository } from '../../modules/user/user.repository.js';
+import { RealtimeGateway } from '../../modules/realtime/realtime.gateway.js';
 
 @Global()
 @Injectable()
@@ -14,9 +14,9 @@ export class NotificationService {
   private readonly apiKey: string | undefined;
 
   constructor(
-    private readonly tenantGateway: TenantGateway,
     private readonly config: ConfigService,
     private readonly userRepo: UserRepository,
+    private readonly realtime: RealtimeGateway,
   ) {
     this.appId = this.config.get<string>('ONESIGNAL_APP_ID');
     this.apiKey = this.config.get<string>('ONESIGNAL_API_KEY');
@@ -31,7 +31,7 @@ export class NotificationService {
   }
 
   async sendTenantNotification(tenantId: string, payload: TenantNotification) {
-    this.tenantGateway.sendTenantNotification(tenantId, payload);
+    this.realtime.sendTenantNotification(tenantId, payload);
 
     await this.sendPushNotification(tenantId, payload);
   }
