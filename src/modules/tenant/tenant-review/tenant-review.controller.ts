@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { TenantReviewService } from './tenant-review.service.js';
 import { JwtAuthGuard } from '../../../modules/auth/guards/jwt-auth.guard.js';
-import { Role } from '../../../common/enums/role.enum.js';
+import { Role } from '../../../shared/enums/role.enum.js';
 import { Roles } from '../../../modules/auth/decorator/role.decorator.js';
 import { RateTenantDto } from '../dto/rate-tenant.dto.js';
 

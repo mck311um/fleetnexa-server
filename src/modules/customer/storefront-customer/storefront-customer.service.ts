@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService, TxClient } from '../../../prisma/prisma.service.js';
 import { StorefrontCustomerDto } from './storefront-customer.dto.js';
 import { Tenant } from '../../../generated/prisma/client.js';
+import {
+  PrismaService,
+  TxClient,
+} from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class StorefrontCustomerService {
@@ -131,7 +134,7 @@ export class StorefrontCustomerService {
 
         return customer;
       }
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get storefront customer', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

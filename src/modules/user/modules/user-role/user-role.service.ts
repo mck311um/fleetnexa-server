@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 
 import { UserRoleDto, UserRolePermissionsDto } from './user-role.dto.js';
-import { PrismaService } from '../../../../prisma/prisma.service.js';
 import { Tenant, User, UserRole } from '../../../../generated/prisma/client.js';
+import { PrismaService } from '../../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class UserRoleService {
@@ -29,7 +29,7 @@ export class UserRoleService {
           },
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get user roles', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -121,7 +121,7 @@ export class UserRoleService {
       }
 
       return role;
-    } catch (error) {
+    } catch (error: any) {
       throw error;
     }
   }
@@ -163,7 +163,7 @@ export class UserRoleService {
         message: 'Role created successfully',
         roles,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error creating role', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -205,7 +205,7 @@ export class UserRoleService {
         message: 'Role created successfully',
         roles,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error updating role', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -254,7 +254,7 @@ export class UserRoleService {
         message: 'Role created successfully',
         roles,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error deleting role', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -296,7 +296,7 @@ export class UserRoleService {
         message: 'Permissions assigned successfully',
         roles,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error assigning permissions to role', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -335,7 +335,7 @@ export class UserRoleService {
       await this.assignAllPermissionsToRole(role);
 
       return role;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to create default role', error);
       throw error;
     }
@@ -356,7 +356,7 @@ export class UserRoleService {
           permissionId: permission.id,
         })),
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to assign permissions to role', error);
       throw error;
     }

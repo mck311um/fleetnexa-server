@@ -4,11 +4,11 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import {
   CreatePermissionCategoryDto,
   UpdatePermissionCategoryDto,
 } from './permission-category.dto.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class PermissionCategoryService {
@@ -21,7 +21,7 @@ export class PermissionCategoryService {
       return await this.prisma.permissionCategory.findMany({
         include: { _count: { select: { permissions: true } } },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error fetching permission categories:', error);
       throw error;
     }
@@ -53,7 +53,7 @@ export class PermissionCategoryService {
         message: 'Permission category created successfully',
         categories,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating permission category:', error);
       throw error;
     }
@@ -98,7 +98,7 @@ export class PermissionCategoryService {
         message: 'Permission category updated successfully',
         categories,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error updating permission category:', error);
       throw error;
     }

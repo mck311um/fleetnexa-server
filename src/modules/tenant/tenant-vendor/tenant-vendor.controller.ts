@@ -12,7 +12,7 @@ import {
 import { TenantVendorService } from './tenant-vendor.service.js';
 import { TenantVendorDto } from './tenant-vendor.dto.js';
 import { JwtAuthGuard } from '../../../modules/auth/guards/jwt-auth.guard.js';
-import { Role } from '../../../common/enums/role.enum.js';
+import { Role } from '../../../shared/enums/role.enum.js';
 import { Roles } from '../../../modules/auth/decorator/role.decorator.js';
 
 @Controller('tenant/vendor')

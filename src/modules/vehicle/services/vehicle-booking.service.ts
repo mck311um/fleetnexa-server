@@ -5,7 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { SwapVehicleDto } from '../dto/swap-vehicle.dto.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { VehicleEventService } from '../../../modules/vehicle/modules/vehicle-event/vehicle-event.service.js';
 import {
   Tenant,
@@ -15,6 +14,7 @@ import {
 import { VehicleStatusService } from './vehicle-status.service.js';
 import { BookingRepository } from '../../../modules/booking/booking.repository.js';
 import { VehicleEventDto } from '../dto/vehicle-event.dto.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VehicleBookingService {
@@ -123,7 +123,7 @@ export class VehicleBookingService {
         message: 'Vehicle swapped successfully',
         bookings,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to swap booking vehicle', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

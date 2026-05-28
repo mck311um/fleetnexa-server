@@ -25,7 +25,7 @@ export class NotifyService {
 
       this.logger.log(`Email sent: ${res.data.messageId}`);
       return res.data;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending email', error);
       throw error;
     }
@@ -39,7 +39,7 @@ export class NotifyService {
 
       this.logger.log(`Phone number verified: ${phoneNumber}`);
       return res.data;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error verifying phone number', error);
       throw error;
     }
@@ -51,7 +51,7 @@ export class NotifyService {
 
       this.logger.log(`WhatsApp message sent: ${res.data.messageId}`);
       return res.data;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending WhatsApp message', error);
       throw error;
     }

@@ -5,7 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { VehicleRepository } from './vehicle.repository.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { TenantExtraService } from '../tenant/tenant-extra/tenant-extra.service.js';
 import { Tenant, User } from '../../generated/prisma/client.js';
 import { VehicleDto } from './dto/vehicle.dto.js';
@@ -18,6 +17,7 @@ import { VehicleLocationService } from './services/vehicle-location.service.js';
 import { VehicleBookingService } from './services/vehicle-booking.service.js';
 import { VehicleDiscountDto } from './dto/vehicle-dicount.dto.js';
 import { VehiclePricingService } from './services/vehicle-pricing.service.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VehicleService {
@@ -37,7 +37,7 @@ export class VehicleService {
   async getTenantVehicles(tenant: Tenant) {
     try {
       return await this.vehicleRepo.getVehicles(tenant.id);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get vehicles', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -50,7 +50,7 @@ export class VehicleService {
     try {
       const vehicle = await this.vehicleRepo.getVehicleById(id, tenant.id);
       return await this.attachTenantExtras(vehicle);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, `Failed to get vehicle by id: ${id}`, {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -66,7 +66,7 @@ export class VehicleService {
         tenant.id,
       );
       return await this.attachTenantExtras(vehicle);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         error,
         `Failed to get vehicle by license plate: ${licensePlate}`,
@@ -83,7 +83,7 @@ export class VehicleService {
     try {
       const vehicles = await this.vehicleRepo.getVehiclesForStorefront();
       return await this.attachExtrasToVehicles(vehicles);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get storefront vehicles', error);
       throw error;
     }
@@ -94,7 +94,7 @@ export class VehicleService {
       const vehicles =
         await this.vehicleRepo.getTenantVehiclesForStorefront(tenantId);
       return await this.attachExtrasToVehicles(vehicles);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to get storefront vehicles for tenant: ${tenantId}`,
         error,
@@ -107,7 +107,7 @@ export class VehicleService {
     try {
       const vehicle = await this.vehicleRepo.getVehicleForStorefrontById(id);
       return await this.attachTenantExtras(vehicle);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to get storefront vehicle by id: ${id}`, error);
       throw error;
     }
@@ -187,7 +187,7 @@ export class VehicleService {
         message: 'Vehicle added successfully',
         vehicles,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to add vehicle', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -280,7 +280,7 @@ export class VehicleService {
         vehicles,
         vehicle: updatedVehicle,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to update vehicle', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -316,7 +316,7 @@ export class VehicleService {
         message: 'Vehicle deleted successfully',
         vehicles,
       };
-    } catch (error) {}
+    } catch (error: any) {}
   }
 
   async updateVehicleStorefrontStatus(id: string, tenant: Tenant, user: User) {

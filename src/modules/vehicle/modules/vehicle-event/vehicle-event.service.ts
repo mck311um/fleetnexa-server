@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../../prisma/prisma.service.js';
 import { VehicleEventDto } from '../../dto/vehicle-event.dto.js';
+import { PrismaService } from '../../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VehicleEventService {
@@ -28,7 +28,7 @@ export class VehicleEventService {
           notes: data.notes,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error logging vehicle event', { data });
       throw error;
     }

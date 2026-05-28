@@ -1,8 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { Tenant, User } from '../../../generated/prisma/client.js';
 import { FormatterService } from '../../../common/formatter/formatter.service.js';
 import { NotificationService } from '../../../common/notification/notification.service.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantNotificationService {
@@ -44,7 +44,7 @@ export class TenantNotificationService {
       );
 
       return notificationsWithReadStatus;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get tenant notifications', error);
       throw error;
     }
@@ -101,7 +101,7 @@ export class TenantNotificationService {
       });
 
       this.notificationService.sendTenantNotification(tenant.id, notification);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to send booking notification', error);
       throw error;
     }
@@ -145,7 +145,7 @@ export class TenantNotificationService {
         message: 'Notification marked as read successfully',
         notifications: allNotifications,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to mark notification as read', error);
       throw error;
     }
@@ -181,7 +181,7 @@ export class TenantNotificationService {
         message: 'All notifications marked as read successfully',
         notifications: allNotifications,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to mark all notifications as read', error);
       throw error;
     }
@@ -212,7 +212,7 @@ export class TenantNotificationService {
         message: 'Notification deleted successfully',
         notifications: allNotifications,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to delete notification', error);
       throw error;
     }

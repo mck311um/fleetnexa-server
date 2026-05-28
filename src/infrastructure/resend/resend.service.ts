@@ -6,9 +6,9 @@ import {
   BookingConfirmationTemplate,
 } from './resend-templates.js';
 import { Tenant } from '../../generated/prisma/client.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { CustomerService } from '../../modules/customer/customer.service.js';
-import { FormatterService } from '../formatter/formatter.service.js';
+import { FormatterService } from '../../common/formatter/formatter.service.js';
+import { PrismaService } from '../prisma/prisma.service.js';
 
 @Global()
 @Injectable()
@@ -38,7 +38,7 @@ export class ResendService {
       });
 
       this.logger.log(res.data);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending email with Resend:', error);
       throw error;
     }
@@ -80,7 +80,7 @@ export class ResendService {
       this.logger.log(
         `Account created email sent to ${user.email} for user ID ${userId}`,
       );
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending account created email:', error);
       throw error;
     }
@@ -183,7 +183,7 @@ export class ResendService {
       this.logger.log(
         `Booking confirmation email sent to ${primaryDriver.customer.email} for booking ID ${bookingId}`,
       );
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending booking confirmation email:', error);
       throw error;
     }

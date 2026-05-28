@@ -13,7 +13,7 @@ import {
 import { VehicleMaintenanceService } from './vehicle-maintenance.service.js';
 import { VehicleMaintenanceDto } from './vehicle-maintenance.dto.js';
 import { JwtAuthGuard } from '../../../../modules/auth/guards/jwt-auth.guard.js';
-import { Role } from '../../../../common/enums/role.enum.js';
+import { Role } from '../../../../shared/enums/role.enum.js';
 import { Roles } from '../../../../modules/auth/decorator/role.decorator.js';
 
 @Controller('vehicle/maintenance')

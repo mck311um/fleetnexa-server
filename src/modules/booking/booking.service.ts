@@ -1,7 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { BookingRepository } from './booking.repository.js';
 import { RentalStatus, Tenant, User } from '../../generated/prisma/client.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { EmailService } from '../../common/email/email.service.js';
 import { ActionBookingDto } from './dto/action-booking.dto.js';
 import { SendWhatsAppDto } from '../../common/notify/dto/send-whatsapp.dto.js';
@@ -15,6 +14,7 @@ import { BookingCreationService } from './services/booking-creation.service.js';
 import { CreateBookingDto } from './dto/create-booking.dto.js';
 import { StorefrontUserBookingDto } from './dto/storefront-user-booking.dto.js';
 import { StorefrontGuestBookingDto } from './dto/storefront-guest-booking.dto.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class BookingService {
@@ -106,7 +106,7 @@ export class BookingService {
       });
 
       return bookingData.flat();
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get storefront bookings', {
         userId: id,
       });
@@ -246,7 +246,7 @@ export class BookingService {
         message: 'Booking deleted successfully',
         bookings,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to delete booking', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -273,7 +273,7 @@ export class BookingService {
       }
 
       return { message: 'Booking documents sent successfully' };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to send booking documents', {
         data,
       });
@@ -302,7 +302,7 @@ export class BookingService {
       );
 
       return bookings;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get bookings by date', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

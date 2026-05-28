@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { Tenant } from '../../../generated/prisma/client.js';
 import { TenantViolationDto } from './tenant-violation.dto.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantViolationService {
@@ -16,7 +16,7 @@ export class TenantViolationService {
       });
 
       return violations;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching tenant violations', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -56,7 +56,7 @@ export class TenantViolationService {
         message: 'Violation created successfully',
         violations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to create violation', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -97,7 +97,7 @@ export class TenantViolationService {
         message: 'Violation updated successfully',
         violations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to update violation', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -135,7 +135,7 @@ export class TenantViolationService {
         message: 'Violation deleted successfully',
         violations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to delete violation', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

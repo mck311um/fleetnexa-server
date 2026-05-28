@@ -1,4 +1,4 @@
-import { Tenant, User } from 'src/generated/prisma/client.js';
+import { Tenant, User } from '../../../generated/prisma/client.js';
 
 export interface AuthContext {
   tenant: Tenant;

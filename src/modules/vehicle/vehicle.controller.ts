@@ -17,7 +17,7 @@ import { VehicleDto } from './dto/vehicle.dto.js';
 import { VehicleLocationDto } from './dto/vehicle-location.dto.js';
 import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { Role } from '../../common/enums/role.enum.js';
+import { Role } from '../../shared/enums/role.enum.js';
 import { Roles } from '../auth/decorator/role.decorator.js';
 import { VehicleDiscountDto } from './dto/vehicle-dicount.dto.js';
 

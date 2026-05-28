@@ -6,13 +6,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { FormatterService } from '../../../common/formatter/formatter.service.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { VillageDto } from './village.dto.js';
 import { Country, State } from '../../../generated/prisma/client.js';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import axios from 'axios';
 import XLSX from 'xlsx';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VillageService {
@@ -34,7 +34,7 @@ export class VillageService {
           },
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error fetching villages', error);
       throw error;
     }
@@ -114,7 +114,7 @@ export class VillageService {
         message: 'Village created successfully',
         villages,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating village', error);
       throw error;
     }
@@ -138,7 +138,7 @@ export class VillageService {
 
         try {
           await this.createVillage(instance);
-        } catch (error) {
+        } catch (error: any) {
           failedRows.push({ item, error: error.message });
           this.logger.warn(
             `Skipping village due to error: ${JSON.stringify(item)} - Error: ${error.message}`,
@@ -151,7 +151,7 @@ export class VillageService {
         message: 'Bulk village upload completed',
         villages,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error in bulk creating villages', error);
       throw error;
     }
@@ -194,7 +194,7 @@ export class VillageService {
         message: 'Village updated successfully',
         villages,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error updating village', error);
       throw error;
     }
@@ -243,7 +243,7 @@ export class VillageService {
         message: 'Village deleted successfully',
         villages,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error deleting village', error);
       throw error;
     }

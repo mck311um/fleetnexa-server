@@ -30,7 +30,7 @@ export class SentDmService {
           },
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending booking request to SentDM:', error);
       throw error;
     }

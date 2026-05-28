@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service.js';
 import { Cron } from '@nestjs/schedule';
 import {
   getYear,
@@ -9,7 +8,8 @@ import {
   endOfYear,
   eachMonthOfInterval,
 } from 'date-fns';
-import { NotificationService } from '../common/notification/notification.service.js';
+import { NotificationService } from '../../common/notification/notification.service.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class CronService {
@@ -24,7 +24,7 @@ export class CronService {
   async monthlyStatsCron() {
     try {
       await this.runMonthlyStatCron();
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Monthly stats cron failed', error);
     }
   }
@@ -33,7 +33,7 @@ export class CronService {
   async yearlyStatsCron() {
     try {
       await this.runYearlyStatCron();
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Yearly stats cron failed', error);
     }
   }
@@ -44,7 +44,7 @@ export class CronService {
       await this.runUnconfirmedRentalsCron();
       await this.runUpcomingRentalsCron();
       await this.runUpcomingReturnsCron();
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Notification cron failed', error);
     }
   }
@@ -470,7 +470,7 @@ export class CronService {
           );
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in unconfirmedRentals:', error);
       throw error;
     }
@@ -562,7 +562,7 @@ export class CronService {
           );
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in upcomingRentals:', error);
       throw error;
     }
@@ -654,7 +654,7 @@ export class CronService {
           );
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in upcomingRentals:', error);
       throw error;
     }

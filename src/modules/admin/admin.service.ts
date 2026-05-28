@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { VehicleRepository } from '../vehicle/vehicle.repository.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class AdminService {
@@ -112,7 +112,7 @@ export class AdminService {
         subscriptionPlans,
         insuranceCompanies,
       };
-    } catch (error) {}
+    } catch (error: any) {}
   }
 
   async getStorefrontData() {
@@ -160,7 +160,7 @@ export class AdminService {
         vehicleFeatures,
         vehicleBodyTypes,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get storefront data', error);
       throw error;
     }
@@ -180,7 +180,7 @@ export class AdminService {
       });
 
       return destinations;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get storefront destinations', error);
       throw error;
     }
@@ -254,7 +254,7 @@ export class AdminService {
         tenants,
         vehicles,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get destination items', error);
       throw error;
     }
@@ -355,7 +355,7 @@ export class AdminService {
         paymentTypes,
         vendorTypes,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error fetching admin data', error);
       throw error;
     }

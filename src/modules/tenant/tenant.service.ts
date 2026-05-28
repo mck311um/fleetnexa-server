@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { GeneratorService } from '../../common/generator/generator.service.js';
 import { Tenant, User } from '../../generated/prisma/client.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { CreateTenantDto } from './dto/create-tenant.dto.js';
 import { TenantExtraService } from './tenant-extra/tenant-extra.service.js';
 import { TenantLocationService } from './tenant-location/tenant-location.service.js';
@@ -18,7 +17,7 @@ import { TenantVendorService } from './tenant-vendor/tenant-vendor.service.js';
 import { VehicleService } from '../vehicle/vehicle.service.js';
 import { TenantActivityService } from './tenant-activity/tenant-activity.service.js';
 import { TenantRatesService } from './tenant-rates/tenant-rates.service.js';
-import { Activity, ActivityType } from 'src/types/tenant.js';
+import { Activity, ActivityType } from '../../types/tenant.js';
 import { VehicleMaintenanceService } from '../vehicle/modules/vehicle-maintenance/vehicle-maintenance.service.js';
 import { EmailService } from '../../common/email/email.service.js';
 import { BookingService } from '../booking/booking.service.js';
@@ -26,6 +25,7 @@ import { CustomerService } from '../customer/customer.service.js';
 import { UserService } from '../user/user.service.js';
 import { UserRoleService } from '../user/modules/user-role/user-role.service.js';
 import { TenantViolationService } from './tenant-violation/tenant-violation.service.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantService {
@@ -101,7 +101,7 @@ export class TenantService {
       };
 
       return data;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get current tenant', error);
       throw error;
     }
@@ -117,7 +117,7 @@ export class TenantService {
       }
 
       return tenant;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get tenant by ID', error);
       throw error;
     }
@@ -126,7 +126,7 @@ export class TenantService {
   async getStorefrontTenants() {
     try {
       return await this.tenantRepo.getStorefrontTenants();
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get storefront tenants', error);
       throw error;
     }
@@ -135,7 +135,7 @@ export class TenantService {
   async getStorefrontTenantBySlug(slug: string) {
     try {
       return await this.tenantRepo.getTenantBySlug(slug);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get storefront tenant by slug', error);
       throw error;
     }
@@ -144,7 +144,7 @@ export class TenantService {
   async getStorefrontTenantByDomain(domain: string) {
     try {
       return await this.tenantRepo.getTenantByDomain(domain);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get storefront tenant by slug', error);
       throw error;
     }
@@ -216,7 +216,7 @@ export class TenantService {
       }
 
       return tenant;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to create tenant', {
         email: data.companyEmail,
         tenantName: data.tenantName,
@@ -378,7 +378,7 @@ export class TenantService {
         message: 'Settings updated successfully',
         tenant: updateTenant,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to update tenant', error);
       throw error;
     }
@@ -411,7 +411,7 @@ export class TenantService {
         tenant: updatedTenant,
         vehicles,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to update storefront settings', {
         tenantCode: tenant.tenantCode,
         tenantId: tenant.id,
@@ -567,7 +567,7 @@ export class TenantService {
       });
 
       return activities;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get tenant activities for today', error);
       throw error;
     }

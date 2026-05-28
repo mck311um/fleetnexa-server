@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { Tenant } from '../../../generated/prisma/client.js';
 import { RateTenantDto } from '../dto/rate-tenant.dto.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantReviewService {
@@ -15,7 +15,7 @@ export class TenantReviewService {
         where: { tenantId: tenant.id },
       });
       return reviews;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching tenant reviews', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -37,7 +37,7 @@ export class TenantReviewService {
       });
 
       return { message: 'Tenant review added successfully' };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error adding tenant review', {
         tenantId: data.tenantId,
         email: data.email,

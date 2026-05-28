@@ -4,7 +4,6 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../user/user.repository.js';
@@ -18,8 +17,9 @@ import {
   ResetPasswordRequestDto,
 } from './dto/reset-password.dto.js';
 import { PasswordService } from './services/password.service.js';
-import { OtpType, UserType } from 'src/generated/prisma/enums.js';
+import { UserType } from '../../generated/prisma/enums.js';
 import { CheckDetailsDto } from '../user/dto/check-details.dto.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class AuthService {
@@ -87,7 +87,7 @@ export class AuthService {
         username: 'username' in user ? user.username : null,
         tenantId: 'tenantId' in user ? user.tenantId : null,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Error validating user ${username}: ${error.message}`);
       throw error;
     }
@@ -113,7 +113,7 @@ export class AuthService {
         role: userType,
         tenantId: 'tenantId' in user ? user.tenantId : '',
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Error logging in user with ID ${userId}: ${error.message}`,
       );
@@ -142,7 +142,7 @@ export class AuthService {
       });
 
       return { accessToken: newAccessToken };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Error refreshing token: ${error.message}`);
       throw error;
     }
@@ -166,7 +166,7 @@ export class AuthService {
         emailExists: !!emailExists,
         phoneExists: !!phoneExists,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error checking user details', error, {
         email: data.email,
         phoneNumber: data.phoneNumber,
@@ -243,7 +243,7 @@ export class AuthService {
       const token = this.jwtService.sign(payload);
 
       return { token, user, role: 'STOREFRONT' };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating user', { error });
       throw error;
     }

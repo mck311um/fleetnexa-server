@@ -58,7 +58,7 @@ export class NotificationService {
 
     try {
       const res = await this.client.post('/notifications', body);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending push notification', error, {
         tenantId,
         payload,

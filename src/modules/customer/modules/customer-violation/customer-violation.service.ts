@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CustomerViolationDto } from './customer-violation.dto.js';
 import { Tenant, User } from '../../../../generated/prisma/client.js';
 import { CustomerService } from '../../customer.service.js';
-import { PrismaService } from '../../../../prisma/prisma.service.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class CustomerViolationService {
@@ -29,7 +29,7 @@ export class CustomerViolationService {
         },
       });
       return violations;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching all customer violations', {
         tenantId: tenant.id,
       });
@@ -43,7 +43,7 @@ export class CustomerViolationService {
         where: { tenantId: tenant.id, customerId },
       });
       return violations;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching customer violations', {
         tenantId: tenant.id,
         customerId,
@@ -128,7 +128,7 @@ export class CustomerViolationService {
         violation,
         violations: customerViolations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error updating customer violation', {
         violationData: data,
       });
@@ -162,7 +162,7 @@ export class CustomerViolationService {
         message: 'Customer violation deleted successfully',
         violations: customerViolations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error deleting customer violation', {
         violationId: id,
         tenantId: tenant.id,

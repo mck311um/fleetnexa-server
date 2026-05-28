@@ -32,7 +32,7 @@ export class TenantGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const decoded: any = this.jwt.verify(token);
       socket.data.user = decoded.user;
       socket.join(decoded.user.tenantId);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('❌ Invalid socket token', error);
       socket.disconnect();
     }

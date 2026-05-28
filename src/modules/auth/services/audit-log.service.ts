@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AuthAction, UserType } from '../../../generated/prisma/enums.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class AuditLogService {
@@ -27,7 +27,7 @@ export class AuditLogService {
           userAgent: params.userAgent || '',
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to write audit log', error);
       throw error;
     }

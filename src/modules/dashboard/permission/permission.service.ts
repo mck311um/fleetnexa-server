@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreatePermissionDto } from './dto/create-permission.dto.js';
 import { UpdatePermissionDto } from './dto/update-permission.dto.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class PermissionService {
@@ -22,7 +22,7 @@ export class PermissionService {
       const permissions = await this.getAllAppPermissions();
 
       return { message: 'Permission created successfully', permissions };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating permission:', error);
       throw error;
     }
@@ -35,7 +35,7 @@ export class PermissionService {
       });
 
       return permissions;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error fetching permissions:', error);
       throw error;
     }
@@ -66,7 +66,7 @@ export class PermissionService {
         message: 'Permission updated successfully',
         permissions,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error updating permission:', error);
       throw error;
     }
@@ -92,7 +92,7 @@ export class PermissionService {
         message: 'Permission deleted successfully',
         permissions,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error deleting permission:', error);
       throw error;
     }

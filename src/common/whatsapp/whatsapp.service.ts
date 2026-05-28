@@ -1,13 +1,13 @@
 import { Global, Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotifyService } from '../notify/notify.service.js';
 import { SendWhatsAppDto } from '../notify/dto/send-whatsapp.dto.js';
 import { CustomerService } from '../../modules/customer/customer.service.js';
 import { format, toZonedTime } from 'date-fns-tz';
-import { SentDmService } from '../sentdm/sentdm.service.js';
-import { BookingRequestTemplate } from 'src/common/sentdm/sent-dm-templates.js';
-import { SentDmDto } from '../sentdm/sentdm.dto.js';
+import { SentDmService } from '../../infrastructure/sentdm/sentdm.service.js';
+import { BookingRequestTemplate } from '../../infrastructure/sentdm/sent-dm-templates.js';
+import { SentDmDto } from '../../infrastructure/sentdm/sentdm.dto.js';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Global()
 @Injectable()
@@ -33,7 +33,7 @@ export class WhatsappService {
   async sendBookingDocuments(data: SendWhatsAppDto) {
     try {
       await this.notify.sendWhatsapp(data);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to send booking documents', {
         data,
       });
@@ -111,7 +111,7 @@ export class WhatsappService {
       await this.sentDm.sendBookingRequest(data, dmData);
 
       this.logger.log('Sent WhatsApp booking request notification');
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to send WhatsApp booking notification', {
         bookingId,
       });

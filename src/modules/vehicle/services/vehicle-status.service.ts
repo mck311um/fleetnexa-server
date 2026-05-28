@@ -5,9 +5,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { VehicleStatusDto } from '../dto/vehicle-status.dto.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { VehicleRepository } from '../vehicle.repository.js';
 import { Tenant, User } from '../../../generated/prisma/client.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VehicleStatusService {
@@ -70,7 +70,7 @@ export class VehicleStatusService {
         vehicles,
         vehicle: updatedVehicle,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to update vehicle status', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -133,7 +133,7 @@ export class VehicleStatusService {
         vehicle: updatedVehicle,
         vehicles,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to update vehicle storefront status', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

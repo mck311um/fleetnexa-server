@@ -1,10 +1,10 @@
 import { Global, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { GeneratorService } from '../../../common/generator/generator.service.js';
 import * as bcrypt from 'bcrypt';
 import { OtpType, UserType } from '../../../generated/prisma/enums.js';
 import { ResendOTPDto, VerifyOTPDto } from '../dto/otp.dto.js';
 import { UserRepository } from '../../../modules/user/user.repository.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Global()
 @Injectable()
@@ -60,7 +60,7 @@ export class OtpService {
           ? 'OTP verified successfully.'
           : 'Invalid OTP. Please check the code and try again.',
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error verifying OTP', {
         email: data.email,
       });
@@ -93,7 +93,7 @@ export class OtpService {
       );
 
       return token;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to create OTP for user ${userId}`, error.stack);
       throw error;
     }
@@ -129,7 +129,7 @@ export class OtpService {
         status: 'OTP_SENT',
         message: 'A new OTP has been sent to your email address.',
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to resend OTP for email ${data.email}`,
         error.stack,
@@ -152,7 +152,7 @@ export class OtpService {
       });
 
       return !otpRecord;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to check OTP expiration for user ${userId}`,
         error.stack,
@@ -194,7 +194,7 @@ export class OtpService {
       });
 
       return true;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to verify OTP for user ${userId}`, error.stack);
       throw error;
     }

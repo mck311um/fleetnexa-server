@@ -11,7 +11,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { VehicleDamageService } from './vehicle-damage.service.js';
-import type { AuthenticatedRequest } from 'src/types/authenticated-request.js';
+import type { AuthenticatedRequest } from '../../../../types/authenticated-request.js';
 import { VehicleDamageDto } from './vehicle-damage.dto.js';
 import { LocalAuthGuard } from '../../../auth/guards/local.guard.js';
 

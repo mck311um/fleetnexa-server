@@ -4,7 +4,7 @@ import { TenantExtrasModule } from '../tenant/tenant-extra/tenant-extra.module.j
 import { CustomerModule } from '../customer/customer.module.js';
 import { DocumentService } from './document.service.js';
 import { DocumentController } from './document.controller.js';
-import { FirmaModule } from '../../common/firma/firma.module.js';
+import { FirmaModule } from '../../infrastructure/firma/firma.module.js';
 
 @Global()
 @Module({

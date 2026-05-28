@@ -1,10 +1,10 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
-import { PrismaService } from '../../prisma/prisma.service.js';
-import { SendForSigningDto } from 'src/modules/document/dto/send-for-signing.dto.js';
+import { SendForSigningDto } from '../../modules/document/dto/send-for-signing.dto.js';
 import { CustomerService } from '../../modules/customer/customer.service.js';
-import { Tenant } from 'src/generated/prisma/client.js';
+import { Tenant } from '../../generated/prisma/client.js';
+import { PrismaService } from '../prisma/prisma.service.js';
 
 @Injectable()
 export class FirmaService {
@@ -55,7 +55,7 @@ export class FirmaService {
       });
 
       return apiKey;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error fetching firma workspace details', error);
       throw error;
     }
@@ -78,7 +78,7 @@ export class FirmaService {
       });
 
       return res.data.id;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating firma workspace', error);
       throw error;
     }
@@ -121,7 +121,7 @@ export class FirmaService {
       const res = await this.sendDocumentForSigning(signingRequest.id, api);
 
       return res;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error in sendForSigning workflow', {
         error: error.message,
         status: error.response?.status,
@@ -163,7 +163,7 @@ export class FirmaService {
       const res = await api.post('/templates', body);
 
       return res.data;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating firma template', error);
       throw error;
     }
@@ -209,7 +209,7 @@ export class FirmaService {
       const res = await api.put(`/templates/${templateId}`, updateBody);
 
       return res.data;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error assigning users to template', error);
       throw error;
     }
@@ -252,7 +252,7 @@ export class FirmaService {
       };
 
       await api.put(`/templates/${templateId}`, fieldsUpdateBody);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error assigning fields to template', error);
       throw error;
     }
@@ -277,7 +277,7 @@ export class FirmaService {
         `Created signing request ${res.data.id} for template ${templateId}`,
       );
       return res.data;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating signing request', {
         templateId,
         status: error.response?.status,
@@ -298,7 +298,7 @@ export class FirmaService {
         `Signing request ${requestId} details: ${JSON.stringify(res.data)}`,
       );
       return res.data;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error verifying signing request', {
         requestId,
         status: error.response?.status,
@@ -312,7 +312,7 @@ export class FirmaService {
     try {
       const res = await api.post(`/signing-requests/${requestId}/send`);
       return res.data;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending document for signing', {
         requestId,
         status: error.response?.status,

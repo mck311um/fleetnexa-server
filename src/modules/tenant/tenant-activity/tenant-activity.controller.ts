@@ -1,7 +1,7 @@
 import { Controller, Get, Req, UseGuards, Request } from '@nestjs/common';
 import { TenantActivityService } from './tenant-activity.service.js';
 import { JwtAuthGuard } from '../../../modules/auth/guards/jwt-auth.guard.js';
-import { Role } from '../../../common/enums/role.enum.js';
+import { Role } from '../../../shared/enums/role.enum.js';
 import { Roles } from '../../../modules/auth/decorator/role.decorator.js';
 
 @Controller('tenant/activity')

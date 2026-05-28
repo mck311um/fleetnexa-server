@@ -5,8 +5,8 @@ import {
   Global,
 } from '@nestjs/common';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../generated/prisma/client.js';
 import * as fs from 'fs';
+import { PrismaClient } from '../../generated/prisma/client.js';
 
 @Global()
 @Injectable()

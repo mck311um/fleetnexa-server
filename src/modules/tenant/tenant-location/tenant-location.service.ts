@@ -6,10 +6,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Country, Tenant, User } from '../../../generated/prisma/client.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 
 import { v4 as uuidv4 } from 'uuid';
 import { TenantLocationDto } from './tenant.location.dto.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantLocationService {
@@ -27,7 +27,7 @@ export class TenantLocationService {
           },
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get tenant locations', error);
       throw error;
     }
@@ -80,7 +80,7 @@ export class TenantLocationService {
         message: 'Company Location created successfully',
         locations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to create tenant location', error);
       throw error;
     }
@@ -127,7 +127,7 @@ export class TenantLocationService {
         message: 'Company Location updated successfully',
         locations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to update tenant location', error);
       throw error;
     }
@@ -160,7 +160,7 @@ export class TenantLocationService {
         message: 'Company Location deleted successfully',
         locations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to delete tenant location', error);
       throw error;
     }
@@ -210,7 +210,7 @@ export class TenantLocationService {
           });
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to initialize tenant locations', error);
       throw error;
     }

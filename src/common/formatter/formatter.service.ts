@@ -104,7 +104,7 @@ export class FormatterService {
       };
 
       return new Intl.NumberFormat(undefined, options).format(amount);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Invalid currency code:', { currency });
       return new Intl.NumberFormat('en-US', {
         style: 'currency',

@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { User } from '../../../generated/prisma/client.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { VehicleDiscountDto } from '../dto/vehicle-dicount.dto.js';
 import { VehicleRepository } from '../vehicle.repository.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VehiclePricingService {
@@ -69,7 +69,7 @@ export class VehiclePricingService {
         message: 'Vehicle discounts updated successfully',
         vehicle,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         error,
         `Failed to update vehicle discount for vehicle: ${vehicleId}`,

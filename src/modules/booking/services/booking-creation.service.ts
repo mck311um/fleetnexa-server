@@ -14,7 +14,6 @@ import {
 } from '../dto/create-booking-input.dto.js';
 import { StorefrontUserBookingDto } from '../dto/storefront-user-booking.dto.js';
 import { StorefrontGuestBookingDto } from '../dto/storefront-guest-booking.dto.js';
-import { PrismaService, TxClient } from '../../../prisma/prisma.service.js';
 import { CustomerService } from '../../../modules/customer/customer.service.js';
 import { GeneratorService } from '../../../common/generator/generator.service.js';
 import { StorefrontCustomerDto } from '../../../modules/customer/storefront-customer/storefront-customer.dto.js';
@@ -23,6 +22,10 @@ import { BookingRepository } from '../booking.repository.js';
 import { EmailService } from '../../../common/email/email.service.js';
 import { WhatsappService } from '../../../common/whatsapp/whatsapp.service.js';
 import { TenantNotificationService } from '../../../modules/tenant/tenant-notification/tenant-notification.service.js';
+import {
+  PrismaService,
+  TxClient,
+} from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class BookingCreationService {
@@ -147,7 +150,7 @@ export class BookingCreationService {
       this.logger.log(
         `Booking created from source ${data.source} for tenant ${tenant.tenantName}`,
       );
-      this.sendNotifications(bookingWithTenant).catch((error) =>
+      this.sendNotifications(bookingWithTenant).catch((error: any) =>
         this.logger.error(error, 'Failed to send notifications', {
           bookingId: booking.id,
         }),
@@ -292,7 +295,7 @@ export class BookingCreationService {
       };
 
       return customer;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to create storefront customer', {
         userId: user.id,
       });

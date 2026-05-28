@@ -1,5 +1,4 @@
 import { Global, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotifyService } from '../notify/notify.service.js';
 import {
   Tenant,
@@ -21,7 +20,8 @@ import {
   VerificationEmailDto,
   WelcomeEmailDto,
 } from '../../types/email.js';
-import { SendDocumentsDto } from 'src/modules/booking/dto/send-documents.dto.js';
+import { SendDocumentsDto } from '../../modules/booking/dto/send-documents.dto.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Global()
 @Injectable()
@@ -87,7 +87,7 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending booking confirmation email', error);
       throw error;
     }
@@ -163,7 +163,7 @@ export class EmailService {
 
       const res = await this.notify.sendEmail(payload);
       this.logger.log(`Booking completed email sent: ${res}`);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending new booking email', error);
       throw error;
     }
@@ -263,7 +263,7 @@ export class EmailService {
 
       const res = await this.notify.sendEmail(payload);
       this.logger.log(`Booking completed email sent: ${res}`);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending booking completed email', error);
       throw error;
     }
@@ -285,7 +285,7 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending storefront password reset email', error);
       throw error;
     }
@@ -349,7 +349,7 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending booking documents email', error);
       throw error;
     }
@@ -389,7 +389,7 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error sending new user welcome email', {
         userId,
         tenantId: tenant.id,
@@ -419,7 +419,7 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error sending password reset email', {
         email,
       });
@@ -445,7 +445,7 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error sending welcome email', {
         userId: user.id,
         tenantId: tenant.id,

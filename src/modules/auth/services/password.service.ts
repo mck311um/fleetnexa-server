@@ -7,7 +7,6 @@ import {
 import * as bcrypt from 'bcrypt';
 import { UserType } from '../../../generated/prisma/client.js';
 import { UserRepository } from '../../../modules/user/user.repository.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import {
   ResetPasswordDto,
   ResetPasswordRequestDto,
@@ -15,6 +14,7 @@ import {
 import { OtpService } from './otp.service.js';
 import { AuditLogService } from './audit-log.service.js';
 import { EmailService } from '../../../common/email/email.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class PasswordService {
@@ -66,7 +66,7 @@ export class PasswordService {
         token,
         data.userType,
       );
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error resetting tenant user password', {
         email: data.email,
       });
@@ -159,7 +159,7 @@ export class PasswordService {
         status: 'PASSWORD_CHANGED',
         message: 'Password changed successfully',
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error changing password', {
         email: data.email,
       });
@@ -187,7 +187,7 @@ export class PasswordService {
       }
 
       return false;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Error checking password history for user ${userId}: ${error.message}`,
       );
@@ -208,7 +208,7 @@ export class PasswordService {
           userType,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Error adding password to history for user ${userId}: ${error.message}`,
       );

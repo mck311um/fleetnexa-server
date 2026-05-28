@@ -4,12 +4,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import {
   SubscriptionPlanDto,
   SubscriptionPlanFeatureDto,
 } from './subscription-plan.dto.js';
-import { PlanFeatures } from 'src/generated/prisma/client.js';
+import { PlanFeatures } from '../../../generated/prisma/client.js';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class SubscriptionPlanService {
@@ -28,7 +28,7 @@ export class SubscriptionPlanService {
       });
 
       return plans;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to retrieve plans', error);
       throw error;
     }
@@ -82,7 +82,7 @@ export class SubscriptionPlanService {
 
       const plans = await this.getAllPlans();
       return { message: 'Subscription plan created successfully.', plans };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to create subscription plan', error);
       throw error;
     }
@@ -152,7 +152,7 @@ export class SubscriptionPlanService {
 
       const plans = await this.getAllPlans();
       return { message: 'Subscription plan updated successfully.', plans };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to update subscription plan', error);
       throw error;
     }
