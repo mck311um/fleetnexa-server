@@ -7,7 +7,7 @@ import {
 import { Tenant, User } from '../../../generated/prisma/client.js';
 import { TenantExtra } from '../../../types/tenant.js';
 import { TenantExtraDto } from './tenant-extra.dto.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantExtraService {

@@ -25,7 +25,7 @@ import { CustomerService } from '../customer/customer.service.js';
 import { UserService } from '../user/user.service.js';
 import { UserRoleService } from '../user/modules/user-role/user-role.service.js';
 import { TenantViolationService } from './tenant-violation/tenant-violation.service.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantService {

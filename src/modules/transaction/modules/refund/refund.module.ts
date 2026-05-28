@@ -8,7 +8,7 @@ import { TenantRepository } from '../../../../modules/tenant/tenant.repository.j
 import jwtConfig from '../../../../config/jwt.config.js';
 import { BookingRepository } from '../../../../modules/booking/booking.repository.js';
 import { UserRepository } from '../../../../modules/user/user.repository.js';
-import { PrismaModule } from 'src/infrastructure/prisma/prisma.module.js';
+import { PrismaModule } from '../../../../infrastructure/prisma/prisma.module.js';
 
 @Module({
   imports: [

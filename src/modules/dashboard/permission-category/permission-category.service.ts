@@ -8,7 +8,7 @@ import {
   CreatePermissionCategoryDto,
   UpdatePermissionCategoryDto,
 } from './permission-category.dto.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class PermissionCategoryService {

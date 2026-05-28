@@ -8,7 +8,7 @@ import {
 import { TransactionDto } from '../../transaction.dto.js';
 import { v4 as uuidv4 } from 'uuid';
 import { TransactionService } from '../../transaction.service.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class ExpenseService {

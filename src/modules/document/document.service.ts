@@ -16,7 +16,7 @@ import { FormatterService } from '../../common/formatter/formatter.service.js';
 import { PdfService } from '../../common/pdf/pdf.service.js';
 import { FirmaService } from '../../infrastructure/firma/firma.service.js';
 import { SendForSigningDto } from './dto/send-for-signing.dto.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class DocumentService {

@@ -10,6 +10,7 @@ import { CountryService } from './country.service.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as XLSX from 'xlsx';
 import { validateExcelColumns } from '../../../utils/excel.utils.js';
+import type { Multer } from 'multer';
 
 @Controller('dashboard/country')
 export class CountryController {

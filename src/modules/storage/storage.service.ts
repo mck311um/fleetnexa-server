@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { AwsService } from '../../infrastructure/aws/aws.service.js';
+import type { Multer } from 'multer';
 
 @Injectable()
 export class StorageService {

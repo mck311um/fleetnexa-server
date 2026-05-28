@@ -25,7 +25,7 @@ import { TenantNotificationService } from '../../../modules/tenant/tenant-notifi
 import {
   PrismaService,
   TxClient,
-} from 'src/infrastructure/prisma/prisma.service.js';
+} from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class BookingCreationService {

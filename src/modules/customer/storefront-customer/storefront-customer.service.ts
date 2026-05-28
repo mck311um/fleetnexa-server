@@ -4,7 +4,7 @@ import { Tenant } from '../../../generated/prisma/client.js';
 import {
   PrismaService,
   TxClient,
-} from 'src/infrastructure/prisma/prisma.service.js';
+} from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class StorefrontCustomerService {

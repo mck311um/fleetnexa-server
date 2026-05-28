@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Tenant, User } from '../../../generated/prisma/client.js';
 import { TenantVendorDto } from './tenant-vendor.dto.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantVendorService {

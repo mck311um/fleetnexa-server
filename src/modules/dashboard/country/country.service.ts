@@ -7,7 +7,7 @@ import { validate } from 'class-validator';
 import axios, { AxiosInstance } from 'axios';
 import { ConfigService } from '@nestjs/config';
 import { CSCCountry } from '../../../types/csc.data.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class CountryService {

@@ -11,7 +11,7 @@ import { VehicleService } from '../../vehicle/vehicle.service.js';
 import { DocumentService } from '../../document/document.service.js';
 import { BookingActivityService } from './booking-activity.service.js';
 import { ResendService } from '../../../infrastructure/resend/resend.service.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class BookingWorkflowService {

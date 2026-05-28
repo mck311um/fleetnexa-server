@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { RentalActivityDto } from '../dto/rental-activity.dto.js';
 import { CustomerService } from '../../customer/customer.service.js';
 import { Tenant, User } from '../../../generated/prisma/client.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class BookingActivityService {

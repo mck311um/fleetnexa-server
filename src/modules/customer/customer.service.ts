@@ -4,7 +4,7 @@ import { Tenant, User } from '../../generated/prisma/browser.js';
 import { TenantCustomerDto } from './dto/tenant-customer.dto.js';
 import { CreateCustomerDto } from './dto/create-customer.dto.js';
 import { StorefrontCustomerDto } from './storefront-customer/storefront-customer.dto.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class CustomerService {

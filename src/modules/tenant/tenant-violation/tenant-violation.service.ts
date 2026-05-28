@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Tenant } from '../../../generated/prisma/client.js';
 import { TenantViolationDto } from './tenant-violation.dto.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantViolationService {

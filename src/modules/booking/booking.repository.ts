@@ -3,7 +3,7 @@ import { Prisma } from '../../generated/prisma/client.js';
 import {
   PrismaService,
   TxClient,
-} from 'src/infrastructure/prisma/prisma.service.js';
+} from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class BookingRepository {
@@ -250,7 +250,7 @@ export class BookingRepository {
       if (extras && Array.isArray(extras)) {
         await Promise.all(
           extras.map((extra: any) =>
-            tx.rentalExtra.create({
+            client.rentalExtra.create({
               data: {
                 extraId: extra.extraId,
                 amount: extra.amount,
@@ -264,7 +264,9 @@ export class BookingRepository {
       return createdValues;
     };
 
-    return tx ? run(tx) : this.prisma.$transaction(run);
+    return tx
+      ? run(tx as Prisma.TransactionClient)
+      : this.prisma.$transaction(run);
   }
 
   async updateBookingValues(bookingId: string, values: any) {

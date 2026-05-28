@@ -12,7 +12,7 @@ import { validate } from 'class-validator';
 import { Country } from '../../../generated/prisma/client.js';
 import axios, { AxiosInstance } from 'axios';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class StateService {

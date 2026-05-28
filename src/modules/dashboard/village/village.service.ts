@@ -12,7 +12,7 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import axios from 'axios';
 import XLSX from 'xlsx';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VillageService {

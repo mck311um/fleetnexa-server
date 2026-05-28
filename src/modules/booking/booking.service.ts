@@ -14,7 +14,7 @@ import { BookingCreationService } from './services/booking-creation.service.js';
 import { CreateBookingDto } from './dto/create-booking.dto.js';
 import { StorefrontUserBookingDto } from './dto/storefront-user-booking.dto.js';
 import { StorefrontGuestBookingDto } from './dto/storefront-guest-booking.dto.js';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class BookingService {
