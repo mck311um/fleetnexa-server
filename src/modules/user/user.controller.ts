@@ -19,6 +19,7 @@ import { NewPasswordDto } from '../auth/dto/new-password.dto.js';
 import { TenantUserDto } from './dto/tenant-user.dto.js';
 import { ChangePasswordDto } from './dto/change-password.dto.js';
 import { DeleteUserDto } from './dto/delete-user.dto.js';
+import { CheckDetailsDto } from './dto/check-details.dto.js';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)

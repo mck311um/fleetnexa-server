@@ -28,7 +28,8 @@ import { UserModule } from './modules/user/user.module.js';
 import { CustomerModule } from './modules/customer/customer.module.js';
 import { NotificationModule } from './common/notification/notification.module.js';
 import { PaymentModule } from './modules/payment/payment.module.js';
-import { SentDmModule } from './sentdm/sentdm.module.js';
+import { SentDmModule } from './common/sentdm/sentdm.module.js';
+import { ResendModule } from './common/resend/resned.module.js';
 
 @Module({
   imports: [
@@ -54,6 +55,8 @@ import { SentDmModule } from './sentdm/sentdm.module.js';
     WhatsappModule,
     NotificationModule,
     PaymentModule,
+
+    ResendModule,
     SentDmModule,
 
     AdminModule,

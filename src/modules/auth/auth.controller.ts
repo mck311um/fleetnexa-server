@@ -18,6 +18,7 @@ import {
   ResetPasswordRequestDto,
 } from './dto/reset-password.dto.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
+import { CheckDetailsDto } from '../user/dto/check-details.dto.js';
 
 @Controller('auth')
 export class AuthController {
@@ -190,6 +191,11 @@ export class AuthController {
     return {
       authenticated: true,
     };
+  }
+
+  @Post('storefront/check-details')
+  async checkDetails(@Body() data: CheckDetailsDto) {
+    return this.authService.checkDetailsExists(data);
   }
 
   @Post('password/forgot')

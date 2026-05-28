@@ -7,16 +7,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import bcrypt from 'bcrypt';
-import { EmailService } from '../../common/email/email.service.js';
 import { GeneratorService } from '../../common/generator/generator.service.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { VerifyOTPDto } from '../auth/dto/otp.dto.js';
 import { NewPasswordDto } from '../auth/dto/new-password.dto.js';
 import { Tenant } from '../../generated/prisma/browser.js';
 import { UserRepository } from './user.repository.js';
 import { TenantUserDto } from './dto/tenant-user.dto.js';
 import { ChangePasswordDto } from './dto/change-password.dto.js';
-import { OtpService } from '../auth/services/otp.service.js';
+import { ResendService } from '../../common/resend/resend.service.js';
+import { CheckDetailsDto } from './dto/check-details.dto.js';
 
 @Injectable()
 export class UserService {
@@ -26,8 +25,7 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly generator: GeneratorService,
     private readonly repo: UserRepository,
-    private readonly email: EmailService,
-    private readonly otpService: OtpService,
+    private readonly resend: ResendService,
   ) {}
 
   async getTenantUsers(tenant: Tenant) {
@@ -302,7 +300,7 @@ export class UserService {
 
       if (password) {
         this.logger.log(`Sending welcome email to new user ${user.email}`);
-        await this.email.sendNewUserWelcomeEmail(user.id, password, tenant);
+        await this.resend.sendAccountCreatedEmail(user.id, password, tenant);
       }
 
       const users = await this.repo.getTenantUsers(tenant.id);

@@ -6,12 +6,12 @@ import {
   User,
 } from '../../../generated/prisma/client.js';
 import { PrismaService } from '../../../prisma/prisma.service.js';
-import { EmailService } from '../../../common/email/email.service.js';
 import { ActionBookingDto } from '../dto/action-booking.dto.js';
 import { VehicleStatusDto } from '../../vehicle/dto/vehicle-status.dto.js';
 import { VehicleService } from '../../vehicle/vehicle.service.js';
 import { DocumentService } from '../../document/document.service.js';
 import { BookingActivityService } from './booking-activity.service.js';
+import { ResendService } from '../../../common/resend/resend.service.js';
 
 @Injectable()
 export class BookingWorkflowService {
@@ -20,10 +20,10 @@ export class BookingWorkflowService {
   constructor(
     private readonly bookingRepo: BookingRepository,
     private readonly documentService: DocumentService,
-    private readonly emailService: EmailService,
     private readonly prisma: PrismaService,
     private readonly activity: BookingActivityService,
     private readonly vehicleService: VehicleService,
+    private readonly resend: ResendService,
   ) {}
 
   private async findBookingOrFail(id: string) {
@@ -73,7 +73,7 @@ export class BookingWorkflowService {
       );
 
       if (data.sendEmail) {
-        await this.emailService.sendBookingConfirmationEmail(
+        await this.resend.sendBookingConfirmationEmail(
           updatedBooking?.id || '',
           data.includeInvoice,
           data.includeAgreement,

@@ -19,6 +19,7 @@ import {
 } from './dto/reset-password.dto.js';
 import { PasswordService } from './services/password.service.js';
 import { OtpType, UserType } from 'src/generated/prisma/enums.js';
+import { CheckDetailsDto } from '../user/dto/check-details.dto.js';
 
 @Injectable()
 export class AuthService {
@@ -143,6 +144,33 @@ export class AuthService {
       return { accessToken: newAccessToken };
     } catch (error) {
       this.logger.error(`Error refreshing token: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async checkDetailsExists(data: CheckDetailsDto) {
+    try {
+      const phoneExists = await this.prisma.storefrontUser.findFirst({
+        where: {
+          phone: data.phoneNumber,
+        },
+      });
+
+      const emailExists = await this.prisma.storefrontUser.findFirst({
+        where: {
+          email: data.email,
+        },
+      });
+
+      return {
+        emailExists: !!emailExists,
+        phoneExists: !!phoneExists,
+      };
+    } catch (error) {
+      this.logger.error('Error checking user details', error, {
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+      });
       throw error;
     }
   }

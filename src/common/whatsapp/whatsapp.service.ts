@@ -4,9 +4,9 @@ import { NotifyService } from '../notify/notify.service.js';
 import { SendWhatsAppDto } from '../notify/dto/send-whatsapp.dto.js';
 import { CustomerService } from '../../modules/customer/customer.service.js';
 import { format, toZonedTime } from 'date-fns-tz';
-import { SentDmService } from '../../sentdm/sentdm.service.js';
-import { BookingRequestTemplate } from 'src/sentdm/sent-dm-templates.js';
-import { SentDmDto } from '../../sentdm/sentdm.dto.js';
+import { SentDmService } from '../sentdm/sentdm.service.js';
+import { BookingRequestTemplate } from 'src/common/sentdm/sent-dm-templates.js';
+import { SentDmDto } from '../sentdm/sentdm.dto.js';
 import { ConfigService } from '@nestjs/config';
 
 @Global()

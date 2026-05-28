@@ -4,6 +4,7 @@ import { UserController } from './user.controller.js';
 import { UserRepository } from './user.repository.js';
 import { UserRoleModule } from './modules/user-role/user-role.module.js';
 import { AuthModule } from '../auth/auth.module.js';
+import { ResendModule } from 'src/common/resend/resned.module.js';
 
 @Module({
   imports: [UserRoleModule, AuthModule],
