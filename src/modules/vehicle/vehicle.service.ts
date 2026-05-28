@@ -14,7 +14,6 @@ import { VehicleLocationDto } from './dto/vehicle-location.dto.js';
 import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
 import { VehicleStatusService } from './services/vehicle-status.service.js';
 import { VehicleLocationService } from './services/vehicle-location.service.js';
-import { VehicleBookingService } from './services/vehicle-booking.service.js';
 import { VehicleDiscountDto } from './dto/vehicle-dicount.dto.js';
 import { VehiclePricingService } from './services/vehicle-pricing.service.js';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
@@ -30,7 +29,6 @@ export class VehicleService {
     private readonly storage: StorageService,
     private readonly vehicleStatusService: VehicleStatusService,
     private readonly vehicleLocationService: VehicleLocationService,
-    private readonly vehicleBookingService: VehicleBookingService,
     private readonly vehiclePricingService: VehiclePricingService,
   ) {}
 
@@ -350,14 +348,6 @@ export class VehicleService {
   private async attachExtrasToVehicles(vehicles: any[]) {
     return Promise.all(
       vehicles.map((vehicle) => this.attachTenantExtras(vehicle)),
-    );
-  }
-
-  async swapBookingVehicle(data: SwapVehicleDto, tenant: Tenant, user: User) {
-    return await this.vehicleBookingService.swapBookingVehicle(
-      data,
-      tenant,
-      user,
     );
   }
 

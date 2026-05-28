@@ -4,21 +4,21 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { SwapVehicleDto } from '../dto/swap-vehicle.dto.js';
-import { VehicleEventService } from '../../../modules/vehicle/modules/vehicle-event/vehicle-event.service.js';
+import { SwapVehicleDto } from '../../vehicle/dto/swap-vehicle.dto.js';
+import { VehicleEventService } from '../../vehicle/modules/vehicle-event/vehicle-event.service.js';
 import {
   Tenant,
   User,
   VehicleEventType,
 } from '../../../generated/prisma/client.js';
-import { VehicleStatusService } from './vehicle-status.service.js';
-import { BookingRepository } from '../../../modules/booking/booking.repository.js';
-import { VehicleEventDto } from '../dto/vehicle-event.dto.js';
+import { VehicleStatusService } from '../../vehicle/services/vehicle-status.service.js';
+import { BookingRepository } from '../booking.repository.js';
+import { VehicleEventDto } from '../../vehicle/dto/vehicle-event.dto.js';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
-export class VehicleBookingService {
-  private readonly logger = new Logger(VehicleBookingService.name);
+export class BookingVehicleService {
+  private readonly logger = new Logger(BookingVehicleService.name);
 
   constructor(
     private readonly prisma: PrismaService,

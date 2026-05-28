@@ -15,6 +15,8 @@ import { CreateBookingDto } from './dto/create-booking.dto.js';
 import { StorefrontUserBookingDto } from './dto/storefront-user-booking.dto.js';
 import { StorefrontGuestBookingDto } from './dto/storefront-guest-booking.dto.js';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
+import { BookingVehicleService } from './services/booking-vehicle.service.js';
+import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
 
 @Injectable()
 export class BookingService {
@@ -29,6 +31,7 @@ export class BookingService {
     private readonly customerRepo: CustomerRepository,
     private readonly workflow: BookingWorkflowService,
     private readonly bookingCreation: BookingCreationService,
+    private readonly vehicleBookingService: BookingVehicleService,
   ) {}
 
   private async findBookingOrFail(id: string) {
@@ -210,6 +213,14 @@ export class BookingService {
 
   endBooking(data: ActionBookingDto, tenant: Tenant, user: User) {
     return this.workflow.endBooking(data, tenant, user);
+  }
+
+  async swapBookingVehicle(data: SwapVehicleDto, tenant: Tenant, user: User) {
+    return await this.vehicleBookingService.swapBookingVehicle(
+      data,
+      tenant,
+      user,
+    );
   }
 
   async deleteBooking(id: string, tenant: Tenant, user: User) {

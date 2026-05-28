@@ -12,6 +12,7 @@ import { BookingActivityService } from './services/booking-activity.service.js';
 import { CustomerRepository } from '../customer/customer.repository.js';
 import { TenantNotificationModule } from '../tenant/tenant-notification/tenant-notification.module.js';
 import { PrismaModule } from '../../infrastructure/prisma/prisma.module.js';
+import { BookingVehicleService } from './services/booking-vehicle.service.js';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PrismaModule } from '../../infrastructure/prisma/prisma.module.js';
     BookingWorkflowService,
     BookingCreationService,
     BookingActivityService,
+    BookingVehicleService,
   ],
   exports: [BookingService],
 })

@@ -140,4 +140,13 @@ export class BookingController {
     const user = req.user;
     return this.bookingService.deleteBooking(id, tenant, user);
   }
+
+  @Post('vehicle/swap')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.TENANT)
+  async swapVehicle(@Request() req, @Body() data: SwapVehicleDto) {
+    const { tenant } = req.user;
+    const user = req.user;
+    return this.bookingService.swapBookingVehicle(data, tenant, user);
+  }
 }

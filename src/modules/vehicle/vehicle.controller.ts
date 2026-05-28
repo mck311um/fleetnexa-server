@@ -111,15 +111,6 @@ export class VehicleController {
     return this.service.updateVehicleLocation(data, tenant, user);
   }
 
-  @Post('swap')
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.TENANT)
-  async swapVehicle(@Request() req, @Body() data: SwapVehicleDto) {
-    const { tenant } = req.user;
-    const user = req.user;
-    return this.service.swapBookingVehicle(data, tenant, user);
-  }
-
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.TENANT)

@@ -119,6 +119,7 @@ export class BookingCreationService {
           pickupLocationId: data.pickupLocationId,
           returnLocationId: data.returnLocationId,
           vehicleId: data.vehicleId,
+          originalVehicleId: data.vehicleId,
           chargeTypeId: data.chargeTypeId,
           bookingCode: identifiers.bookingCode,
           createdAt: new Date(),
