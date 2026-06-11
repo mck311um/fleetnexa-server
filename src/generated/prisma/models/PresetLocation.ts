@@ -165,7 +165,7 @@ export type PresetLocationGroupByOutputType = {
   _max: PresetLocationMaxAggregateOutputType | null
 }
 
-type GetPresetLocationGroupByPayload<T extends PresetLocationGroupByArgs> = Prisma.PrismaPromise<
+export type GetPresetLocationGroupByPayload<T extends PresetLocationGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PresetLocationGroupByOutputType, T['by']> &
       {

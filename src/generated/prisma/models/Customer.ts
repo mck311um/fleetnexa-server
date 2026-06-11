@@ -276,7 +276,7 @@ export type CustomerGroupByOutputType = {
   _max: CustomerMaxAggregateOutputType | null
 }
 
-type GetCustomerGroupByPayload<T extends CustomerGroupByArgs> = Prisma.PrismaPromise<
+export type GetCustomerGroupByPayload<T extends CustomerGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CustomerGroupByOutputType, T['by']> &
       {
@@ -751,14 +751,6 @@ export type NullableIntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type CustomerCreateNestedOneWithoutAppsInput = {

@@ -210,7 +210,7 @@ export type SiteRatingsGroupByOutputType = {
   _max: SiteRatingsMaxAggregateOutputType | null
 }
 
-type GetSiteRatingsGroupByPayload<T extends SiteRatingsGroupByArgs> = Prisma.PrismaPromise<
+export type GetSiteRatingsGroupByPayload<T extends SiteRatingsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<SiteRatingsGroupByOutputType, T['by']> &
       {

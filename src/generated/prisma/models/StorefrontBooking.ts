@@ -158,7 +158,7 @@ export type StorefrontBookingGroupByOutputType = {
   _max: StorefrontBookingMaxAggregateOutputType | null
 }
 
-type GetStorefrontBookingGroupByPayload<T extends StorefrontBookingGroupByArgs> = Prisma.PrismaPromise<
+export type GetStorefrontBookingGroupByPayload<T extends StorefrontBookingGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<StorefrontBookingGroupByOutputType, T['by']> &
       {

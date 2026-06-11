@@ -1,0 +1,45 @@
+model Values {
+  id                   String        @id @default(dbgenerated("gen_random_uuid()"))
+  numberOfDays         Int
+  basePrice            Float
+  totalCost            Float
+  discount             Float
+  deliveryFee          Float
+  collectionFee        Float
+  deposit              Float
+  totalExtras          Float
+  totalCharges         Float         @default(0.0)
+  subTotal             Float         @default(0.0)
+  netTotal             Float         @default(0.0)
+  rentalId             String        @unique
+  additionalDriverFees Float         @default(0.0)
+  cancellationFee      Float         @default(0.0)
+  lateFee              Float         @default(0.0)
+
+  customBasePrice      Boolean       @default(false)
+  customCollectionFee  Boolean       @default(false)
+  customDeliveryFee    Boolean       @default(false)
+  customDiscount       Boolean       @default(false)
+  customTotalCost      Boolean       @default(false)
+
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime?     @updatedAt
+
+  extras               RentalExtra[]
+  charges              RentalCharge[]
+
+  rental               Rental        @relation(fields: [rentalId], references: [id])
+}
+
+model SecurityDeposit {
+  id                String      @id @default(dbgenerated("gen_random_uuid()"))
+  bookingId         String      @unique
+  amount            Float
+  amountHeld        Float       @default(0.0)
+  amountRefunded    Float       @default(0.0)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime?   @updatedAt
+
+  booking           Rental      @relation(fields: [bookingId], references: [id])
+
+}

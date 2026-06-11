@@ -165,7 +165,7 @@ export type StateGroupByOutputType = {
   _max: StateMaxAggregateOutputType | null
 }
 
-type GetStateGroupByPayload<T extends StateGroupByArgs> = Prisma.PrismaPromise<
+export type GetStateGroupByPayload<T extends StateGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<StateGroupByOutputType, T['by']> &
       {

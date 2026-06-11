@@ -144,7 +144,7 @@ export type InsuranceCompanyGroupByOutputType = {
   _max: InsuranceCompanyMaxAggregateOutputType | null
 }
 
-type GetInsuranceCompanyGroupByPayload<T extends InsuranceCompanyGroupByArgs> = Prisma.PrismaPromise<
+export type GetInsuranceCompanyGroupByPayload<T extends InsuranceCompanyGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<InsuranceCompanyGroupByOutputType, T['by']> &
       {

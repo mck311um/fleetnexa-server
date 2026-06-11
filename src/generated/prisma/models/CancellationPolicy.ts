@@ -214,7 +214,7 @@ export type CancellationPolicyGroupByOutputType = {
   _max: CancellationPolicyMaxAggregateOutputType | null
 }
 
-type GetCancellationPolicyGroupByPayload<T extends CancellationPolicyGroupByArgs> = Prisma.PrismaPromise<
+export type GetCancellationPolicyGroupByPayload<T extends CancellationPolicyGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CancellationPolicyGroupByOutputType, T['by']> &
       {

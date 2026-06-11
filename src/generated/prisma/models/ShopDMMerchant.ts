@@ -151,7 +151,7 @@ export type ShopDMMerchantGroupByOutputType = {
   _max: ShopDMMerchantMaxAggregateOutputType | null
 }
 
-type GetShopDMMerchantGroupByPayload<T extends ShopDMMerchantGroupByArgs> = Prisma.PrismaPromise<
+export type GetShopDMMerchantGroupByPayload<T extends ShopDMMerchantGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ShopDMMerchantGroupByOutputType, T['by']> &
       {

@@ -151,7 +151,7 @@ export type RentalDriverGroupByOutputType = {
   _max: RentalDriverMaxAggregateOutputType | null
 }
 
-type GetRentalDriverGroupByPayload<T extends RentalDriverGroupByArgs> = Prisma.PrismaPromise<
+export type GetRentalDriverGroupByPayload<T extends RentalDriverGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<RentalDriverGroupByOutputType, T['by']> &
       {

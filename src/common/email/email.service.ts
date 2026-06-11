@@ -329,7 +329,7 @@ export class EmailService {
         pickupTime: this.formatter.formatDateToFriendlyTime(booking.startDate),
         pickupLocation: booking.pickup.location,
         totalPrice: this.formatter.formatNumberToTenantCurrency(
-          booking.values?.amountDue || 0,
+          booking.values?.netTotal || 0,
           currency?.code || 'USD',
         ),
         tenantName: tenant.tenantName || '',

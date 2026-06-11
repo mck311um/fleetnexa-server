@@ -165,6 +165,16 @@ export type Port = Prisma.PortModel
  */
 export type InsuranceCompany = Prisma.InsuranceCompanyModel
 /**
+ * Model Values
+ * 
+ */
+export type Values = Prisma.ValuesModel
+/**
+ * Model SecurityDeposit
+ * 
+ */
+export type SecurityDeposit = Prisma.SecurityDepositModel
+/**
  * Model Customer
  * 
  */
@@ -284,11 +294,6 @@ export type StorefrontBooking = Prisma.StorefrontBookingModel
  * 
  */
 export type RentalDriver = Prisma.RentalDriverModel
-/**
- * Model Values
- * 
- */
-export type Values = Prisma.ValuesModel
 /**
  * Model RentalExtra
  * 

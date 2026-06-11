@@ -186,7 +186,7 @@ export type TenantRemindersGroupByOutputType = {
   _max: TenantRemindersMaxAggregateOutputType | null
 }
 
-type GetTenantRemindersGroupByPayload<T extends TenantRemindersGroupByArgs> = Prisma.PrismaPromise<
+export type GetTenantRemindersGroupByPayload<T extends TenantRemindersGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TenantRemindersGroupByOutputType, T['by']> &
       {

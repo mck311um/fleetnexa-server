@@ -196,7 +196,7 @@ export type LatePolicyGroupByOutputType = {
   _max: LatePolicyMaxAggregateOutputType | null
 }
 
-type GetLatePolicyGroupByPayload<T extends LatePolicyGroupByArgs> = Prisma.PrismaPromise<
+export type GetLatePolicyGroupByPayload<T extends LatePolicyGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<LatePolicyGroupByOutputType, T['by']> &
       {

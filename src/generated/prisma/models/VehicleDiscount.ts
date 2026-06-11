@@ -252,7 +252,7 @@ export type VehicleDiscountGroupByOutputType = {
   _max: VehicleDiscountMaxAggregateOutputType | null
 }
 
-type GetVehicleDiscountGroupByPayload<T extends VehicleDiscountGroupByArgs> = Prisma.PrismaPromise<
+export type GetVehicleDiscountGroupByPayload<T extends VehicleDiscountGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<VehicleDiscountGroupByOutputType, T['by']> &
       {

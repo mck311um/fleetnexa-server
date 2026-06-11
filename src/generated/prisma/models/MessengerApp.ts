@@ -144,7 +144,7 @@ export type MessengerAppGroupByOutputType = {
   _max: MessengerAppMaxAggregateOutputType | null
 }
 
-type GetMessengerAppGroupByPayload<T extends MessengerAppGroupByArgs> = Prisma.PrismaPromise<
+export type GetMessengerAppGroupByPayload<T extends MessengerAppGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<MessengerAppGroupByOutputType, T['by']> &
       {

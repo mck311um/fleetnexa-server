@@ -161,7 +161,7 @@ export class ResendService {
         provider: tenant.tenantName,
         vehicle: this.formatter.formatVehicleToFriendly(booking?.vehicle) || '',
         total: this.formatter.formatNumberToTenantCurrency(
-          booking?.values?.amountDue || 0,
+          booking?.values?.netTotal || 0,
           currency?.code || 'USD',
         ),
         providerPhone: tenant.number || '',

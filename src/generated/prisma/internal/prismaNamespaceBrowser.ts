@@ -76,6 +76,8 @@ export const ModelName = {
   VendorType: 'VendorType',
   Port: 'Port',
   InsuranceCompany: 'InsuranceCompany',
+  Values: 'Values',
+  SecurityDeposit: 'SecurityDeposit',
   Customer: 'Customer',
   CustomerMessengerApp: 'CustomerMessengerApp',
   CustomerAddress: 'CustomerAddress',
@@ -100,7 +102,6 @@ export const ModelName = {
   Rental: 'Rental',
   StorefrontBooking: 'StorefrontBooking',
   RentalDriver: 'RentalDriver',
-  Values: 'Values',
   RentalExtra: 'RentalExtra',
   RentalCharge: 'RentalCharge',
   VesselInfo: 'VesselInfo',
@@ -405,6 +406,48 @@ export const InsuranceCompanyScalarFieldEnum = {
 } as const
 
 export type InsuranceCompanyScalarFieldEnum = (typeof InsuranceCompanyScalarFieldEnum)[keyof typeof InsuranceCompanyScalarFieldEnum]
+
+
+export const ValuesScalarFieldEnum = {
+  id: 'id',
+  numberOfDays: 'numberOfDays',
+  basePrice: 'basePrice',
+  totalCost: 'totalCost',
+  discount: 'discount',
+  deliveryFee: 'deliveryFee',
+  collectionFee: 'collectionFee',
+  deposit: 'deposit',
+  totalExtras: 'totalExtras',
+  totalCharges: 'totalCharges',
+  subTotal: 'subTotal',
+  netTotal: 'netTotal',
+  rentalId: 'rentalId',
+  additionalDriverFees: 'additionalDriverFees',
+  cancellationFee: 'cancellationFee',
+  lateFee: 'lateFee',
+  customBasePrice: 'customBasePrice',
+  customCollectionFee: 'customCollectionFee',
+  customDeliveryFee: 'customDeliveryFee',
+  customDiscount: 'customDiscount',
+  customTotalCost: 'customTotalCost',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ValuesScalarFieldEnum = (typeof ValuesScalarFieldEnum)[keyof typeof ValuesScalarFieldEnum]
+
+
+export const SecurityDepositScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  amount: 'amount',
+  amountHeld: 'amountHeld',
+  amountRefunded: 'amountRefunded',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SecurityDepositScalarFieldEnum = (typeof SecurityDepositScalarFieldEnum)[keyof typeof SecurityDepositScalarFieldEnum]
 
 
 export const CustomerScalarFieldEnum = {
@@ -749,38 +792,6 @@ export const RentalDriverScalarFieldEnum = {
 export type RentalDriverScalarFieldEnum = (typeof RentalDriverScalarFieldEnum)[keyof typeof RentalDriverScalarFieldEnum]
 
 
-export const ValuesScalarFieldEnum = {
-  id: 'id',
-  numberOfDays: 'numberOfDays',
-  basePrice: 'basePrice',
-  totalCost: 'totalCost',
-  discount: 'discount',
-  deliveryFee: 'deliveryFee',
-  collectionFee: 'collectionFee',
-  deposit: 'deposit',
-  totalExtras: 'totalExtras',
-  subTotal: 'subTotal',
-  netTotal: 'netTotal',
-  rentalId: 'rentalId',
-  discountAmount: 'discountAmount',
-  discountPolicy: 'discountPolicy',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  additionalDriverFees: 'additionalDriverFees',
-  cancellationFee: 'cancellationFee',
-  lateFee: 'lateFee',
-  customBasePrice: 'customBasePrice',
-  customCollectionFee: 'customCollectionFee',
-  customDeliveryFee: 'customDeliveryFee',
-  customDeposit: 'customDeposit',
-  customDiscount: 'customDiscount',
-  customTotalCost: 'customTotalCost',
-  amountDue: 'amountDue'
-} as const
-
-export type ValuesScalarFieldEnum = (typeof ValuesScalarFieldEnum)[keyof typeof ValuesScalarFieldEnum]
-
-
 export const RentalExtraScalarFieldEnum = {
   id: 'id',
   extraId: 'extraId',
@@ -794,13 +805,12 @@ export type RentalExtraScalarFieldEnum = (typeof RentalExtraScalarFieldEnum)[key
 
 export const RentalChargeScalarFieldEnum = {
   id: 'id',
-  rentalId: 'rentalId',
   charge: 'charge',
   reason: 'reason',
   amount: 'amount',
   customerId: 'customerId',
-  tenantId: 'tenantId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  valueId: 'valueId'
 } as const
 
 export type RentalChargeScalarFieldEnum = (typeof RentalChargeScalarFieldEnum)[keyof typeof RentalChargeScalarFieldEnum]

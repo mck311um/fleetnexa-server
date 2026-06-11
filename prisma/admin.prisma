@@ -21,13 +21,14 @@ model VehicleBrand {
 }
 
 model VehicleModel {
-  id       String           @id @default(dbgenerated("gen_random_uuid()"))
-  model    String
-  brandId  String
-  typeId   String?
-  vehicles Vehicle[]
-  brand    VehicleBrand     @relation(fields: [brandId], references: [id])
-  bodyType VehicleBodyType? @relation(fields: [typeId], references: [id])
+  id            String           @id @default(dbgenerated("gen_random_uuid()"))
+  model         String
+  brandId       String
+  typeId        String?
+  vehicles      Vehicle[]
+        
+  brand         VehicleBrand     @relation(fields: [brandId], references: [id])
+  bodyType      VehicleBodyType? @relation(fields: [typeId], references: [id])
 
   @@unique([model, brandId, typeId])
 }

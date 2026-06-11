@@ -144,7 +144,7 @@ export type WheelDriveGroupByOutputType = {
   _max: WheelDriveMaxAggregateOutputType | null
 }
 
-type GetWheelDriveGroupByPayload<T extends WheelDriveGroupByArgs> = Prisma.PrismaPromise<
+export type GetWheelDriveGroupByPayload<T extends WheelDriveGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<WheelDriveGroupByOutputType, T['by']> &
       {

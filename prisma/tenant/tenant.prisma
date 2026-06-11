@@ -47,7 +47,6 @@ model Tenant {
   rentals               Rental[]
   rentalActivity        RentalActivity[]
   agreements            RentalAgreement[]
-  charges               RentalCharge[]
   merchant              ShopDMMerchant?
   cancellationPolicy    CancellationPolicy?        @relation(fields: [cancellationPolicyId], references: [id], onDelete: Cascade)
   currency              Currency?                  @relation(fields: [currencyId], references: [id], onDelete: Cascade)

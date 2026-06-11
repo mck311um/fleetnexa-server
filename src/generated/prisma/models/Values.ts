@@ -35,13 +35,12 @@ export type ValuesAvgAggregateOutputType = {
   collectionFee: number | null
   deposit: number | null
   totalExtras: number | null
+  totalCharges: number | null
   subTotal: number | null
   netTotal: number | null
-  discountAmount: number | null
   additionalDriverFees: number | null
   cancellationFee: number | null
   lateFee: number | null
-  amountDue: number | null
 }
 
 export type ValuesSumAggregateOutputType = {
@@ -53,13 +52,12 @@ export type ValuesSumAggregateOutputType = {
   collectionFee: number | null
   deposit: number | null
   totalExtras: number | null
+  totalCharges: number | null
   subTotal: number | null
   netTotal: number | null
-  discountAmount: number | null
   additionalDriverFees: number | null
   cancellationFee: number | null
   lateFee: number | null
-  amountDue: number | null
 }
 
 export type ValuesMinAggregateOutputType = {
@@ -72,23 +70,20 @@ export type ValuesMinAggregateOutputType = {
   collectionFee: number | null
   deposit: number | null
   totalExtras: number | null
+  totalCharges: number | null
   subTotal: number | null
   netTotal: number | null
   rentalId: string | null
-  discountAmount: number | null
-  discountPolicy: string | null
-  createdAt: Date | null
-  updatedAt: Date | null
   additionalDriverFees: number | null
   cancellationFee: number | null
   lateFee: number | null
   customBasePrice: boolean | null
   customCollectionFee: boolean | null
   customDeliveryFee: boolean | null
-  customDeposit: boolean | null
   customDiscount: boolean | null
   customTotalCost: boolean | null
-  amountDue: number | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ValuesMaxAggregateOutputType = {
@@ -101,23 +96,20 @@ export type ValuesMaxAggregateOutputType = {
   collectionFee: number | null
   deposit: number | null
   totalExtras: number | null
+  totalCharges: number | null
   subTotal: number | null
   netTotal: number | null
   rentalId: string | null
-  discountAmount: number | null
-  discountPolicy: string | null
-  createdAt: Date | null
-  updatedAt: Date | null
   additionalDriverFees: number | null
   cancellationFee: number | null
   lateFee: number | null
   customBasePrice: boolean | null
   customCollectionFee: boolean | null
   customDeliveryFee: boolean | null
-  customDeposit: boolean | null
   customDiscount: boolean | null
   customTotalCost: boolean | null
-  amountDue: number | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ValuesCountAggregateOutputType = {
@@ -130,23 +122,20 @@ export type ValuesCountAggregateOutputType = {
   collectionFee: number
   deposit: number
   totalExtras: number
+  totalCharges: number
   subTotal: number
   netTotal: number
   rentalId: number
-  discountAmount: number
-  discountPolicy: number
-  createdAt: number
-  updatedAt: number
   additionalDriverFees: number
   cancellationFee: number
   lateFee: number
   customBasePrice: number
   customCollectionFee: number
   customDeliveryFee: number
-  customDeposit: number
   customDiscount: number
   customTotalCost: number
-  amountDue: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -160,13 +149,12 @@ export type ValuesAvgAggregateInputType = {
   collectionFee?: true
   deposit?: true
   totalExtras?: true
+  totalCharges?: true
   subTotal?: true
   netTotal?: true
-  discountAmount?: true
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
-  amountDue?: true
 }
 
 export type ValuesSumAggregateInputType = {
@@ -178,13 +166,12 @@ export type ValuesSumAggregateInputType = {
   collectionFee?: true
   deposit?: true
   totalExtras?: true
+  totalCharges?: true
   subTotal?: true
   netTotal?: true
-  discountAmount?: true
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
-  amountDue?: true
 }
 
 export type ValuesMinAggregateInputType = {
@@ -197,23 +184,20 @@ export type ValuesMinAggregateInputType = {
   collectionFee?: true
   deposit?: true
   totalExtras?: true
+  totalCharges?: true
   subTotal?: true
   netTotal?: true
   rentalId?: true
-  discountAmount?: true
-  discountPolicy?: true
-  createdAt?: true
-  updatedAt?: true
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
   customBasePrice?: true
   customCollectionFee?: true
   customDeliveryFee?: true
-  customDeposit?: true
   customDiscount?: true
   customTotalCost?: true
-  amountDue?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ValuesMaxAggregateInputType = {
@@ -226,23 +210,20 @@ export type ValuesMaxAggregateInputType = {
   collectionFee?: true
   deposit?: true
   totalExtras?: true
+  totalCharges?: true
   subTotal?: true
   netTotal?: true
   rentalId?: true
-  discountAmount?: true
-  discountPolicy?: true
-  createdAt?: true
-  updatedAt?: true
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
   customBasePrice?: true
   customCollectionFee?: true
   customDeliveryFee?: true
-  customDeposit?: true
   customDiscount?: true
   customTotalCost?: true
-  amountDue?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ValuesCountAggregateInputType = {
@@ -255,23 +236,20 @@ export type ValuesCountAggregateInputType = {
   collectionFee?: true
   deposit?: true
   totalExtras?: true
+  totalCharges?: true
   subTotal?: true
   netTotal?: true
   rentalId?: true
-  discountAmount?: true
-  discountPolicy?: true
-  createdAt?: true
-  updatedAt?: true
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
   customBasePrice?: true
   customCollectionFee?: true
   customDeliveryFee?: true
-  customDeposit?: true
   customDiscount?: true
   customTotalCost?: true
-  amountDue?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -371,23 +349,20 @@ export type ValuesGroupByOutputType = {
   collectionFee: number
   deposit: number
   totalExtras: number
+  totalCharges: number
   subTotal: number
   netTotal: number
   rentalId: string
-  discountAmount: number
-  discountPolicy: string
-  createdAt: Date
-  updatedAt: Date | null
   additionalDriverFees: number
   cancellationFee: number
   lateFee: number
   customBasePrice: boolean
   customCollectionFee: boolean
   customDeliveryFee: boolean
-  customDeposit: boolean
   customDiscount: boolean
   customTotalCost: boolean
-  amountDue: number
+  createdAt: Date
+  updatedAt: Date | null
   _count: ValuesCountAggregateOutputType | null
   _avg: ValuesAvgAggregateOutputType | null
   _sum: ValuesSumAggregateOutputType | null
@@ -395,7 +370,7 @@ export type ValuesGroupByOutputType = {
   _max: ValuesMaxAggregateOutputType | null
 }
 
-type GetValuesGroupByPayload<T extends ValuesGroupByArgs> = Prisma.PrismaPromise<
+export type GetValuesGroupByPayload<T extends ValuesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ValuesGroupByOutputType, T['by']> &
       {
@@ -423,24 +398,22 @@ export type ValuesWhereInput = {
   collectionFee?: Prisma.FloatFilter<"Values"> | number
   deposit?: Prisma.FloatFilter<"Values"> | number
   totalExtras?: Prisma.FloatFilter<"Values"> | number
+  totalCharges?: Prisma.FloatFilter<"Values"> | number
   subTotal?: Prisma.FloatFilter<"Values"> | number
   netTotal?: Prisma.FloatFilter<"Values"> | number
   rentalId?: Prisma.StringFilter<"Values"> | string
-  discountAmount?: Prisma.FloatFilter<"Values"> | number
-  discountPolicy?: Prisma.StringFilter<"Values"> | string
-  createdAt?: Prisma.DateTimeFilter<"Values"> | Date | string
-  updatedAt?: Prisma.DateTimeNullableFilter<"Values"> | Date | string | null
   additionalDriverFees?: Prisma.FloatFilter<"Values"> | number
   cancellationFee?: Prisma.FloatFilter<"Values"> | number
   lateFee?: Prisma.FloatFilter<"Values"> | number
   customBasePrice?: Prisma.BoolFilter<"Values"> | boolean
   customCollectionFee?: Prisma.BoolFilter<"Values"> | boolean
   customDeliveryFee?: Prisma.BoolFilter<"Values"> | boolean
-  customDeposit?: Prisma.BoolFilter<"Values"> | boolean
   customDiscount?: Prisma.BoolFilter<"Values"> | boolean
   customTotalCost?: Prisma.BoolFilter<"Values"> | boolean
-  amountDue?: Prisma.FloatFilter<"Values"> | number
+  createdAt?: Prisma.DateTimeFilter<"Values"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableFilter<"Values"> | Date | string | null
   extras?: Prisma.RentalExtraListRelationFilter
+  charges?: Prisma.RentalChargeListRelationFilter
   rental?: Prisma.XOR<Prisma.RentalScalarRelationFilter, Prisma.RentalWhereInput>
 }
 
@@ -454,24 +427,22 @@ export type ValuesOrderByWithRelationInput = {
   collectionFee?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   totalExtras?: Prisma.SortOrder
+  totalCharges?: Prisma.SortOrder
   subTotal?: Prisma.SortOrder
   netTotal?: Prisma.SortOrder
   rentalId?: Prisma.SortOrder
-  discountAmount?: Prisma.SortOrder
-  discountPolicy?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
-  customDeposit?: Prisma.SortOrder
   customDiscount?: Prisma.SortOrder
   customTotalCost?: Prisma.SortOrder
-  amountDue?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   extras?: Prisma.RentalExtraOrderByRelationAggregateInput
+  charges?: Prisma.RentalChargeOrderByRelationAggregateInput
   rental?: Prisma.RentalOrderByWithRelationInput
 }
 
@@ -489,23 +460,21 @@ export type ValuesWhereUniqueInput = Prisma.AtLeast<{
   collectionFee?: Prisma.FloatFilter<"Values"> | number
   deposit?: Prisma.FloatFilter<"Values"> | number
   totalExtras?: Prisma.FloatFilter<"Values"> | number
+  totalCharges?: Prisma.FloatFilter<"Values"> | number
   subTotal?: Prisma.FloatFilter<"Values"> | number
   netTotal?: Prisma.FloatFilter<"Values"> | number
-  discountAmount?: Prisma.FloatFilter<"Values"> | number
-  discountPolicy?: Prisma.StringFilter<"Values"> | string
-  createdAt?: Prisma.DateTimeFilter<"Values"> | Date | string
-  updatedAt?: Prisma.DateTimeNullableFilter<"Values"> | Date | string | null
   additionalDriverFees?: Prisma.FloatFilter<"Values"> | number
   cancellationFee?: Prisma.FloatFilter<"Values"> | number
   lateFee?: Prisma.FloatFilter<"Values"> | number
   customBasePrice?: Prisma.BoolFilter<"Values"> | boolean
   customCollectionFee?: Prisma.BoolFilter<"Values"> | boolean
   customDeliveryFee?: Prisma.BoolFilter<"Values"> | boolean
-  customDeposit?: Prisma.BoolFilter<"Values"> | boolean
   customDiscount?: Prisma.BoolFilter<"Values"> | boolean
   customTotalCost?: Prisma.BoolFilter<"Values"> | boolean
-  amountDue?: Prisma.FloatFilter<"Values"> | number
+  createdAt?: Prisma.DateTimeFilter<"Values"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableFilter<"Values"> | Date | string | null
   extras?: Prisma.RentalExtraListRelationFilter
+  charges?: Prisma.RentalChargeListRelationFilter
   rental?: Prisma.XOR<Prisma.RentalScalarRelationFilter, Prisma.RentalWhereInput>
 }, "id" | "rentalId">
 
@@ -519,23 +488,20 @@ export type ValuesOrderByWithAggregationInput = {
   collectionFee?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   totalExtras?: Prisma.SortOrder
+  totalCharges?: Prisma.SortOrder
   subTotal?: Prisma.SortOrder
   netTotal?: Prisma.SortOrder
   rentalId?: Prisma.SortOrder
-  discountAmount?: Prisma.SortOrder
-  discountPolicy?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
-  customDeposit?: Prisma.SortOrder
   customDiscount?: Prisma.SortOrder
   customTotalCost?: Prisma.SortOrder
-  amountDue?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ValuesCountOrderByAggregateInput
   _avg?: Prisma.ValuesAvgOrderByAggregateInput
   _max?: Prisma.ValuesMaxOrderByAggregateInput
@@ -556,23 +522,20 @@ export type ValuesScalarWhereWithAggregatesInput = {
   collectionFee?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   deposit?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   totalExtras?: Prisma.FloatWithAggregatesFilter<"Values"> | number
+  totalCharges?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   subTotal?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   netTotal?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   rentalId?: Prisma.StringWithAggregatesFilter<"Values"> | string
-  discountAmount?: Prisma.FloatWithAggregatesFilter<"Values"> | number
-  discountPolicy?: Prisma.StringWithAggregatesFilter<"Values"> | string
-  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Values"> | Date | string
-  updatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Values"> | Date | string | null
   additionalDriverFees?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   cancellationFee?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   lateFee?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   customBasePrice?: Prisma.BoolWithAggregatesFilter<"Values"> | boolean
   customCollectionFee?: Prisma.BoolWithAggregatesFilter<"Values"> | boolean
   customDeliveryFee?: Prisma.BoolWithAggregatesFilter<"Values"> | boolean
-  customDeposit?: Prisma.BoolWithAggregatesFilter<"Values"> | boolean
   customDiscount?: Prisma.BoolWithAggregatesFilter<"Values"> | boolean
   customTotalCost?: Prisma.BoolWithAggregatesFilter<"Values"> | boolean
-  amountDue?: Prisma.FloatWithAggregatesFilter<"Values"> | number
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Values"> | Date | string
+  updatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Values"> | Date | string | null
 }
 
 export type ValuesCreateInput = {
@@ -585,23 +548,21 @@ export type ValuesCreateInput = {
   collectionFee: number
   deposit: number
   totalExtras: number
+  totalCharges?: number
   subTotal?: number
   netTotal?: number
-  discountAmount: number
-  discountPolicy: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
   extras?: Prisma.RentalExtraCreateNestedManyWithoutValuesInput
+  charges?: Prisma.RentalChargeCreateNestedManyWithoutValuesInput
   rental: Prisma.RentalCreateNestedOneWithoutValuesInput
 }
 
@@ -615,24 +576,22 @@ export type ValuesUncheckedCreateInput = {
   collectionFee: number
   deposit: number
   totalExtras: number
+  totalCharges?: number
   subTotal?: number
   netTotal?: number
   rentalId: string
-  discountAmount: number
-  discountPolicy: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
   extras?: Prisma.RentalExtraUncheckedCreateNestedManyWithoutValuesInput
+  charges?: Prisma.RentalChargeUncheckedCreateNestedManyWithoutValuesInput
 }
 
 export type ValuesUpdateInput = {
@@ -645,23 +604,21 @@ export type ValuesUpdateInput = {
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.FloatFieldUpdateOperationsInput | number
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountPolicy?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  customDeposit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  amountDue?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   extras?: Prisma.RentalExtraUpdateManyWithoutValuesNestedInput
+  charges?: Prisma.RentalChargeUpdateManyWithoutValuesNestedInput
   rental?: Prisma.RentalUpdateOneRequiredWithoutValuesNestedInput
 }
 
@@ -675,24 +632,22 @@ export type ValuesUncheckedUpdateInput = {
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.FloatFieldUpdateOperationsInput | number
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   rentalId?: Prisma.StringFieldUpdateOperationsInput | string
-  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountPolicy?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  customDeposit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  amountDue?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   extras?: Prisma.RentalExtraUncheckedUpdateManyWithoutValuesNestedInput
+  charges?: Prisma.RentalChargeUncheckedUpdateManyWithoutValuesNestedInput
 }
 
 export type ValuesCreateManyInput = {
@@ -705,23 +660,20 @@ export type ValuesCreateManyInput = {
   collectionFee: number
   deposit: number
   totalExtras: number
+  totalCharges?: number
   subTotal?: number
   netTotal?: number
   rentalId: string
-  discountAmount: number
-  discountPolicy: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
 }
 
 export type ValuesUpdateManyMutationInput = {
@@ -734,22 +686,19 @@ export type ValuesUpdateManyMutationInput = {
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.FloatFieldUpdateOperationsInput | number
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountPolicy?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  customDeposit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  amountDue?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ValuesUncheckedUpdateManyInput = {
@@ -762,28 +711,20 @@ export type ValuesUncheckedUpdateManyInput = {
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.FloatFieldUpdateOperationsInput | number
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   rentalId?: Prisma.StringFieldUpdateOperationsInput | string
-  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountPolicy?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  customDeposit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  amountDue?: Prisma.FloatFieldUpdateOperationsInput | number
-}
-
-export type ValuesNullableScalarRelationFilter = {
-  is?: Prisma.ValuesWhereInput | null
-  isNot?: Prisma.ValuesWhereInput | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ValuesCountOrderByAggregateInput = {
@@ -796,23 +737,20 @@ export type ValuesCountOrderByAggregateInput = {
   collectionFee?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   totalExtras?: Prisma.SortOrder
+  totalCharges?: Prisma.SortOrder
   subTotal?: Prisma.SortOrder
   netTotal?: Prisma.SortOrder
   rentalId?: Prisma.SortOrder
-  discountAmount?: Prisma.SortOrder
-  discountPolicy?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
-  customDeposit?: Prisma.SortOrder
   customDiscount?: Prisma.SortOrder
   customTotalCost?: Prisma.SortOrder
-  amountDue?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ValuesAvgOrderByAggregateInput = {
@@ -824,13 +762,12 @@ export type ValuesAvgOrderByAggregateInput = {
   collectionFee?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   totalExtras?: Prisma.SortOrder
+  totalCharges?: Prisma.SortOrder
   subTotal?: Prisma.SortOrder
   netTotal?: Prisma.SortOrder
-  discountAmount?: Prisma.SortOrder
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
-  amountDue?: Prisma.SortOrder
 }
 
 export type ValuesMaxOrderByAggregateInput = {
@@ -843,23 +780,20 @@ export type ValuesMaxOrderByAggregateInput = {
   collectionFee?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   totalExtras?: Prisma.SortOrder
+  totalCharges?: Prisma.SortOrder
   subTotal?: Prisma.SortOrder
   netTotal?: Prisma.SortOrder
   rentalId?: Prisma.SortOrder
-  discountAmount?: Prisma.SortOrder
-  discountPolicy?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
-  customDeposit?: Prisma.SortOrder
   customDiscount?: Prisma.SortOrder
   customTotalCost?: Prisma.SortOrder
-  amountDue?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ValuesMinOrderByAggregateInput = {
@@ -872,23 +806,20 @@ export type ValuesMinOrderByAggregateInput = {
   collectionFee?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   totalExtras?: Prisma.SortOrder
+  totalCharges?: Prisma.SortOrder
   subTotal?: Prisma.SortOrder
   netTotal?: Prisma.SortOrder
   rentalId?: Prisma.SortOrder
-  discountAmount?: Prisma.SortOrder
-  discountPolicy?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
-  customDeposit?: Prisma.SortOrder
   customDiscount?: Prisma.SortOrder
   customTotalCost?: Prisma.SortOrder
-  amountDue?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ValuesSumOrderByAggregateInput = {
@@ -900,18 +831,46 @@ export type ValuesSumOrderByAggregateInput = {
   collectionFee?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   totalExtras?: Prisma.SortOrder
+  totalCharges?: Prisma.SortOrder
   subTotal?: Prisma.SortOrder
   netTotal?: Prisma.SortOrder
-  discountAmount?: Prisma.SortOrder
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
-  amountDue?: Prisma.SortOrder
+}
+
+export type ValuesNullableScalarRelationFilter = {
+  is?: Prisma.ValuesWhereInput | null
+  isNot?: Prisma.ValuesWhereInput | null
 }
 
 export type ValuesScalarRelationFilter = {
   is?: Prisma.ValuesWhereInput
   isNot?: Prisma.ValuesWhereInput
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type ValuesCreateNestedOneWithoutRentalInput = {
@@ -946,14 +905,6 @@ export type ValuesUncheckedUpdateOneWithoutRentalNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ValuesUpdateToOneWithWhereWithoutRentalInput, Prisma.ValuesUpdateWithoutRentalInput>, Prisma.ValuesUncheckedUpdateWithoutRentalInput>
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ValuesCreateNestedOneWithoutExtrasInput = {
   create?: Prisma.XOR<Prisma.ValuesCreateWithoutExtrasInput, Prisma.ValuesUncheckedCreateWithoutExtrasInput>
   connectOrCreate?: Prisma.ValuesCreateOrConnectWithoutExtrasInput
@@ -968,6 +919,20 @@ export type ValuesUpdateOneRequiredWithoutExtrasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ValuesUpdateToOneWithWhereWithoutExtrasInput, Prisma.ValuesUpdateWithoutExtrasInput>, Prisma.ValuesUncheckedUpdateWithoutExtrasInput>
 }
 
+export type ValuesCreateNestedOneWithoutChargesInput = {
+  create?: Prisma.XOR<Prisma.ValuesCreateWithoutChargesInput, Prisma.ValuesUncheckedCreateWithoutChargesInput>
+  connectOrCreate?: Prisma.ValuesCreateOrConnectWithoutChargesInput
+  connect?: Prisma.ValuesWhereUniqueInput
+}
+
+export type ValuesUpdateOneRequiredWithoutChargesNestedInput = {
+  create?: Prisma.XOR<Prisma.ValuesCreateWithoutChargesInput, Prisma.ValuesUncheckedCreateWithoutChargesInput>
+  connectOrCreate?: Prisma.ValuesCreateOrConnectWithoutChargesInput
+  upsert?: Prisma.ValuesUpsertWithoutChargesInput
+  connect?: Prisma.ValuesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ValuesUpdateToOneWithWhereWithoutChargesInput, Prisma.ValuesUpdateWithoutChargesInput>, Prisma.ValuesUncheckedUpdateWithoutChargesInput>
+}
+
 export type ValuesCreateWithoutRentalInput = {
   id?: string
   numberOfDays: number
@@ -978,23 +943,21 @@ export type ValuesCreateWithoutRentalInput = {
   collectionFee: number
   deposit: number
   totalExtras: number
+  totalCharges?: number
   subTotal?: number
   netTotal?: number
-  discountAmount: number
-  discountPolicy: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
   extras?: Prisma.RentalExtraCreateNestedManyWithoutValuesInput
+  charges?: Prisma.RentalChargeCreateNestedManyWithoutValuesInput
 }
 
 export type ValuesUncheckedCreateWithoutRentalInput = {
@@ -1007,23 +970,21 @@ export type ValuesUncheckedCreateWithoutRentalInput = {
   collectionFee: number
   deposit: number
   totalExtras: number
+  totalCharges?: number
   subTotal?: number
   netTotal?: number
-  discountAmount: number
-  discountPolicy: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
   extras?: Prisma.RentalExtraUncheckedCreateNestedManyWithoutValuesInput
+  charges?: Prisma.RentalChargeUncheckedCreateNestedManyWithoutValuesInput
 }
 
 export type ValuesCreateOrConnectWithoutRentalInput = {
@@ -1052,23 +1013,21 @@ export type ValuesUpdateWithoutRentalInput = {
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.FloatFieldUpdateOperationsInput | number
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountPolicy?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  customDeposit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  amountDue?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   extras?: Prisma.RentalExtraUpdateManyWithoutValuesNestedInput
+  charges?: Prisma.RentalChargeUpdateManyWithoutValuesNestedInput
 }
 
 export type ValuesUncheckedUpdateWithoutRentalInput = {
@@ -1081,23 +1040,21 @@ export type ValuesUncheckedUpdateWithoutRentalInput = {
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.FloatFieldUpdateOperationsInput | number
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountPolicy?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  customDeposit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  amountDue?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   extras?: Prisma.RentalExtraUncheckedUpdateManyWithoutValuesNestedInput
+  charges?: Prisma.RentalChargeUncheckedUpdateManyWithoutValuesNestedInput
 }
 
 export type ValuesCreateWithoutExtrasInput = {
@@ -1110,22 +1067,20 @@ export type ValuesCreateWithoutExtrasInput = {
   collectionFee: number
   deposit: number
   totalExtras: number
+  totalCharges?: number
   subTotal?: number
   netTotal?: number
-  discountAmount: number
-  discountPolicy: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  charges?: Prisma.RentalChargeCreateNestedManyWithoutValuesInput
   rental: Prisma.RentalCreateNestedOneWithoutValuesInput
 }
 
@@ -1139,23 +1094,21 @@ export type ValuesUncheckedCreateWithoutExtrasInput = {
   collectionFee: number
   deposit: number
   totalExtras: number
+  totalCharges?: number
   subTotal?: number
   netTotal?: number
   rentalId: string
-  discountAmount: number
-  discountPolicy: string
-  createdAt?: Date | string
-  updatedAt?: Date | string | null
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  charges?: Prisma.RentalChargeUncheckedCreateNestedManyWithoutValuesInput
 }
 
 export type ValuesCreateOrConnectWithoutExtrasInput = {
@@ -1184,22 +1137,20 @@ export type ValuesUpdateWithoutExtrasInput = {
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.FloatFieldUpdateOperationsInput | number
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountPolicy?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  customDeposit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  amountDue?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  charges?: Prisma.RentalChargeUpdateManyWithoutValuesNestedInput
   rental?: Prisma.RentalUpdateOneRequiredWithoutValuesNestedInput
 }
 
@@ -1213,23 +1164,145 @@ export type ValuesUncheckedUpdateWithoutExtrasInput = {
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
   deposit?: Prisma.FloatFieldUpdateOperationsInput | number
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
   rentalId?: Prisma.StringFieldUpdateOperationsInput | string
-  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountPolicy?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  customDeposit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  amountDue?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  charges?: Prisma.RentalChargeUncheckedUpdateManyWithoutValuesNestedInput
+}
+
+export type ValuesCreateWithoutChargesInput = {
+  id?: string
+  numberOfDays: number
+  basePrice: number
+  totalCost: number
+  discount: number
+  deliveryFee: number
+  collectionFee: number
+  deposit: number
+  totalExtras: number
+  totalCharges?: number
+  subTotal?: number
+  netTotal?: number
+  additionalDriverFees?: number
+  cancellationFee?: number
+  lateFee?: number
+  customBasePrice?: boolean
+  customCollectionFee?: boolean
+  customDeliveryFee?: boolean
+  customDiscount?: boolean
+  customTotalCost?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  extras?: Prisma.RentalExtraCreateNestedManyWithoutValuesInput
+  rental: Prisma.RentalCreateNestedOneWithoutValuesInput
+}
+
+export type ValuesUncheckedCreateWithoutChargesInput = {
+  id?: string
+  numberOfDays: number
+  basePrice: number
+  totalCost: number
+  discount: number
+  deliveryFee: number
+  collectionFee: number
+  deposit: number
+  totalExtras: number
+  totalCharges?: number
+  subTotal?: number
+  netTotal?: number
+  rentalId: string
+  additionalDriverFees?: number
+  cancellationFee?: number
+  lateFee?: number
+  customBasePrice?: boolean
+  customCollectionFee?: boolean
+  customDeliveryFee?: boolean
+  customDiscount?: boolean
+  customTotalCost?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  extras?: Prisma.RentalExtraUncheckedCreateNestedManyWithoutValuesInput
+}
+
+export type ValuesCreateOrConnectWithoutChargesInput = {
+  where: Prisma.ValuesWhereUniqueInput
+  create: Prisma.XOR<Prisma.ValuesCreateWithoutChargesInput, Prisma.ValuesUncheckedCreateWithoutChargesInput>
+}
+
+export type ValuesUpsertWithoutChargesInput = {
+  update: Prisma.XOR<Prisma.ValuesUpdateWithoutChargesInput, Prisma.ValuesUncheckedUpdateWithoutChargesInput>
+  create: Prisma.XOR<Prisma.ValuesCreateWithoutChargesInput, Prisma.ValuesUncheckedCreateWithoutChargesInput>
+  where?: Prisma.ValuesWhereInput
+}
+
+export type ValuesUpdateToOneWithWhereWithoutChargesInput = {
+  where?: Prisma.ValuesWhereInput
+  data: Prisma.XOR<Prisma.ValuesUpdateWithoutChargesInput, Prisma.ValuesUncheckedUpdateWithoutChargesInput>
+}
+
+export type ValuesUpdateWithoutChargesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  numberOfDays?: Prisma.IntFieldUpdateOperationsInput | number
+  basePrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCost?: Prisma.FloatFieldUpdateOperationsInput | number
+  discount?: Prisma.FloatFieldUpdateOperationsInput | number
+  deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
+  subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
+  cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  extras?: Prisma.RentalExtraUpdateManyWithoutValuesNestedInput
+  rental?: Prisma.RentalUpdateOneRequiredWithoutValuesNestedInput
+}
+
+export type ValuesUncheckedUpdateWithoutChargesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  numberOfDays?: Prisma.IntFieldUpdateOperationsInput | number
+  basePrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCost?: Prisma.FloatFieldUpdateOperationsInput | number
+  discount?: Prisma.FloatFieldUpdateOperationsInput | number
+  deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
+  subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  netTotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  rentalId?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
+  cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customTotalCost?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  extras?: Prisma.RentalExtraUncheckedUpdateManyWithoutValuesNestedInput
 }
 
 
@@ -1239,10 +1312,12 @@ export type ValuesUncheckedUpdateWithoutExtrasInput = {
 
 export type ValuesCountOutputType = {
   extras: number
+  charges: number
 }
 
 export type ValuesCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   extras?: boolean | ValuesCountOutputTypeCountExtrasArgs
+  charges?: boolean | ValuesCountOutputTypeCountChargesArgs
 }
 
 /**
@@ -1262,6 +1337,13 @@ export type ValuesCountOutputTypeCountExtrasArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.RentalExtraWhereInput
 }
 
+/**
+ * ValuesCountOutputType without action
+ */
+export type ValuesCountOutputTypeCountChargesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RentalChargeWhereInput
+}
+
 
 export type ValuesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1273,24 +1355,22 @@ export type ValuesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   collectionFee?: boolean
   deposit?: boolean
   totalExtras?: boolean
+  totalCharges?: boolean
   subTotal?: boolean
   netTotal?: boolean
   rentalId?: boolean
-  discountAmount?: boolean
-  discountPolicy?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   additionalDriverFees?: boolean
   cancellationFee?: boolean
   lateFee?: boolean
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   extras?: boolean | Prisma.Values$extrasArgs<ExtArgs>
+  charges?: boolean | Prisma.Values$chargesArgs<ExtArgs>
   rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.ValuesCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["values"]>
@@ -1305,23 +1385,20 @@ export type ValuesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   collectionFee?: boolean
   deposit?: boolean
   totalExtras?: boolean
+  totalCharges?: boolean
   subTotal?: boolean
   netTotal?: boolean
   rentalId?: boolean
-  discountAmount?: boolean
-  discountPolicy?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   additionalDriverFees?: boolean
   cancellationFee?: boolean
   lateFee?: boolean
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["values"]>
 
@@ -1335,23 +1412,20 @@ export type ValuesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   collectionFee?: boolean
   deposit?: boolean
   totalExtras?: boolean
+  totalCharges?: boolean
   subTotal?: boolean
   netTotal?: boolean
   rentalId?: boolean
-  discountAmount?: boolean
-  discountPolicy?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   additionalDriverFees?: boolean
   cancellationFee?: boolean
   lateFee?: boolean
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["values"]>
 
@@ -1365,28 +1439,26 @@ export type ValuesSelectScalar = {
   collectionFee?: boolean
   deposit?: boolean
   totalExtras?: boolean
+  totalCharges?: boolean
   subTotal?: boolean
   netTotal?: boolean
   rentalId?: boolean
-  discountAmount?: boolean
-  discountPolicy?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
   additionalDriverFees?: boolean
   cancellationFee?: boolean
   lateFee?: boolean
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
-  customDeposit?: boolean
   customDiscount?: boolean
   customTotalCost?: boolean
-  amountDue?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type ValuesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numberOfDays" | "basePrice" | "totalCost" | "discount" | "deliveryFee" | "collectionFee" | "deposit" | "totalExtras" | "subTotal" | "netTotal" | "rentalId" | "discountAmount" | "discountPolicy" | "createdAt" | "updatedAt" | "additionalDriverFees" | "cancellationFee" | "lateFee" | "customBasePrice" | "customCollectionFee" | "customDeliveryFee" | "customDeposit" | "customDiscount" | "customTotalCost" | "amountDue", ExtArgs["result"]["values"]>
+export type ValuesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numberOfDays" | "basePrice" | "totalCost" | "discount" | "deliveryFee" | "collectionFee" | "deposit" | "totalExtras" | "totalCharges" | "subTotal" | "netTotal" | "rentalId" | "additionalDriverFees" | "cancellationFee" | "lateFee" | "customBasePrice" | "customCollectionFee" | "customDeliveryFee" | "customDiscount" | "customTotalCost" | "createdAt" | "updatedAt", ExtArgs["result"]["values"]>
 export type ValuesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   extras?: boolean | Prisma.Values$extrasArgs<ExtArgs>
+  charges?: boolean | Prisma.Values$chargesArgs<ExtArgs>
   rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.ValuesCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1401,6 +1473,7 @@ export type $ValuesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Values"
   objects: {
     extras: Prisma.$RentalExtraPayload<ExtArgs>[]
+    charges: Prisma.$RentalChargePayload<ExtArgs>[]
     rental: Prisma.$RentalPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1413,23 +1486,20 @@ export type $ValuesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     collectionFee: number
     deposit: number
     totalExtras: number
+    totalCharges: number
     subTotal: number
     netTotal: number
     rentalId: string
-    discountAmount: number
-    discountPolicy: string
-    createdAt: Date
-    updatedAt: Date | null
     additionalDriverFees: number
     cancellationFee: number
     lateFee: number
     customBasePrice: boolean
     customCollectionFee: boolean
     customDeliveryFee: boolean
-    customDeposit: boolean
     customDiscount: boolean
     customTotalCost: boolean
-    amountDue: number
+    createdAt: Date
+    updatedAt: Date | null
   }, ExtArgs["result"]["values"]>
   composites: {}
 }
@@ -1825,6 +1895,7 @@ readonly fields: ValuesFieldRefs;
 export interface Prisma__ValuesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   extras<T extends Prisma.Values$extrasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Values$extrasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RentalExtraPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  charges<T extends Prisma.Values$chargesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Values$chargesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RentalChargePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   rental<T extends Prisma.RentalDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RentalDefaultArgs<ExtArgs>>): Prisma.Prisma__RentalClient<runtime.Types.Result.GetResult<Prisma.$RentalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1864,23 +1935,20 @@ export interface ValuesFieldRefs {
   readonly collectionFee: Prisma.FieldRef<"Values", 'Float'>
   readonly deposit: Prisma.FieldRef<"Values", 'Float'>
   readonly totalExtras: Prisma.FieldRef<"Values", 'Float'>
+  readonly totalCharges: Prisma.FieldRef<"Values", 'Float'>
   readonly subTotal: Prisma.FieldRef<"Values", 'Float'>
   readonly netTotal: Prisma.FieldRef<"Values", 'Float'>
   readonly rentalId: Prisma.FieldRef<"Values", 'String'>
-  readonly discountAmount: Prisma.FieldRef<"Values", 'Float'>
-  readonly discountPolicy: Prisma.FieldRef<"Values", 'String'>
-  readonly createdAt: Prisma.FieldRef<"Values", 'DateTime'>
-  readonly updatedAt: Prisma.FieldRef<"Values", 'DateTime'>
   readonly additionalDriverFees: Prisma.FieldRef<"Values", 'Float'>
   readonly cancellationFee: Prisma.FieldRef<"Values", 'Float'>
   readonly lateFee: Prisma.FieldRef<"Values", 'Float'>
   readonly customBasePrice: Prisma.FieldRef<"Values", 'Boolean'>
   readonly customCollectionFee: Prisma.FieldRef<"Values", 'Boolean'>
   readonly customDeliveryFee: Prisma.FieldRef<"Values", 'Boolean'>
-  readonly customDeposit: Prisma.FieldRef<"Values", 'Boolean'>
   readonly customDiscount: Prisma.FieldRef<"Values", 'Boolean'>
   readonly customTotalCost: Prisma.FieldRef<"Values", 'Boolean'>
-  readonly amountDue: Prisma.FieldRef<"Values", 'Float'>
+  readonly createdAt: Prisma.FieldRef<"Values", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Values", 'DateTime'>
 }
     
 
@@ -2303,6 +2371,30 @@ export type Values$extrasArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.RentalExtraScalarFieldEnum | Prisma.RentalExtraScalarFieldEnum[]
+}
+
+/**
+ * Values.charges
+ */
+export type Values$chargesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RentalCharge
+   */
+  select?: Prisma.RentalChargeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RentalCharge
+   */
+  omit?: Prisma.RentalChargeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RentalChargeInclude<ExtArgs> | null
+  where?: Prisma.RentalChargeWhereInput
+  orderBy?: Prisma.RentalChargeOrderByWithRelationInput | Prisma.RentalChargeOrderByWithRelationInput[]
+  cursor?: Prisma.RentalChargeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RentalChargeScalarFieldEnum | Prisma.RentalChargeScalarFieldEnum[]
 }
 
 /**

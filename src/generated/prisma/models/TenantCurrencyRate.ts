@@ -217,7 +217,7 @@ export type TenantCurrencyRateGroupByOutputType = {
   _max: TenantCurrencyRateMaxAggregateOutputType | null
 }
 
-type GetTenantCurrencyRateGroupByPayload<T extends TenantCurrencyRateGroupByArgs> = Prisma.PrismaPromise<
+export type GetTenantCurrencyRateGroupByPayload<T extends TenantCurrencyRateGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TenantCurrencyRateGroupByOutputType, T['by']> &
       {

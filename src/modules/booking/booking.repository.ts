@@ -147,7 +147,6 @@ export class BookingRepository {
           username: true,
         },
       },
-      charges: true,
       refunds: {
         where: { isDeleted: false },
         include: {
@@ -232,6 +231,7 @@ export class BookingRepository {
       values: {
         include: {
           extras: true,
+          charges: true,
         },
       },
     };

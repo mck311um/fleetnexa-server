@@ -241,7 +241,7 @@ export type InvoiceGroupByOutputType = {
   _max: InvoiceMaxAggregateOutputType | null
 }
 
-type GetInvoiceGroupByPayload<T extends InvoiceGroupByArgs> = Prisma.PrismaPromise<
+export type GetInvoiceGroupByPayload<T extends InvoiceGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<InvoiceGroupByOutputType, T['by']> &
       {
@@ -564,14 +564,6 @@ export type InvoiceUncheckedUpdateManyWithoutCustomerNestedInput = {
   update?: Prisma.InvoiceUpdateWithWhereUniqueWithoutCustomerInput | Prisma.InvoiceUpdateWithWhereUniqueWithoutCustomerInput[]
   updateMany?: Prisma.InvoiceUpdateManyWithWhereWithoutCustomerInput | Prisma.InvoiceUpdateManyWithWhereWithoutCustomerInput[]
   deleteMany?: Prisma.InvoiceScalarWhereInput | Prisma.InvoiceScalarWhereInput[]
-}
-
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type InvoiceCreateNestedOneWithoutRentalInput = {

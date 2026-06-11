@@ -186,7 +186,7 @@ export type OtpGroupByOutputType = {
   _max: OtpMaxAggregateOutputType | null
 }
 
-type GetOtpGroupByPayload<T extends OtpGroupByArgs> = Prisma.PrismaPromise<
+export type GetOtpGroupByPayload<T extends OtpGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<OtpGroupByOutputType, T['by']> &
       {

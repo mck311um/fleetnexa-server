@@ -189,7 +189,7 @@ export type PlanDetailsGroupByOutputType = {
   _max: PlanDetailsMaxAggregateOutputType | null
 }
 
-type GetPlanDetailsGroupByPayload<T extends PlanDetailsGroupByArgs> = Prisma.PrismaPromise<
+export type GetPlanDetailsGroupByPayload<T extends PlanDetailsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PlanDetailsGroupByOutputType, T['by']> &
       {

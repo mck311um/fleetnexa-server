@@ -144,7 +144,7 @@ export type TransmissionGroupByOutputType = {
   _max: TransmissionMaxAggregateOutputType | null
 }
 
-type GetTransmissionGroupByPayload<T extends TransmissionGroupByArgs> = Prisma.PrismaPromise<
+export type GetTransmissionGroupByPayload<T extends TransmissionGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TransmissionGroupByOutputType, T['by']> &
       {

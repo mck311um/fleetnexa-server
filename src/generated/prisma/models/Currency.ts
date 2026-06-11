@@ -151,7 +151,7 @@ export type CurrencyGroupByOutputType = {
   _max: CurrencyMaxAggregateOutputType | null
 }
 
-type GetCurrencyGroupByPayload<T extends CurrencyGroupByArgs> = Prisma.PrismaPromise<
+export type GetCurrencyGroupByPayload<T extends CurrencyGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CurrencyGroupByOutputType, T['by']> &
       {

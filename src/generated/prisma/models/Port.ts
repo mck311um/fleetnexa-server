@@ -151,7 +151,7 @@ export type PortGroupByOutputType = {
   _max: PortMaxAggregateOutputType | null
 }
 
-type GetPortGroupByPayload<T extends PortGroupByArgs> = Prisma.PrismaPromise<
+export type GetPortGroupByPayload<T extends PortGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PortGroupByOutputType, T['by']> &
       {

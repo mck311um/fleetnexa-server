@@ -137,7 +137,7 @@ export type FuelTypeGroupByOutputType = {
   _max: FuelTypeMaxAggregateOutputType | null
 }
 
-type GetFuelTypeGroupByPayload<T extends FuelTypeGroupByArgs> = Prisma.PrismaPromise<
+export type GetFuelTypeGroupByPayload<T extends FuelTypeGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<FuelTypeGroupByOutputType, T['by']> &
       {

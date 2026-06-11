@@ -21,6 +21,7 @@ import { StorefrontUserBookingDto } from './dto/storefront-user-booking.dto.js';
 import { StorefrontGuestBookingDto } from './dto/storefront-guest-booking.dto.js';
 import { ApiGuard } from '../auth/guards/api.guard.js';
 import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
+import { CreateBookingChargeDto } from './dto/booking-charge.dto.js';
 
 @Controller('booking')
 export class BookingController {
@@ -148,5 +149,14 @@ export class BookingController {
     const { tenant } = req.user;
     const user = req.user;
     return this.bookingService.swapBookingVehicle(data, tenant, user);
+  }
+
+  @Post('charge')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.TENANT)
+  async addBookingCharge(@Request() req, @Body() data: CreateBookingChargeDto) {
+    const { tenant } = req.user;
+    const user = req.user;
+    return this.bookingService.addBookingCharge(data, tenant.id, user.id);
   }
 }

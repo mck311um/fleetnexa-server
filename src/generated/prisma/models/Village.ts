@@ -151,7 +151,7 @@ export type VillageGroupByOutputType = {
   _max: VillageMaxAggregateOutputType | null
 }
 
-type GetVillageGroupByPayload<T extends VillageGroupByArgs> = Prisma.PrismaPromise<
+export type GetVillageGroupByPayload<T extends VillageGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<VillageGroupByOutputType, T['by']> &
       {

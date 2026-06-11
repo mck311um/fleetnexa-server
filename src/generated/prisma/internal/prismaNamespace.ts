@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.5.0
- * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.5.0",
-  engine: "280c870be64f457428992c43c1f6d557fab6e29e"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 /**
@@ -409,6 +409,8 @@ export const ModelName = {
   VendorType: 'VendorType',
   Port: 'Port',
   InsuranceCompany: 'InsuranceCompany',
+  Values: 'Values',
+  SecurityDeposit: 'SecurityDeposit',
   Customer: 'Customer',
   CustomerMessengerApp: 'CustomerMessengerApp',
   CustomerAddress: 'CustomerAddress',
@@ -433,7 +435,6 @@ export const ModelName = {
   Rental: 'Rental',
   StorefrontBooking: 'StorefrontBooking',
   RentalDriver: 'RentalDriver',
-  Values: 'Values',
   RentalExtra: 'RentalExtra',
   RentalCharge: 'RentalCharge',
   VesselInfo: 'VesselInfo',
@@ -501,7 +502,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "service" | "chargeType" | "vehicleBrand" | "vehicleModel" | "vehicleBodyType" | "vehicleStatus" | "fuelType" | "transmission" | "vehicleFeature" | "wheelDrive" | "invoiceSequence" | "country" | "state" | "village" | "maintenanceService" | "documentType" | "presetLocation" | "licenseClass" | "messengerApp" | "equipment" | "contactType" | "paymentType" | "vendorType" | "port" | "insuranceCompany" | "customer" | "customerMessengerApp" | "customerAddress" | "customerDocument" | "driverLicense" | "customerViolation" | "rentalAgreement" | "invoice" | "paymentReceipt" | "caribbeanCountry" | "shopDMMerchant" | "currency" | "tenantCurrencyRate" | "exchangeRate" | "form" | "formResponse" | "rentalActivity" | "tenantNotification" | "notificationReadStatus" | "appPermission" | "permissionCategory" | "rental" | "storefrontBooking" | "rentalDriver" | "values" | "rentalExtra" | "rentalCharge" | "vesselInfo" | "tenantWeeklyStats" | "tenantYearlyStats" | "tenantMonthlyStats" | "tenantMonthlyRentalStats" | "tenantRatings" | "siteRatings" | "subscriptionPlan" | "planFeatures" | "planDetails" | "tenantLocation" | "cancellationPolicy" | "latePolicy" | "tenant" | "paymentMethod" | "address" | "tenantSubscription" | "tenantContact" | "tenantReminders" | "tenantViolation" | "tenantVendor" | "verificationRequest" | "tenantInsurance" | "tenantEquipment" | "tenantService" | "transactions" | "payment" | "refund" | "expense" | "session" | "auditLog" | "passwordHistory" | "otp" | "user" | "storefrontUser" | "adminUser" | "userRole" | "userRolePermission" | "vehicle" | "vehicleDiscount" | "vehicleDamage" | "vehiclePart" | "fuelPolicy" | "vehicleServiceLog" | "vehicleMaintenance" | "vehicleServiceSchedule" | "bookingVehicleHistory" | "vehicleEvent" | "vehicleInsuranceHistory" | "vehicleRegistrationHistory"
+    modelProps: "service" | "chargeType" | "vehicleBrand" | "vehicleModel" | "vehicleBodyType" | "vehicleStatus" | "fuelType" | "transmission" | "vehicleFeature" | "wheelDrive" | "invoiceSequence" | "country" | "state" | "village" | "maintenanceService" | "documentType" | "presetLocation" | "licenseClass" | "messengerApp" | "equipment" | "contactType" | "paymentType" | "vendorType" | "port" | "insuranceCompany" | "values" | "securityDeposit" | "customer" | "customerMessengerApp" | "customerAddress" | "customerDocument" | "driverLicense" | "customerViolation" | "rentalAgreement" | "invoice" | "paymentReceipt" | "caribbeanCountry" | "shopDMMerchant" | "currency" | "tenantCurrencyRate" | "exchangeRate" | "form" | "formResponse" | "rentalActivity" | "tenantNotification" | "notificationReadStatus" | "appPermission" | "permissionCategory" | "rental" | "storefrontBooking" | "rentalDriver" | "rentalExtra" | "rentalCharge" | "vesselInfo" | "tenantWeeklyStats" | "tenantYearlyStats" | "tenantMonthlyStats" | "tenantMonthlyRentalStats" | "tenantRatings" | "siteRatings" | "subscriptionPlan" | "planFeatures" | "planDetails" | "tenantLocation" | "cancellationPolicy" | "latePolicy" | "tenant" | "paymentMethod" | "address" | "tenantSubscription" | "tenantContact" | "tenantReminders" | "tenantViolation" | "tenantVendor" | "verificationRequest" | "tenantInsurance" | "tenantEquipment" | "tenantService" | "transactions" | "payment" | "refund" | "expense" | "session" | "auditLog" | "passwordHistory" | "otp" | "user" | "storefrontUser" | "adminUser" | "userRole" | "userRolePermission" | "vehicle" | "vehicleDiscount" | "vehicleDamage" | "vehiclePart" | "fuelPolicy" | "vehicleServiceLog" | "vehicleMaintenance" | "vehicleServiceSchedule" | "bookingVehicleHistory" | "vehicleEvent" | "vehicleInsuranceHistory" | "vehicleRegistrationHistory"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2355,6 +2356,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Values: {
+      payload: Prisma.$ValuesPayload<ExtArgs>
+      fields: Prisma.ValuesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ValuesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ValuesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
+        }
+        findFirst: {
+          args: Prisma.ValuesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ValuesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
+        }
+        findMany: {
+          args: Prisma.ValuesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>[]
+        }
+        create: {
+          args: Prisma.ValuesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
+        }
+        createMany: {
+          args: Prisma.ValuesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ValuesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>[]
+        }
+        delete: {
+          args: Prisma.ValuesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
+        }
+        update: {
+          args: Prisma.ValuesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
+        }
+        deleteMany: {
+          args: Prisma.ValuesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ValuesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ValuesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>[]
+        }
+        upsert: {
+          args: Prisma.ValuesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
+        }
+        aggregate: {
+          args: Prisma.ValuesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateValues>
+        }
+        groupBy: {
+          args: Prisma.ValuesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ValuesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ValuesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ValuesCountAggregateOutputType> | number
+        }
+      }
+    }
+    SecurityDeposit: {
+      payload: Prisma.$SecurityDepositPayload<ExtArgs>
+      fields: Prisma.SecurityDepositFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SecurityDepositFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SecurityDepositFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload>
+        }
+        findFirst: {
+          args: Prisma.SecurityDepositFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SecurityDepositFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload>
+        }
+        findMany: {
+          args: Prisma.SecurityDepositFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload>[]
+        }
+        create: {
+          args: Prisma.SecurityDepositCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload>
+        }
+        createMany: {
+          args: Prisma.SecurityDepositCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SecurityDepositCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload>[]
+        }
+        delete: {
+          args: Prisma.SecurityDepositDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload>
+        }
+        update: {
+          args: Prisma.SecurityDepositUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload>
+        }
+        deleteMany: {
+          args: Prisma.SecurityDepositDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SecurityDepositUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SecurityDepositUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload>[]
+        }
+        upsert: {
+          args: Prisma.SecurityDepositUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositPayload>
+        }
+        aggregate: {
+          args: Prisma.SecurityDepositAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSecurityDeposit>
+        }
+        groupBy: {
+          args: Prisma.SecurityDepositGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SecurityDepositGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SecurityDepositCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SecurityDepositCountAggregateOutputType> | number
+        }
+      }
+    }
     Customer: {
       payload: Prisma.$CustomerPayload<ExtArgs>
       fields: Prisma.CustomerFieldRefs
@@ -4128,80 +4277,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.RentalDriverCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.RentalDriverCountAggregateOutputType> | number
-        }
-      }
-    }
-    Values: {
-      payload: Prisma.$ValuesPayload<ExtArgs>
-      fields: Prisma.ValuesFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ValuesFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ValuesFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
-        }
-        findFirst: {
-          args: Prisma.ValuesFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ValuesFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
-        }
-        findMany: {
-          args: Prisma.ValuesFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>[]
-        }
-        create: {
-          args: Prisma.ValuesCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
-        }
-        createMany: {
-          args: Prisma.ValuesCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ValuesCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>[]
-        }
-        delete: {
-          args: Prisma.ValuesDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
-        }
-        update: {
-          args: Prisma.ValuesUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
-        }
-        deleteMany: {
-          args: Prisma.ValuesDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ValuesUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ValuesUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>[]
-        }
-        upsert: {
-          args: Prisma.ValuesUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ValuesPayload>
-        }
-        aggregate: {
-          args: Prisma.ValuesAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateValues>
-        }
-        groupBy: {
-          args: Prisma.ValuesGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ValuesGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ValuesCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ValuesCountAggregateOutputType> | number
         }
       }
     }
@@ -8328,6 +8403,48 @@ export const InsuranceCompanyScalarFieldEnum = {
 export type InsuranceCompanyScalarFieldEnum = (typeof InsuranceCompanyScalarFieldEnum)[keyof typeof InsuranceCompanyScalarFieldEnum]
 
 
+export const ValuesScalarFieldEnum = {
+  id: 'id',
+  numberOfDays: 'numberOfDays',
+  basePrice: 'basePrice',
+  totalCost: 'totalCost',
+  discount: 'discount',
+  deliveryFee: 'deliveryFee',
+  collectionFee: 'collectionFee',
+  deposit: 'deposit',
+  totalExtras: 'totalExtras',
+  totalCharges: 'totalCharges',
+  subTotal: 'subTotal',
+  netTotal: 'netTotal',
+  rentalId: 'rentalId',
+  additionalDriverFees: 'additionalDriverFees',
+  cancellationFee: 'cancellationFee',
+  lateFee: 'lateFee',
+  customBasePrice: 'customBasePrice',
+  customCollectionFee: 'customCollectionFee',
+  customDeliveryFee: 'customDeliveryFee',
+  customDiscount: 'customDiscount',
+  customTotalCost: 'customTotalCost',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ValuesScalarFieldEnum = (typeof ValuesScalarFieldEnum)[keyof typeof ValuesScalarFieldEnum]
+
+
+export const SecurityDepositScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  amount: 'amount',
+  amountHeld: 'amountHeld',
+  amountRefunded: 'amountRefunded',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SecurityDepositScalarFieldEnum = (typeof SecurityDepositScalarFieldEnum)[keyof typeof SecurityDepositScalarFieldEnum]
+
+
 export const CustomerScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
@@ -8670,38 +8787,6 @@ export const RentalDriverScalarFieldEnum = {
 export type RentalDriverScalarFieldEnum = (typeof RentalDriverScalarFieldEnum)[keyof typeof RentalDriverScalarFieldEnum]
 
 
-export const ValuesScalarFieldEnum = {
-  id: 'id',
-  numberOfDays: 'numberOfDays',
-  basePrice: 'basePrice',
-  totalCost: 'totalCost',
-  discount: 'discount',
-  deliveryFee: 'deliveryFee',
-  collectionFee: 'collectionFee',
-  deposit: 'deposit',
-  totalExtras: 'totalExtras',
-  subTotal: 'subTotal',
-  netTotal: 'netTotal',
-  rentalId: 'rentalId',
-  discountAmount: 'discountAmount',
-  discountPolicy: 'discountPolicy',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  additionalDriverFees: 'additionalDriverFees',
-  cancellationFee: 'cancellationFee',
-  lateFee: 'lateFee',
-  customBasePrice: 'customBasePrice',
-  customCollectionFee: 'customCollectionFee',
-  customDeliveryFee: 'customDeliveryFee',
-  customDeposit: 'customDeposit',
-  customDiscount: 'customDiscount',
-  customTotalCost: 'customTotalCost',
-  amountDue: 'amountDue'
-} as const
-
-export type ValuesScalarFieldEnum = (typeof ValuesScalarFieldEnum)[keyof typeof ValuesScalarFieldEnum]
-
-
 export const RentalExtraScalarFieldEnum = {
   id: 'id',
   extraId: 'extraId',
@@ -8715,13 +8800,12 @@ export type RentalExtraScalarFieldEnum = (typeof RentalExtraScalarFieldEnum)[key
 
 export const RentalChargeScalarFieldEnum = {
   id: 'id',
-  rentalId: 'rentalId',
   charge: 'charge',
   reason: 'reason',
   amount: 'amount',
   customerId: 'customerId',
-  tenantId: 'tenantId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  valueId: 'valueId'
 } as const
 
 export type RentalChargeScalarFieldEnum = (typeof RentalChargeScalarFieldEnum)[keyof typeof RentalChargeScalarFieldEnum]
@@ -9649,20 +9733,6 @@ export type ListEnumPortTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
- * Reference to a field of type 'CustomerStatus'
- */
-export type EnumCustomerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomerStatus'>
-    
-
-
-/**
- * Reference to a field of type 'CustomerStatus[]'
- */
-export type ListEnumCustomerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomerStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -9677,13 +9747,6 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -9694,6 +9757,27 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'CustomerStatus'
+ */
+export type EnumCustomerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomerStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CustomerStatus[]'
+ */
+export type ListEnumCustomerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomerStatus[]'>
     
 
 
@@ -10111,6 +10195,21 @@ export type PrismaClientOptions = ({
    * ```
    */
   comments?: runtime.SqlCommenterPlugin[]
+  /**
+   * Optional maximum size for the query plan cache. If not provided, a default size will be used.
+   * A value of `0` can be used to disable the cache entirely. A higher cache size can improve
+   * performance for applications that execute a large number of unique queries, while a smaller
+   * cache size can reduce memory usage.
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   queryPlanCacheMaxSize: 100,
+   * })
+   * ```
+   */
+  queryPlanCacheMaxSize?: number
 }
 export type GlobalOmitConfig = {
   service?: Prisma.ServiceOmit
@@ -10138,6 +10237,8 @@ export type GlobalOmitConfig = {
   vendorType?: Prisma.VendorTypeOmit
   port?: Prisma.PortOmit
   insuranceCompany?: Prisma.InsuranceCompanyOmit
+  values?: Prisma.ValuesOmit
+  securityDeposit?: Prisma.SecurityDepositOmit
   customer?: Prisma.CustomerOmit
   customerMessengerApp?: Prisma.CustomerMessengerAppOmit
   customerAddress?: Prisma.CustomerAddressOmit
@@ -10162,7 +10263,6 @@ export type GlobalOmitConfig = {
   rental?: Prisma.RentalOmit
   storefrontBooking?: Prisma.StorefrontBookingOmit
   rentalDriver?: Prisma.RentalDriverOmit
-  values?: Prisma.ValuesOmit
   rentalExtra?: Prisma.RentalExtraOmit
   rentalCharge?: Prisma.RentalChargeOmit
   vesselInfo?: Prisma.VesselInfoOmit

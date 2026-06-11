@@ -6,6 +6,7 @@ import { TenantModule } from './tenant/tenant.module.js';
 import { SubscriptionPlanModule } from './subscription-plan/subscription-plan.module.js';
 import { PermissionModule } from './permission/permission.module.js';
 import { PermissionCategoryModule } from './permission-category/permission-category.module.js';
+import { VehicleModelModule } from './vehicle-model/vehicle-model.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PermissionCategoryModule } from './permission-category/permission-categ
     SubscriptionPlanModule,
     PermissionModule,
     PermissionCategoryModule,
+    VehicleModelModule,
   ],
   exports: [
     CountryModule,
