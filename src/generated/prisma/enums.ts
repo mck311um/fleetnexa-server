@@ -276,6 +276,25 @@ export const VehicleEventType = {
 export type VehicleEventType = (typeof VehicleEventType)[keyof typeof VehicleEventType]
 
 
+export const SecurityDepositStatus = {
+  PENDING: 'PENDING',
+  WAIVED: 'WAIVED',
+  COLLECTED: 'COLLECTED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type SecurityDepositStatus = (typeof SecurityDepositStatus)[keyof typeof SecurityDepositStatus]
+
+
+export const SecurityDepositTransactionType = {
+  COLLECTED: 'COLLECTED',
+  REFUNDED: 'REFUNDED',
+  FORFEITED: 'FORFEITED'
+} as const
+
+export type SecurityDepositTransactionType = (typeof SecurityDepositTransactionType)[keyof typeof SecurityDepositTransactionType]
+
+
 export const FormType = {
   customer_info: 'customer_info',
   driver_registration: 'driver_registration',

@@ -44,7 +44,6 @@ export interface InvoiceData {
   rentalAmount: number;
   services: RentalService[];
   subTotal: number;
-  deposit: number;
   discount: number;
   total: number;
   invoiceNotes: string;

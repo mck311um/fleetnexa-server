@@ -411,6 +411,7 @@ export const ModelName = {
   InsuranceCompany: 'InsuranceCompany',
   Values: 'Values',
   SecurityDeposit: 'SecurityDeposit',
+  SecurityDepositTransaction: 'SecurityDepositTransaction',
   Customer: 'Customer',
   CustomerMessengerApp: 'CustomerMessengerApp',
   CustomerAddress: 'CustomerAddress',
@@ -502,7 +503,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "service" | "chargeType" | "vehicleBrand" | "vehicleModel" | "vehicleBodyType" | "vehicleStatus" | "fuelType" | "transmission" | "vehicleFeature" | "wheelDrive" | "invoiceSequence" | "country" | "state" | "village" | "maintenanceService" | "documentType" | "presetLocation" | "licenseClass" | "messengerApp" | "equipment" | "contactType" | "paymentType" | "vendorType" | "port" | "insuranceCompany" | "values" | "securityDeposit" | "customer" | "customerMessengerApp" | "customerAddress" | "customerDocument" | "driverLicense" | "customerViolation" | "rentalAgreement" | "invoice" | "paymentReceipt" | "caribbeanCountry" | "shopDMMerchant" | "currency" | "tenantCurrencyRate" | "exchangeRate" | "form" | "formResponse" | "rentalActivity" | "tenantNotification" | "notificationReadStatus" | "appPermission" | "permissionCategory" | "rental" | "storefrontBooking" | "rentalDriver" | "rentalExtra" | "rentalCharge" | "vesselInfo" | "tenantWeeklyStats" | "tenantYearlyStats" | "tenantMonthlyStats" | "tenantMonthlyRentalStats" | "tenantRatings" | "siteRatings" | "subscriptionPlan" | "planFeatures" | "planDetails" | "tenantLocation" | "cancellationPolicy" | "latePolicy" | "tenant" | "paymentMethod" | "address" | "tenantSubscription" | "tenantContact" | "tenantReminders" | "tenantViolation" | "tenantVendor" | "verificationRequest" | "tenantInsurance" | "tenantEquipment" | "tenantService" | "transactions" | "payment" | "refund" | "expense" | "session" | "auditLog" | "passwordHistory" | "otp" | "user" | "storefrontUser" | "adminUser" | "userRole" | "userRolePermission" | "vehicle" | "vehicleDiscount" | "vehicleDamage" | "vehiclePart" | "fuelPolicy" | "vehicleServiceLog" | "vehicleMaintenance" | "vehicleServiceSchedule" | "bookingVehicleHistory" | "vehicleEvent" | "vehicleInsuranceHistory" | "vehicleRegistrationHistory"
+    modelProps: "service" | "chargeType" | "vehicleBrand" | "vehicleModel" | "vehicleBodyType" | "vehicleStatus" | "fuelType" | "transmission" | "vehicleFeature" | "wheelDrive" | "invoiceSequence" | "country" | "state" | "village" | "maintenanceService" | "documentType" | "presetLocation" | "licenseClass" | "messengerApp" | "equipment" | "contactType" | "paymentType" | "vendorType" | "port" | "insuranceCompany" | "values" | "securityDeposit" | "securityDepositTransaction" | "customer" | "customerMessengerApp" | "customerAddress" | "customerDocument" | "driverLicense" | "customerViolation" | "rentalAgreement" | "invoice" | "paymentReceipt" | "caribbeanCountry" | "shopDMMerchant" | "currency" | "tenantCurrencyRate" | "exchangeRate" | "form" | "formResponse" | "rentalActivity" | "tenantNotification" | "notificationReadStatus" | "appPermission" | "permissionCategory" | "rental" | "storefrontBooking" | "rentalDriver" | "rentalExtra" | "rentalCharge" | "vesselInfo" | "tenantWeeklyStats" | "tenantYearlyStats" | "tenantMonthlyStats" | "tenantMonthlyRentalStats" | "tenantRatings" | "siteRatings" | "subscriptionPlan" | "planFeatures" | "planDetails" | "tenantLocation" | "cancellationPolicy" | "latePolicy" | "tenant" | "paymentMethod" | "address" | "tenantSubscription" | "tenantContact" | "tenantReminders" | "tenantViolation" | "tenantVendor" | "verificationRequest" | "tenantInsurance" | "tenantEquipment" | "tenantService" | "transactions" | "payment" | "refund" | "expense" | "session" | "auditLog" | "passwordHistory" | "otp" | "user" | "storefrontUser" | "adminUser" | "userRole" | "userRolePermission" | "vehicle" | "vehicleDiscount" | "vehicleDamage" | "vehiclePart" | "fuelPolicy" | "vehicleServiceLog" | "vehicleMaintenance" | "vehicleServiceSchedule" | "bookingVehicleHistory" | "vehicleEvent" | "vehicleInsuranceHistory" | "vehicleRegistrationHistory"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2501,6 +2502,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SecurityDepositCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SecurityDepositCountAggregateOutputType> | number
+        }
+      }
+    }
+    SecurityDepositTransaction: {
+      payload: Prisma.$SecurityDepositTransactionPayload<ExtArgs>
+      fields: Prisma.SecurityDepositTransactionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SecurityDepositTransactionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SecurityDepositTransactionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload>
+        }
+        findFirst: {
+          args: Prisma.SecurityDepositTransactionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SecurityDepositTransactionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload>
+        }
+        findMany: {
+          args: Prisma.SecurityDepositTransactionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload>[]
+        }
+        create: {
+          args: Prisma.SecurityDepositTransactionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload>
+        }
+        createMany: {
+          args: Prisma.SecurityDepositTransactionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SecurityDepositTransactionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload>[]
+        }
+        delete: {
+          args: Prisma.SecurityDepositTransactionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload>
+        }
+        update: {
+          args: Prisma.SecurityDepositTransactionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload>
+        }
+        deleteMany: {
+          args: Prisma.SecurityDepositTransactionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SecurityDepositTransactionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SecurityDepositTransactionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload>[]
+        }
+        upsert: {
+          args: Prisma.SecurityDepositTransactionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecurityDepositTransactionPayload>
+        }
+        aggregate: {
+          args: Prisma.SecurityDepositTransactionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSecurityDepositTransaction>
+        }
+        groupBy: {
+          args: Prisma.SecurityDepositTransactionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SecurityDepositTransactionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SecurityDepositTransactionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SecurityDepositTransactionCountAggregateOutputType> | number
         }
       }
     }
@@ -8420,6 +8495,8 @@ export const ValuesScalarFieldEnum = {
   additionalDriverFees: 'additionalDriverFees',
   cancellationFee: 'cancellationFee',
   lateFee: 'lateFee',
+  discountAmount: 'discountAmount',
+  discountPolicy: 'discountPolicy',
   customBasePrice: 'customBasePrice',
   customCollectionFee: 'customCollectionFee',
   customDeliveryFee: 'customDeliveryFee',
@@ -8436,13 +8513,29 @@ export const SecurityDepositScalarFieldEnum = {
   id: 'id',
   bookingId: 'bookingId',
   amount: 'amount',
-  amountHeld: 'amountHeld',
+  amountCollected: 'amountCollected',
+  amountForfeited: 'amountForfeited',
   amountRefunded: 'amountRefunded',
+  status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy'
 } as const
 
 export type SecurityDepositScalarFieldEnum = (typeof SecurityDepositScalarFieldEnum)[keyof typeof SecurityDepositScalarFieldEnum]
+
+
+export const SecurityDepositTransactionScalarFieldEnum = {
+  id: 'id',
+  securityDepositId: 'securityDepositId',
+  type: 'type',
+  amount: 'amount',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  createdBy: 'createdBy'
+} as const
+
+export type SecurityDepositTransactionScalarFieldEnum = (typeof SecurityDepositTransactionScalarFieldEnum)[keyof typeof SecurityDepositTransactionScalarFieldEnum]
 
 
 export const CustomerScalarFieldEnum = {
@@ -9768,6 +9861,34 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'SecurityDepositStatus'
+ */
+export type EnumSecurityDepositStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SecurityDepositStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SecurityDepositStatus[]'
+ */
+export type ListEnumSecurityDepositStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SecurityDepositStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SecurityDepositTransactionType'
+ */
+export type EnumSecurityDepositTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SecurityDepositTransactionType'>
+    
+
+
+/**
+ * Reference to a field of type 'SecurityDepositTransactionType[]'
+ */
+export type ListEnumSecurityDepositTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SecurityDepositTransactionType[]'>
+    
+
+
+/**
  * Reference to a field of type 'CustomerStatus'
  */
 export type EnumCustomerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomerStatus'>
@@ -10239,6 +10360,7 @@ export type GlobalOmitConfig = {
   insuranceCompany?: Prisma.InsuranceCompanyOmit
   values?: Prisma.ValuesOmit
   securityDeposit?: Prisma.SecurityDepositOmit
+  securityDepositTransaction?: Prisma.SecurityDepositTransactionOmit
   customer?: Prisma.CustomerOmit
   customerMessengerApp?: Prisma.CustomerMessengerAppOmit
   customerAddress?: Prisma.CustomerAddressOmit

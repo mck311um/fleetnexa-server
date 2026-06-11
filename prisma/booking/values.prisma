@@ -6,7 +6,7 @@ model Values {
   discount             Float
   deliveryFee          Float
   collectionFee        Float
-  deposit              Float
+  deposit              Float?
   totalExtras          Float
   totalCharges         Float         @default(0.0)
   subTotal             Float         @default(0.0)
@@ -15,6 +15,8 @@ model Values {
   additionalDriverFees Float         @default(0.0)
   cancellationFee      Float         @default(0.0)
   lateFee              Float         @default(0.0)
+  discountAmount       Float         @default(0.0)
+  discountPolicy       String?
 
   customBasePrice      Boolean       @default(false)
   customCollectionFee  Boolean       @default(false)
@@ -32,14 +34,33 @@ model Values {
 }
 
 model SecurityDeposit {
-  id                String      @id @default(dbgenerated("gen_random_uuid()"))
-  bookingId         String      @unique
+  id                String                  @id @default(dbgenerated("gen_random_uuid()"))
+  bookingId         String                  @unique
   amount            Float
-  amountHeld        Float       @default(0.0)
-  amountRefunded    Float       @default(0.0)
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime?   @updatedAt
+  amountCollected   Float                   @default(0.0)
+  amountForfeited   Float                   @default(0.0)
+  amountRefunded    Float                   @default(0.0)
+  status            SecurityDepositStatus   @default(PENDING)
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime?               @updatedAt
+  updatedBy         String
 
-  booking           Rental      @relation(fields: [bookingId], references: [id])
+  booking           Rental                  @relation(fields: [bookingId], references: [id])
+  user              User                    @relation(fields: [updatedBy], references: [username])
 
+  transactions      SecurityDepositTransaction[]
+}
+
+model SecurityDepositTransaction {
+  id                String @id @default(dbgenerated("gen_random_uuid()"))
+  securityDepositId String
+  type              SecurityDepositTransactionType
+  amount            Float
+  notes             String?
+
+  createdAt         DateTime @default(now())
+  createdBy         String
+
+  securityDeposit   SecurityDeposit @relation(fields: [securityDepositId], references: [id])
+  user              User            @relation(fields: [createdBy], references: [username])
 }

@@ -24,6 +24,10 @@ model User {
   role                     UserRole                 @relation(fields: [roleId], references: [id], onDelete: Cascade)
   tenant                   Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
+  securityDeposits SecurityDeposit[]
+  securityDepositTransactions SecurityDepositTransaction[]
+
+
   @@unique([username, tenantId])
 }
 

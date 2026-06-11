@@ -153,6 +153,11 @@ export type Values = Prisma.ValuesModel
  */
 export type SecurityDeposit = Prisma.SecurityDepositModel
 /**
+ * Model SecurityDepositTransaction
+ * 
+ */
+export type SecurityDepositTransaction = Prisma.SecurityDepositTransactionModel
+/**
  * Model Customer
  * 
  */

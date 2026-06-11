@@ -61,6 +61,7 @@ export class BookingCreationService {
       drivers: dto.drivers,
       values: dto.values,
       createdBy: user.id,
+      securityDeposit: dto.securityDeposit,
     };
 
     return this.createBooking(input);
@@ -81,6 +82,7 @@ export class BookingCreationService {
       vehicleId: dto.vehicleId,
       userId: dto.userId,
       values: dto.values,
+      securityDeposit: dto.securityDeposit,
     };
 
     return this.createBooking(input);
@@ -102,6 +104,7 @@ export class BookingCreationService {
       vehicleId: dto.vehicleId,
       customer: dto.customer,
       values: dto.values,
+      securityDeposit: dto.securityDeposit,
     };
 
     return this.createBooking(input);
@@ -134,6 +137,11 @@ export class BookingCreationService {
       await this.assignDrivers(tx, data, booking, tenant);
 
       await this.bookingRepo.createBookingValues(booking.id, data.values, tx);
+      await this.bookingRepo.createSecurityDeposit(
+        booking.id,
+        data.securityDeposit,
+        tx,
+      );
 
       return booking;
     });

@@ -41,6 +41,7 @@ export type ValuesAvgAggregateOutputType = {
   additionalDriverFees: number | null
   cancellationFee: number | null
   lateFee: number | null
+  discountAmount: number | null
 }
 
 export type ValuesSumAggregateOutputType = {
@@ -58,6 +59,7 @@ export type ValuesSumAggregateOutputType = {
   additionalDriverFees: number | null
   cancellationFee: number | null
   lateFee: number | null
+  discountAmount: number | null
 }
 
 export type ValuesMinAggregateOutputType = {
@@ -77,6 +79,8 @@ export type ValuesMinAggregateOutputType = {
   additionalDriverFees: number | null
   cancellationFee: number | null
   lateFee: number | null
+  discountAmount: number | null
+  discountPolicy: string | null
   customBasePrice: boolean | null
   customCollectionFee: boolean | null
   customDeliveryFee: boolean | null
@@ -103,6 +107,8 @@ export type ValuesMaxAggregateOutputType = {
   additionalDriverFees: number | null
   cancellationFee: number | null
   lateFee: number | null
+  discountAmount: number | null
+  discountPolicy: string | null
   customBasePrice: boolean | null
   customCollectionFee: boolean | null
   customDeliveryFee: boolean | null
@@ -129,6 +135,8 @@ export type ValuesCountAggregateOutputType = {
   additionalDriverFees: number
   cancellationFee: number
   lateFee: number
+  discountAmount: number
+  discountPolicy: number
   customBasePrice: number
   customCollectionFee: number
   customDeliveryFee: number
@@ -155,6 +163,7 @@ export type ValuesAvgAggregateInputType = {
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
+  discountAmount?: true
 }
 
 export type ValuesSumAggregateInputType = {
@@ -172,6 +181,7 @@ export type ValuesSumAggregateInputType = {
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
+  discountAmount?: true
 }
 
 export type ValuesMinAggregateInputType = {
@@ -191,6 +201,8 @@ export type ValuesMinAggregateInputType = {
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
+  discountAmount?: true
+  discountPolicy?: true
   customBasePrice?: true
   customCollectionFee?: true
   customDeliveryFee?: true
@@ -217,6 +229,8 @@ export type ValuesMaxAggregateInputType = {
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
+  discountAmount?: true
+  discountPolicy?: true
   customBasePrice?: true
   customCollectionFee?: true
   customDeliveryFee?: true
@@ -243,6 +257,8 @@ export type ValuesCountAggregateInputType = {
   additionalDriverFees?: true
   cancellationFee?: true
   lateFee?: true
+  discountAmount?: true
+  discountPolicy?: true
   customBasePrice?: true
   customCollectionFee?: true
   customDeliveryFee?: true
@@ -347,7 +363,7 @@ export type ValuesGroupByOutputType = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit: number | null
   totalExtras: number
   totalCharges: number
   subTotal: number
@@ -356,6 +372,8 @@ export type ValuesGroupByOutputType = {
   additionalDriverFees: number
   cancellationFee: number
   lateFee: number
+  discountAmount: number
+  discountPolicy: string | null
   customBasePrice: boolean
   customCollectionFee: boolean
   customDeliveryFee: boolean
@@ -396,7 +414,7 @@ export type ValuesWhereInput = {
   discount?: Prisma.FloatFilter<"Values"> | number
   deliveryFee?: Prisma.FloatFilter<"Values"> | number
   collectionFee?: Prisma.FloatFilter<"Values"> | number
-  deposit?: Prisma.FloatFilter<"Values"> | number
+  deposit?: Prisma.FloatNullableFilter<"Values"> | number | null
   totalExtras?: Prisma.FloatFilter<"Values"> | number
   totalCharges?: Prisma.FloatFilter<"Values"> | number
   subTotal?: Prisma.FloatFilter<"Values"> | number
@@ -405,6 +423,8 @@ export type ValuesWhereInput = {
   additionalDriverFees?: Prisma.FloatFilter<"Values"> | number
   cancellationFee?: Prisma.FloatFilter<"Values"> | number
   lateFee?: Prisma.FloatFilter<"Values"> | number
+  discountAmount?: Prisma.FloatFilter<"Values"> | number
+  discountPolicy?: Prisma.StringNullableFilter<"Values"> | string | null
   customBasePrice?: Prisma.BoolFilter<"Values"> | boolean
   customCollectionFee?: Prisma.BoolFilter<"Values"> | boolean
   customDeliveryFee?: Prisma.BoolFilter<"Values"> | boolean
@@ -425,7 +445,7 @@ export type ValuesOrderByWithRelationInput = {
   discount?: Prisma.SortOrder
   deliveryFee?: Prisma.SortOrder
   collectionFee?: Prisma.SortOrder
-  deposit?: Prisma.SortOrder
+  deposit?: Prisma.SortOrderInput | Prisma.SortOrder
   totalExtras?: Prisma.SortOrder
   totalCharges?: Prisma.SortOrder
   subTotal?: Prisma.SortOrder
@@ -434,6 +454,8 @@ export type ValuesOrderByWithRelationInput = {
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
+  discountAmount?: Prisma.SortOrder
+  discountPolicy?: Prisma.SortOrderInput | Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
@@ -458,7 +480,7 @@ export type ValuesWhereUniqueInput = Prisma.AtLeast<{
   discount?: Prisma.FloatFilter<"Values"> | number
   deliveryFee?: Prisma.FloatFilter<"Values"> | number
   collectionFee?: Prisma.FloatFilter<"Values"> | number
-  deposit?: Prisma.FloatFilter<"Values"> | number
+  deposit?: Prisma.FloatNullableFilter<"Values"> | number | null
   totalExtras?: Prisma.FloatFilter<"Values"> | number
   totalCharges?: Prisma.FloatFilter<"Values"> | number
   subTotal?: Prisma.FloatFilter<"Values"> | number
@@ -466,6 +488,8 @@ export type ValuesWhereUniqueInput = Prisma.AtLeast<{
   additionalDriverFees?: Prisma.FloatFilter<"Values"> | number
   cancellationFee?: Prisma.FloatFilter<"Values"> | number
   lateFee?: Prisma.FloatFilter<"Values"> | number
+  discountAmount?: Prisma.FloatFilter<"Values"> | number
+  discountPolicy?: Prisma.StringNullableFilter<"Values"> | string | null
   customBasePrice?: Prisma.BoolFilter<"Values"> | boolean
   customCollectionFee?: Prisma.BoolFilter<"Values"> | boolean
   customDeliveryFee?: Prisma.BoolFilter<"Values"> | boolean
@@ -486,7 +510,7 @@ export type ValuesOrderByWithAggregationInput = {
   discount?: Prisma.SortOrder
   deliveryFee?: Prisma.SortOrder
   collectionFee?: Prisma.SortOrder
-  deposit?: Prisma.SortOrder
+  deposit?: Prisma.SortOrderInput | Prisma.SortOrder
   totalExtras?: Prisma.SortOrder
   totalCharges?: Prisma.SortOrder
   subTotal?: Prisma.SortOrder
@@ -495,6 +519,8 @@ export type ValuesOrderByWithAggregationInput = {
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
+  discountAmount?: Prisma.SortOrder
+  discountPolicy?: Prisma.SortOrderInput | Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
@@ -520,7 +546,7 @@ export type ValuesScalarWhereWithAggregatesInput = {
   discount?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   deliveryFee?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   collectionFee?: Prisma.FloatWithAggregatesFilter<"Values"> | number
-  deposit?: Prisma.FloatWithAggregatesFilter<"Values"> | number
+  deposit?: Prisma.FloatNullableWithAggregatesFilter<"Values"> | number | null
   totalExtras?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   totalCharges?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   subTotal?: Prisma.FloatWithAggregatesFilter<"Values"> | number
@@ -529,6 +555,8 @@ export type ValuesScalarWhereWithAggregatesInput = {
   additionalDriverFees?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   cancellationFee?: Prisma.FloatWithAggregatesFilter<"Values"> | number
   lateFee?: Prisma.FloatWithAggregatesFilter<"Values"> | number
+  discountAmount?: Prisma.FloatWithAggregatesFilter<"Values"> | number
+  discountPolicy?: Prisma.StringNullableWithAggregatesFilter<"Values"> | string | null
   customBasePrice?: Prisma.BoolWithAggregatesFilter<"Values"> | boolean
   customCollectionFee?: Prisma.BoolWithAggregatesFilter<"Values"> | boolean
   customDeliveryFee?: Prisma.BoolWithAggregatesFilter<"Values"> | boolean
@@ -546,7 +574,7 @@ export type ValuesCreateInput = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit?: number | null
   totalExtras: number
   totalCharges?: number
   subTotal?: number
@@ -554,6 +582,8 @@ export type ValuesCreateInput = {
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
+  discountAmount?: number
+  discountPolicy?: string | null
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -574,7 +604,7 @@ export type ValuesUncheckedCreateInput = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit?: number | null
   totalExtras: number
   totalCharges?: number
   subTotal?: number
@@ -583,6 +613,8 @@ export type ValuesUncheckedCreateInput = {
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
+  discountAmount?: number
+  discountPolicy?: string | null
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -602,7 +634,7 @@ export type ValuesUpdateInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -610,6 +642,8 @@ export type ValuesUpdateInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -630,7 +664,7 @@ export type ValuesUncheckedUpdateInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -639,6 +673,8 @@ export type ValuesUncheckedUpdateInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -658,7 +694,7 @@ export type ValuesCreateManyInput = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit?: number | null
   totalExtras: number
   totalCharges?: number
   subTotal?: number
@@ -667,6 +703,8 @@ export type ValuesCreateManyInput = {
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
+  discountAmount?: number
+  discountPolicy?: string | null
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -684,7 +722,7 @@ export type ValuesUpdateManyMutationInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -692,6 +730,8 @@ export type ValuesUpdateManyMutationInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -709,7 +749,7 @@ export type ValuesUncheckedUpdateManyInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -718,6 +758,8 @@ export type ValuesUncheckedUpdateManyInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -744,6 +786,8 @@ export type ValuesCountOrderByAggregateInput = {
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
+  discountAmount?: Prisma.SortOrder
+  discountPolicy?: Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
@@ -768,6 +812,7 @@ export type ValuesAvgOrderByAggregateInput = {
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
+  discountAmount?: Prisma.SortOrder
 }
 
 export type ValuesMaxOrderByAggregateInput = {
@@ -787,6 +832,8 @@ export type ValuesMaxOrderByAggregateInput = {
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
+  discountAmount?: Prisma.SortOrder
+  discountPolicy?: Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
@@ -813,6 +860,8 @@ export type ValuesMinOrderByAggregateInput = {
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
+  discountAmount?: Prisma.SortOrder
+  discountPolicy?: Prisma.SortOrder
   customBasePrice?: Prisma.SortOrder
   customCollectionFee?: Prisma.SortOrder
   customDeliveryFee?: Prisma.SortOrder
@@ -837,6 +886,7 @@ export type ValuesSumOrderByAggregateInput = {
   additionalDriverFees?: Prisma.SortOrder
   cancellationFee?: Prisma.SortOrder
   lateFee?: Prisma.SortOrder
+  discountAmount?: Prisma.SortOrder
 }
 
 export type ValuesNullableScalarRelationFilter = {
@@ -859,6 +909,14 @@ export type IntFieldUpdateOperationsInput = {
 
 export type FloatFieldUpdateOperationsInput = {
   set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
   increment?: number
   decrement?: number
   multiply?: number
@@ -941,7 +999,7 @@ export type ValuesCreateWithoutRentalInput = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit?: number | null
   totalExtras: number
   totalCharges?: number
   subTotal?: number
@@ -949,6 +1007,8 @@ export type ValuesCreateWithoutRentalInput = {
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
+  discountAmount?: number
+  discountPolicy?: string | null
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -968,7 +1028,7 @@ export type ValuesUncheckedCreateWithoutRentalInput = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit?: number | null
   totalExtras: number
   totalCharges?: number
   subTotal?: number
@@ -976,6 +1036,8 @@ export type ValuesUncheckedCreateWithoutRentalInput = {
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
+  discountAmount?: number
+  discountPolicy?: string | null
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -1011,7 +1073,7 @@ export type ValuesUpdateWithoutRentalInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1019,6 +1081,8 @@ export type ValuesUpdateWithoutRentalInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1038,7 +1102,7 @@ export type ValuesUncheckedUpdateWithoutRentalInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1046,6 +1110,8 @@ export type ValuesUncheckedUpdateWithoutRentalInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1065,7 +1131,7 @@ export type ValuesCreateWithoutExtrasInput = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit?: number | null
   totalExtras: number
   totalCharges?: number
   subTotal?: number
@@ -1073,6 +1139,8 @@ export type ValuesCreateWithoutExtrasInput = {
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
+  discountAmount?: number
+  discountPolicy?: string | null
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -1092,7 +1160,7 @@ export type ValuesUncheckedCreateWithoutExtrasInput = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit?: number | null
   totalExtras: number
   totalCharges?: number
   subTotal?: number
@@ -1101,6 +1169,8 @@ export type ValuesUncheckedCreateWithoutExtrasInput = {
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
+  discountAmount?: number
+  discountPolicy?: string | null
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -1135,7 +1205,7 @@ export type ValuesUpdateWithoutExtrasInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1143,6 +1213,8 @@ export type ValuesUpdateWithoutExtrasInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1162,7 +1234,7 @@ export type ValuesUncheckedUpdateWithoutExtrasInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1171,6 +1243,8 @@ export type ValuesUncheckedUpdateWithoutExtrasInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1189,7 +1263,7 @@ export type ValuesCreateWithoutChargesInput = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit?: number | null
   totalExtras: number
   totalCharges?: number
   subTotal?: number
@@ -1197,6 +1271,8 @@ export type ValuesCreateWithoutChargesInput = {
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
+  discountAmount?: number
+  discountPolicy?: string | null
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -1216,7 +1292,7 @@ export type ValuesUncheckedCreateWithoutChargesInput = {
   discount: number
   deliveryFee: number
   collectionFee: number
-  deposit: number
+  deposit?: number | null
   totalExtras: number
   totalCharges?: number
   subTotal?: number
@@ -1225,6 +1301,8 @@ export type ValuesUncheckedCreateWithoutChargesInput = {
   additionalDriverFees?: number
   cancellationFee?: number
   lateFee?: number
+  discountAmount?: number
+  discountPolicy?: string | null
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -1259,7 +1337,7 @@ export type ValuesUpdateWithoutChargesInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1267,6 +1345,8 @@ export type ValuesUpdateWithoutChargesInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1286,7 +1366,7 @@ export type ValuesUncheckedUpdateWithoutChargesInput = {
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   deliveryFee?: Prisma.FloatFieldUpdateOperationsInput | number
   collectionFee?: Prisma.FloatFieldUpdateOperationsInput | number
-  deposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  deposit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalExtras?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCharges?: Prisma.FloatFieldUpdateOperationsInput | number
   subTotal?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1295,6 +1375,8 @@ export type ValuesUncheckedUpdateWithoutChargesInput = {
   additionalDriverFees?: Prisma.FloatFieldUpdateOperationsInput | number
   cancellationFee?: Prisma.FloatFieldUpdateOperationsInput | number
   lateFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  discountPolicy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customBasePrice?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customCollectionFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customDeliveryFee?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1362,6 +1444,8 @@ export type ValuesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   additionalDriverFees?: boolean
   cancellationFee?: boolean
   lateFee?: boolean
+  discountAmount?: boolean
+  discountPolicy?: boolean
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -1392,6 +1476,8 @@ export type ValuesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   additionalDriverFees?: boolean
   cancellationFee?: boolean
   lateFee?: boolean
+  discountAmount?: boolean
+  discountPolicy?: boolean
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -1419,6 +1505,8 @@ export type ValuesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   additionalDriverFees?: boolean
   cancellationFee?: boolean
   lateFee?: boolean
+  discountAmount?: boolean
+  discountPolicy?: boolean
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -1446,6 +1534,8 @@ export type ValuesSelectScalar = {
   additionalDriverFees?: boolean
   cancellationFee?: boolean
   lateFee?: boolean
+  discountAmount?: boolean
+  discountPolicy?: boolean
   customBasePrice?: boolean
   customCollectionFee?: boolean
   customDeliveryFee?: boolean
@@ -1455,7 +1545,7 @@ export type ValuesSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ValuesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numberOfDays" | "basePrice" | "totalCost" | "discount" | "deliveryFee" | "collectionFee" | "deposit" | "totalExtras" | "totalCharges" | "subTotal" | "netTotal" | "rentalId" | "additionalDriverFees" | "cancellationFee" | "lateFee" | "customBasePrice" | "customCollectionFee" | "customDeliveryFee" | "customDiscount" | "customTotalCost" | "createdAt" | "updatedAt", ExtArgs["result"]["values"]>
+export type ValuesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numberOfDays" | "basePrice" | "totalCost" | "discount" | "deliveryFee" | "collectionFee" | "deposit" | "totalExtras" | "totalCharges" | "subTotal" | "netTotal" | "rentalId" | "additionalDriverFees" | "cancellationFee" | "lateFee" | "discountAmount" | "discountPolicy" | "customBasePrice" | "customCollectionFee" | "customDeliveryFee" | "customDiscount" | "customTotalCost" | "createdAt" | "updatedAt", ExtArgs["result"]["values"]>
 export type ValuesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   extras?: boolean | Prisma.Values$extrasArgs<ExtArgs>
   charges?: boolean | Prisma.Values$chargesArgs<ExtArgs>
@@ -1484,7 +1574,7 @@ export type $ValuesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     discount: number
     deliveryFee: number
     collectionFee: number
-    deposit: number
+    deposit: number | null
     totalExtras: number
     totalCharges: number
     subTotal: number
@@ -1493,6 +1583,8 @@ export type $ValuesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     additionalDriverFees: number
     cancellationFee: number
     lateFee: number
+    discountAmount: number
+    discountPolicy: string | null
     customBasePrice: boolean
     customCollectionFee: boolean
     customDeliveryFee: boolean
@@ -1942,6 +2034,8 @@ export interface ValuesFieldRefs {
   readonly additionalDriverFees: Prisma.FieldRef<"Values", 'Float'>
   readonly cancellationFee: Prisma.FieldRef<"Values", 'Float'>
   readonly lateFee: Prisma.FieldRef<"Values", 'Float'>
+  readonly discountAmount: Prisma.FieldRef<"Values", 'Float'>
+  readonly discountPolicy: Prisma.FieldRef<"Values", 'String'>
   readonly customBasePrice: Prisma.FieldRef<"Values", 'Boolean'>
   readonly customCollectionFee: Prisma.FieldRef<"Values", 'Boolean'>
   readonly customDeliveryFee: Prisma.FieldRef<"Values", 'Boolean'>

@@ -483,14 +483,6 @@ export type TenantCurrencyRateUncheckedUpdateManyWithoutCurrencyNestedInput = {
   deleteMany?: Prisma.TenantCurrencyRateScalarWhereInput | Prisma.TenantCurrencyRateScalarWhereInput[]
 }
 
-export type NullableFloatFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type TenantCurrencyRateCreateNestedManyWithoutTenantInput = {
   create?: Prisma.XOR<Prisma.TenantCurrencyRateCreateWithoutTenantInput, Prisma.TenantCurrencyRateUncheckedCreateWithoutTenantInput> | Prisma.TenantCurrencyRateCreateWithoutTenantInput[] | Prisma.TenantCurrencyRateUncheckedCreateWithoutTenantInput[]
   connectOrCreate?: Prisma.TenantCurrencyRateCreateOrConnectWithoutTenantInput | Prisma.TenantCurrencyRateCreateOrConnectWithoutTenantInput[]

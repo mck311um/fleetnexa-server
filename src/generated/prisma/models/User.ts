@@ -285,6 +285,8 @@ export type UserWhereInput = {
   transactions?: Prisma.TransactionsListRelationFilter
   role?: Prisma.XOR<Prisma.UserRoleScalarRelationFilter, Prisma.UserRoleWhereInput>
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
+  securityDeposits?: Prisma.SecurityDepositListRelationFilter
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -312,6 +314,8 @@ export type UserOrderByWithRelationInput = {
   transactions?: Prisma.TransactionsOrderByRelationAggregateInput
   role?: Prisma.UserRoleOrderByWithRelationInput
   tenant?: Prisma.TenantOrderByWithRelationInput
+  securityDeposits?: Prisma.SecurityDepositOrderByRelationAggregateInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -343,6 +347,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   transactions?: Prisma.TransactionsListRelationFilter
   role?: Prisma.XOR<Prisma.UserRoleScalarRelationFilter, Prisma.UserRoleWhereInput>
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
+  securityDeposits?: Prisma.SecurityDepositListRelationFilter
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionListRelationFilter
 }, "id" | "username" | "email" | "username_tenantId">
 
 export type UserOrderByWithAggregationInput = {
@@ -414,6 +420,8 @@ export type UserCreateInput = {
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
   role: Prisma.UserRoleCreateNestedOneWithoutUsersInput
   tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  securityDeposits?: Prisma.SecurityDepositCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -439,6 +447,8 @@ export type UserUncheckedCreateInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -464,6 +474,8 @@ export type UserUpdateInput = {
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
   role?: Prisma.UserRoleUpdateOneRequiredWithoutUsersNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  securityDeposits?: Prisma.SecurityDepositUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -489,6 +501,8 @@ export type UserUncheckedUpdateInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -632,6 +646,34 @@ export type UserMinOrderByAggregateInput = {
   isDeleted?: Prisma.SortOrder
   requirePasswordChange?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
+}
+
+export type UserCreateNestedOneWithoutSecurityDepositsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSecurityDepositsInput, Prisma.UserUncheckedCreateWithoutSecurityDepositsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSecurityDepositsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSecurityDepositsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSecurityDepositsInput, Prisma.UserUncheckedCreateWithoutSecurityDepositsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSecurityDepositsInput
+  upsert?: Prisma.UserUpsertWithoutSecurityDepositsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSecurityDepositsInput, Prisma.UserUpdateWithoutSecurityDepositsInput>, Prisma.UserUncheckedUpdateWithoutSecurityDepositsInput>
+}
+
+export type UserCreateNestedOneWithoutSecurityDepositTransactionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSecurityDepositTransactionsInput, Prisma.UserUncheckedCreateWithoutSecurityDepositTransactionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSecurityDepositTransactionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSecurityDepositTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSecurityDepositTransactionsInput, Prisma.UserUncheckedCreateWithoutSecurityDepositTransactionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSecurityDepositTransactionsInput
+  upsert?: Prisma.UserUpsertWithoutSecurityDepositTransactionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSecurityDepositTransactionsInput, Prisma.UserUpdateWithoutSecurityDepositTransactionsInput>, Prisma.UserUncheckedUpdateWithoutSecurityDepositTransactionsInput>
 }
 
 export type UserCreateNestedOneWithoutNotificationReadStatusesInput = {
@@ -794,6 +836,246 @@ export type UserUpdateOneRequiredWithoutBookingVehicleHistoryNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBookingVehicleHistoryInput, Prisma.UserUpdateWithoutBookingVehicleHistoryInput>, Prisma.UserUncheckedUpdateWithoutBookingVehicleHistoryInput>
 }
 
+export type UserCreateWithoutSecurityDepositsInput = {
+  id?: string
+  password: string
+  firstName: string
+  lastName: string
+  username: string
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  lastChanged?: Date | string | null
+  email?: string | null
+  profilePicture?: string
+  show?: boolean
+  deletedAt?: Date | string | null
+  isDeleted?: boolean
+  requirePasswordChange?: boolean
+  updatedBy?: string | null
+  bookingVehicleHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutUserInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
+  notificationReadStatuses?: Prisma.NotificationReadStatusCreateNestedManyWithoutUserInput
+  rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
+  transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
+  role: Prisma.UserRoleCreateNestedOneWithoutUsersInput
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSecurityDepositsInput = {
+  id?: string
+  password: string
+  firstName: string
+  lastName: string
+  username: string
+  tenantId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  roleId: string
+  lastChanged?: Date | string | null
+  email?: string | null
+  profilePicture?: string
+  show?: boolean
+  deletedAt?: Date | string | null
+  isDeleted?: boolean
+  requirePasswordChange?: boolean
+  updatedBy?: string | null
+  bookingVehicleHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutUserInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
+  notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
+  rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
+  transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSecurityDepositsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSecurityDepositsInput, Prisma.UserUncheckedCreateWithoutSecurityDepositsInput>
+}
+
+export type UserUpsertWithoutSecurityDepositsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSecurityDepositsInput, Prisma.UserUncheckedUpdateWithoutSecurityDepositsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSecurityDepositsInput, Prisma.UserUncheckedCreateWithoutSecurityDepositsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSecurityDepositsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSecurityDepositsInput, Prisma.UserUncheckedUpdateWithoutSecurityDepositsInput>
+}
+
+export type UserUpdateWithoutSecurityDepositsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
+  show?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookingVehicleHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutUserNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
+  notificationReadStatuses?: Prisma.NotificationReadStatusUpdateManyWithoutUserNestedInput
+  rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
+  role?: Prisma.UserRoleUpdateOneRequiredWithoutUsersNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSecurityDepositsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
+  lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
+  show?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookingVehicleHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutUserNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
+  notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
+  rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutSecurityDepositTransactionsInput = {
+  id?: string
+  password: string
+  firstName: string
+  lastName: string
+  username: string
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  lastChanged?: Date | string | null
+  email?: string | null
+  profilePicture?: string
+  show?: boolean
+  deletedAt?: Date | string | null
+  isDeleted?: boolean
+  requirePasswordChange?: boolean
+  updatedBy?: string | null
+  bookingVehicleHistory?: Prisma.BookingVehicleHistoryCreateNestedManyWithoutUserInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
+  notificationReadStatuses?: Prisma.NotificationReadStatusCreateNestedManyWithoutUserInput
+  rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
+  transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
+  role: Prisma.UserRoleCreateNestedOneWithoutUsersInput
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  securityDeposits?: Prisma.SecurityDepositCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSecurityDepositTransactionsInput = {
+  id?: string
+  password: string
+  firstName: string
+  lastName: string
+  username: string
+  tenantId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  roleId: string
+  lastChanged?: Date | string | null
+  email?: string | null
+  profilePicture?: string
+  show?: boolean
+  deletedAt?: Date | string | null
+  isDeleted?: boolean
+  requirePasswordChange?: boolean
+  updatedBy?: string | null
+  bookingVehicleHistory?: Prisma.BookingVehicleHistoryUncheckedCreateNestedManyWithoutUserInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
+  notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
+  rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
+  transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSecurityDepositTransactionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSecurityDepositTransactionsInput, Prisma.UserUncheckedCreateWithoutSecurityDepositTransactionsInput>
+}
+
+export type UserUpsertWithoutSecurityDepositTransactionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSecurityDepositTransactionsInput, Prisma.UserUncheckedUpdateWithoutSecurityDepositTransactionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSecurityDepositTransactionsInput, Prisma.UserUncheckedCreateWithoutSecurityDepositTransactionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSecurityDepositTransactionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSecurityDepositTransactionsInput, Prisma.UserUncheckedUpdateWithoutSecurityDepositTransactionsInput>
+}
+
+export type UserUpdateWithoutSecurityDepositTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
+  show?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookingVehicleHistory?: Prisma.BookingVehicleHistoryUpdateManyWithoutUserNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
+  notificationReadStatuses?: Prisma.NotificationReadStatusUpdateManyWithoutUserNestedInput
+  rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
+  role?: Prisma.UserRoleUpdateOneRequiredWithoutUsersNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  securityDeposits?: Prisma.SecurityDepositUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSecurityDepositTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
+  lastChanged?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.StringFieldUpdateOperationsInput | string
+  show?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requirePasswordChange?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookingVehicleHistory?: Prisma.BookingVehicleHistoryUncheckedUpdateManyWithoutUserNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
+  notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
+  rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutNotificationReadStatusesInput = {
   id?: string
   password: string
@@ -816,6 +1098,8 @@ export type UserCreateWithoutNotificationReadStatusesInput = {
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
   role: Prisma.UserRoleCreateNestedOneWithoutUsersInput
   tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  securityDeposits?: Prisma.SecurityDepositCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationReadStatusesInput = {
@@ -840,6 +1124,8 @@ export type UserUncheckedCreateWithoutNotificationReadStatusesInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationReadStatusesInput = {
@@ -880,6 +1166,8 @@ export type UserUpdateWithoutNotificationReadStatusesInput = {
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
   role?: Prisma.UserRoleUpdateOneRequiredWithoutUsersNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  securityDeposits?: Prisma.SecurityDepositUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationReadStatusesInput = {
@@ -904,6 +1192,8 @@ export type UserUncheckedUpdateWithoutNotificationReadStatusesInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRentalsInput = {
@@ -928,6 +1218,8 @@ export type UserCreateWithoutRentalsInput = {
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
   role: Prisma.UserRoleCreateNestedOneWithoutUsersInput
   tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  securityDeposits?: Prisma.SecurityDepositCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRentalsInput = {
@@ -952,6 +1244,8 @@ export type UserUncheckedCreateWithoutRentalsInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRentalsInput = {
@@ -992,6 +1286,8 @@ export type UserUpdateWithoutRentalsInput = {
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
   role?: Prisma.UserRoleUpdateOneRequiredWithoutUsersNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  securityDeposits?: Prisma.SecurityDepositUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRentalsInput = {
@@ -1016,6 +1312,8 @@ export type UserUncheckedUpdateWithoutRentalsInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTenantInput = {
@@ -1040,6 +1338,8 @@ export type UserCreateWithoutTenantInput = {
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
   role: Prisma.UserRoleCreateNestedOneWithoutUsersInput
+  securityDeposits?: Prisma.SecurityDepositCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTenantInput = {
@@ -1064,6 +1364,8 @@ export type UserUncheckedCreateWithoutTenantInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTenantInput = {
@@ -1137,6 +1439,8 @@ export type UserCreateWithoutTransactionsInput = {
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
   role: Prisma.UserRoleCreateNestedOneWithoutUsersInput
   tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  securityDeposits?: Prisma.SecurityDepositCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTransactionsInput = {
@@ -1161,6 +1465,8 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTransactionsInput = {
@@ -1201,6 +1507,8 @@ export type UserUpdateWithoutTransactionsInput = {
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
   role?: Prisma.UserRoleUpdateOneRequiredWithoutUsersNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  securityDeposits?: Prisma.SecurityDepositUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTransactionsInput = {
@@ -1225,6 +1533,8 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutExpensesInput = {
@@ -1249,6 +1559,8 @@ export type UserCreateWithoutExpensesInput = {
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
   role: Prisma.UserRoleCreateNestedOneWithoutUsersInput
   tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  securityDeposits?: Prisma.SecurityDepositCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutExpensesInput = {
@@ -1273,6 +1585,8 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutExpensesInput = {
@@ -1313,6 +1627,8 @@ export type UserUpdateWithoutExpensesInput = {
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
   role?: Prisma.UserRoleUpdateOneRequiredWithoutUsersNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  securityDeposits?: Prisma.SecurityDepositUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutExpensesInput = {
@@ -1337,6 +1653,8 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRoleInput = {
@@ -1361,6 +1679,8 @@ export type UserCreateWithoutRoleInput = {
   rentals?: Prisma.RentalCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
   tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  securityDeposits?: Prisma.SecurityDepositCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRoleInput = {
@@ -1385,6 +1705,8 @@ export type UserUncheckedCreateWithoutRoleInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRoleInput = {
@@ -1435,6 +1757,8 @@ export type UserCreateWithoutBookingVehicleHistoryInput = {
   transactions?: Prisma.TransactionsCreateNestedManyWithoutUserInput
   role: Prisma.UserRoleCreateNestedOneWithoutUsersInput
   tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  securityDeposits?: Prisma.SecurityDepositCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBookingVehicleHistoryInput = {
@@ -1459,6 +1783,8 @@ export type UserUncheckedCreateWithoutBookingVehicleHistoryInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedCreateNestedManyWithoutUserInput
   rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutUserInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedCreateNestedManyWithoutUserInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBookingVehicleHistoryInput = {
@@ -1499,6 +1825,8 @@ export type UserUpdateWithoutBookingVehicleHistoryInput = {
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
   role?: Prisma.UserRoleUpdateOneRequiredWithoutUsersNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  securityDeposits?: Prisma.SecurityDepositUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBookingVehicleHistoryInput = {
@@ -1523,6 +1851,8 @@ export type UserUncheckedUpdateWithoutBookingVehicleHistoryInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyTenantInput = {
@@ -1566,6 +1896,8 @@ export type UserUpdateWithoutTenantInput = {
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
   role?: Prisma.UserRoleUpdateOneRequiredWithoutUsersNestedInput
+  securityDeposits?: Prisma.SecurityDepositUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTenantInput = {
@@ -1590,6 +1922,8 @@ export type UserUncheckedUpdateWithoutTenantInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutTenantInput = {
@@ -1652,6 +1986,8 @@ export type UserUpdateWithoutRoleInput = {
   rentals?: Prisma.RentalUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUpdateManyWithoutUserNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  securityDeposits?: Prisma.SecurityDepositUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleInput = {
@@ -1676,6 +2012,8 @@ export type UserUncheckedUpdateWithoutRoleInput = {
   notificationReadStatuses?: Prisma.NotificationReadStatusUncheckedUpdateManyWithoutUserNestedInput
   rentals?: Prisma.RentalUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  securityDeposits?: Prisma.SecurityDepositUncheckedUpdateManyWithoutUserNestedInput
+  securityDepositTransactions?: Prisma.SecurityDepositTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutRoleInput = {
@@ -1708,6 +2046,8 @@ export type UserCountOutputType = {
   notificationReadStatuses: number
   rentals: number
   transactions: number
+  securityDeposits: number
+  securityDepositTransactions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1716,6 +2056,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notificationReadStatuses?: boolean | UserCountOutputTypeCountNotificationReadStatusesArgs
   rentals?: boolean | UserCountOutputTypeCountRentalsArgs
   transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
+  securityDeposits?: boolean | UserCountOutputTypeCountSecurityDepositsArgs
+  securityDepositTransactions?: boolean | UserCountOutputTypeCountSecurityDepositTransactionsArgs
 }
 
 /**
@@ -1763,6 +2105,20 @@ export type UserCountOutputTypeCountTransactionsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.TransactionsWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSecurityDepositsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SecurityDepositWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSecurityDepositTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SecurityDepositTransactionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1789,6 +2145,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   transactions?: boolean | Prisma.User$transactionsArgs<ExtArgs>
   role?: boolean | Prisma.UserRoleDefaultArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  securityDeposits?: boolean | Prisma.User$securityDepositsArgs<ExtArgs>
+  securityDepositTransactions?: boolean | Prisma.User$securityDepositTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1865,6 +2223,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   transactions?: boolean | Prisma.User$transactionsArgs<ExtArgs>
   role?: boolean | Prisma.UserRoleDefaultArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  securityDeposits?: boolean | Prisma.User$securityDepositsArgs<ExtArgs>
+  securityDepositTransactions?: boolean | Prisma.User$securityDepositTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1886,6 +2246,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     transactions: Prisma.$TransactionsPayload<ExtArgs>[]
     role: Prisma.$UserRolePayload<ExtArgs>
     tenant: Prisma.$TenantPayload<ExtArgs>
+    securityDeposits: Prisma.$SecurityDepositPayload<ExtArgs>[]
+    securityDepositTransactions: Prisma.$SecurityDepositTransactionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2306,6 +2668,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   transactions<T extends Prisma.User$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   role<T extends Prisma.UserRoleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserRoleDefaultArgs<ExtArgs>>): Prisma.Prisma__UserRoleClient<runtime.Types.Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  securityDeposits<T extends Prisma.User$securityDepositsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$securityDepositsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SecurityDepositPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  securityDepositTransactions<T extends Prisma.User$securityDepositTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$securityDepositTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SecurityDepositTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2870,6 +3234,54 @@ export type User$transactionsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.TransactionsScalarFieldEnum | Prisma.TransactionsScalarFieldEnum[]
+}
+
+/**
+ * User.securityDeposits
+ */
+export type User$securityDepositsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SecurityDeposit
+   */
+  select?: Prisma.SecurityDepositSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SecurityDeposit
+   */
+  omit?: Prisma.SecurityDepositOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SecurityDepositInclude<ExtArgs> | null
+  where?: Prisma.SecurityDepositWhereInput
+  orderBy?: Prisma.SecurityDepositOrderByWithRelationInput | Prisma.SecurityDepositOrderByWithRelationInput[]
+  cursor?: Prisma.SecurityDepositWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SecurityDepositScalarFieldEnum | Prisma.SecurityDepositScalarFieldEnum[]
+}
+
+/**
+ * User.securityDepositTransactions
+ */
+export type User$securityDepositTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SecurityDepositTransaction
+   */
+  select?: Prisma.SecurityDepositTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SecurityDepositTransaction
+   */
+  omit?: Prisma.SecurityDepositTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SecurityDepositTransactionInclude<ExtArgs> | null
+  where?: Prisma.SecurityDepositTransactionWhereInput
+  orderBy?: Prisma.SecurityDepositTransactionOrderByWithRelationInput | Prisma.SecurityDepositTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.SecurityDepositTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SecurityDepositTransactionScalarFieldEnum | Prisma.SecurityDepositTransactionScalarFieldEnum[]
 }
 
 /**

@@ -195,3 +195,16 @@ enum VehicleEventType {
   UNASSIGNED_FROM_BOOKING
   EXTENDED_BOOKING
 }
+
+enum SecurityDepositStatus {
+  PENDING
+  WAIVED
+  COLLECTED
+  CLOSED
+}
+
+enum SecurityDepositTransactionType {
+  COLLECTED
+  REFUNDED
+  FORFEITED
+}

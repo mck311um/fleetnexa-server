@@ -78,6 +78,7 @@ export const ModelName = {
   InsuranceCompany: 'InsuranceCompany',
   Values: 'Values',
   SecurityDeposit: 'SecurityDeposit',
+  SecurityDepositTransaction: 'SecurityDepositTransaction',
   Customer: 'Customer',
   CustomerMessengerApp: 'CustomerMessengerApp',
   CustomerAddress: 'CustomerAddress',
@@ -425,6 +426,8 @@ export const ValuesScalarFieldEnum = {
   additionalDriverFees: 'additionalDriverFees',
   cancellationFee: 'cancellationFee',
   lateFee: 'lateFee',
+  discountAmount: 'discountAmount',
+  discountPolicy: 'discountPolicy',
   customBasePrice: 'customBasePrice',
   customCollectionFee: 'customCollectionFee',
   customDeliveryFee: 'customDeliveryFee',
@@ -441,13 +444,29 @@ export const SecurityDepositScalarFieldEnum = {
   id: 'id',
   bookingId: 'bookingId',
   amount: 'amount',
-  amountHeld: 'amountHeld',
+  amountCollected: 'amountCollected',
+  amountForfeited: 'amountForfeited',
   amountRefunded: 'amountRefunded',
+  status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy'
 } as const
 
 export type SecurityDepositScalarFieldEnum = (typeof SecurityDepositScalarFieldEnum)[keyof typeof SecurityDepositScalarFieldEnum]
+
+
+export const SecurityDepositTransactionScalarFieldEnum = {
+  id: 'id',
+  securityDepositId: 'securityDepositId',
+  type: 'type',
+  amount: 'amount',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  createdBy: 'createdBy'
+} as const
+
+export type SecurityDepositTransactionScalarFieldEnum = (typeof SecurityDepositTransactionScalarFieldEnum)[keyof typeof SecurityDepositTransactionScalarFieldEnum]
 
 
 export const CustomerScalarFieldEnum = {

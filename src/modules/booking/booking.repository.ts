@@ -269,6 +269,26 @@ export class BookingRepository {
       : this.prisma.$transaction(run);
   }
 
+  async createSecurityDeposit(
+    bookingId: string,
+    depositData: any,
+    tx: TxClient,
+  ) {
+    const run = async (client: Prisma.TransactionClient) => {
+      const { rentalId: _ignoredRentalId, ...data } = depositData;
+      return client.securityDeposit.create({
+        data: {
+          ...data,
+          bookingId,
+        },
+      });
+    };
+
+    return tx
+      ? run(tx as Prisma.TransactionClient)
+      : this.prisma.$transaction(run);
+  }
+
   async updateBookingValues(bookingId: string, values: any) {
     return this.prisma.$transaction(async (tx) => {
       const { extras, ...valuesWithoutExtras } = values;

@@ -45,7 +45,6 @@ export class BookingCalculationService {
         values.cancellationFee +
         values.lateFee;
       const netTotal = subTotal - values.discount;
-      const amountDue = netTotal + values.deposit;
 
       await this.prisma.values.update({
         where: { id: valuesId },
@@ -55,7 +54,6 @@ export class BookingCalculationService {
           totalCost,
           subTotal,
           netTotal,
-          amountDue,
         },
       });
     } catch (error: any) {
