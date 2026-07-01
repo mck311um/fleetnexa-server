@@ -22,6 +22,7 @@ import { StorefrontGuestBookingDto } from './dto/storefront-guest-booking.dto.js
 import { ApiGuard } from '../auth/guards/api.guard.js';
 import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
 import { CreateBookingChargeDto } from './dto/booking-charge.dto.js';
+import { BookingDepositDto } from './dto/booking-deposit.dto.js';
 
 @Controller('booking')
 export class BookingController {
@@ -158,5 +159,14 @@ export class BookingController {
     const { tenant } = req.user;
     const user = req.user;
     return this.bookingService.addBookingCharge(data, tenant.id, user.id);
+  }
+
+  @Post('security-deposit')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.TENANT)
+  async updateBookingDeposit(@Request() req, @Body() data: BookingDepositDto) {
+    const { tenant } = req.user;
+    const user = req.user;
+    return this.bookingService.updateBookingDeposit(data, tenant, user);
   }
 }

@@ -462,6 +462,9 @@ export const SecurityDepositTransactionScalarFieldEnum = {
   type: 'type',
   amount: 'amount',
   notes: 'notes',
+  paymentDate: 'paymentDate',
+  paymentMethodId: 'paymentMethodId',
+  currencyId: 'currencyId',
   createdAt: 'createdAt',
   createdBy: 'createdBy'
 } as const

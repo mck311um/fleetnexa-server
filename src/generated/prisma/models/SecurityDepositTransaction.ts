@@ -40,6 +40,9 @@ export type SecurityDepositTransactionMinAggregateOutputType = {
   type: $Enums.SecurityDepositTransactionType | null
   amount: number | null
   notes: string | null
+  paymentDate: Date | null
+  paymentMethodId: string | null
+  currencyId: string | null
   createdAt: Date | null
   createdBy: string | null
 }
@@ -50,6 +53,9 @@ export type SecurityDepositTransactionMaxAggregateOutputType = {
   type: $Enums.SecurityDepositTransactionType | null
   amount: number | null
   notes: string | null
+  paymentDate: Date | null
+  paymentMethodId: string | null
+  currencyId: string | null
   createdAt: Date | null
   createdBy: string | null
 }
@@ -60,6 +66,9 @@ export type SecurityDepositTransactionCountAggregateOutputType = {
   type: number
   amount: number
   notes: number
+  paymentDate: number
+  paymentMethodId: number
+  currencyId: number
   createdAt: number
   createdBy: number
   _all: number
@@ -80,6 +89,9 @@ export type SecurityDepositTransactionMinAggregateInputType = {
   type?: true
   amount?: true
   notes?: true
+  paymentDate?: true
+  paymentMethodId?: true
+  currencyId?: true
   createdAt?: true
   createdBy?: true
 }
@@ -90,6 +102,9 @@ export type SecurityDepositTransactionMaxAggregateInputType = {
   type?: true
   amount?: true
   notes?: true
+  paymentDate?: true
+  paymentMethodId?: true
+  currencyId?: true
   createdAt?: true
   createdBy?: true
 }
@@ -100,6 +115,9 @@ export type SecurityDepositTransactionCountAggregateInputType = {
   type?: true
   amount?: true
   notes?: true
+  paymentDate?: true
+  paymentMethodId?: true
+  currencyId?: true
   createdAt?: true
   createdBy?: true
   _all?: true
@@ -197,6 +215,9 @@ export type SecurityDepositTransactionGroupByOutputType = {
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes: string | null
+  paymentDate: Date
+  paymentMethodId: string | null
+  currencyId: string | null
   createdAt: Date
   createdBy: string
   _count: SecurityDepositTransactionCountAggregateOutputType | null
@@ -230,6 +251,9 @@ export type SecurityDepositTransactionWhereInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFilter<"SecurityDepositTransaction"> | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFilter<"SecurityDepositTransaction"> | number
   notes?: Prisma.StringNullableFilter<"SecurityDepositTransaction"> | string | null
+  paymentDate?: Prisma.DateTimeFilter<"SecurityDepositTransaction"> | Date | string
+  paymentMethodId?: Prisma.StringNullableFilter<"SecurityDepositTransaction"> | string | null
+  currencyId?: Prisma.StringNullableFilter<"SecurityDepositTransaction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"SecurityDepositTransaction"> | Date | string
   createdBy?: Prisma.StringFilter<"SecurityDepositTransaction"> | string
   securityDeposit?: Prisma.XOR<Prisma.SecurityDepositScalarRelationFilter, Prisma.SecurityDepositWhereInput>
@@ -242,6 +266,9 @@ export type SecurityDepositTransactionOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentDate?: Prisma.SortOrder
+  paymentMethodId?: Prisma.SortOrderInput | Prisma.SortOrder
+  currencyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   securityDeposit?: Prisma.SecurityDepositOrderByWithRelationInput
@@ -257,6 +284,9 @@ export type SecurityDepositTransactionWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.EnumSecurityDepositTransactionTypeFilter<"SecurityDepositTransaction"> | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFilter<"SecurityDepositTransaction"> | number
   notes?: Prisma.StringNullableFilter<"SecurityDepositTransaction"> | string | null
+  paymentDate?: Prisma.DateTimeFilter<"SecurityDepositTransaction"> | Date | string
+  paymentMethodId?: Prisma.StringNullableFilter<"SecurityDepositTransaction"> | string | null
+  currencyId?: Prisma.StringNullableFilter<"SecurityDepositTransaction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"SecurityDepositTransaction"> | Date | string
   createdBy?: Prisma.StringFilter<"SecurityDepositTransaction"> | string
   securityDeposit?: Prisma.XOR<Prisma.SecurityDepositScalarRelationFilter, Prisma.SecurityDepositWhereInput>
@@ -269,6 +299,9 @@ export type SecurityDepositTransactionOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentDate?: Prisma.SortOrder
+  paymentMethodId?: Prisma.SortOrderInput | Prisma.SortOrder
+  currencyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   _count?: Prisma.SecurityDepositTransactionCountOrderByAggregateInput
@@ -287,6 +320,9 @@ export type SecurityDepositTransactionScalarWhereWithAggregatesInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeWithAggregatesFilter<"SecurityDepositTransaction"> | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatWithAggregatesFilter<"SecurityDepositTransaction"> | number
   notes?: Prisma.StringNullableWithAggregatesFilter<"SecurityDepositTransaction"> | string | null
+  paymentDate?: Prisma.DateTimeWithAggregatesFilter<"SecurityDepositTransaction"> | Date | string
+  paymentMethodId?: Prisma.StringNullableWithAggregatesFilter<"SecurityDepositTransaction"> | string | null
+  currencyId?: Prisma.StringNullableWithAggregatesFilter<"SecurityDepositTransaction"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SecurityDepositTransaction"> | Date | string
   createdBy?: Prisma.StringWithAggregatesFilter<"SecurityDepositTransaction"> | string
 }
@@ -296,6 +332,9 @@ export type SecurityDepositTransactionCreateInput = {
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes?: string | null
+  paymentDate?: Date | string
+  paymentMethodId?: string | null
+  currencyId?: string | null
   createdAt?: Date | string
   securityDeposit: Prisma.SecurityDepositCreateNestedOneWithoutTransactionsInput
   user: Prisma.UserCreateNestedOneWithoutSecurityDepositTransactionsInput
@@ -307,6 +346,9 @@ export type SecurityDepositTransactionUncheckedCreateInput = {
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes?: string | null
+  paymentDate?: Date | string
+  paymentMethodId?: string | null
+  currencyId?: string | null
   createdAt?: Date | string
   createdBy: string
 }
@@ -316,6 +358,9 @@ export type SecurityDepositTransactionUpdateInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   securityDeposit?: Prisma.SecurityDepositUpdateOneRequiredWithoutTransactionsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutSecurityDepositTransactionsNestedInput
@@ -327,6 +372,9 @@ export type SecurityDepositTransactionUncheckedUpdateInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -337,6 +385,9 @@ export type SecurityDepositTransactionCreateManyInput = {
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes?: string | null
+  paymentDate?: Date | string
+  paymentMethodId?: string | null
+  currencyId?: string | null
   createdAt?: Date | string
   createdBy: string
 }
@@ -346,6 +397,9 @@ export type SecurityDepositTransactionUpdateManyMutationInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -355,6 +409,9 @@ export type SecurityDepositTransactionUncheckedUpdateManyInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -375,6 +432,9 @@ export type SecurityDepositTransactionCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  paymentDate?: Prisma.SortOrder
+  paymentMethodId?: Prisma.SortOrder
+  currencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
 }
@@ -389,6 +449,9 @@ export type SecurityDepositTransactionMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  paymentDate?: Prisma.SortOrder
+  paymentMethodId?: Prisma.SortOrder
+  currencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
 }
@@ -399,6 +462,9 @@ export type SecurityDepositTransactionMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  paymentDate?: Prisma.SortOrder
+  paymentMethodId?: Prisma.SortOrder
+  currencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
 }
@@ -500,6 +566,9 @@ export type SecurityDepositTransactionCreateWithoutSecurityDepositInput = {
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes?: string | null
+  paymentDate?: Date | string
+  paymentMethodId?: string | null
+  currencyId?: string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSecurityDepositTransactionsInput
 }
@@ -509,6 +578,9 @@ export type SecurityDepositTransactionUncheckedCreateWithoutSecurityDepositInput
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes?: string | null
+  paymentDate?: Date | string
+  paymentMethodId?: string | null
+  currencyId?: string | null
   createdAt?: Date | string
   createdBy: string
 }
@@ -548,6 +620,9 @@ export type SecurityDepositTransactionScalarWhereInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFilter<"SecurityDepositTransaction"> | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFilter<"SecurityDepositTransaction"> | number
   notes?: Prisma.StringNullableFilter<"SecurityDepositTransaction"> | string | null
+  paymentDate?: Prisma.DateTimeFilter<"SecurityDepositTransaction"> | Date | string
+  paymentMethodId?: Prisma.StringNullableFilter<"SecurityDepositTransaction"> | string | null
+  currencyId?: Prisma.StringNullableFilter<"SecurityDepositTransaction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"SecurityDepositTransaction"> | Date | string
   createdBy?: Prisma.StringFilter<"SecurityDepositTransaction"> | string
 }
@@ -557,6 +632,9 @@ export type SecurityDepositTransactionCreateWithoutUserInput = {
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes?: string | null
+  paymentDate?: Date | string
+  paymentMethodId?: string | null
+  currencyId?: string | null
   createdAt?: Date | string
   securityDeposit: Prisma.SecurityDepositCreateNestedOneWithoutTransactionsInput
 }
@@ -567,6 +645,9 @@ export type SecurityDepositTransactionUncheckedCreateWithoutUserInput = {
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes?: string | null
+  paymentDate?: Date | string
+  paymentMethodId?: string | null
+  currencyId?: string | null
   createdAt?: Date | string
 }
 
@@ -601,6 +682,9 @@ export type SecurityDepositTransactionCreateManySecurityDepositInput = {
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes?: string | null
+  paymentDate?: Date | string
+  paymentMethodId?: string | null
+  currencyId?: string | null
   createdAt?: Date | string
   createdBy: string
 }
@@ -610,6 +694,9 @@ export type SecurityDepositTransactionUpdateWithoutSecurityDepositInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutSecurityDepositTransactionsNestedInput
 }
@@ -619,6 +706,9 @@ export type SecurityDepositTransactionUncheckedUpdateWithoutSecurityDepositInput
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -628,6 +718,9 @@ export type SecurityDepositTransactionUncheckedUpdateManyWithoutSecurityDepositI
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -638,6 +731,9 @@ export type SecurityDepositTransactionCreateManyUserInput = {
   type: $Enums.SecurityDepositTransactionType
   amount: number
   notes?: string | null
+  paymentDate?: Date | string
+  paymentMethodId?: string | null
+  currencyId?: string | null
   createdAt?: Date | string
 }
 
@@ -646,6 +742,9 @@ export type SecurityDepositTransactionUpdateWithoutUserInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   securityDeposit?: Prisma.SecurityDepositUpdateOneRequiredWithoutTransactionsNestedInput
 }
@@ -656,6 +755,9 @@ export type SecurityDepositTransactionUncheckedUpdateWithoutUserInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -665,6 +767,9 @@ export type SecurityDepositTransactionUncheckedUpdateManyWithoutUserInput = {
   type?: Prisma.EnumSecurityDepositTransactionTypeFieldUpdateOperationsInput | $Enums.SecurityDepositTransactionType
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  paymentMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -676,6 +781,9 @@ export type SecurityDepositTransactionSelect<ExtArgs extends runtime.Types.Exten
   type?: boolean
   amount?: boolean
   notes?: boolean
+  paymentDate?: boolean
+  paymentMethodId?: boolean
+  currencyId?: boolean
   createdAt?: boolean
   createdBy?: boolean
   securityDeposit?: boolean | Prisma.SecurityDepositDefaultArgs<ExtArgs>
@@ -688,6 +796,9 @@ export type SecurityDepositTransactionSelectCreateManyAndReturn<ExtArgs extends 
   type?: boolean
   amount?: boolean
   notes?: boolean
+  paymentDate?: boolean
+  paymentMethodId?: boolean
+  currencyId?: boolean
   createdAt?: boolean
   createdBy?: boolean
   securityDeposit?: boolean | Prisma.SecurityDepositDefaultArgs<ExtArgs>
@@ -700,6 +811,9 @@ export type SecurityDepositTransactionSelectUpdateManyAndReturn<ExtArgs extends 
   type?: boolean
   amount?: boolean
   notes?: boolean
+  paymentDate?: boolean
+  paymentMethodId?: boolean
+  currencyId?: boolean
   createdAt?: boolean
   createdBy?: boolean
   securityDeposit?: boolean | Prisma.SecurityDepositDefaultArgs<ExtArgs>
@@ -712,11 +826,14 @@ export type SecurityDepositTransactionSelectScalar = {
   type?: boolean
   amount?: boolean
   notes?: boolean
+  paymentDate?: boolean
+  paymentMethodId?: boolean
+  currencyId?: boolean
   createdAt?: boolean
   createdBy?: boolean
 }
 
-export type SecurityDepositTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "securityDepositId" | "type" | "amount" | "notes" | "createdAt" | "createdBy", ExtArgs["result"]["securityDepositTransaction"]>
+export type SecurityDepositTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "securityDepositId" | "type" | "amount" | "notes" | "paymentDate" | "paymentMethodId" | "currencyId" | "createdAt" | "createdBy", ExtArgs["result"]["securityDepositTransaction"]>
 export type SecurityDepositTransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   securityDeposit?: boolean | Prisma.SecurityDepositDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -742,6 +859,9 @@ export type $SecurityDepositTransactionPayload<ExtArgs extends runtime.Types.Ext
     type: $Enums.SecurityDepositTransactionType
     amount: number
     notes: string | null
+    paymentDate: Date
+    paymentMethodId: string | null
+    currencyId: string | null
     createdAt: Date
     createdBy: string
   }, ExtArgs["result"]["securityDepositTransaction"]>
@@ -1174,6 +1294,9 @@ export interface SecurityDepositTransactionFieldRefs {
   readonly type: Prisma.FieldRef<"SecurityDepositTransaction", 'SecurityDepositTransactionType'>
   readonly amount: Prisma.FieldRef<"SecurityDepositTransaction", 'Float'>
   readonly notes: Prisma.FieldRef<"SecurityDepositTransaction", 'String'>
+  readonly paymentDate: Prisma.FieldRef<"SecurityDepositTransaction", 'DateTime'>
+  readonly paymentMethodId: Prisma.FieldRef<"SecurityDepositTransaction", 'String'>
+  readonly currencyId: Prisma.FieldRef<"SecurityDepositTransaction", 'String'>
   readonly createdAt: Prisma.FieldRef<"SecurityDepositTransaction", 'DateTime'>
   readonly createdBy: Prisma.FieldRef<"SecurityDepositTransaction", 'String'>
 }

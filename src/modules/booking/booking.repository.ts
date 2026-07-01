@@ -228,6 +228,11 @@ export class BookingRepository {
           receipt: true,
         },
       },
+      securityDeposit: {
+        include: {
+          transactions: true,
+        },
+      },
       values: {
         include: {
           extras: true,

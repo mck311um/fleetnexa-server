@@ -11,7 +11,7 @@ model AuditLog {
   id        String     @id @default(dbgenerated("gen_random_uuid()"))
   userId    String
   userType  UserType
-  action    AuthAction
+  action    AuthActionoo
   ipAddress String
   userAgent String
   metaData  Json

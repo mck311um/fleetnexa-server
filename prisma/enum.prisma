@@ -207,4 +207,5 @@ enum SecurityDepositTransactionType {
   COLLECTED
   REFUNDED
   FORFEITED
+  WAIVED
 }

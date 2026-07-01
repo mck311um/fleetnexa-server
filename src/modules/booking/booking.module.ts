@@ -15,6 +15,9 @@ import { PrismaModule } from '../../infrastructure/prisma/prisma.module.js';
 import { BookingVehicleService } from './services/booking-vehicle.service.js';
 import { BookingCalculationService } from './services/booking-calculation.service.js';
 import { BookingChargeService } from './services/booking-charge.service.js';
+import { BookingDepositService } from './services/booking-deposit.service.js';
+import { PaymentService } from '../transaction/modules/payment/payment.service.js';
+import { CustomerService } from '../customer/customer.service.js';
 
 @Module({
   imports: [
@@ -27,15 +30,18 @@ import { BookingChargeService } from './services/booking-charge.service.js';
   ],
   controllers: [BookingController],
   providers: [
-    BookingService,
-    BookingRepository,
-    CustomerRepository,
-    BookingWorkflowService,
-    BookingCreationService,
     BookingActivityService,
-    BookingVehicleService,
-    BookingChargeService,
     BookingCalculationService,
+    BookingChargeService,
+    BookingCreationService,
+    BookingDepositService,
+    BookingRepository,
+    BookingService,
+    BookingVehicleService,
+    BookingWorkflowService,
+    CustomerRepository,
+    CustomerService,
+    PaymentService,
   ],
   exports: [BookingService],
 })
