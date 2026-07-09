@@ -56,5 +56,5 @@ export class CreateBookingDto {
 
   @IsObject()
   @Type(() => SecurityDepositDto)
-  securityDeposit?: SecurityDepositDto;
+  securityDeposit: SecurityDepositDto;
 }

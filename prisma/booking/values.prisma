@@ -43,10 +43,10 @@ model SecurityDeposit {
   status            SecurityDepositStatus   @default(PENDING)
   createdAt         DateTime                @default(now())
   updatedAt         DateTime?               @updatedAt
-  updatedBy         String
+  updatedBy         String?
 
   booking           Rental                  @relation(fields: [bookingId], references: [id])
-  user              User                    @relation(fields: [updatedBy], references: [username])
+  user              User?                   @relation(fields: [updatedBy], references: [username])
 
   transactions      SecurityDepositTransaction[]
 }

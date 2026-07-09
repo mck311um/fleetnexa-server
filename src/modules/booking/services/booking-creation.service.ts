@@ -115,7 +115,7 @@ export class BookingCreationService {
     const identifiers = await this.generateIdentifiers(tenant);
 
     const booking = await this.prisma.$transaction(async (tx) => {
-      const booking = await tx.rental.create({
+      const created = await tx.rental.create({
         data: {
           startDate: new Date(data.startDate),
           endDate: new Date(data.endDate),
@@ -134,16 +134,24 @@ export class BookingCreationService {
         },
       });
 
-      await this.assignDrivers(tx, data, booking, tenant);
+      this.logger.log(
+        `Booking created with ID: ${created.id} and code: ${created.bookingCode}`,
+        {
+          bookingId: created.id,
+          bookingCode: created.bookingCode,
+        },
+      );
 
-      await this.bookingRepo.createBookingValues(booking.id, data.values, tx);
+      await this.assignDrivers(tx, data, created, tenant);
+
+      await this.bookingRepo.createBookingValues(created.id, data.values, tx);
       await this.bookingRepo.createSecurityDeposit(
-        booking.id,
+        created.id,
         data.securityDeposit,
         tx,
       );
 
-      return booking;
+      return created;
     });
 
     this.logger.log(

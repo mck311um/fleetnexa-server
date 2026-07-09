@@ -4,6 +4,7 @@ import {
   PrismaService,
   TxClient,
 } from '../../infrastructure/prisma/prisma.service.js';
+import { SecurityDepositDto } from './dto/booking-items.dto.js';
 
 @Injectable()
 export class BookingRepository {
@@ -276,14 +277,14 @@ export class BookingRepository {
 
   async createSecurityDeposit(
     bookingId: string,
-    depositData: any,
+    depositData: SecurityDepositDto,
     tx: TxClient,
   ) {
     const run = async (client: Prisma.TransactionClient) => {
-      const { rentalId: _ignoredRentalId, ...data } = depositData;
       return client.securityDeposit.create({
         data: {
-          ...data,
+          amount: depositData.amount,
+          status: depositData.status,
           bookingId,
         },
       });
