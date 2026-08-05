@@ -209,6 +209,10 @@ export class TenantLocationService {
           });
         }
       });
+
+      this.logger.log(
+        `Tenant locations initialized successfully for tenant ${tenant.tenantCode}`,
+      );
     } catch (error: any) {
       this.logger.error('Failed to initialize tenant locations', error);
       throw error;

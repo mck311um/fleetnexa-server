@@ -26,6 +26,7 @@ import { UserService } from '../user/user.service.js';
 import { UserRoleService } from '../user/modules/user-role/user-role.service.js';
 import { TenantViolationService } from './tenant-violation/tenant-violation.service.js';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
+import { ResendService } from '../../infrastructure/resend/resend.service.js';
 
 @Injectable()
 export class TenantService {
@@ -50,6 +51,7 @@ export class TenantService {
     private readonly maintenanceService: VehicleMaintenanceService,
     private readonly emailService: EmailService,
     private readonly violationService: TenantViolationService,
+    private readonly resend: ResendService,
   ) {}
 
   async getCurrentTenant(tenant: Tenant, user: User) {
@@ -192,6 +194,10 @@ export class TenantService {
           },
         });
 
+        this.logger.log(
+          `Tenant created successfully: ${tenant.tenantName} (ID: ${tenant.id}, Code: ${tenant.tenantCode}, Slug: ${tenant.slug})`,
+        );
+
         tx.address.create({
           data: {
             tenantId: tenant.id,
@@ -211,8 +217,12 @@ export class TenantService {
         tenant,
       );
 
+      this.logger.log(
+        `Tenant user created successfully: ${user.firstName} ${user.lastName} (ID: ${user.id}, Username: ${user.username}) for tenant ${tenant.tenantCode}`,
+      );
+
       if (user.email) {
-        await this.emailService.sendWelcomeEmail(user, tenant);
+        await this.resend.sendWelcomeEmail(user.id, tenant);
       }
 
       return tenant;

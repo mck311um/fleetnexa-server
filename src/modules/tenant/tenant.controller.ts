@@ -65,8 +65,6 @@ export class TenantController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.TENANT)
   createTenant(@Body() data: CreateTenantDto) {
     return this.tenantService.createTenant(data);
   }

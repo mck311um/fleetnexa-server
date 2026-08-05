@@ -19,3 +19,9 @@ export class BookingConfirmationTemplate {
   invoiceUrl?: string;
   agreementUrl?: string;
 }
+
+export class WelcomeEmailTemplate {
+  tenantName: string = '';
+  name: string = '';
+  username: string = '';
+}

@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import {
   AccountCreatedTemplate,
   BookingConfirmationTemplate,
+  WelcomeEmailTemplate,
 } from './resend-templates.js';
 import { Tenant } from '../../generated/prisma/client.js';
 import { CustomerService } from '../../modules/customer/customer.service.js';
@@ -185,6 +186,40 @@ export class ResendService {
       );
     } catch (error: any) {
       this.logger.error('Error sending booking confirmation email:', error);
+      throw error;
+    }
+  }
+
+  async sendWelcomeEmail(userId: string, tenant: Tenant) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId, tenantId: tenant.id },
+      });
+
+      if (!user) {
+        this.logger.warn(
+          `User with ID ${userId} not found for tenant ${tenant.id}`,
+        );
+        throw new NotFoundException('User not found');
+      }
+
+      if (!user.email) {
+        this.logger.warn(
+          `User with ID ${userId} does not have an email address`,
+        );
+        throw new NotFoundException('User email not found');
+      }
+
+      const data: WelcomeEmailTemplate = {
+        tenantName: tenant.tenantName,
+        name: `${user.firstName} ${user.lastName}`,
+        username: user.username,
+      };
+
+      await this.sendEmail('welcome-email', data, user.email);
+      this.logger.log(`Welcome email sent to ${user.email}`);
+    } catch (error: any) {
+      this.logger.error('Error sending welcome email:', error);
       throw error;
     }
   }

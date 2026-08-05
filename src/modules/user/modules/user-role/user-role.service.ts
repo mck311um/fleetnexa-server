@@ -332,6 +332,10 @@ export class UserRoleService {
         },
       });
 
+      this.logger.log(
+        `Default role 'Admin' created for tenant ${tenant.tenantCode} (ID: ${role.id})`,
+      );
+
       await this.assignAllPermissionsToRole(role);
 
       return role;
@@ -356,6 +360,10 @@ export class UserRoleService {
           permissionId: permission.id,
         })),
       });
+
+      this.logger.log(
+        `All permissions assigned to role ${role.name} (ID: ${role.id}) for tenant ${role.tenantId}`,
+      );
     } catch (error: any) {
       this.logger.error('Failed to assign permissions to role', error);
       throw error;
