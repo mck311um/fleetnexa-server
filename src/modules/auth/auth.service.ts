@@ -4,12 +4,12 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
+import { AuthLogService } from './services/auth-log.service.js';
 import bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../user/user.repository.js';
 import { StorefrontAuthDto } from './dto/storefront-auth.dto.js';
 import { SessionService } from './services/session.service.js';
-import { AuditLogService } from './services/audit-log.service.js';
 import { ResendOTPDto, VerifyOTPDto } from './dto/otp.dto.js';
 import { OtpService } from './services/otp.service.js';
 import {
@@ -30,7 +30,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userRepo: UserRepository,
     private readonly sessionService: SessionService,
-    private readonly auditLogService: AuditLogService,
+    private readonly authLogService: AuthLogService,
     private readonly otpService: OtpService,
     private readonly passwordService: PasswordService,
   ) {}
@@ -66,7 +66,7 @@ export class AuthService {
 
       const passwordValid = await bcrypt.compare(password, user.password);
       if (!passwordValid) {
-        this.auditLogService.logEvent({
+        this.authLogService.logEvent({
           userId: user.id,
           userType: type,
           action: 'LOGIN_FAILED',

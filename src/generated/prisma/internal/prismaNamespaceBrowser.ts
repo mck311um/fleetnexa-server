@@ -106,6 +106,7 @@ export const ModelName = {
   RentalExtra: 'RentalExtra',
   RentalCharge: 'RentalCharge',
   VesselInfo: 'VesselInfo',
+  Activity: 'Activity',
   TenantWeeklyStats: 'TenantWeeklyStats',
   TenantYearlyStats: 'TenantYearlyStats',
   TenantMonthlyStats: 'TenantMonthlyStats',
@@ -135,7 +136,7 @@ export const ModelName = {
   Refund: 'Refund',
   Expense: 'Expense',
   Session: 'Session',
-  AuditLog: 'AuditLog',
+  AuthLog: 'AuthLog',
   PasswordHistory: 'PasswordHistory',
   Otp: 'Otp',
   User: 'User',
@@ -854,6 +855,25 @@ export const VesselInfoScalarFieldEnum = {
 export type VesselInfoScalarFieldEnum = (typeof VesselInfoScalarFieldEnum)[keyof typeof VesselInfoScalarFieldEnum]
 
 
+export const ActivityScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tenantId: 'tenantId',
+  action: 'action',
+  module: 'module',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  description: 'description',
+  oldValues: 'oldValues',
+  newValues: 'newValues',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
+
+
 export const TenantWeeklyStatsScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
@@ -1329,7 +1349,7 @@ export const SessionScalarFieldEnum = {
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
-export const AuditLogScalarFieldEnum = {
+export const AuthLogScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   userType: 'userType',
@@ -1340,7 +1360,7 @@ export const AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 } as const
 
-export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+export type AuthLogScalarFieldEnum = (typeof AuthLogScalarFieldEnum)[keyof typeof AuthLogScalarFieldEnum]
 
 
 export const PasswordHistoryScalarFieldEnum = {
@@ -1684,6 +1704,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {

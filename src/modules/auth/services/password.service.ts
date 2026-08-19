@@ -12,9 +12,9 @@ import {
   ResetPasswordRequestDto,
 } from '../dto/reset-password.dto.js';
 import { OtpService } from './otp.service.js';
-import { AuditLogService } from './audit-log.service.js';
 import { EmailService } from '../../../common/email/email.service.js';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
+import { AuthLogService } from './auth-log.service.js';
 
 @Injectable()
 export class PasswordService {
@@ -24,7 +24,7 @@ export class PasswordService {
     private readonly prisma: PrismaService,
     private readonly userRepo: UserRepository,
     private readonly otpService: OtpService,
-    private readonly auditLogService: AuditLogService,
+    private readonly auditLogService: AuthLogService,
     private readonly emailService: EmailService,
   ) {}
 

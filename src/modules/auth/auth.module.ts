@@ -11,10 +11,10 @@ import { TenantRepository } from '../tenant/tenant.repository.js';
 import { UserRepository } from '../user/user.repository.js';
 import { SessionService } from './services/session.service.js';
 import refreshJwtConfig from '../../config/refresh-jwt.config.js';
-import { AuditLogService } from './services/audit-log.service.js';
 import { RefreshStrategy } from './strategies/refresh.strategy.js';
 import { OtpService } from './services/otp.service.js';
 import { PasswordService } from './services/password.service.js';
+import { AuthLogService } from './services/auth-log.service.js';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { PasswordService } from './services/password.service.js';
   providers: [
     AuthService,
     SessionService,
-    AuditLogService,
+    AuthLogService,
     OtpService,
     PasswordService,
     UserRepository,

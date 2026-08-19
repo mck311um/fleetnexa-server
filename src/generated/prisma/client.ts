@@ -315,6 +315,11 @@ export type RentalCharge = Prisma.RentalChargeModel
  */
 export type VesselInfo = Prisma.VesselInfoModel
 /**
+ * Model Activity
+ * 
+ */
+export type Activity = Prisma.ActivityModel
+/**
  * Model TenantWeeklyStats
  * 
  */
@@ -460,10 +465,10 @@ export type Expense = Prisma.ExpenseModel
  */
 export type Session = Prisma.SessionModel
 /**
- * Model AuditLog
+ * Model AuthLog
  * 
  */
-export type AuditLog = Prisma.AuditLogModel
+export type AuthLog = Prisma.AuthLogModel
 /**
  * Model PasswordHistory
  * 

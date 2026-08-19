@@ -3,8 +3,8 @@ import { AuthAction, UserType } from '../../../generated/prisma/enums.js';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
-export class AuditLogService {
-  private readonly logger = new Logger(AuditLogService.name);
+export class AuthLogService {
+  private readonly logger = new Logger(AuthLogService.name);
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -17,7 +17,7 @@ export class AuditLogService {
     userAgent?: string;
   }) {
     try {
-      await this.prisma.auditLog.create({
+      await this.prisma.authLog.create({
         data: {
           userId: params.userId,
           userType: params.userType,

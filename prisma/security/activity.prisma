@@ -1,0 +1,23 @@
+model Activity {
+  id                        String     @id @default(dbgenerated("gen_random_uuid()"))
+  userId                    String
+  tenantId                  String
+  action                    ActivityAction
+  module                    ActivityModule
+  entityType                String?
+  entityId                  String?
+  description               String?
+  oldValues                 Json?
+  newValues                 Json?
+  ipAddress                 String?
+  userAgent                 String?
+  createdAt                 DateTime   @default(now())
+
+  user                      User @relation(fields: [userId], references: [id])
+  tenant                    Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, userId, createdAt])
+  @@index([tenantId, entityType, entityId])
+  @@index([tenantId, action, createdAt])
+}

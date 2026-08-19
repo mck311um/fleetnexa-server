@@ -515,6 +515,7 @@ export type TenantWhereInput = {
   vehicles?: Prisma.VehicleListRelationFilter
   maintenance?: Prisma.VehicleMaintenanceListRelationFilter
   verificationRequest?: Prisma.XOR<Prisma.VerificationRequestNullableScalarRelationFilter, Prisma.VerificationRequestWhereInput> | null
+  activityLogs?: Prisma.ActivityListRelationFilter
   paymentMethods?: Prisma.PaymentMethodListRelationFilter
 }
 
@@ -594,6 +595,7 @@ export type TenantOrderByWithRelationInput = {
   vehicles?: Prisma.VehicleOrderByRelationAggregateInput
   maintenance?: Prisma.VehicleMaintenanceOrderByRelationAggregateInput
   verificationRequest?: Prisma.VerificationRequestOrderByWithRelationInput
+  activityLogs?: Prisma.ActivityOrderByRelationAggregateInput
   paymentMethods?: Prisma.PaymentMethodOrderByRelationAggregateInput
 }
 
@@ -676,6 +678,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   vehicles?: Prisma.VehicleListRelationFilter
   maintenance?: Prisma.VehicleMaintenanceListRelationFilter
   verificationRequest?: Prisma.XOR<Prisma.VerificationRequestNullableScalarRelationFilter, Prisma.VerificationRequestWhereInput> | null
+  activityLogs?: Prisma.ActivityListRelationFilter
   paymentMethods?: Prisma.PaymentMethodListRelationFilter
 }, "id" | "tenantCode" | "email" | "number" | "cancellationPolicyId" | "latePolicyId" | "slug" | "whatsappNumber" | "firmaWorkspaceId" | "subdomain">
 
@@ -837,6 +840,7 @@ export type TenantCreateInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -912,6 +916,7 @@ export type TenantUncheckedCreateInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -987,6 +992,7 @@ export type TenantUpdateInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -1062,6 +1068,7 @@ export type TenantUncheckedUpdateInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -1565,6 +1572,20 @@ export type TenantUpdateOneRequiredWithoutRentalsNestedInput = {
   upsert?: Prisma.TenantUpsertWithoutRentalsInput
   connect?: Prisma.TenantWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutRentalsInput, Prisma.TenantUpdateWithoutRentalsInput>, Prisma.TenantUncheckedUpdateWithoutRentalsInput>
+}
+
+export type TenantCreateNestedOneWithoutActivityLogsInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutActivityLogsInput, Prisma.TenantUncheckedCreateWithoutActivityLogsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutActivityLogsInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutActivityLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutActivityLogsInput, Prisma.TenantUncheckedCreateWithoutActivityLogsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutActivityLogsInput
+  upsert?: Prisma.TenantUpsertWithoutActivityLogsInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutActivityLogsInput, Prisma.TenantUpdateWithoutActivityLogsInput>, Prisma.TenantUncheckedUpdateWithoutActivityLogsInput>
 }
 
 export type TenantCreateNestedOneWithoutWeeklyStatsInput = {
@@ -2080,6 +2101,7 @@ export type TenantCreateWithoutInvoiceSequenceInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -2154,6 +2176,7 @@ export type TenantUncheckedCreateWithoutInvoiceSequenceInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -2296,6 +2319,7 @@ export type TenantCreateWithoutCustomersInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -2370,6 +2394,7 @@ export type TenantUncheckedCreateWithoutCustomersInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -2460,6 +2485,7 @@ export type TenantUpdateWithoutCustomersInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -2534,6 +2560,7 @@ export type TenantUncheckedUpdateWithoutCustomersInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -2608,6 +2635,7 @@ export type TenantCreateWithoutCustomerViolationsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -2682,6 +2710,7 @@ export type TenantUncheckedCreateWithoutCustomerViolationsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -2772,6 +2801,7 @@ export type TenantUpdateWithoutCustomerViolationsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -2846,6 +2876,7 @@ export type TenantUncheckedUpdateWithoutCustomerViolationsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -2920,6 +2951,7 @@ export type TenantCreateWithoutAgreementsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -2994,6 +3026,7 @@ export type TenantUncheckedCreateWithoutAgreementsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -3084,6 +3117,7 @@ export type TenantUpdateWithoutAgreementsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -3158,6 +3192,7 @@ export type TenantUncheckedUpdateWithoutAgreementsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -3232,6 +3267,7 @@ export type TenantCreateWithoutInvoicesInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -3306,6 +3342,7 @@ export type TenantUncheckedCreateWithoutInvoicesInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -3396,6 +3433,7 @@ export type TenantUpdateWithoutInvoicesInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -3470,6 +3508,7 @@ export type TenantUncheckedUpdateWithoutInvoicesInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -3544,6 +3583,7 @@ export type TenantCreateWithoutPaymentReceiptsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -3618,6 +3658,7 @@ export type TenantUncheckedCreateWithoutPaymentReceiptsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -3708,6 +3749,7 @@ export type TenantUpdateWithoutPaymentReceiptsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -3782,6 +3824,7 @@ export type TenantUncheckedUpdateWithoutPaymentReceiptsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -3856,6 +3899,7 @@ export type TenantCreateWithoutMerchantInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -3930,6 +3974,7 @@ export type TenantUncheckedCreateWithoutMerchantInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4020,6 +4065,7 @@ export type TenantUpdateWithoutMerchantInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -4094,6 +4140,7 @@ export type TenantUncheckedUpdateWithoutMerchantInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -4168,6 +4215,7 @@ export type TenantCreateWithoutCurrencyInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -4242,6 +4290,7 @@ export type TenantUncheckedCreateWithoutCurrencyInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4342,6 +4391,7 @@ export type TenantCreateWithoutCurrencyRatesInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -4416,6 +4466,7 @@ export type TenantUncheckedCreateWithoutCurrencyRatesInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4506,6 +4557,7 @@ export type TenantUpdateWithoutCurrencyRatesInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -4580,6 +4632,7 @@ export type TenantUncheckedUpdateWithoutCurrencyRatesInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -4654,6 +4707,7 @@ export type TenantCreateWithoutFormsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -4728,6 +4782,7 @@ export type TenantUncheckedCreateWithoutFormsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4818,6 +4873,7 @@ export type TenantUpdateWithoutFormsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -4892,6 +4948,7 @@ export type TenantUncheckedUpdateWithoutFormsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -4966,6 +5023,7 @@ export type TenantCreateWithoutRentalActivityInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -5040,6 +5098,7 @@ export type TenantUncheckedCreateWithoutRentalActivityInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -5130,6 +5189,7 @@ export type TenantUpdateWithoutRentalActivityInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -5204,6 +5264,7 @@ export type TenantUncheckedUpdateWithoutRentalActivityInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -5278,6 +5339,7 @@ export type TenantCreateWithoutNotificationsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -5352,6 +5414,7 @@ export type TenantUncheckedCreateWithoutNotificationsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -5442,6 +5505,7 @@ export type TenantUpdateWithoutNotificationsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -5516,6 +5580,7 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -5590,6 +5655,7 @@ export type TenantCreateWithoutRentalsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -5664,6 +5730,7 @@ export type TenantUncheckedCreateWithoutRentalsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -5754,6 +5821,7 @@ export type TenantUpdateWithoutRentalsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -5803,6 +5871,323 @@ export type TenantUncheckedUpdateWithoutRentalsInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutTenantNestedInput
   paymentReceipts?: Prisma.PaymentReceiptUncheckedUpdateManyWithoutTenantNestedInput
   refunds?: Prisma.RefundUncheckedUpdateManyWithoutTenantNestedInput
+  rentalActivity?: Prisma.RentalActivityUncheckedUpdateManyWithoutTenantNestedInput
+  agreements?: Prisma.RentalAgreementUncheckedUpdateManyWithoutTenantNestedInput
+  merchant?: Prisma.ShopDMMerchantUncheckedUpdateOneWithoutTenantNestedInput
+  contacts?: Prisma.TenantContactUncheckedUpdateManyWithoutTenantNestedInput
+  currencyRates?: Prisma.TenantCurrencyRateUncheckedUpdateManyWithoutTenantNestedInput
+  equipment?: Prisma.TenantEquipmentUncheckedUpdateManyWithoutTenantNestedInput
+  insurance?: Prisma.TenantInsuranceUncheckedUpdateManyWithoutTenantNestedInput
+  tenantLocations?: Prisma.TenantLocationUncheckedUpdateManyWithoutTenantNestedInput
+  monthlyRentalStats?: Prisma.TenantMonthlyRentalStatsUncheckedUpdateManyWithoutTenantNestedInput
+  monthlyStats?: Prisma.TenantMonthlyStatsUncheckedUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.TenantNotificationUncheckedUpdateManyWithoutTenantNestedInput
+  ratings?: Prisma.TenantRatingsUncheckedUpdateManyWithoutTenantNestedInput
+  reminders?: Prisma.TenantRemindersUncheckedUpdateManyWithoutTenantNestedInput
+  services?: Prisma.TenantServiceUncheckedUpdateManyWithoutTenantNestedInput
+  subscription?: Prisma.TenantSubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+  vendors?: Prisma.TenantVendorUncheckedUpdateManyWithoutTenantNestedInput
+  violations?: Prisma.TenantViolationUncheckedUpdateManyWithoutTenantNestedInput
+  weeklyStats?: Prisma.TenantWeeklyStatsUncheckedUpdateManyWithoutTenantNestedInput
+  yearlyStats?: Prisma.TenantYearlyStatsUncheckedUpdateManyWithoutTenantNestedInput
+  transactions?: Prisma.TransactionsUncheckedUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
+  maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
+  verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
+  paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutActivityLogsInput = {
+  id?: string
+  tenantCode: string
+  tenantName: string
+  email: string
+  number: string
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  logo?: string | null
+  setupCompleted?: boolean
+  financialYearStart?: string
+  invoiceFootNotes?: string
+  storefrontEnabled?: boolean
+  subscriptionId?: string | null
+  securityDeposit?: number
+  rating?: number
+  description?: string | null
+  additionalDriverFee?: number
+  daysInMonth?: number
+  slug?: string | null
+  merchantId?: string | null
+  businessVerified?: boolean
+  emailVerified?: boolean
+  isDeleted?: boolean
+  endTime?: string | null
+  startTime?: string | null
+  emailNotifications?: boolean
+  whatsappNotifications?: boolean
+  whatsappNumber?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
+  subdomain?: string | null
+  address?: Prisma.AddressCreateNestedOneWithoutTenantInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutTenantInput
+  customerViolations?: Prisma.CustomerViolationCreateNestedManyWithoutTenantInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutTenantInput
+  forms?: Prisma.FormCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutTenantInput
+  paymentReceipts?: Prisma.PaymentReceiptCreateNestedManyWithoutTenantInput
+  refunds?: Prisma.RefundCreateNestedManyWithoutTenantInput
+  rentals?: Prisma.RentalCreateNestedManyWithoutTenantInput
+  rentalActivity?: Prisma.RentalActivityCreateNestedManyWithoutTenantInput
+  agreements?: Prisma.RentalAgreementCreateNestedManyWithoutTenantInput
+  merchant?: Prisma.ShopDMMerchantCreateNestedOneWithoutTenantInput
+  cancellationPolicy?: Prisma.CancellationPolicyCreateNestedOneWithoutTenantInput
+  currency?: Prisma.CurrencyCreateNestedOneWithoutTenantsInput
+  invoiceSequence?: Prisma.InvoiceSequenceCreateNestedOneWithoutTenantInput
+  latePolicy?: Prisma.LatePolicyCreateNestedOneWithoutTenantInput
+  contacts?: Prisma.TenantContactCreateNestedManyWithoutTenantInput
+  currencyRates?: Prisma.TenantCurrencyRateCreateNestedManyWithoutTenantInput
+  equipment?: Prisma.TenantEquipmentCreateNestedManyWithoutTenantInput
+  insurance?: Prisma.TenantInsuranceCreateNestedManyWithoutTenantInput
+  tenantLocations?: Prisma.TenantLocationCreateNestedManyWithoutTenantInput
+  monthlyRentalStats?: Prisma.TenantMonthlyRentalStatsCreateNestedManyWithoutTenantInput
+  monthlyStats?: Prisma.TenantMonthlyStatsCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.TenantNotificationCreateNestedManyWithoutTenantInput
+  ratings?: Prisma.TenantRatingsCreateNestedManyWithoutTenantInput
+  reminders?: Prisma.TenantRemindersCreateNestedManyWithoutTenantInput
+  services?: Prisma.TenantServiceCreateNestedManyWithoutTenantInput
+  subscription?: Prisma.TenantSubscriptionCreateNestedOneWithoutTenantInput
+  vendors?: Prisma.TenantVendorCreateNestedManyWithoutTenantInput
+  violations?: Prisma.TenantViolationCreateNestedManyWithoutTenantInput
+  weeklyStats?: Prisma.TenantWeeklyStatsCreateNestedManyWithoutTenantInput
+  yearlyStats?: Prisma.TenantYearlyStatsCreateNestedManyWithoutTenantInput
+  transactions?: Prisma.TransactionsCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserCreateNestedManyWithoutTenantInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
+  maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
+  verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutActivityLogsInput = {
+  id?: string
+  tenantCode: string
+  tenantName: string
+  email: string
+  number: string
+  currencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  logo?: string | null
+  setupCompleted?: boolean
+  financialYearStart?: string
+  invoiceSequenceId?: string | null
+  invoiceFootNotes?: string
+  storefrontEnabled?: boolean
+  subscriptionId?: string | null
+  securityDeposit?: number
+  rating?: number
+  description?: string | null
+  cancellationPolicyId?: string | null
+  latePolicyId?: string | null
+  additionalDriverFee?: number
+  daysInMonth?: number
+  slug?: string | null
+  merchantId?: string | null
+  businessVerified?: boolean
+  emailVerified?: boolean
+  isDeleted?: boolean
+  endTime?: string | null
+  startTime?: string | null
+  emailNotifications?: boolean
+  whatsappNotifications?: boolean
+  whatsappNumber?: string | null
+  firmaWorkspaceId?: string | null
+  firmaApiKey?: string | null
+  firmaApiKeyAt?: Date | string | null
+  subdomain?: string | null
+  address?: Prisma.AddressUncheckedCreateNestedOneWithoutTenantInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutTenantInput
+  customerViolations?: Prisma.CustomerViolationUncheckedCreateNestedManyWithoutTenantInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutTenantInput
+  forms?: Prisma.FormUncheckedCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutTenantInput
+  paymentReceipts?: Prisma.PaymentReceiptUncheckedCreateNestedManyWithoutTenantInput
+  refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutTenantInput
+  rentals?: Prisma.RentalUncheckedCreateNestedManyWithoutTenantInput
+  rentalActivity?: Prisma.RentalActivityUncheckedCreateNestedManyWithoutTenantInput
+  agreements?: Prisma.RentalAgreementUncheckedCreateNestedManyWithoutTenantInput
+  merchant?: Prisma.ShopDMMerchantUncheckedCreateNestedOneWithoutTenantInput
+  contacts?: Prisma.TenantContactUncheckedCreateNestedManyWithoutTenantInput
+  currencyRates?: Prisma.TenantCurrencyRateUncheckedCreateNestedManyWithoutTenantInput
+  equipment?: Prisma.TenantEquipmentUncheckedCreateNestedManyWithoutTenantInput
+  insurance?: Prisma.TenantInsuranceUncheckedCreateNestedManyWithoutTenantInput
+  tenantLocations?: Prisma.TenantLocationUncheckedCreateNestedManyWithoutTenantInput
+  monthlyRentalStats?: Prisma.TenantMonthlyRentalStatsUncheckedCreateNestedManyWithoutTenantInput
+  monthlyStats?: Prisma.TenantMonthlyStatsUncheckedCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.TenantNotificationUncheckedCreateNestedManyWithoutTenantInput
+  ratings?: Prisma.TenantRatingsUncheckedCreateNestedManyWithoutTenantInput
+  reminders?: Prisma.TenantRemindersUncheckedCreateNestedManyWithoutTenantInput
+  services?: Prisma.TenantServiceUncheckedCreateNestedManyWithoutTenantInput
+  subscription?: Prisma.TenantSubscriptionUncheckedCreateNestedOneWithoutTenantInput
+  vendors?: Prisma.TenantVendorUncheckedCreateNestedManyWithoutTenantInput
+  violations?: Prisma.TenantViolationUncheckedCreateNestedManyWithoutTenantInput
+  weeklyStats?: Prisma.TenantWeeklyStatsUncheckedCreateNestedManyWithoutTenantInput
+  yearlyStats?: Prisma.TenantYearlyStatsUncheckedCreateNestedManyWithoutTenantInput
+  transactions?: Prisma.TransactionsUncheckedCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
+  maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
+  verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutActivityLogsInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutActivityLogsInput, Prisma.TenantUncheckedCreateWithoutActivityLogsInput>
+}
+
+export type TenantUpsertWithoutActivityLogsInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutActivityLogsInput, Prisma.TenantUncheckedUpdateWithoutActivityLogsInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutActivityLogsInput, Prisma.TenantUncheckedCreateWithoutActivityLogsInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutActivityLogsInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutActivityLogsInput, Prisma.TenantUncheckedUpdateWithoutActivityLogsInput>
+}
+
+export type TenantUpdateWithoutActivityLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantCode?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  setupCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  financialYearStart?: Prisma.StringFieldUpdateOperationsInput | string
+  invoiceFootNotes?: Prisma.StringFieldUpdateOperationsInput | string
+  storefrontEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityDeposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.AddressUpdateOneWithoutTenantNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutTenantNestedInput
+  customerViolations?: Prisma.CustomerViolationUpdateManyWithoutTenantNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutTenantNestedInput
+  forms?: Prisma.FormUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutTenantNestedInput
+  paymentReceipts?: Prisma.PaymentReceiptUpdateManyWithoutTenantNestedInput
+  refunds?: Prisma.RefundUpdateManyWithoutTenantNestedInput
+  rentals?: Prisma.RentalUpdateManyWithoutTenantNestedInput
+  rentalActivity?: Prisma.RentalActivityUpdateManyWithoutTenantNestedInput
+  agreements?: Prisma.RentalAgreementUpdateManyWithoutTenantNestedInput
+  merchant?: Prisma.ShopDMMerchantUpdateOneWithoutTenantNestedInput
+  cancellationPolicy?: Prisma.CancellationPolicyUpdateOneWithoutTenantNestedInput
+  currency?: Prisma.CurrencyUpdateOneWithoutTenantsNestedInput
+  invoiceSequence?: Prisma.InvoiceSequenceUpdateOneWithoutTenantNestedInput
+  latePolicy?: Prisma.LatePolicyUpdateOneWithoutTenantNestedInput
+  contacts?: Prisma.TenantContactUpdateManyWithoutTenantNestedInput
+  currencyRates?: Prisma.TenantCurrencyRateUpdateManyWithoutTenantNestedInput
+  equipment?: Prisma.TenantEquipmentUpdateManyWithoutTenantNestedInput
+  insurance?: Prisma.TenantInsuranceUpdateManyWithoutTenantNestedInput
+  tenantLocations?: Prisma.TenantLocationUpdateManyWithoutTenantNestedInput
+  monthlyRentalStats?: Prisma.TenantMonthlyRentalStatsUpdateManyWithoutTenantNestedInput
+  monthlyStats?: Prisma.TenantMonthlyStatsUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.TenantNotificationUpdateManyWithoutTenantNestedInput
+  ratings?: Prisma.TenantRatingsUpdateManyWithoutTenantNestedInput
+  reminders?: Prisma.TenantRemindersUpdateManyWithoutTenantNestedInput
+  services?: Prisma.TenantServiceUpdateManyWithoutTenantNestedInput
+  subscription?: Prisma.TenantSubscriptionUpdateOneWithoutTenantNestedInput
+  vendors?: Prisma.TenantVendorUpdateManyWithoutTenantNestedInput
+  violations?: Prisma.TenantViolationUpdateManyWithoutTenantNestedInput
+  weeklyStats?: Prisma.TenantWeeklyStatsUpdateManyWithoutTenantNestedInput
+  yearlyStats?: Prisma.TenantYearlyStatsUpdateManyWithoutTenantNestedInput
+  transactions?: Prisma.TransactionsUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUpdateManyWithoutTenantNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
+  maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
+  verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutActivityLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantCode?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.StringFieldUpdateOperationsInput | string
+  currencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  setupCompleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  financialYearStart?: Prisma.StringFieldUpdateOperationsInput | string
+  invoiceSequenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invoiceFootNotes?: Prisma.StringFieldUpdateOperationsInput | string
+  storefrontEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityDeposit?: Prisma.FloatFieldUpdateOperationsInput | number
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancellationPolicyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latePolicyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalDriverFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  daysInMonth?: Prisma.IntFieldUpdateOperationsInput | number
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaWorkspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firmaApiKeyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subdomain?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.AddressUncheckedUpdateOneWithoutTenantNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutTenantNestedInput
+  customerViolations?: Prisma.CustomerViolationUncheckedUpdateManyWithoutTenantNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutTenantNestedInput
+  forms?: Prisma.FormUncheckedUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutTenantNestedInput
+  paymentReceipts?: Prisma.PaymentReceiptUncheckedUpdateManyWithoutTenantNestedInput
+  refunds?: Prisma.RefundUncheckedUpdateManyWithoutTenantNestedInput
+  rentals?: Prisma.RentalUncheckedUpdateManyWithoutTenantNestedInput
   rentalActivity?: Prisma.RentalActivityUncheckedUpdateManyWithoutTenantNestedInput
   agreements?: Prisma.RentalAgreementUncheckedUpdateManyWithoutTenantNestedInput
   merchant?: Prisma.ShopDMMerchantUncheckedUpdateOneWithoutTenantNestedInput
@@ -5902,6 +6287,7 @@ export type TenantCreateWithoutWeeklyStatsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -5976,6 +6362,7 @@ export type TenantUncheckedCreateWithoutWeeklyStatsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -6066,6 +6453,7 @@ export type TenantUpdateWithoutWeeklyStatsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -6140,6 +6528,7 @@ export type TenantUncheckedUpdateWithoutWeeklyStatsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -6214,6 +6603,7 @@ export type TenantCreateWithoutYearlyStatsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -6288,6 +6678,7 @@ export type TenantUncheckedCreateWithoutYearlyStatsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -6378,6 +6769,7 @@ export type TenantUpdateWithoutYearlyStatsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -6452,6 +6844,7 @@ export type TenantUncheckedUpdateWithoutYearlyStatsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -6526,6 +6919,7 @@ export type TenantCreateWithoutMonthlyStatsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -6600,6 +6994,7 @@ export type TenantUncheckedCreateWithoutMonthlyStatsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -6690,6 +7085,7 @@ export type TenantUpdateWithoutMonthlyStatsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -6764,6 +7160,7 @@ export type TenantUncheckedUpdateWithoutMonthlyStatsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -6838,6 +7235,7 @@ export type TenantCreateWithoutMonthlyRentalStatsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -6912,6 +7310,7 @@ export type TenantUncheckedCreateWithoutMonthlyRentalStatsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -7002,6 +7401,7 @@ export type TenantUpdateWithoutMonthlyRentalStatsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -7076,6 +7476,7 @@ export type TenantUncheckedUpdateWithoutMonthlyRentalStatsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -7150,6 +7551,7 @@ export type TenantCreateWithoutRatingsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -7224,6 +7626,7 @@ export type TenantUncheckedCreateWithoutRatingsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -7314,6 +7717,7 @@ export type TenantUpdateWithoutRatingsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -7388,6 +7792,7 @@ export type TenantUncheckedUpdateWithoutRatingsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -7462,6 +7867,7 @@ export type TenantCreateWithoutTenantLocationsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -7536,6 +7942,7 @@ export type TenantUncheckedCreateWithoutTenantLocationsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -7626,6 +8033,7 @@ export type TenantUpdateWithoutTenantLocationsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -7700,6 +8108,7 @@ export type TenantUncheckedUpdateWithoutTenantLocationsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -7774,6 +8183,7 @@ export type TenantCreateWithoutCancellationPolicyInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -7848,6 +8258,7 @@ export type TenantUncheckedCreateWithoutCancellationPolicyInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -7938,6 +8349,7 @@ export type TenantUpdateWithoutCancellationPolicyInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -8012,6 +8424,7 @@ export type TenantUncheckedUpdateWithoutCancellationPolicyInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -8086,6 +8499,7 @@ export type TenantCreateWithoutLatePolicyInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -8160,6 +8574,7 @@ export type TenantUncheckedCreateWithoutLatePolicyInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -8250,6 +8665,7 @@ export type TenantUpdateWithoutLatePolicyInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -8324,6 +8740,7 @@ export type TenantUncheckedUpdateWithoutLatePolicyInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -8399,6 +8816,7 @@ export type TenantCreateWithoutPaymentMethodsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutPaymentMethodsInput = {
@@ -8473,6 +8891,7 @@ export type TenantUncheckedCreateWithoutPaymentMethodsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutPaymentMethodsInput = {
@@ -8567,6 +8986,7 @@ export type TenantCreateWithoutAddressInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -8641,6 +9061,7 @@ export type TenantUncheckedCreateWithoutAddressInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -8731,6 +9152,7 @@ export type TenantUpdateWithoutAddressInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -8805,6 +9227,7 @@ export type TenantUncheckedUpdateWithoutAddressInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -8879,6 +9302,7 @@ export type TenantCreateWithoutSubscriptionInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -8953,6 +9377,7 @@ export type TenantUncheckedCreateWithoutSubscriptionInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -9043,6 +9468,7 @@ export type TenantUpdateWithoutSubscriptionInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -9117,6 +9543,7 @@ export type TenantUncheckedUpdateWithoutSubscriptionInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -9191,6 +9618,7 @@ export type TenantCreateWithoutContactsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -9265,6 +9693,7 @@ export type TenantUncheckedCreateWithoutContactsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -9355,6 +9784,7 @@ export type TenantUpdateWithoutContactsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -9429,6 +9859,7 @@ export type TenantUncheckedUpdateWithoutContactsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -9503,6 +9934,7 @@ export type TenantCreateWithoutRemindersInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -9577,6 +10009,7 @@ export type TenantUncheckedCreateWithoutRemindersInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -9667,6 +10100,7 @@ export type TenantUpdateWithoutRemindersInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -9741,6 +10175,7 @@ export type TenantUncheckedUpdateWithoutRemindersInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -9815,6 +10250,7 @@ export type TenantCreateWithoutViolationsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -9889,6 +10325,7 @@ export type TenantUncheckedCreateWithoutViolationsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -9979,6 +10416,7 @@ export type TenantUpdateWithoutViolationsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -10053,6 +10491,7 @@ export type TenantUncheckedUpdateWithoutViolationsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -10127,6 +10566,7 @@ export type TenantCreateWithoutVendorsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -10201,6 +10641,7 @@ export type TenantUncheckedCreateWithoutVendorsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -10291,6 +10732,7 @@ export type TenantUpdateWithoutVendorsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -10365,6 +10807,7 @@ export type TenantUncheckedUpdateWithoutVendorsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -10439,6 +10882,7 @@ export type TenantCreateWithoutVerificationRequestInput = {
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutTenantInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -10513,6 +10957,7 @@ export type TenantUncheckedCreateWithoutVerificationRequestInput = {
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutTenantInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -10603,6 +11048,7 @@ export type TenantUpdateWithoutVerificationRequestInput = {
   userRoles?: Prisma.UserRoleUpdateManyWithoutTenantNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -10677,6 +11123,7 @@ export type TenantUncheckedUpdateWithoutVerificationRequestInput = {
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutTenantNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -10751,6 +11198,7 @@ export type TenantCreateWithoutInsuranceInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -10825,6 +11273,7 @@ export type TenantUncheckedCreateWithoutInsuranceInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -10915,6 +11364,7 @@ export type TenantUpdateWithoutInsuranceInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -10989,6 +11439,7 @@ export type TenantUncheckedUpdateWithoutInsuranceInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -11063,6 +11514,7 @@ export type TenantCreateWithoutEquipmentInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -11137,6 +11589,7 @@ export type TenantUncheckedCreateWithoutEquipmentInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -11227,6 +11680,7 @@ export type TenantUpdateWithoutEquipmentInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -11301,6 +11755,7 @@ export type TenantUncheckedUpdateWithoutEquipmentInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -11375,6 +11830,7 @@ export type TenantCreateWithoutServicesInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -11449,6 +11905,7 @@ export type TenantUncheckedCreateWithoutServicesInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -11539,6 +11996,7 @@ export type TenantUpdateWithoutServicesInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -11613,6 +12071,7 @@ export type TenantUncheckedUpdateWithoutServicesInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -11687,6 +12146,7 @@ export type TenantCreateWithoutTransactionsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -11761,6 +12221,7 @@ export type TenantUncheckedCreateWithoutTransactionsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -11851,6 +12312,7 @@ export type TenantUpdateWithoutTransactionsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -11925,6 +12387,7 @@ export type TenantUncheckedUpdateWithoutTransactionsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -11999,6 +12462,7 @@ export type TenantCreateWithoutPaymentsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -12073,6 +12537,7 @@ export type TenantUncheckedCreateWithoutPaymentsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -12163,6 +12628,7 @@ export type TenantUpdateWithoutPaymentsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -12237,6 +12703,7 @@ export type TenantUncheckedUpdateWithoutPaymentsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -12311,6 +12778,7 @@ export type TenantCreateWithoutRefundsInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -12385,6 +12853,7 @@ export type TenantUncheckedCreateWithoutRefundsInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -12475,6 +12944,7 @@ export type TenantUpdateWithoutRefundsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -12549,6 +13019,7 @@ export type TenantUncheckedUpdateWithoutRefundsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -12623,6 +13094,7 @@ export type TenantCreateWithoutExpensesInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -12697,6 +13169,7 @@ export type TenantUncheckedCreateWithoutExpensesInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -12787,6 +13260,7 @@ export type TenantUpdateWithoutExpensesInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -12861,6 +13335,7 @@ export type TenantUncheckedUpdateWithoutExpensesInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -12935,6 +13410,7 @@ export type TenantCreateWithoutUsersInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -13009,6 +13485,7 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -13099,6 +13576,7 @@ export type TenantUpdateWithoutUsersInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -13173,6 +13651,7 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -13247,6 +13726,7 @@ export type TenantCreateWithoutUserRolesInput = {
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -13321,6 +13801,7 @@ export type TenantUncheckedCreateWithoutUserRolesInput = {
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -13411,6 +13892,7 @@ export type TenantUpdateWithoutUserRolesInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -13485,6 +13967,7 @@ export type TenantUncheckedUpdateWithoutUserRolesInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -13559,6 +14042,7 @@ export type TenantCreateWithoutVehiclesInput = {
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -13633,6 +14117,7 @@ export type TenantUncheckedCreateWithoutVehiclesInput = {
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutTenantInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -13723,6 +14208,7 @@ export type TenantUpdateWithoutVehiclesInput = {
   userRoles?: Prisma.UserRoleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -13797,6 +14283,7 @@ export type TenantUncheckedUpdateWithoutVehiclesInput = {
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -13871,6 +14358,7 @@ export type TenantCreateWithoutMaintenanceInput = {
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutTenantInput
   vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodCreateNestedManyWithoutTenantInput
 }
 
@@ -13945,6 +14433,7 @@ export type TenantUncheckedCreateWithoutMaintenanceInput = {
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutTenantInput
   vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
   verificationRequest?: Prisma.VerificationRequestUncheckedCreateNestedOneWithoutTenantInput
+  activityLogs?: Prisma.ActivityUncheckedCreateNestedManyWithoutTenantInput
   paymentMethods?: Prisma.PaymentMethodUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -14035,6 +14524,7 @@ export type TenantUpdateWithoutMaintenanceInput = {
   userRoles?: Prisma.UserRoleUpdateManyWithoutTenantNestedInput
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -14109,6 +14599,7 @@ export type TenantUncheckedUpdateWithoutMaintenanceInput = {
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutTenantNestedInput
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -14221,6 +14712,7 @@ export type TenantUpdateWithoutInvoiceSequenceInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -14295,6 +14787,7 @@ export type TenantUncheckedUpdateWithoutInvoiceSequenceInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -14445,6 +14938,7 @@ export type TenantUpdateWithoutCurrencyInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUpdateManyWithoutTenantNestedInput
 }
 
@@ -14519,6 +15013,7 @@ export type TenantUncheckedUpdateWithoutCurrencyInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
   paymentMethods?: Prisma.PaymentMethodUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -14632,6 +15127,7 @@ export type TenantUpdateWithoutPaymentMethodsInput = {
   vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutPaymentMethodsInput = {
@@ -14706,6 +15202,7 @@ export type TenantUncheckedUpdateWithoutPaymentMethodsInput = {
   vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
   maintenance?: Prisma.VehicleMaintenanceUncheckedUpdateManyWithoutTenantNestedInput
   verificationRequest?: Prisma.VerificationRequestUncheckedUpdateOneWithoutTenantNestedInput
+  activityLogs?: Prisma.ActivityUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateManyWithoutPaymentMethodsInput = {
@@ -14784,6 +15281,7 @@ export type TenantCountOutputType = {
   userRoles: number
   vehicles: number
   maintenance: number
+  activityLogs: number
   paymentMethods: number
 }
 
@@ -14819,6 +15317,7 @@ export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   userRoles?: boolean | TenantCountOutputTypeCountUserRolesArgs
   vehicles?: boolean | TenantCountOutputTypeCountVehiclesArgs
   maintenance?: boolean | TenantCountOutputTypeCountMaintenanceArgs
+  activityLogs?: boolean | TenantCountOutputTypeCountActivityLogsArgs
   paymentMethods?: boolean | TenantCountOutputTypeCountPaymentMethodsArgs
 }
 
@@ -15052,6 +15551,13 @@ export type TenantCountOutputTypeCountMaintenanceArgs<ExtArgs extends runtime.Ty
 /**
  * TenantCountOutputType without action
  */
+export type TenantCountOutputTypeCountActivityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityWhereInput
+}
+
+/**
+ * TenantCountOutputType without action
+ */
 export type TenantCountOutputTypeCountPaymentMethodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PaymentMethodWhereInput
 }
@@ -15133,6 +15639,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   vehicles?: boolean | Prisma.Tenant$vehiclesArgs<ExtArgs>
   maintenance?: boolean | Prisma.Tenant$maintenanceArgs<ExtArgs>
   verificationRequest?: boolean | Prisma.Tenant$verificationRequestArgs<ExtArgs>
+  activityLogs?: boolean | Prisma.Tenant$activityLogsArgs<ExtArgs>
   paymentMethods?: boolean | Prisma.Tenant$paymentMethodsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
@@ -15303,6 +15810,7 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   vehicles?: boolean | Prisma.Tenant$vehiclesArgs<ExtArgs>
   maintenance?: boolean | Prisma.Tenant$maintenanceArgs<ExtArgs>
   verificationRequest?: boolean | Prisma.Tenant$verificationRequestArgs<ExtArgs>
+  activityLogs?: boolean | Prisma.Tenant$activityLogsArgs<ExtArgs>
   paymentMethods?: boolean | Prisma.Tenant$paymentMethodsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -15361,6 +15869,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     vehicles: Prisma.$VehiclePayload<ExtArgs>[]
     maintenance: Prisma.$VehicleMaintenancePayload<ExtArgs>[]
     verificationRequest: Prisma.$VerificationRequestPayload<ExtArgs> | null
+    activityLogs: Prisma.$ActivityPayload<ExtArgs>[]
     paymentMethods: Prisma.$PaymentMethodPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -15833,6 +16342,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   vehicles<T extends Prisma.Tenant$vehiclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$vehiclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   maintenance<T extends Prisma.Tenant$maintenanceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$maintenanceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehicleMaintenancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   verificationRequest<T extends Prisma.Tenant$verificationRequestArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$verificationRequestArgs<ExtArgs>>): Prisma.Prisma__VerificationRequestClient<runtime.Types.Result.GetResult<Prisma.$VerificationRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  activityLogs<T extends Prisma.Tenant$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   paymentMethods<T extends Prisma.Tenant$paymentMethodsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$paymentMethodsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentMethodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -17193,6 +17703,30 @@ export type Tenant$verificationRequestArgs<ExtArgs extends runtime.Types.Extensi
    */
   include?: Prisma.VerificationRequestInclude<ExtArgs> | null
   where?: Prisma.VerificationRequestWhereInput
+}
+
+/**
+ * Tenant.activityLogs
+ */
+export type Tenant$activityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Activity
+   */
+  select?: Prisma.ActivitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Activity
+   */
+  omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  where?: Prisma.ActivityWhereInput
+  orderBy?: Prisma.ActivityOrderByWithRelationInput | Prisma.ActivityOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
 }
 
 /**

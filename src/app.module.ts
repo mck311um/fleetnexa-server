@@ -30,6 +30,7 @@ import { SentDmModule } from './infrastructure/sentdm/sentdm.module.js';
 import { ResendModule } from './infrastructure/resend/resend.module.js';
 import { PrismaModule } from './infrastructure/prisma/prisma.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
+import { ActivityModule } from './modules/activity/activity.module';
 
 @Module({
   imports: [
@@ -79,6 +80,7 @@ import { RealtimeModule } from './modules/realtime/realtime.module.js';
     StorageModule,
     DocumentModule,
     SubscriptionModule,
+    ActivityModule,
   ],
   controllers: [AppController],
   providers: [

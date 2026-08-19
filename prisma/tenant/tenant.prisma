@@ -73,8 +73,12 @@ model Tenant {
   userRoles             UserRole[]
   vehicles              Vehicle[]
   maintenance           VehicleMaintenance[]
-  verificationRequest   VerificationRequest?
-  paymentMethods        PaymentMethod[]            @relation("PaymentMethodToTenant")
+  verificationRequest    VerificationRequest?
+
+
+  activityLogs                    Activity[]
+  paymentMethods                  PaymentMethod[]            @relation("PaymentMethodToTenant")
+
 }
 
 model PaymentMethod {
