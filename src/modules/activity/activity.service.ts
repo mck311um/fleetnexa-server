@@ -25,6 +25,8 @@ export class ActivityService {
           userAgent: params.userAgent,
         },
       });
+
+      return { message: 'Activity logged successfully' };
     } catch (error: any) {
       this.logger.error('Failed to write activity log', error);
       throw error;

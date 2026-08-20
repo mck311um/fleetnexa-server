@@ -8741,10 +8741,12 @@ export const InvoiceScalarFieldEnum = {
   customerId: 'customerId',
   status: 'status',
   invoiceUrl: 'invoiceUrl',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
+  accessToken: 'accessToken',
   createdBy: 'createdBy',
-  updatedBy: 'updatedBy'
+  updatedBy: 'updatedBy',
+  invoiceDate: 'invoiceDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]

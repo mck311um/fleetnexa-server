@@ -31,6 +31,8 @@ import { ResendModule } from './infrastructure/resend/resend.module.js';
 import { PrismaModule } from './infrastructure/prisma/prisma.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
 import { ActivityModule } from './modules/activity/activity.module';
+import { InvoiceModule } from './modules/finance/invoice/invoice.module';
+import { FinanceModule } from './modules/finance/finance.module';
 
 @Module({
   imports: [
@@ -81,6 +83,7 @@ import { ActivityModule } from './modules/activity/activity.module';
     DocumentModule,
     SubscriptionModule,
     ActivityModule,
+    FinanceModule,
   ],
   controllers: [AppController],
   providers: [

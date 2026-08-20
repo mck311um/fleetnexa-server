@@ -18,6 +18,7 @@ import { BookingChargeService } from './services/booking-charge.service.js';
 import { BookingDepositService } from './services/booking-deposit.service.js';
 import { PaymentService } from '../transaction/modules/payment/payment.service.js';
 import { CustomerService } from '../customer/customer.service.js';
+import { FinanceModule } from '../finance/finance.module.js';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CustomerService } from '../customer/customer.service.js';
     TransactionModule,
     VehicleEventModule,
     TenantNotificationModule,
+    FinanceModule,
   ],
   controllers: [BookingController],
   providers: [

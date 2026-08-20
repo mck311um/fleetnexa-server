@@ -28,6 +28,7 @@ model User {
   notificationReadStatuses             NotificationReadStatus[]
   rentals                             Rental[]
   transactions                        Transactions[]
+  invoices                            Invoice[]
 
 
   @@unique([username, tenantId])

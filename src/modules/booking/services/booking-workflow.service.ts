@@ -12,6 +12,7 @@ import { DocumentService } from '../../document/document.service.js';
 import { BookingActivityService } from './booking-activity.service.js';
 import { ResendService } from '../../../infrastructure/resend/resend.service.js';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
+import { InvoiceService } from '../../finance/invoice/invoice.service.js';
 
 @Injectable()
 export class BookingWorkflowService {
@@ -24,6 +25,7 @@ export class BookingWorkflowService {
     private readonly activity: BookingActivityService,
     private readonly vehicleService: VehicleService,
     private readonly resend: ResendService,
+    private readonly invoiceService: InvoiceService,
   ) {}
 
   private async findBookingOrFail(id: string) {
@@ -60,7 +62,7 @@ export class BookingWorkflowService {
         data.bookingId,
       );
 
-      await this.documentService.generateInvoice(
+      await this.invoiceService.generateInvoice(
         updatedBooking?.id || '',
         tenant,
         user,

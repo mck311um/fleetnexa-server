@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { SendTemplatedEmailCommand, SESClient } from '@aws-sdk/client-ses';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export class AwsService {
@@ -21,6 +22,17 @@ export class AwsService {
     this.sesClient = new SESClient({
       region: process.env.AWS_REGION || 'us-east-1',
       credentials,
+    });
+  }
+
+  async getSignedDownloadUrl(key: string, expiresInSeconds = 900) {
+    const command = new GetObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME!,
+      Key: key,
+    });
+
+    return getSignedUrl(this.s3Client, command, {
+      expiresIn: expiresInSeconds,
     });
   }
 }
