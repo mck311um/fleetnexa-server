@@ -220,7 +220,7 @@ export type TenantViolationGroupByOutputType = {
   _max: TenantViolationMaxAggregateOutputType | null
 }
 
-type GetTenantViolationGroupByPayload<T extends TenantViolationGroupByArgs> = Prisma.PrismaPromise<
+export type GetTenantViolationGroupByPayload<T extends TenantViolationGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TenantViolationGroupByOutputType, T['by']> &
       {

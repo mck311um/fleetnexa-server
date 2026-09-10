@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Tenant } from '../../generated/prisma/client.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { TenantRepository } from '../tenant/tenant.repository.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class SubscriptionService {
@@ -60,7 +60,7 @@ export class SubscriptionService {
         message: 'Subscription updated successfully',
         tenant: updatedTenant,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to update subscription', error);
       throw error;
     }

@@ -1,5 +1,4 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../../prisma/prisma.service.js';
 import { TransactionService } from '../../transaction.service.js';
 import {
   Tenant,
@@ -8,8 +7,9 @@ import {
 } from '../../../../generated/prisma/client.js';
 import { RefundDto } from './refund.dto.js';
 import { TransactionDto } from '../../transaction.dto.js';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { BookingRepository } from '../../../../modules/booking/booking.repository.js';
+import { PrismaService } from '../../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class RefundService {
@@ -95,7 +95,7 @@ export class RefundService {
       });
 
       const transaction: TransactionDto = {
-        id: uuidv4(),
+        id: randomUUID(),
         amount: data.amount,
         type: TransactionType.REFUND,
         rentalId: data.bookingId,

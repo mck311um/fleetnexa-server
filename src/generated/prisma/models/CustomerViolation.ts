@@ -207,7 +207,7 @@ export type CustomerViolationGroupByOutputType = {
   _max: CustomerViolationMaxAggregateOutputType | null
 }
 
-type GetCustomerViolationGroupByPayload<T extends CustomerViolationGroupByArgs> = Prisma.PrismaPromise<
+export type GetCustomerViolationGroupByPayload<T extends CustomerViolationGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CustomerViolationGroupByOutputType, T['by']> &
       {

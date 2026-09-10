@@ -7,16 +7,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import bcrypt from 'bcrypt';
-import { EmailService } from '../../common/email/email.service.js';
 import { GeneratorService } from '../../common/generator/generator.service.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
-import { VerifyOTPDto } from '../auth/dto/verify-otp.dto.js';
 import { NewPasswordDto } from '../auth/dto/new-password.dto.js';
 import { Tenant } from '../../generated/prisma/browser.js';
 import { UserRepository } from './user.repository.js';
 import { TenantUserDto } from './dto/tenant-user.dto.js';
 import { ChangePasswordDto } from './dto/change-password.dto.js';
-import { OtpService } from '../auth/services/otp.service.js';
+import { ResendService } from '../../infrastructure/resend/resend.service.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class UserService {
@@ -26,8 +24,7 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly generator: GeneratorService,
     private readonly repo: UserRepository,
-    private readonly email: EmailService,
-    private readonly otpService: OtpService,
+    private readonly resend: ResendService,
   ) {}
 
   async getTenantUsers(tenant: Tenant) {
@@ -35,7 +32,7 @@ export class UserService {
       const users = await this.repo.getTenantUsers(tenant.id);
 
       return users;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error fetching tenant users', error, {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -164,7 +161,7 @@ export class UserService {
       };
 
       return userData;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching current user', {
         userId: id,
       });
@@ -193,7 +190,7 @@ export class UserService {
         createdAt: user.createdAt,
         email: user.email,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching admin user', {
         userId: id,
       });
@@ -240,7 +237,7 @@ export class UserService {
         phone: user.phone,
         dateOfBirth: user.dateOfBirth,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching storefront user', {
         userId: id,
       });
@@ -302,7 +299,7 @@ export class UserService {
 
       if (password) {
         this.logger.log(`Sending welcome email to new user ${user.email}`);
-        await this.email.sendNewUserWelcomeEmail(user.id, password, tenant);
+        await this.resend.sendAccountCreatedEmail(user.id, password, tenant);
       }
 
       const users = await this.repo.getTenantUsers(tenant.id);
@@ -311,7 +308,7 @@ export class UserService {
         user,
         users,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to create tenant user', error);
       throw error;
     }
@@ -365,7 +362,7 @@ export class UserService {
         user,
         users,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to update tenant user', data);
       throw error;
     }
@@ -394,7 +391,7 @@ export class UserService {
         message: 'User deleted successfully',
         users,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to delete tenant user', error, {
         userId,
         tenantId: tenant.id,
@@ -434,7 +431,7 @@ export class UserService {
       return {
         message: 'Your account has been deleted successfully',
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to delete storefront user', error, {
         userId,
       });
@@ -489,7 +486,7 @@ export class UserService {
           requirePasswordChange: false,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to update user password', error, {
         userId,
         tenantId: tenant.id,
@@ -538,7 +535,7 @@ export class UserService {
       return {
         message: 'Password changed successfully',
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error changing tenant user password', {
         email: data.email,
       });

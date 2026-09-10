@@ -158,7 +158,7 @@ export type PasswordHistoryGroupByOutputType = {
   _max: PasswordHistoryMaxAggregateOutputType | null
 }
 
-type GetPasswordHistoryGroupByPayload<T extends PasswordHistoryGroupByArgs> = Prisma.PrismaPromise<
+export type GetPasswordHistoryGroupByPayload<T extends PasswordHistoryGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PasswordHistoryGroupByOutputType, T['by']> &
       {

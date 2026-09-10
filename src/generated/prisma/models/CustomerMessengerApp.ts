@@ -165,7 +165,7 @@ export type CustomerMessengerAppGroupByOutputType = {
   _max: CustomerMessengerAppMaxAggregateOutputType | null
 }
 
-type GetCustomerMessengerAppGroupByPayload<T extends CustomerMessengerAppGroupByArgs> = Prisma.PrismaPromise<
+export type GetCustomerMessengerAppGroupByPayload<T extends CustomerMessengerAppGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CustomerMessengerAppGroupByOutputType, T['by']> &
       {

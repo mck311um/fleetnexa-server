@@ -9,14 +9,14 @@ import { LocalAuthGuard } from '../auth/guards/local.guard.js';
 export class DocumentController {
   constructor(private readonly service: DocumentService) {}
 
-  @Post('invoice/:id')
-  async generateBookingInvoice(
-    @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
-  ) {
-    const { tenant, user } = req.context;
-    return await this.service.generateInvoice(id, tenant, user);
-  }
+  // @Post('invoice/:id')
+  // async generateBookingInvoice(
+  //   @Req() req: AuthenticatedRequest,
+  //   @Param('id') id: string,
+  // ) {
+  //   const { tenant, user } = req.context;
+  //   return await this.service.generateInvoice(id, tenant, user);
+  // }
 
   @Post('agreement/sign')
   async sendAgreementForSignature(

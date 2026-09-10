@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantService {
@@ -38,7 +38,7 @@ export class TenantService {
       });
 
       return tenants;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to fetch tenants', error);
       throw error;
     }

@@ -12,8 +12,9 @@ import {
 import { TenantLocationService } from './tenant-location.service.js';
 import { TenantLocationDto } from './tenant.location.dto.js';
 import { JwtAuthGuard } from '../../../modules/auth/guards/jwt-auth.guard.js';
-import { Role } from '../../../common/enums/role.enum.js';
+import { Role } from '../../../shared/enums/role.enum.js';
 import { Roles } from '../../../modules/auth/decorator/role.decorator.js';
+
 @Controller('tenant/location')
 @UseGuards(JwtAuthGuard)
 @Roles(Role.TENANT)

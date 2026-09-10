@@ -235,7 +235,7 @@ export type TenantWeeklyStatsGroupByOutputType = {
   _max: TenantWeeklyStatsMaxAggregateOutputType | null
 }
 
-type GetTenantWeeklyStatsGroupByPayload<T extends TenantWeeklyStatsGroupByArgs> = Prisma.PrismaPromise<
+export type GetTenantWeeklyStatsGroupByPayload<T extends TenantWeeklyStatsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TenantWeeklyStatsGroupByOutputType, T['by']> &
       {

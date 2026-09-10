@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { Tenant, User } from '../../../generated/prisma/client.js';
 import { TenantVendorDto } from './tenant-vendor.dto.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantVendorService {
@@ -15,7 +15,7 @@ export class TenantVendorService {
         where: { tenantId: tenant.id },
       });
       return vendors;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching tenant vendors:', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -58,7 +58,7 @@ export class TenantVendorService {
         vendor: newVendor,
         vendors,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error adding tenant vendor:', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -104,7 +104,7 @@ export class TenantVendorService {
         vendor: updatedVendor,
         vendors,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error updating tenant vendor:', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -141,7 +141,7 @@ export class TenantVendorService {
         message: 'Vendor deleted successfully',
         vendors,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error deleting tenant vendor:', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

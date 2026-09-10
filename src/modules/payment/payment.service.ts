@@ -1,8 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import DodoPayments from 'dodopayments';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { Tenant } from '../../generated/prisma/client.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class PaymentService {
@@ -41,7 +41,7 @@ export class PaymentService {
         sessionId: session.session_id,
         checkoutUrl: session.checkout_url,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.client.logger.error('Error creating checkout session', error);
       throw error;
     }
@@ -65,7 +65,7 @@ export class PaymentService {
           },
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error handling webhook', error);
       throw error;
     }

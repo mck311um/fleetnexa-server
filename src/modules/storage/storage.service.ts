@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { UploadFileDto } from './dto/upload-file.dto.js';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import path from 'path';
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { AwsService } from '../../common/aws/aws.service.js';
+import { AwsService } from '../../infrastructure/aws/aws.service.js';
+import type { Multer } from 'multer';
 
 @Injectable()
 export class StorageService {
@@ -17,7 +18,7 @@ export class StorageService {
         throw new BadRequestException('No file provided');
       }
 
-      const fileId = uuidv4();
+      const fileId = randomUUID();
       const fileExtension = path.extname(file.originalname);
       const baseName = data.fileName || fileId;
       const fileName = `${baseName}${fileExtension}`;
@@ -51,7 +52,7 @@ export class StorageService {
       };
 
       return createdFile;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('File upload failed', error);
       throw error;
     }
@@ -66,7 +67,7 @@ export class StorageService {
 
       await this.aws.s3Client.send(command);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('File deletion failed', error);
       throw error;
     }

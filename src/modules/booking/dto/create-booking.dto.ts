@@ -1,13 +1,11 @@
 import {
   ArrayMinSize,
   IsArray,
-  IsBoolean,
   IsEnum,
   IsObject,
   IsOptional,
   IsString,
   IsUUID,
-  Max,
   ValidateNested,
 } from 'class-validator';
 import { Agent } from '../../../generated/prisma/enums.js';
@@ -15,6 +13,7 @@ import { Type } from 'class-transformer';
 import {
   BookingDriverDto,
   BookingValuesDto,
+  SecurityDepositDto,
 } from '../dto/booking-items.dto.js';
 
 export class CreateBookingDto {
@@ -54,4 +53,8 @@ export class CreateBookingDto {
 
   @IsObject()
   values: BookingValuesDto;
+
+  @IsObject()
+  @Type(() => SecurityDepositDto)
+  securityDeposit: SecurityDepositDto;
 }

@@ -144,7 +144,7 @@ export type PlanFeaturesGroupByOutputType = {
   _max: PlanFeaturesMaxAggregateOutputType | null
 }
 
-type GetPlanFeaturesGroupByPayload<T extends PlanFeaturesGroupByArgs> = Prisma.PrismaPromise<
+export type GetPlanFeaturesGroupByPayload<T extends PlanFeaturesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PlanFeaturesGroupByOutputType, T['by']> &
       {

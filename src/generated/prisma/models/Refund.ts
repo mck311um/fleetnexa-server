@@ -262,7 +262,7 @@ export type RefundGroupByOutputType = {
   _max: RefundMaxAggregateOutputType | null
 }
 
-type GetRefundGroupByPayload<T extends RefundGroupByArgs> = Prisma.PrismaPromise<
+export type GetRefundGroupByPayload<T extends RefundGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<RefundGroupByOutputType, T['by']> &
       {

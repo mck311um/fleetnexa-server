@@ -158,7 +158,7 @@ export type CaribbeanCountryGroupByOutputType = {
   _max: CaribbeanCountryMaxAggregateOutputType | null
 }
 
-type GetCaribbeanCountryGroupByPayload<T extends CaribbeanCountryGroupByArgs> = Prisma.PrismaPromise<
+export type GetCaribbeanCountryGroupByPayload<T extends CaribbeanCountryGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CaribbeanCountryGroupByOutputType, T['by']> &
       {

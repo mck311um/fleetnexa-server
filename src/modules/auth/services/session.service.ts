@@ -5,11 +5,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { UserType } from '../../../generated/prisma/enums.js';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from '../../../config/refresh-jwt.config.js';
 import type { ConfigType } from '@nestjs/config';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class SessionService {
@@ -34,7 +34,7 @@ export class SessionService {
       }
 
       return session;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Error retrieving session with ID ${sessionId}: ${error.message}`,
       );
@@ -70,7 +70,7 @@ export class SessionService {
       await this.updateSessionToken(session.id, refreshToken);
 
       return { accessToken, refreshToken, session };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Error creating login session for userId ${params.userId}: ${error.message}`,
       );
@@ -88,7 +88,7 @@ export class SessionService {
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to create session for userId: ${params.userId}`,
         error.stack,
@@ -104,7 +104,7 @@ export class SessionService {
         where: { id: sessionId },
         data: { tokenHash },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to update session token for sessionId: ${sessionId}`,
         error.stack,
@@ -134,7 +134,7 @@ export class SessionService {
 
       this.logger.warn(`Invalid session attempt for userId: ${params.userId}`);
       throw new UnauthorizedException('Session is invalid or has expired');
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to validate session for userId: ${params.userId}`,
         error.stack,
@@ -148,7 +148,7 @@ export class SessionService {
       return this.prisma.session.delete({
         where: { id: sessionId },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to revoke session with id: ${sessionId}`,
         error.stack,
@@ -162,7 +162,7 @@ export class SessionService {
       return this.prisma.session.deleteMany({
         where: { userId },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to revoke all sessions for userId: ${userId}`,
         error.stack,

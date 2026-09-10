@@ -14,7 +14,6 @@ import {
 } from '../dto/create-booking-input.dto.js';
 import { StorefrontUserBookingDto } from '../dto/storefront-user-booking.dto.js';
 import { StorefrontGuestBookingDto } from '../dto/storefront-guest-booking.dto.js';
-import { PrismaService, TxClient } from '../../../prisma/prisma.service.js';
 import { CustomerService } from '../../../modules/customer/customer.service.js';
 import { GeneratorService } from '../../../common/generator/generator.service.js';
 import { StorefrontCustomerDto } from '../../../modules/customer/storefront-customer/storefront-customer.dto.js';
@@ -23,6 +22,10 @@ import { BookingRepository } from '../booking.repository.js';
 import { EmailService } from '../../../common/email/email.service.js';
 import { WhatsappService } from '../../../common/whatsapp/whatsapp.service.js';
 import { TenantNotificationService } from '../../../modules/tenant/tenant-notification/tenant-notification.service.js';
+import {
+  PrismaService,
+  TxClient,
+} from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class BookingCreationService {
@@ -58,6 +61,7 @@ export class BookingCreationService {
       drivers: dto.drivers,
       values: dto.values,
       createdBy: user.id,
+      securityDeposit: dto.securityDeposit,
     };
 
     return this.createBooking(input);
@@ -78,6 +82,7 @@ export class BookingCreationService {
       vehicleId: dto.vehicleId,
       userId: dto.userId,
       values: dto.values,
+      securityDeposit: dto.securityDeposit,
     };
 
     return this.createBooking(input);
@@ -99,6 +104,7 @@ export class BookingCreationService {
       vehicleId: dto.vehicleId,
       customer: dto.customer,
       values: dto.values,
+      securityDeposit: dto.securityDeposit,
     };
 
     return this.createBooking(input);
@@ -109,13 +115,14 @@ export class BookingCreationService {
     const identifiers = await this.generateIdentifiers(tenant);
 
     const booking = await this.prisma.$transaction(async (tx) => {
-      const booking = await tx.rental.create({
+      const created = await tx.rental.create({
         data: {
           startDate: new Date(data.startDate),
           endDate: new Date(data.endDate),
           pickupLocationId: data.pickupLocationId,
           returnLocationId: data.returnLocationId,
           vehicleId: data.vehicleId,
+          originalVehicleId: data.vehicleId,
           chargeTypeId: data.chargeTypeId,
           bookingCode: identifiers.bookingCode,
           createdAt: new Date(),
@@ -127,11 +134,24 @@ export class BookingCreationService {
         },
       });
 
-      await this.assignDrivers(tx, data, booking, tenant);
+      this.logger.log(
+        `Booking created with ID: ${created.id} and code: ${created.bookingCode}`,
+        {
+          bookingId: created.id,
+          bookingCode: created.bookingCode,
+        },
+      );
 
-      await this.bookingRepo.createBookingValues(booking.id, data.values, tx);
+      await this.assignDrivers(tx, data, created, tenant);
 
-      return booking;
+      await this.bookingRepo.createBookingValues(created.id, data.values, tx);
+      await this.bookingRepo.createSecurityDeposit(
+        created.id,
+        data.securityDeposit,
+        tx,
+      );
+
+      return created;
     });
 
     this.logger.log(
@@ -147,7 +167,7 @@ export class BookingCreationService {
       this.logger.log(
         `Booking created from source ${data.source} for tenant ${tenant.tenantName}`,
       );
-      this.sendNotifications(bookingWithTenant).catch((error) =>
+      this.sendNotifications(bookingWithTenant).catch((error: any) =>
         this.logger.error(error, 'Failed to send notifications', {
           bookingId: booking.id,
         }),
@@ -292,7 +312,7 @@ export class BookingCreationService {
       };
 
       return customer;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to create storefront customer', {
         userId: user.id,
       });
@@ -304,7 +324,7 @@ export class BookingCreationService {
     const tasks = [
       this.emailService.sendBookingCompletedEmail(booking.id, booking.tenant),
       this.emailService.sendNewBookingEmail(booking.id, booking.tenant),
-      this.whatsapp.sendBookingNotification(booking.id),
+      this.whatsapp.sendBookingRequestNotification(booking.id),
       this.tenantNotification.sendBookingNotification(
         booking.id,
         booking.tenant,

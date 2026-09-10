@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { Prisma } from '../../generated/prisma/client.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VehicleRepository {
@@ -27,7 +27,10 @@ export class VehicleRepository {
         isDeleted: false,
         tenant: {
           tenantLocations: {
-            some: { storefrontEnabled: true, isDeleted: false },
+            some: {
+              storefrontEnabled: true,
+              isDeleted: false,
+            },
           },
         },
       },
@@ -192,7 +195,7 @@ export class VehicleRepository {
     };
   }
 
-  private getVehicleSelectOptions(): Prisma.VehicleSelect {
+  getVehicleSelectOptions(): Prisma.VehicleSelect {
     return {
       id: true,
       year: true,
@@ -216,7 +219,15 @@ export class VehicleRepository {
       dayPrice: true,
       minimumRental: true,
       drivingExperience: true,
-      discounts: true,
+      discounts: {
+        select: {
+          id: true,
+          amount: true,
+          discountPolicy: true,
+          period: true,
+          periodPolicy: true,
+        },
+      },
       tenantId: true,
       model: {
         include: {
@@ -256,10 +267,28 @@ export class VehicleRepository {
           endTime: true,
           tenantLocations: {
             where: { storefrontEnabled: true, isDeleted: false },
+            select: {
+              id: true,
+              country: true,
+              state: true,
+              village: true,
+              collectionFee: true,
+              deliveryFee: true,
+              storefrontEnabled: true,
+              location: true,
+              street: true,
+              pickupEnabled: true,
+              returnEnabled: true,
+            },
           },
           currencyRates: {
-            include: {
+            select: {
+              id: true,
               currency: true,
+              currencyId: true,
+              enabled: true,
+              fromRate: true,
+              toRate: true,
             },
           },
           address: {

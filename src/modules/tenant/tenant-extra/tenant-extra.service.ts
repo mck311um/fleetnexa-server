@@ -4,15 +4,14 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { TenantLocationService } from '../tenant-location/tenant-location.service.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { Tenant, User } from '../../../generated/prisma/client.js';
 import { TenantExtra } from '../../../types/tenant.js';
 import { TenantExtraDto } from './tenant-extra.dto.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantExtraService {
-  private readonly logger = new Logger(TenantLocationService.name);
+  private readonly logger = new Logger(TenantExtraService.name);
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -61,7 +60,7 @@ export class TenantExtraService {
       ];
 
       return combined;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get tenant extras', error);
       throw error;
     }
@@ -152,7 +151,7 @@ export class TenantExtraService {
         message: 'Tenant extra created successfully',
         extras,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to create tenant extra', error);
       throw error;
     }
@@ -237,7 +236,7 @@ export class TenantExtraService {
         message: 'Tenant extra created successfully',
         extras,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to update tenant extra', error);
       throw error;
     }
@@ -271,7 +270,7 @@ export class TenantExtraService {
         message: 'Tenant extra created successfully',
         extras,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to delete tenant service', error);
       throw new Error('Failed to delete tenant service');
     }
@@ -305,7 +304,7 @@ export class TenantExtraService {
         message: 'Tenant extra deleted successfully',
         extras,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to delete tenant equipment', error);
       throw new Error('Failed to delete tenant equipment');
     }
@@ -339,7 +338,7 @@ export class TenantExtraService {
         message: 'Tenant extra deleted successfully',
         extras,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to delete tenant insurance', error);
       throw new Error('Failed to delete tenant insurance');
     }

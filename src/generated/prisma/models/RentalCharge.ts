@@ -36,35 +36,32 @@ export type RentalChargeSumAggregateOutputType = {
 
 export type RentalChargeMinAggregateOutputType = {
   id: string | null
-  rentalId: string | null
   charge: string | null
   reason: string | null
   amount: number | null
   customerId: string | null
-  tenantId: string | null
   createdAt: Date | null
+  valueId: string | null
 }
 
 export type RentalChargeMaxAggregateOutputType = {
   id: string | null
-  rentalId: string | null
   charge: string | null
   reason: string | null
   amount: number | null
   customerId: string | null
-  tenantId: string | null
   createdAt: Date | null
+  valueId: string | null
 }
 
 export type RentalChargeCountAggregateOutputType = {
   id: number
-  rentalId: number
   charge: number
   reason: number
   amount: number
   customerId: number
-  tenantId: number
   createdAt: number
+  valueId: number
   _all: number
 }
 
@@ -79,35 +76,32 @@ export type RentalChargeSumAggregateInputType = {
 
 export type RentalChargeMinAggregateInputType = {
   id?: true
-  rentalId?: true
   charge?: true
   reason?: true
   amount?: true
   customerId?: true
-  tenantId?: true
   createdAt?: true
+  valueId?: true
 }
 
 export type RentalChargeMaxAggregateInputType = {
   id?: true
-  rentalId?: true
   charge?: true
   reason?: true
   amount?: true
   customerId?: true
-  tenantId?: true
   createdAt?: true
+  valueId?: true
 }
 
 export type RentalChargeCountAggregateInputType = {
   id?: true
-  rentalId?: true
   charge?: true
   reason?: true
   amount?: true
   customerId?: true
-  tenantId?: true
   createdAt?: true
+  valueId?: true
   _all?: true
 }
 
@@ -199,13 +193,12 @@ export type RentalChargeGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type RentalChargeGroupByOutputType = {
   id: string
-  rentalId: string
   charge: string
   reason: string | null
   amount: number
   customerId: string
-  tenantId: string
   createdAt: Date
+  valueId: string
   _count: RentalChargeCountAggregateOutputType | null
   _avg: RentalChargeAvgAggregateOutputType | null
   _sum: RentalChargeSumAggregateOutputType | null
@@ -213,7 +206,7 @@ export type RentalChargeGroupByOutputType = {
   _max: RentalChargeMaxAggregateOutputType | null
 }
 
-type GetRentalChargeGroupByPayload<T extends RentalChargeGroupByArgs> = Prisma.PrismaPromise<
+export type GetRentalChargeGroupByPayload<T extends RentalChargeGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<RentalChargeGroupByOutputType, T['by']> &
       {
@@ -233,30 +226,26 @@ export type RentalChargeWhereInput = {
   OR?: Prisma.RentalChargeWhereInput[]
   NOT?: Prisma.RentalChargeWhereInput | Prisma.RentalChargeWhereInput[]
   id?: Prisma.StringFilter<"RentalCharge"> | string
-  rentalId?: Prisma.StringFilter<"RentalCharge"> | string
   charge?: Prisma.StringFilter<"RentalCharge"> | string
   reason?: Prisma.StringNullableFilter<"RentalCharge"> | string | null
   amount?: Prisma.FloatFilter<"RentalCharge"> | number
   customerId?: Prisma.StringFilter<"RentalCharge"> | string
-  tenantId?: Prisma.StringFilter<"RentalCharge"> | string
   createdAt?: Prisma.DateTimeFilter<"RentalCharge"> | Date | string
+  valueId?: Prisma.StringFilter<"RentalCharge"> | string
   customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
-  rental?: Prisma.XOR<Prisma.RentalScalarRelationFilter, Prisma.RentalWhereInput>
-  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
+  values?: Prisma.XOR<Prisma.ValuesScalarRelationFilter, Prisma.ValuesWhereInput>
 }
 
 export type RentalChargeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  rentalId?: Prisma.SortOrder
   charge?: Prisma.SortOrder
   reason?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
-  tenantId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  valueId?: Prisma.SortOrder
   customer?: Prisma.CustomerOrderByWithRelationInput
-  rental?: Prisma.RentalOrderByWithRelationInput
-  tenant?: Prisma.TenantOrderByWithRelationInput
+  values?: Prisma.ValuesOrderByWithRelationInput
 }
 
 export type RentalChargeWhereUniqueInput = Prisma.AtLeast<{
@@ -264,27 +253,24 @@ export type RentalChargeWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.RentalChargeWhereInput | Prisma.RentalChargeWhereInput[]
   OR?: Prisma.RentalChargeWhereInput[]
   NOT?: Prisma.RentalChargeWhereInput | Prisma.RentalChargeWhereInput[]
-  rentalId?: Prisma.StringFilter<"RentalCharge"> | string
   charge?: Prisma.StringFilter<"RentalCharge"> | string
   reason?: Prisma.StringNullableFilter<"RentalCharge"> | string | null
   amount?: Prisma.FloatFilter<"RentalCharge"> | number
   customerId?: Prisma.StringFilter<"RentalCharge"> | string
-  tenantId?: Prisma.StringFilter<"RentalCharge"> | string
   createdAt?: Prisma.DateTimeFilter<"RentalCharge"> | Date | string
+  valueId?: Prisma.StringFilter<"RentalCharge"> | string
   customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
-  rental?: Prisma.XOR<Prisma.RentalScalarRelationFilter, Prisma.RentalWhereInput>
-  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
+  values?: Prisma.XOR<Prisma.ValuesScalarRelationFilter, Prisma.ValuesWhereInput>
 }, "id">
 
 export type RentalChargeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  rentalId?: Prisma.SortOrder
   charge?: Prisma.SortOrder
   reason?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
-  tenantId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  valueId?: Prisma.SortOrder
   _count?: Prisma.RentalChargeCountOrderByAggregateInput
   _avg?: Prisma.RentalChargeAvgOrderByAggregateInput
   _max?: Prisma.RentalChargeMaxOrderByAggregateInput
@@ -297,13 +283,12 @@ export type RentalChargeScalarWhereWithAggregatesInput = {
   OR?: Prisma.RentalChargeScalarWhereWithAggregatesInput[]
   NOT?: Prisma.RentalChargeScalarWhereWithAggregatesInput | Prisma.RentalChargeScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"RentalCharge"> | string
-  rentalId?: Prisma.StringWithAggregatesFilter<"RentalCharge"> | string
   charge?: Prisma.StringWithAggregatesFilter<"RentalCharge"> | string
   reason?: Prisma.StringNullableWithAggregatesFilter<"RentalCharge"> | string | null
   amount?: Prisma.FloatWithAggregatesFilter<"RentalCharge"> | number
   customerId?: Prisma.StringWithAggregatesFilter<"RentalCharge"> | string
-  tenantId?: Prisma.StringWithAggregatesFilter<"RentalCharge"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RentalCharge"> | Date | string
+  valueId?: Prisma.StringWithAggregatesFilter<"RentalCharge"> | string
 }
 
 export type RentalChargeCreateInput = {
@@ -313,19 +298,17 @@ export type RentalChargeCreateInput = {
   amount: number
   createdAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutChargesInput
-  rental: Prisma.RentalCreateNestedOneWithoutChargesInput
-  tenant: Prisma.TenantCreateNestedOneWithoutChargesInput
+  values: Prisma.ValuesCreateNestedOneWithoutChargesInput
 }
 
 export type RentalChargeUncheckedCreateInput = {
   id?: string
-  rentalId: string
   charge: string
   reason?: string | null
   amount: number
   customerId: string
-  tenantId: string
   createdAt?: Date | string
+  valueId: string
 }
 
 export type RentalChargeUpdateInput = {
@@ -335,30 +318,27 @@ export type RentalChargeUpdateInput = {
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutChargesNestedInput
-  rental?: Prisma.RentalUpdateOneRequiredWithoutChargesNestedInput
-  tenant?: Prisma.TenantUpdateOneRequiredWithoutChargesNestedInput
+  values?: Prisma.ValuesUpdateOneRequiredWithoutChargesNestedInput
 }
 
 export type RentalChargeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rentalId?: Prisma.StringFieldUpdateOperationsInput | string
   charge?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valueId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type RentalChargeCreateManyInput = {
   id?: string
-  rentalId: string
   charge: string
   reason?: string | null
   amount: number
   customerId: string
-  tenantId: string
   createdAt?: Date | string
+  valueId: string
 }
 
 export type RentalChargeUpdateManyMutationInput = {
@@ -371,13 +351,12 @@ export type RentalChargeUpdateManyMutationInput = {
 
 export type RentalChargeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rentalId?: Prisma.StringFieldUpdateOperationsInput | string
   charge?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valueId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type RentalChargeListRelationFilter = {
@@ -392,13 +371,12 @@ export type RentalChargeOrderByRelationAggregateInput = {
 
 export type RentalChargeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  rentalId?: Prisma.SortOrder
   charge?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
-  tenantId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  valueId?: Prisma.SortOrder
 }
 
 export type RentalChargeAvgOrderByAggregateInput = {
@@ -407,28 +385,68 @@ export type RentalChargeAvgOrderByAggregateInput = {
 
 export type RentalChargeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  rentalId?: Prisma.SortOrder
   charge?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
-  tenantId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  valueId?: Prisma.SortOrder
 }
 
 export type RentalChargeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  rentalId?: Prisma.SortOrder
   charge?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
-  tenantId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  valueId?: Prisma.SortOrder
 }
 
 export type RentalChargeSumOrderByAggregateInput = {
   amount?: Prisma.SortOrder
+}
+
+export type RentalChargeCreateNestedManyWithoutValuesInput = {
+  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutValuesInput, Prisma.RentalChargeUncheckedCreateWithoutValuesInput> | Prisma.RentalChargeCreateWithoutValuesInput[] | Prisma.RentalChargeUncheckedCreateWithoutValuesInput[]
+  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutValuesInput | Prisma.RentalChargeCreateOrConnectWithoutValuesInput[]
+  createMany?: Prisma.RentalChargeCreateManyValuesInputEnvelope
+  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+}
+
+export type RentalChargeUncheckedCreateNestedManyWithoutValuesInput = {
+  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutValuesInput, Prisma.RentalChargeUncheckedCreateWithoutValuesInput> | Prisma.RentalChargeCreateWithoutValuesInput[] | Prisma.RentalChargeUncheckedCreateWithoutValuesInput[]
+  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutValuesInput | Prisma.RentalChargeCreateOrConnectWithoutValuesInput[]
+  createMany?: Prisma.RentalChargeCreateManyValuesInputEnvelope
+  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+}
+
+export type RentalChargeUpdateManyWithoutValuesNestedInput = {
+  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutValuesInput, Prisma.RentalChargeUncheckedCreateWithoutValuesInput> | Prisma.RentalChargeCreateWithoutValuesInput[] | Prisma.RentalChargeUncheckedCreateWithoutValuesInput[]
+  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutValuesInput | Prisma.RentalChargeCreateOrConnectWithoutValuesInput[]
+  upsert?: Prisma.RentalChargeUpsertWithWhereUniqueWithoutValuesInput | Prisma.RentalChargeUpsertWithWhereUniqueWithoutValuesInput[]
+  createMany?: Prisma.RentalChargeCreateManyValuesInputEnvelope
+  set?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+  disconnect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+  delete?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+  update?: Prisma.RentalChargeUpdateWithWhereUniqueWithoutValuesInput | Prisma.RentalChargeUpdateWithWhereUniqueWithoutValuesInput[]
+  updateMany?: Prisma.RentalChargeUpdateManyWithWhereWithoutValuesInput | Prisma.RentalChargeUpdateManyWithWhereWithoutValuesInput[]
+  deleteMany?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
+}
+
+export type RentalChargeUncheckedUpdateManyWithoutValuesNestedInput = {
+  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutValuesInput, Prisma.RentalChargeUncheckedCreateWithoutValuesInput> | Prisma.RentalChargeCreateWithoutValuesInput[] | Prisma.RentalChargeUncheckedCreateWithoutValuesInput[]
+  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutValuesInput | Prisma.RentalChargeCreateOrConnectWithoutValuesInput[]
+  upsert?: Prisma.RentalChargeUpsertWithWhereUniqueWithoutValuesInput | Prisma.RentalChargeUpsertWithWhereUniqueWithoutValuesInput[]
+  createMany?: Prisma.RentalChargeCreateManyValuesInputEnvelope
+  set?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+  disconnect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+  delete?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+  update?: Prisma.RentalChargeUpdateWithWhereUniqueWithoutValuesInput | Prisma.RentalChargeUpdateWithWhereUniqueWithoutValuesInput[]
+  updateMany?: Prisma.RentalChargeUpdateManyWithWhereWithoutValuesInput | Prisma.RentalChargeUpdateManyWithWhereWithoutValuesInput[]
+  deleteMany?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
 }
 
 export type RentalChargeCreateNestedManyWithoutCustomerInput = {
@@ -473,88 +491,61 @@ export type RentalChargeUncheckedUpdateManyWithoutCustomerNestedInput = {
   deleteMany?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
 }
 
-export type RentalChargeCreateNestedManyWithoutRentalInput = {
-  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutRentalInput, Prisma.RentalChargeUncheckedCreateWithoutRentalInput> | Prisma.RentalChargeCreateWithoutRentalInput[] | Prisma.RentalChargeUncheckedCreateWithoutRentalInput[]
-  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutRentalInput | Prisma.RentalChargeCreateOrConnectWithoutRentalInput[]
-  createMany?: Prisma.RentalChargeCreateManyRentalInputEnvelope
-  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+export type RentalChargeCreateWithoutValuesInput = {
+  id?: string
+  charge: string
+  reason?: string | null
+  amount: number
+  createdAt?: Date | string
+  customer: Prisma.CustomerCreateNestedOneWithoutChargesInput
 }
 
-export type RentalChargeUncheckedCreateNestedManyWithoutRentalInput = {
-  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutRentalInput, Prisma.RentalChargeUncheckedCreateWithoutRentalInput> | Prisma.RentalChargeCreateWithoutRentalInput[] | Prisma.RentalChargeUncheckedCreateWithoutRentalInput[]
-  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutRentalInput | Prisma.RentalChargeCreateOrConnectWithoutRentalInput[]
-  createMany?: Prisma.RentalChargeCreateManyRentalInputEnvelope
-  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+export type RentalChargeUncheckedCreateWithoutValuesInput = {
+  id?: string
+  charge: string
+  reason?: string | null
+  amount: number
+  customerId: string
+  createdAt?: Date | string
 }
 
-export type RentalChargeUpdateManyWithoutRentalNestedInput = {
-  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutRentalInput, Prisma.RentalChargeUncheckedCreateWithoutRentalInput> | Prisma.RentalChargeCreateWithoutRentalInput[] | Prisma.RentalChargeUncheckedCreateWithoutRentalInput[]
-  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutRentalInput | Prisma.RentalChargeCreateOrConnectWithoutRentalInput[]
-  upsert?: Prisma.RentalChargeUpsertWithWhereUniqueWithoutRentalInput | Prisma.RentalChargeUpsertWithWhereUniqueWithoutRentalInput[]
-  createMany?: Prisma.RentalChargeCreateManyRentalInputEnvelope
-  set?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  disconnect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  delete?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  update?: Prisma.RentalChargeUpdateWithWhereUniqueWithoutRentalInput | Prisma.RentalChargeUpdateWithWhereUniqueWithoutRentalInput[]
-  updateMany?: Prisma.RentalChargeUpdateManyWithWhereWithoutRentalInput | Prisma.RentalChargeUpdateManyWithWhereWithoutRentalInput[]
-  deleteMany?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
+export type RentalChargeCreateOrConnectWithoutValuesInput = {
+  where: Prisma.RentalChargeWhereUniqueInput
+  create: Prisma.XOR<Prisma.RentalChargeCreateWithoutValuesInput, Prisma.RentalChargeUncheckedCreateWithoutValuesInput>
 }
 
-export type RentalChargeUncheckedUpdateManyWithoutRentalNestedInput = {
-  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutRentalInput, Prisma.RentalChargeUncheckedCreateWithoutRentalInput> | Prisma.RentalChargeCreateWithoutRentalInput[] | Prisma.RentalChargeUncheckedCreateWithoutRentalInput[]
-  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutRentalInput | Prisma.RentalChargeCreateOrConnectWithoutRentalInput[]
-  upsert?: Prisma.RentalChargeUpsertWithWhereUniqueWithoutRentalInput | Prisma.RentalChargeUpsertWithWhereUniqueWithoutRentalInput[]
-  createMany?: Prisma.RentalChargeCreateManyRentalInputEnvelope
-  set?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  disconnect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  delete?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  update?: Prisma.RentalChargeUpdateWithWhereUniqueWithoutRentalInput | Prisma.RentalChargeUpdateWithWhereUniqueWithoutRentalInput[]
-  updateMany?: Prisma.RentalChargeUpdateManyWithWhereWithoutRentalInput | Prisma.RentalChargeUpdateManyWithWhereWithoutRentalInput[]
-  deleteMany?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
+export type RentalChargeCreateManyValuesInputEnvelope = {
+  data: Prisma.RentalChargeCreateManyValuesInput | Prisma.RentalChargeCreateManyValuesInput[]
+  skipDuplicates?: boolean
 }
 
-export type RentalChargeCreateNestedManyWithoutTenantInput = {
-  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutTenantInput, Prisma.RentalChargeUncheckedCreateWithoutTenantInput> | Prisma.RentalChargeCreateWithoutTenantInput[] | Prisma.RentalChargeUncheckedCreateWithoutTenantInput[]
-  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutTenantInput | Prisma.RentalChargeCreateOrConnectWithoutTenantInput[]
-  createMany?: Prisma.RentalChargeCreateManyTenantInputEnvelope
-  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+export type RentalChargeUpsertWithWhereUniqueWithoutValuesInput = {
+  where: Prisma.RentalChargeWhereUniqueInput
+  update: Prisma.XOR<Prisma.RentalChargeUpdateWithoutValuesInput, Prisma.RentalChargeUncheckedUpdateWithoutValuesInput>
+  create: Prisma.XOR<Prisma.RentalChargeCreateWithoutValuesInput, Prisma.RentalChargeUncheckedCreateWithoutValuesInput>
 }
 
-export type RentalChargeUncheckedCreateNestedManyWithoutTenantInput = {
-  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutTenantInput, Prisma.RentalChargeUncheckedCreateWithoutTenantInput> | Prisma.RentalChargeCreateWithoutTenantInput[] | Prisma.RentalChargeUncheckedCreateWithoutTenantInput[]
-  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutTenantInput | Prisma.RentalChargeCreateOrConnectWithoutTenantInput[]
-  createMany?: Prisma.RentalChargeCreateManyTenantInputEnvelope
-  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
+export type RentalChargeUpdateWithWhereUniqueWithoutValuesInput = {
+  where: Prisma.RentalChargeWhereUniqueInput
+  data: Prisma.XOR<Prisma.RentalChargeUpdateWithoutValuesInput, Prisma.RentalChargeUncheckedUpdateWithoutValuesInput>
 }
 
-export type RentalChargeUpdateManyWithoutTenantNestedInput = {
-  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutTenantInput, Prisma.RentalChargeUncheckedCreateWithoutTenantInput> | Prisma.RentalChargeCreateWithoutTenantInput[] | Prisma.RentalChargeUncheckedCreateWithoutTenantInput[]
-  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutTenantInput | Prisma.RentalChargeCreateOrConnectWithoutTenantInput[]
-  upsert?: Prisma.RentalChargeUpsertWithWhereUniqueWithoutTenantInput | Prisma.RentalChargeUpsertWithWhereUniqueWithoutTenantInput[]
-  createMany?: Prisma.RentalChargeCreateManyTenantInputEnvelope
-  set?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  disconnect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  delete?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  update?: Prisma.RentalChargeUpdateWithWhereUniqueWithoutTenantInput | Prisma.RentalChargeUpdateWithWhereUniqueWithoutTenantInput[]
-  updateMany?: Prisma.RentalChargeUpdateManyWithWhereWithoutTenantInput | Prisma.RentalChargeUpdateManyWithWhereWithoutTenantInput[]
-  deleteMany?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
+export type RentalChargeUpdateManyWithWhereWithoutValuesInput = {
+  where: Prisma.RentalChargeScalarWhereInput
+  data: Prisma.XOR<Prisma.RentalChargeUpdateManyMutationInput, Prisma.RentalChargeUncheckedUpdateManyWithoutValuesInput>
 }
 
-export type RentalChargeUncheckedUpdateManyWithoutTenantNestedInput = {
-  create?: Prisma.XOR<Prisma.RentalChargeCreateWithoutTenantInput, Prisma.RentalChargeUncheckedCreateWithoutTenantInput> | Prisma.RentalChargeCreateWithoutTenantInput[] | Prisma.RentalChargeUncheckedCreateWithoutTenantInput[]
-  connectOrCreate?: Prisma.RentalChargeCreateOrConnectWithoutTenantInput | Prisma.RentalChargeCreateOrConnectWithoutTenantInput[]
-  upsert?: Prisma.RentalChargeUpsertWithWhereUniqueWithoutTenantInput | Prisma.RentalChargeUpsertWithWhereUniqueWithoutTenantInput[]
-  createMany?: Prisma.RentalChargeCreateManyTenantInputEnvelope
-  set?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  disconnect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  delete?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  connect?: Prisma.RentalChargeWhereUniqueInput | Prisma.RentalChargeWhereUniqueInput[]
-  update?: Prisma.RentalChargeUpdateWithWhereUniqueWithoutTenantInput | Prisma.RentalChargeUpdateWithWhereUniqueWithoutTenantInput[]
-  updateMany?: Prisma.RentalChargeUpdateManyWithWhereWithoutTenantInput | Prisma.RentalChargeUpdateManyWithWhereWithoutTenantInput[]
-  deleteMany?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
+export type RentalChargeScalarWhereInput = {
+  AND?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
+  OR?: Prisma.RentalChargeScalarWhereInput[]
+  NOT?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
+  id?: Prisma.StringFilter<"RentalCharge"> | string
+  charge?: Prisma.StringFilter<"RentalCharge"> | string
+  reason?: Prisma.StringNullableFilter<"RentalCharge"> | string | null
+  amount?: Prisma.FloatFilter<"RentalCharge"> | number
+  customerId?: Prisma.StringFilter<"RentalCharge"> | string
+  createdAt?: Prisma.DateTimeFilter<"RentalCharge"> | Date | string
+  valueId?: Prisma.StringFilter<"RentalCharge"> | string
 }
 
 export type RentalChargeCreateWithoutCustomerInput = {
@@ -563,18 +554,16 @@ export type RentalChargeCreateWithoutCustomerInput = {
   reason?: string | null
   amount: number
   createdAt?: Date | string
-  rental: Prisma.RentalCreateNestedOneWithoutChargesInput
-  tenant: Prisma.TenantCreateNestedOneWithoutChargesInput
+  values: Prisma.ValuesCreateNestedOneWithoutChargesInput
 }
 
 export type RentalChargeUncheckedCreateWithoutCustomerInput = {
   id?: string
-  rentalId: string
   charge: string
   reason?: string | null
   amount: number
-  tenantId: string
   createdAt?: Date | string
+  valueId: string
 }
 
 export type RentalChargeCreateOrConnectWithoutCustomerInput = {
@@ -603,120 +592,49 @@ export type RentalChargeUpdateManyWithWhereWithoutCustomerInput = {
   data: Prisma.XOR<Prisma.RentalChargeUpdateManyMutationInput, Prisma.RentalChargeUncheckedUpdateManyWithoutCustomerInput>
 }
 
-export type RentalChargeScalarWhereInput = {
-  AND?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
-  OR?: Prisma.RentalChargeScalarWhereInput[]
-  NOT?: Prisma.RentalChargeScalarWhereInput | Prisma.RentalChargeScalarWhereInput[]
-  id?: Prisma.StringFilter<"RentalCharge"> | string
-  rentalId?: Prisma.StringFilter<"RentalCharge"> | string
-  charge?: Prisma.StringFilter<"RentalCharge"> | string
-  reason?: Prisma.StringNullableFilter<"RentalCharge"> | string | null
-  amount?: Prisma.FloatFilter<"RentalCharge"> | number
-  customerId?: Prisma.StringFilter<"RentalCharge"> | string
-  tenantId?: Prisma.StringFilter<"RentalCharge"> | string
-  createdAt?: Prisma.DateTimeFilter<"RentalCharge"> | Date | string
-}
-
-export type RentalChargeCreateWithoutRentalInput = {
-  id?: string
-  charge: string
-  reason?: string | null
-  amount: number
-  createdAt?: Date | string
-  customer: Prisma.CustomerCreateNestedOneWithoutChargesInput
-  tenant: Prisma.TenantCreateNestedOneWithoutChargesInput
-}
-
-export type RentalChargeUncheckedCreateWithoutRentalInput = {
+export type RentalChargeCreateManyValuesInput = {
   id?: string
   charge: string
   reason?: string | null
   amount: number
   customerId: string
-  tenantId: string
   createdAt?: Date | string
 }
 
-export type RentalChargeCreateOrConnectWithoutRentalInput = {
-  where: Prisma.RentalChargeWhereUniqueInput
-  create: Prisma.XOR<Prisma.RentalChargeCreateWithoutRentalInput, Prisma.RentalChargeUncheckedCreateWithoutRentalInput>
+export type RentalChargeUpdateWithoutValuesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  charge?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutChargesNestedInput
 }
 
-export type RentalChargeCreateManyRentalInputEnvelope = {
-  data: Prisma.RentalChargeCreateManyRentalInput | Prisma.RentalChargeCreateManyRentalInput[]
-  skipDuplicates?: boolean
+export type RentalChargeUncheckedUpdateWithoutValuesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  charge?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type RentalChargeUpsertWithWhereUniqueWithoutRentalInput = {
-  where: Prisma.RentalChargeWhereUniqueInput
-  update: Prisma.XOR<Prisma.RentalChargeUpdateWithoutRentalInput, Prisma.RentalChargeUncheckedUpdateWithoutRentalInput>
-  create: Prisma.XOR<Prisma.RentalChargeCreateWithoutRentalInput, Prisma.RentalChargeUncheckedCreateWithoutRentalInput>
-}
-
-export type RentalChargeUpdateWithWhereUniqueWithoutRentalInput = {
-  where: Prisma.RentalChargeWhereUniqueInput
-  data: Prisma.XOR<Prisma.RentalChargeUpdateWithoutRentalInput, Prisma.RentalChargeUncheckedUpdateWithoutRentalInput>
-}
-
-export type RentalChargeUpdateManyWithWhereWithoutRentalInput = {
-  where: Prisma.RentalChargeScalarWhereInput
-  data: Prisma.XOR<Prisma.RentalChargeUpdateManyMutationInput, Prisma.RentalChargeUncheckedUpdateManyWithoutRentalInput>
-}
-
-export type RentalChargeCreateWithoutTenantInput = {
-  id?: string
-  charge: string
-  reason?: string | null
-  amount: number
-  createdAt?: Date | string
-  customer: Prisma.CustomerCreateNestedOneWithoutChargesInput
-  rental: Prisma.RentalCreateNestedOneWithoutChargesInput
-}
-
-export type RentalChargeUncheckedCreateWithoutTenantInput = {
-  id?: string
-  rentalId: string
-  charge: string
-  reason?: string | null
-  amount: number
-  customerId: string
-  createdAt?: Date | string
-}
-
-export type RentalChargeCreateOrConnectWithoutTenantInput = {
-  where: Prisma.RentalChargeWhereUniqueInput
-  create: Prisma.XOR<Prisma.RentalChargeCreateWithoutTenantInput, Prisma.RentalChargeUncheckedCreateWithoutTenantInput>
-}
-
-export type RentalChargeCreateManyTenantInputEnvelope = {
-  data: Prisma.RentalChargeCreateManyTenantInput | Prisma.RentalChargeCreateManyTenantInput[]
-  skipDuplicates?: boolean
-}
-
-export type RentalChargeUpsertWithWhereUniqueWithoutTenantInput = {
-  where: Prisma.RentalChargeWhereUniqueInput
-  update: Prisma.XOR<Prisma.RentalChargeUpdateWithoutTenantInput, Prisma.RentalChargeUncheckedUpdateWithoutTenantInput>
-  create: Prisma.XOR<Prisma.RentalChargeCreateWithoutTenantInput, Prisma.RentalChargeUncheckedCreateWithoutTenantInput>
-}
-
-export type RentalChargeUpdateWithWhereUniqueWithoutTenantInput = {
-  where: Prisma.RentalChargeWhereUniqueInput
-  data: Prisma.XOR<Prisma.RentalChargeUpdateWithoutTenantInput, Prisma.RentalChargeUncheckedUpdateWithoutTenantInput>
-}
-
-export type RentalChargeUpdateManyWithWhereWithoutTenantInput = {
-  where: Prisma.RentalChargeScalarWhereInput
-  data: Prisma.XOR<Prisma.RentalChargeUpdateManyMutationInput, Prisma.RentalChargeUncheckedUpdateManyWithoutTenantInput>
+export type RentalChargeUncheckedUpdateManyWithoutValuesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  charge?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type RentalChargeCreateManyCustomerInput = {
   id?: string
-  rentalId: string
   charge: string
   reason?: string | null
   amount: number
-  tenantId: string
   createdAt?: Date | string
+  valueId: string
 }
 
 export type RentalChargeUpdateWithoutCustomerInput = {
@@ -725,198 +643,103 @@ export type RentalChargeUpdateWithoutCustomerInput = {
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rental?: Prisma.RentalUpdateOneRequiredWithoutChargesNestedInput
-  tenant?: Prisma.TenantUpdateOneRequiredWithoutChargesNestedInput
+  values?: Prisma.ValuesUpdateOneRequiredWithoutChargesNestedInput
 }
 
 export type RentalChargeUncheckedUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rentalId?: Prisma.StringFieldUpdateOperationsInput | string
   charge?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valueId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type RentalChargeUncheckedUpdateManyWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rentalId?: Prisma.StringFieldUpdateOperationsInput | string
-  charge?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type RentalChargeCreateManyRentalInput = {
-  id?: string
-  charge: string
-  reason?: string | null
-  amount: number
-  customerId: string
-  tenantId: string
-  createdAt?: Date | string
-}
-
-export type RentalChargeUpdateWithoutRentalInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   charge?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutChargesNestedInput
-  tenant?: Prisma.TenantUpdateOneRequiredWithoutChargesNestedInput
-}
-
-export type RentalChargeUncheckedUpdateWithoutRentalInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  charge?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  customerId?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type RentalChargeUncheckedUpdateManyWithoutRentalInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  charge?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  customerId?: Prisma.StringFieldUpdateOperationsInput | string
-  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type RentalChargeCreateManyTenantInput = {
-  id?: string
-  rentalId: string
-  charge: string
-  reason?: string | null
-  amount: number
-  customerId: string
-  createdAt?: Date | string
-}
-
-export type RentalChargeUpdateWithoutTenantInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  charge?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutChargesNestedInput
-  rental?: Prisma.RentalUpdateOneRequiredWithoutChargesNestedInput
-}
-
-export type RentalChargeUncheckedUpdateWithoutTenantInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  rentalId?: Prisma.StringFieldUpdateOperationsInput | string
-  charge?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  customerId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type RentalChargeUncheckedUpdateManyWithoutTenantInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  rentalId?: Prisma.StringFieldUpdateOperationsInput | string
-  charge?: Prisma.StringFieldUpdateOperationsInput | string
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  customerId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valueId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
 
 export type RentalChargeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  rentalId?: boolean
   charge?: boolean
   reason?: boolean
   amount?: boolean
   customerId?: boolean
-  tenantId?: boolean
   createdAt?: boolean
+  valueId?: boolean
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
-  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  values?: boolean | Prisma.ValuesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["rentalCharge"]>
 
 export type RentalChargeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  rentalId?: boolean
   charge?: boolean
   reason?: boolean
   amount?: boolean
   customerId?: boolean
-  tenantId?: boolean
   createdAt?: boolean
+  valueId?: boolean
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
-  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  values?: boolean | Prisma.ValuesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["rentalCharge"]>
 
 export type RentalChargeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  rentalId?: boolean
   charge?: boolean
   reason?: boolean
   amount?: boolean
   customerId?: boolean
-  tenantId?: boolean
   createdAt?: boolean
+  valueId?: boolean
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
-  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  values?: boolean | Prisma.ValuesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["rentalCharge"]>
 
 export type RentalChargeSelectScalar = {
   id?: boolean
-  rentalId?: boolean
   charge?: boolean
   reason?: boolean
   amount?: boolean
   customerId?: boolean
-  tenantId?: boolean
   createdAt?: boolean
+  valueId?: boolean
 }
 
-export type RentalChargeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "rentalId" | "charge" | "reason" | "amount" | "customerId" | "tenantId" | "createdAt", ExtArgs["result"]["rentalCharge"]>
+export type RentalChargeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "charge" | "reason" | "amount" | "customerId" | "createdAt" | "valueId", ExtArgs["result"]["rentalCharge"]>
 export type RentalChargeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
-  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  values?: boolean | Prisma.ValuesDefaultArgs<ExtArgs>
 }
 export type RentalChargeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
-  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  values?: boolean | Prisma.ValuesDefaultArgs<ExtArgs>
 }
 export type RentalChargeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  rental?: boolean | Prisma.RentalDefaultArgs<ExtArgs>
-  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  values?: boolean | Prisma.ValuesDefaultArgs<ExtArgs>
 }
 
 export type $RentalChargePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "RentalCharge"
   objects: {
     customer: Prisma.$CustomerPayload<ExtArgs>
-    rental: Prisma.$RentalPayload<ExtArgs>
-    tenant: Prisma.$TenantPayload<ExtArgs>
+    values: Prisma.$ValuesPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    rentalId: string
     charge: string
     reason: string | null
     amount: number
     customerId: string
-    tenantId: string
     createdAt: Date
+    valueId: string
   }, ExtArgs["result"]["rentalCharge"]>
   composites: {}
 }
@@ -1312,8 +1135,7 @@ readonly fields: RentalChargeFieldRefs;
 export interface Prisma__RentalChargeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   customer<T extends Prisma.CustomerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CustomerDefaultArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  rental<T extends Prisma.RentalDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RentalDefaultArgs<ExtArgs>>): Prisma.Prisma__RentalClient<runtime.Types.Result.GetResult<Prisma.$RentalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  values<T extends Prisma.ValuesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ValuesDefaultArgs<ExtArgs>>): Prisma.Prisma__ValuesClient<runtime.Types.Result.GetResult<Prisma.$ValuesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1344,13 +1166,12 @@ export interface Prisma__RentalChargeClient<T, Null = never, ExtArgs extends run
  */
 export interface RentalChargeFieldRefs {
   readonly id: Prisma.FieldRef<"RentalCharge", 'String'>
-  readonly rentalId: Prisma.FieldRef<"RentalCharge", 'String'>
   readonly charge: Prisma.FieldRef<"RentalCharge", 'String'>
   readonly reason: Prisma.FieldRef<"RentalCharge", 'String'>
   readonly amount: Prisma.FieldRef<"RentalCharge", 'Float'>
   readonly customerId: Prisma.FieldRef<"RentalCharge", 'String'>
-  readonly tenantId: Prisma.FieldRef<"RentalCharge", 'String'>
   readonly createdAt: Prisma.FieldRef<"RentalCharge", 'DateTime'>
+  readonly valueId: Prisma.FieldRef<"RentalCharge", 'String'>
 }
     
 

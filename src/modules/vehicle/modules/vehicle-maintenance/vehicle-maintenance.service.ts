@@ -1,10 +1,10 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../../prisma/prisma.service.js';
 import { Tenant, User } from '../../../../generated/prisma/client.js';
 import { VehicleMaintenanceDto } from './vehicle-maintenance.dto.js';
 import { ExpenseDto } from '../../../../modules/transaction/modules/expense/expense.dto.js';
 import { ExpenseService } from '../../../../modules/transaction/modules/expense/expense.service.js';
 import { VehicleRepository } from '../../vehicle.repository.js';
+import { PrismaService } from '../../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VehicleMaintenanceService {
@@ -36,7 +36,7 @@ export class VehicleMaintenanceService {
       });
 
       return services;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching tenant maintenance services', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -65,7 +65,7 @@ export class VehicleMaintenanceService {
         orderBy: { startDate: 'desc' },
       });
       return maintenances;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching vehicle maintenances', {
         vehicleId,
         tenantId: tenant.id,
@@ -142,7 +142,7 @@ export class VehicleMaintenanceService {
       });
 
       return maintenances;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching vehicle maintenances by date', {
         date,
         tenantId: tenant.id,
@@ -189,7 +189,7 @@ export class VehicleMaintenanceService {
         vehicles,
         scheduledMaintenances: services,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error adding vehicle maintenance record', {
         data,
         tenantId: tenant.id,
@@ -248,7 +248,7 @@ export class VehicleMaintenanceService {
         vehicles,
         scheduledMaintenances: services,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error updating vehicle maintenance record', {
         data,
         tenantId: tenant.id,
@@ -291,7 +291,7 @@ export class VehicleMaintenanceService {
         vehicles,
         scheduledMaintenances: services,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error deleting vehicle maintenance record', {
         id,
         tenantId: tenant.id,
@@ -373,7 +373,7 @@ export class VehicleMaintenanceService {
         vehicles,
         scheduledMaintenances: services,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error completing vehicle maintenance', {
         data,
         tenantId: tenant.id,

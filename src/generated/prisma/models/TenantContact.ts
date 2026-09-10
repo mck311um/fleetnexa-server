@@ -179,7 +179,7 @@ export type TenantContactGroupByOutputType = {
   _max: TenantContactMaxAggregateOutputType | null
 }
 
-type GetTenantContactGroupByPayload<T extends TenantContactGroupByArgs> = Prisma.PrismaPromise<
+export type GetTenantContactGroupByPayload<T extends TenantContactGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TenantContactGroupByOutputType, T['by']> &
       {

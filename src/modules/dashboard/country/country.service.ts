@@ -1,13 +1,13 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: <> */
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { CountryDto } from './country.dto.js';
 import { FormatterService } from '../../../common/formatter/formatter.service.js';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import axios, { AxiosInstance } from 'axios';
 import { ConfigService } from '@nestjs/config';
-import { CSCCountry } from 'src/types/csc.data.js';
+import { CSCCountry } from '../../../types/csc.data.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class CountryService {
@@ -39,40 +39,8 @@ export class CountryService {
           },
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error fetching countries', error);
-      throw error;
-    }
-  }
-
-  async getCountriesFromApi() {
-    try {
-      const res = await this.api.get('countries');
-
-      for (const item of res.data) {
-        await this.prisma.country.upsert({
-          where: {
-            code: item.iso2,
-          },
-          update: {
-            country: item.name,
-            phoneCode: item.phonecode,
-            iso3: item.iso3,
-            cscId: item.id,
-            currency: item.currency,
-          },
-          create: {
-            cscId: item.id,
-            iso3: item.iso3,
-            country: item.name,
-            code: item.iso2,
-            phoneCode: item.phonecode,
-            currency: item.currency,
-          },
-        });
-      }
-    } catch (error) {
-      this.logger.error('Error fetching countries from external API', error);
       throw error;
     }
   }
@@ -89,7 +57,7 @@ export class CountryService {
           },
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Error fetching country with id ${id}`, error);
       throw error;
     }
@@ -131,7 +99,7 @@ export class CountryService {
         message: 'Country created successfully',
         countries,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating country', error);
       throw error;
     }
@@ -155,7 +123,7 @@ export class CountryService {
 
         try {
           await this.createCountry(instance);
-        } catch (error) {
+        } catch (error: any) {
           failedRows.push({ item, error: error.message });
           this.logger.warn(
             `Skipping country due to error: ${JSON.stringify(item)} - Error: ${error.message}`,
@@ -169,7 +137,7 @@ export class CountryService {
         message: 'Bulk country upload completed',
         countries,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error during bulk country creation', error);
       throw error;
     }

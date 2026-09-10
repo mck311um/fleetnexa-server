@@ -144,7 +144,7 @@ export type InvoiceSequenceGroupByOutputType = {
   _max: InvoiceSequenceMaxAggregateOutputType | null
 }
 
-type GetInvoiceSequenceGroupByPayload<T extends InvoiceSequenceGroupByArgs> = Prisma.PrismaPromise<
+export type GetInvoiceSequenceGroupByPayload<T extends InvoiceSequenceGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<InvoiceSequenceGroupByOutputType, T['by']> &
       {

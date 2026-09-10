@@ -13,7 +13,7 @@ import {
 import { BookingService } from './booking.service.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { Roles } from '../auth/decorator/role.decorator.js';
-import { Role } from '../../common/enums/role.enum.js';
+import { Role } from '../../shared/enums/role.enum.js';
 import { ActionBookingDto } from './dto/action-booking.dto.js';
 import { CreateBookingDto } from './dto/create-booking.dto.js';
 import { UpdateBookingDto } from './dto/update-booking.dto.js';
@@ -21,6 +21,8 @@ import { StorefrontUserBookingDto } from './dto/storefront-user-booking.dto.js';
 import { StorefrontGuestBookingDto } from './dto/storefront-guest-booking.dto.js';
 import { ApiGuard } from '../auth/guards/api.guard.js';
 import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
+import { CreateBookingChargeDto } from './dto/booking-charge.dto.js';
+import { BookingDepositDto } from './dto/booking-deposit.dto.js';
 
 @Controller('booking')
 export class BookingController {
@@ -139,5 +141,32 @@ export class BookingController {
     const { tenant } = req.user;
     const user = req.user;
     return this.bookingService.deleteBooking(id, tenant, user);
+  }
+
+  @Post('vehicle/swap')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.TENANT)
+  async swapVehicle(@Request() req, @Body() data: SwapVehicleDto) {
+    const { tenant } = req.user;
+    const user = req.user;
+    return this.bookingService.swapBookingVehicle(data, tenant, user);
+  }
+
+  @Post('charge')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.TENANT)
+  async addBookingCharge(@Request() req, @Body() data: CreateBookingChargeDto) {
+    const { tenant } = req.user;
+    const user = req.user;
+    return this.bookingService.addBookingCharge(data, tenant.id, user.id);
+  }
+
+  @Post('security-deposit')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.TENANT)
+  async updateBookingDeposit(@Request() req, @Body() data: BookingDepositDto) {
+    const { tenant } = req.user;
+    const user = req.user;
+    return this.bookingService.updateBookingDeposit(data, tenant, user);
   }
 }

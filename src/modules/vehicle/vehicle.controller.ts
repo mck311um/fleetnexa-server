@@ -17,8 +17,9 @@ import { VehicleDto } from './dto/vehicle.dto.js';
 import { VehicleLocationDto } from './dto/vehicle-location.dto.js';
 import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { Role } from '../../common/enums/role.enum.js';
+import { Role } from '../../shared/enums/role.enum.js';
 import { Roles } from '../auth/decorator/role.decorator.js';
+import { VehicleDiscountDto } from './dto/vehicle-dicount.dto.js';
 
 @Controller('vehicle')
 export class VehicleController {
@@ -110,15 +111,6 @@ export class VehicleController {
     return this.service.updateVehicleLocation(data, tenant, user);
   }
 
-  @Post('swap')
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.TENANT)
-  async swapVehicle(@Request() req, @Body() data: SwapVehicleDto) {
-    const { tenant } = req.user;
-    const user = req.user;
-    return this.service.swapBookingVehicle(data, tenant, user);
-  }
-
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.TENANT)
@@ -139,5 +131,18 @@ export class VehicleController {
     const user = req.user;
 
     return this.service.updateVehicleStorefrontStatus(vehicleId, tenant, user);
+  }
+
+  @Post('discounts/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.TENANT)
+  async updateVehicleDiscounts(
+    @Request() req,
+    @Param('id') vehicleId: string,
+    @Body() data: VehicleDiscountDto[],
+  ) {
+    const user = req.user;
+
+    return await this.service.updateVehicleDiscounts(data, vehicleId, user);
   }
 }

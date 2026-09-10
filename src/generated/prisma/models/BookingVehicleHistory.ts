@@ -172,7 +172,7 @@ export type BookingVehicleHistoryGroupByOutputType = {
   _max: BookingVehicleHistoryMaxAggregateOutputType | null
 }
 
-type GetBookingVehicleHistoryGroupByPayload<T extends BookingVehicleHistoryGroupByArgs> = Prisma.PrismaPromise<
+export type GetBookingVehicleHistoryGroupByPayload<T extends BookingVehicleHistoryGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BookingVehicleHistoryGroupByOutputType, T['by']> &
       {

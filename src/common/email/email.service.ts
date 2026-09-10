@@ -1,27 +1,20 @@
 import { Global, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { NotifyService } from '../notify/notify.service.js';
-import {
-  Tenant,
-  User,
-  UserRole,
-  UserType,
-} from '../../generated/prisma/client.js';
+import { Tenant, UserType } from '../../generated/prisma/client.js';
 import { FormatterService } from '../formatter/formatter.service.js';
 import { SendEmailDto } from '../notify/dto/send-email.dto.js';
 import { CustomerService } from '../../modules/customer/customer.service.js';
 import {
   BookingCompletedEmailDto,
-  BookingConfirmationEmailDto,
   BookingDeclinedEmailDto,
   BookingDocumentsEmailDto,
   NewBookingEmailDto,
   NewUserEmailDto,
   PasswordResetEmailDto,
   VerificationEmailDto,
-  WelcomeEmailDto,
 } from '../../types/email.js';
-import { SendDocumentsDto } from 'src/modules/booking/dto/send-documents.dto.js';
+import { SendDocumentsDto } from '../../modules/booking/dto/send-documents.dto.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Global()
 @Injectable()
@@ -34,95 +27,6 @@ export class EmailService {
     private readonly formatter: FormatterService,
     private readonly customerService: CustomerService,
   ) {}
-
-  async sendBookingConfirmationEmail(
-    bookingId: string,
-    includeInvoice: boolean,
-    includeAgreement: boolean,
-    tenant: Tenant,
-  ) {
-    try {
-      let currency;
-
-      if (!tenant.currencyId) {
-        currency = await this.prisma.currency.findFirst({
-          where: { code: 'USD' },
-        });
-      } else {
-        currency = await this.prisma.currency.findUnique({
-          where: { id: tenant.currencyId },
-        });
-      }
-
-      const booking = await this.prisma.rental.findUnique({
-        where: { id: bookingId },
-        include: {
-          pickup: true,
-          vehicle: {
-            include: {
-              brand: true,
-              model: {
-                include: {
-                  bodyType: true,
-                },
-              },
-              transmission: true,
-            },
-          },
-          invoice: true,
-          agreement: true,
-          values: true,
-        },
-      });
-
-      if (!booking) {
-        throw new NotFoundException('Booking not found');
-      }
-
-      const primaryDriver = await this.customerService.getPrimaryDriver(
-        booking.id,
-      );
-
-      const templateData: BookingConfirmationEmailDto = {
-        bookingId: booking?.bookingCode || '',
-        startDate:
-          this.formatter.formatDateToFriendlyDate(booking?.startDate) || '',
-        pickupTime:
-          this.formatter.formatDateToFriendlyTime(booking?.startDate) || '',
-        endDate:
-          this.formatter.formatDateToFriendlyDate(booking?.endDate) || '',
-        pickupLocation: booking?.pickup.location || '',
-        totalPrice: this.formatter.formatNumberToTenantCurrency(
-          booking?.values?.netTotal || 0,
-          currency?.code || 'USD',
-        ),
-        tenantName: tenant?.tenantName || '',
-        phone: tenant?.number || '',
-        vehicle: this.formatter.formatVehicleToFriendly(booking?.vehicle) || '',
-        email: tenant?.email || '',
-        invoiceUrl: includeInvoice
-          ? booking?.invoice?.invoiceUrl || ''
-          : undefined,
-        agreementUrl: includeAgreement
-          ? booking?.agreement?.agreementUrl || ''
-          : undefined,
-      };
-
-      const payload: SendEmailDto = {
-        recipients: [primaryDriver?.customer.email || ''],
-        cc: [],
-        templateName: 'FleetNexaBookingConfirmation',
-        templateData,
-        sender: 'no-reply@fleetnexa.com',
-        senderName: 'FleetNexa',
-      };
-
-      await this.notify.sendEmail(payload);
-    } catch (error) {
-      this.logger.error('Error sending booking confirmation email', error);
-      throw error;
-    }
-  }
 
   async sendBookingDeclinedEmail(
     bookingId: string,
@@ -176,7 +80,7 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending booking confirmation email', error);
       throw error;
     }
@@ -252,7 +156,7 @@ export class EmailService {
 
       const res = await this.notify.sendEmail(payload);
       this.logger.log(`Booking completed email sent: ${res}`);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending new booking email', error);
       throw error;
     }
@@ -352,7 +256,7 @@ export class EmailService {
 
       const res = await this.notify.sendEmail(payload);
       this.logger.log(`Booking completed email sent: ${res}`);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending booking completed email', error);
       throw error;
     }
@@ -374,7 +278,7 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending storefront password reset email', error);
       throw error;
     }
@@ -418,7 +322,7 @@ export class EmailService {
         pickupTime: this.formatter.formatDateToFriendlyTime(booking.startDate),
         pickupLocation: booking.pickup.location,
         totalPrice: this.formatter.formatNumberToTenantCurrency(
-          booking.values?.amountDue || 0,
+          booking.values?.netTotal || 0,
           currency?.code || 'USD',
         ),
         tenantName: tenant.tenantName || '',
@@ -438,51 +342,8 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error sending booking documents email', error);
-      throw error;
-    }
-  }
-
-  async sendNewUserWelcomeEmail(
-    userId: string,
-    password: string,
-    tenant: Tenant,
-  ) {
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: userId, tenantId: tenant.id },
-      });
-
-      if (!user) {
-        this.logger.warn(
-          `User with ID ${userId} not found for tenant ${tenant.id}`,
-        );
-        throw new NotFoundException('User not found');
-      }
-
-      const templateData: NewUserEmailDto = {
-        tenantName: tenant?.tenantName,
-        name: `${user?.firstName} ${user?.lastName}`,
-        username: user?.username,
-        password,
-      };
-
-      const payload: SendEmailDto = {
-        recipients: [user.email || ''],
-        cc: [],
-        templateName: 'FleetNexaNewUser',
-        templateData,
-        sender: 'no-reply@fleetnexa.com',
-        senderName: 'FleetNexa',
-      };
-
-      await this.notify.sendEmail(payload);
-    } catch (error) {
-      this.logger.error(error, 'Error sending new user welcome email', {
-        userId,
-        tenantId: tenant.id,
-      });
       throw error;
     }
   }
@@ -521,7 +382,7 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error sending new user welcome email', {
         userId,
         tenantId: tenant.id,
@@ -551,36 +412,9 @@ export class EmailService {
       };
 
       await this.notify.sendEmail(payload);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error sending password reset email', {
         email,
-      });
-      throw error;
-    }
-  }
-
-  async sendWelcomeEmail(user: User, tenant: Tenant) {
-    try {
-      const templateData: WelcomeEmailDto = {
-        tenantName: tenant.tenantName,
-        name: `${user.firstName} ${user.lastName}`,
-        username: user.username,
-      };
-
-      const payload: SendEmailDto = {
-        recipients: [user.email || ''],
-        cc: [],
-        templateName: 'FleetNexaWelcome',
-        templateData,
-        sender: 'no-reply@fleetnexa.com',
-        senderName: 'FleetNexa',
-      };
-
-      await this.notify.sendEmail(payload);
-    } catch (error) {
-      this.logger.error(error, 'Error sending welcome email', {
-        userId: user.id,
-        tenantId: tenant.id,
       });
       throw error;
     }

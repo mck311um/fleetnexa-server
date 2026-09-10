@@ -1,5 +1,4 @@
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../../prisma/prisma.service.js';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { TransactionService } from '../../transaction.service.js';
 import {
   Tenant,
@@ -8,9 +7,10 @@ import {
 } from '../../../../generated/prisma/client.js';
 import { PaymentDto } from './payment.dto.js';
 import { TransactionDto } from '../../transaction.dto.js';
-import { v4 as uuidv4 } from 'uuid';
 import { DocumentService } from '../../../../modules/document/document.service.js';
 import { BookingRepository } from '../../../../modules/booking/booking.repository.js';
+import { PrismaService } from '../../../../infrastructure/prisma/prisma.service.js';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class PaymentService {
@@ -45,7 +45,7 @@ export class PaymentService {
       });
 
       return payments;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching payments', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -103,7 +103,7 @@ export class PaymentService {
       });
 
       const transaction: TransactionDto = {
-        id: uuidv4(),
+        id: randomUUID(),
         amount: data.amount,
         type: TransactionType.PAYMENT,
         rentalId: data.bookingId,
@@ -143,7 +143,7 @@ export class PaymentService {
         transactions,
         payments,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error creating payment', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -256,7 +256,7 @@ export class PaymentService {
         transactions,
         payments,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error updating payment', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

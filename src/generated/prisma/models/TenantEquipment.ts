@@ -227,7 +227,7 @@ export type TenantEquipmentGroupByOutputType = {
   _max: TenantEquipmentMaxAggregateOutputType | null
 }
 
-type GetTenantEquipmentGroupByPayload<T extends TenantEquipmentGroupByArgs> = Prisma.PrismaPromise<
+export type GetTenantEquipmentGroupByPayload<T extends TenantEquipmentGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TenantEquipmentGroupByOutputType, T['by']> &
       {

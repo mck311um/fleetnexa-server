@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
-import { Tenant } from 'src/generated/prisma/client.js';
+import { Tenant } from '../../../generated/prisma/client.js';
 import { TenantRateDto } from './tenant-rate.dto.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantRatesService {
@@ -17,7 +17,7 @@ export class TenantRatesService {
           currency: true,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get tenant rates', error);
       throw error;
     }
@@ -83,7 +83,7 @@ export class TenantRatesService {
         message: 'Currency rates updated successfully',
         currencyRates,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to update tenant rate', error);
       throw error;
     }

@@ -5,33 +5,23 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import { StateDto } from './state.dto.js';
 import { FormatterService } from '../../../common/formatter/formatter.service.js';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { Country } from 'src/generated/prisma/client.js';
+import { Country } from '../../../generated/prisma/client.js';
 import axios, { AxiosInstance } from 'axios';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class StateService {
   private readonly logger = new Logger(StateService.name);
-  private readonly api: AxiosInstance;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly formatter: FormatterService,
-    private readonly config: ConfigService,
-  ) {
-    this.api = axios.create({
-      baseURL: this.config.get<string>('CSC_API_URL'),
-      headers: {
-        'X-CSCAPI-KEY': this.config.get<string>('CSC_API_KEY'),
-        'Content-Type': 'application/json',
-      },
-    });
-  }
+  ) {}
 
   async getStates() {
     try {
@@ -45,62 +35,8 @@ export class StateService {
           },
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error fetching states', error);
-      throw error;
-    }
-  }
-
-  async getStatesFromApi() {
-    try {
-      const res = await this.api.get('states');
-
-      for (const item of res.data) {
-        const country = await this.prisma.country.findUnique({
-          where: { code: item.country_code },
-        });
-
-        if (!country) {
-          this.logger.warn(
-            `Country with code ${item.country_code} not found for state ${item.name}`,
-          );
-          continue;
-        }
-
-        const existingState = await this.prisma.state.findFirst({
-          where: {
-            state: item.name,
-            countryId: country.id,
-          },
-        });
-
-        if (existingState) {
-          await this.prisma.state.update({
-            where: {
-              id: existingState.id,
-            },
-            data: {
-              state: item.name,
-              countryId: country ? country.id : undefined,
-              cscId: item.id,
-              iso2: item.iso2,
-              type: item.type,
-            },
-          });
-        } else {
-          await this.prisma.state.create({
-            data: {
-              state: item.name,
-              countryId: country.id,
-              cscId: item.id,
-              iso2: item.iso2,
-              type: item.type,
-            },
-          });
-        }
-      }
-    } catch (error) {
-      this.logger.error('Error fetching states from API', error);
       throw error;
     }
   }
@@ -155,7 +91,7 @@ export class StateService {
         message: 'State created successfully',
         states,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating state', error);
       throw error;
     }
@@ -179,7 +115,7 @@ export class StateService {
 
         try {
           await this.createState(instance);
-        } catch (error) {
+        } catch (error: any) {
           failedRows.push({ item, error: error.message });
           this.logger.warn(
             `Skipping country due to error: ${JSON.stringify(item)} - Error: ${error.message}`,
@@ -193,7 +129,7 @@ export class StateService {
         message: 'Bulk state upload completed',
         states,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error during bulk state upload', error);
       throw error;
     }
@@ -241,7 +177,7 @@ export class StateService {
         message: 'State updated successfully',
         states,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error updating state', error);
       throw error;
     }
@@ -294,7 +230,7 @@ export class StateService {
         message: 'State deleted successfully',
         states,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error deleting state', error);
       throw error;
     }

@@ -11,14 +11,15 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service.js';
 import { Request } from '@nestjs/common';
-import { Role } from '../../common/enums/role.enum.js';
+import { Role } from '../../shared/enums/role.enum.js';
 import { Roles } from '../auth/decorator/role.decorator.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { VerifyOTPDto } from '../auth/dto/verify-otp.dto.js';
+import { VerifyOTPDto } from '../auth/dto/otp.dto.js';
 import { NewPasswordDto } from '../auth/dto/new-password.dto.js';
 import { TenantUserDto } from './dto/tenant-user.dto.js';
 import { ChangePasswordDto } from './dto/change-password.dto.js';
 import { DeleteUserDto } from './dto/delete-user.dto.js';
+import { CheckDetailsDto } from './dto/check-details.dto.js';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)

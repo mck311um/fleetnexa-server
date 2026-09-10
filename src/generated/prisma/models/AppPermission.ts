@@ -165,7 +165,7 @@ export type AppPermissionGroupByOutputType = {
   _max: AppPermissionMaxAggregateOutputType | null
 }
 
-type GetAppPermissionGroupByPayload<T extends AppPermissionGroupByArgs> = Prisma.PrismaPromise<
+export type GetAppPermissionGroupByPayload<T extends AppPermissionGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<AppPermissionGroupByOutputType, T['by']> &
       {

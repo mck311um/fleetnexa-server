@@ -158,7 +158,7 @@ export type VehicleServiceScheduleGroupByOutputType = {
   _max: VehicleServiceScheduleMaxAggregateOutputType | null
 }
 
-type GetVehicleServiceScheduleGroupByPayload<T extends VehicleServiceScheduleGroupByArgs> = Prisma.PrismaPromise<
+export type GetVehicleServiceScheduleGroupByPayload<T extends VehicleServiceScheduleGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<VehicleServiceScheduleGroupByOutputType, T['by']> &
       {

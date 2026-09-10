@@ -1,7 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { BookingRepository } from './booking.repository.js';
 import { RentalStatus, Tenant, User } from '../../generated/prisma/client.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { EmailService } from '../../common/email/email.service.js';
 import { ActionBookingDto } from './dto/action-booking.dto.js';
 import { SendWhatsAppDto } from '../../common/notify/dto/send-whatsapp.dto.js';
@@ -15,6 +14,13 @@ import { BookingCreationService } from './services/booking-creation.service.js';
 import { CreateBookingDto } from './dto/create-booking.dto.js';
 import { StorefrontUserBookingDto } from './dto/storefront-user-booking.dto.js';
 import { StorefrontGuestBookingDto } from './dto/storefront-guest-booking.dto.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
+import { BookingVehicleService } from './services/booking-vehicle.service.js';
+import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
+import { BookingChargeService } from './services/booking-charge.service.js';
+import { CreateBookingChargeDto } from './dto/booking-charge.dto.js';
+import { BookingDepositService } from './services/booking-deposit.service.js';
+import { BookingDepositDto } from './dto/booking-deposit.dto.js';
 
 @Injectable()
 export class BookingService {
@@ -29,6 +35,9 @@ export class BookingService {
     private readonly customerRepo: CustomerRepository,
     private readonly workflow: BookingWorkflowService,
     private readonly bookingCreation: BookingCreationService,
+    private readonly vehicleBookingService: BookingVehicleService,
+    private readonly bookingChargeService: BookingChargeService,
+    private readonly bookingDepositService: BookingDepositService,
   ) {}
 
   private async findBookingOrFail(id: string) {
@@ -106,7 +115,7 @@ export class BookingService {
       });
 
       return bookingData.flat();
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get storefront bookings', {
         userId: id,
       });
@@ -212,6 +221,26 @@ export class BookingService {
     return this.workflow.endBooking(data, tenant, user);
   }
 
+  addBookingCharge(
+    data: CreateBookingChargeDto,
+    tenantId: string,
+    userId: string,
+  ) {
+    return this.bookingChargeService.addBookingCharge(data, tenantId, userId);
+  }
+
+  updateBookingDeposit(data: BookingDepositDto, tenant: Tenant, user: User) {
+    return this.bookingDepositService.updateBookingDeposit(data, tenant, user);
+  }
+
+  async swapBookingVehicle(data: SwapVehicleDto, tenant: Tenant, user: User) {
+    return await this.vehicleBookingService.swapBookingVehicle(
+      data,
+      tenant,
+      user,
+    );
+  }
+
   async deleteBooking(id: string, tenant: Tenant, user: User) {
     try {
       await this.prisma.$transaction(async (tx) => {
@@ -246,7 +275,7 @@ export class BookingService {
         message: 'Booking deleted successfully',
         bookings,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to delete booking', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -273,7 +302,7 @@ export class BookingService {
       }
 
       return { message: 'Booking documents sent successfully' };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to send booking documents', {
         data,
       });
@@ -302,7 +331,7 @@ export class BookingService {
       );
 
       return bookings;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get bookings by date', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

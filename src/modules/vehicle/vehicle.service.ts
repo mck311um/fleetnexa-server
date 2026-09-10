@@ -1,31 +1,22 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { VehicleRepository } from './vehicle.repository.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { TenantExtraService } from '../tenant/tenant-extra/tenant-extra.service.js';
-import {
-  Tenant,
-  User,
-  Vehicle,
-  VehicleEventType,
-} from '../../generated/prisma/client.js';
+import { Tenant, User } from '../../generated/prisma/client.js';
 import { VehicleDto } from './dto/vehicle.dto.js';
 import { StorageService } from '../storage/storage.service.js';
 import { VehicleStatusDto } from './dto/vehicle-status.dto.js';
 import { VehicleLocationDto } from './dto/vehicle-location.dto.js';
 import { SwapVehicleDto } from './dto/swap-vehicle.dto.js';
-import { VehicleEventService } from './modules/vehicle-event/vehicle-event.service.js';
-import { VehicleEventDto } from './dto/vehicle-event.dto.js';
-import { BookingRepository } from '../booking/booking.repository.js';
-import { VehiclePricingService } from './services/vehicle-pricing.service.js';
 import { VehicleStatusService } from './services/vehicle-status.service.js';
 import { VehicleLocationService } from './services/vehicle-location.service.js';
-import { VehicleBookingService } from './services/vehicle-booking.service.js';
+import { VehicleDiscountDto } from './dto/vehicle-dicount.dto.js';
+import { VehiclePricingService } from './services/vehicle-pricing.service.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VehicleService {
@@ -36,18 +27,15 @@ export class VehicleService {
     private readonly prisma: PrismaService,
     private readonly extrasService: TenantExtraService,
     private readonly storage: StorageService,
-    private readonly bookingRepo: BookingRepository,
-    private readonly vehicleEvent: VehicleEventService,
-    private readonly vehiclePricingService: VehiclePricingService,
     private readonly vehicleStatusService: VehicleStatusService,
     private readonly vehicleLocationService: VehicleLocationService,
-    private readonly vehicleBookingService: VehicleBookingService,
+    private readonly vehiclePricingService: VehiclePricingService,
   ) {}
 
   async getTenantVehicles(tenant: Tenant) {
     try {
       return await this.vehicleRepo.getVehicles(tenant.id);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get vehicles', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -60,7 +48,7 @@ export class VehicleService {
     try {
       const vehicle = await this.vehicleRepo.getVehicleById(id, tenant.id);
       return await this.attachTenantExtras(vehicle);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, `Failed to get vehicle by id: ${id}`, {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -76,7 +64,7 @@ export class VehicleService {
         tenant.id,
       );
       return await this.attachTenantExtras(vehicle);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         error,
         `Failed to get vehicle by license plate: ${licensePlate}`,
@@ -93,7 +81,7 @@ export class VehicleService {
     try {
       const vehicles = await this.vehicleRepo.getVehiclesForStorefront();
       return await this.attachExtrasToVehicles(vehicles);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get storefront vehicles', error);
       throw error;
     }
@@ -104,7 +92,7 @@ export class VehicleService {
       const vehicles =
         await this.vehicleRepo.getTenantVehiclesForStorefront(tenantId);
       return await this.attachExtrasToVehicles(vehicles);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Failed to get storefront vehicles for tenant: ${tenantId}`,
         error,
@@ -117,7 +105,7 @@ export class VehicleService {
     try {
       const vehicle = await this.vehicleRepo.getVehicleForStorefrontById(id);
       return await this.attachTenantExtras(vehicle);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to get storefront vehicle by id: ${id}`, error);
       throw error;
     }
@@ -188,13 +176,6 @@ export class VehicleService {
               createdBy: user.username,
             },
           });
-
-          await this.vehiclePricingService.upsertVehicleDiscount(
-            tx,
-            data.id,
-            data.discounts || [],
-            user,
-          );
         },
         { maxWait: 5000, timeout: 10000 },
       );
@@ -204,7 +185,7 @@ export class VehicleService {
         message: 'Vehicle added successfully',
         vehicles,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to add vehicle', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -274,13 +255,6 @@ export class VehicleService {
             },
           });
 
-          await this.vehiclePricingService.upsertVehicleDiscount(
-            tx,
-            data.id,
-            data.discounts || [],
-            user,
-          );
-
           return tx.vehicle.findUnique({ where: { id: data.id } });
         },
         { maxWait: 5000, timeout: 10000 },
@@ -304,7 +278,7 @@ export class VehicleService {
         vehicles,
         vehicle: updatedVehicle,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to update vehicle', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -340,7 +314,7 @@ export class VehicleService {
         message: 'Vehicle deleted successfully',
         vehicles,
       };
-    } catch (error) {}
+    } catch (error: any) {}
   }
 
   async updateVehicleStorefrontStatus(id: string, tenant: Tenant, user: User) {
@@ -377,14 +351,6 @@ export class VehicleService {
     );
   }
 
-  async swapBookingVehicle(data: SwapVehicleDto, tenant: Tenant, user: User) {
-    return await this.vehicleBookingService.swapBookingVehicle(
-      data,
-      tenant,
-      user,
-    );
-  }
-
   async updateVehicleStatus(
     data: VehicleStatusDto,
     tenant: Tenant,
@@ -405,6 +371,18 @@ export class VehicleService {
     return await this.vehicleLocationService.updateVehicleLocation(
       data,
       tenant,
+      user,
+    );
+  }
+
+  async updateVehicleDiscounts(
+    data: VehicleDiscountDto[],
+    vehicleId: string,
+    user: User,
+  ) {
+    return await this.vehiclePricingService.updateVehicleDiscounts(
+      data,
+      vehicleId,
       user,
     );
   }

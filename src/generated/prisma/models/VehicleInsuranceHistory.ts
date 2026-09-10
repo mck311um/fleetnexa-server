@@ -200,7 +200,7 @@ export type VehicleInsuranceHistoryGroupByOutputType = {
   _max: VehicleInsuranceHistoryMaxAggregateOutputType | null
 }
 
-type GetVehicleInsuranceHistoryGroupByPayload<T extends VehicleInsuranceHistoryGroupByArgs> = Prisma.PrismaPromise<
+export type GetVehicleInsuranceHistoryGroupByPayload<T extends VehicleInsuranceHistoryGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<VehicleInsuranceHistoryGroupByOutputType, T['by']> &
       {

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Put, UseGuards, Request } from '@nestjs/common';
 import { TenantRatesService } from './tenant-rates.service.js';
 import { TenantRateDto } from './tenant-rate.dto.js';
 import { JwtAuthGuard } from '../../../modules/auth/guards/jwt-auth.guard.js';
-import { Role } from '../../../common/enums/role.enum.js';
+import { Role } from '../../../shared/enums/role.enum.js';
 import { Roles } from '../../../modules/auth/decorator/role.decorator.js';
 
 @Controller('tenant/rate')

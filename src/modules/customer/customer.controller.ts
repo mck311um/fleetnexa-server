@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { CustomerService } from './customer.service.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
-import { Role } from '../../common/enums/role.enum.js';
+import { Role } from '../../shared/enums/role.enum.js';
 import { Roles } from '../auth/decorator/role.decorator.js';
 import { TenantCustomerDto } from './dto/tenant-customer.dto.js';
 

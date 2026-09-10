@@ -143,6 +143,21 @@ export type Port = Prisma.PortModel
  */
 export type InsuranceCompany = Prisma.InsuranceCompanyModel
 /**
+ * Model Values
+ * 
+ */
+export type Values = Prisma.ValuesModel
+/**
+ * Model SecurityDeposit
+ * 
+ */
+export type SecurityDeposit = Prisma.SecurityDepositModel
+/**
+ * Model SecurityDepositTransaction
+ * 
+ */
+export type SecurityDepositTransaction = Prisma.SecurityDepositTransactionModel
+/**
  * Model Customer
  * 
  */
@@ -263,11 +278,6 @@ export type StorefrontBooking = Prisma.StorefrontBookingModel
  */
 export type RentalDriver = Prisma.RentalDriverModel
 /**
- * Model Values
- * 
- */
-export type Values = Prisma.ValuesModel
-/**
  * Model RentalExtra
  * 
  */
@@ -282,6 +292,11 @@ export type RentalCharge = Prisma.RentalChargeModel
  * 
  */
 export type VesselInfo = Prisma.VesselInfoModel
+/**
+ * Model Activity
+ * 
+ */
+export type Activity = Prisma.ActivityModel
 /**
  * Model TenantWeeklyStats
  * 
@@ -328,15 +343,25 @@ export type PlanFeatures = Prisma.PlanFeaturesModel
  */
 export type PlanDetails = Prisma.PlanDetailsModel
 /**
+ * Model TenantLocation
+ * 
+ */
+export type TenantLocation = Prisma.TenantLocationModel
+/**
+ * Model CancellationPolicy
+ * 
+ */
+export type CancellationPolicy = Prisma.CancellationPolicyModel
+/**
+ * Model LatePolicy
+ * 
+ */
+export type LatePolicy = Prisma.LatePolicyModel
+/**
  * Model Tenant
  * 
  */
 export type Tenant = Prisma.TenantModel
-/**
- * Model EmailVerification
- * 
- */
-export type EmailVerification = Prisma.EmailVerificationModel
 /**
  * Model PaymentMethod
  * 
@@ -347,26 +372,6 @@ export type PaymentMethod = Prisma.PaymentMethodModel
  * 
  */
 export type Address = Prisma.AddressModel
-/**
- * Model TenantLocation
- * 
- */
-export type TenantLocation = Prisma.TenantLocationModel
-/**
- * Model TenantInsurance
- * 
- */
-export type TenantInsurance = Prisma.TenantInsuranceModel
-/**
- * Model TenantEquipment
- * 
- */
-export type TenantEquipment = Prisma.TenantEquipmentModel
-/**
- * Model TenantService
- * 
- */
-export type TenantService = Prisma.TenantServiceModel
 /**
  * Model TenantSubscription
  * 
@@ -383,16 +388,6 @@ export type TenantContact = Prisma.TenantContactModel
  */
 export type TenantReminders = Prisma.TenantRemindersModel
 /**
- * Model CancellationPolicy
- * 
- */
-export type CancellationPolicy = Prisma.CancellationPolicyModel
-/**
- * Model LatePolicy
- * 
- */
-export type LatePolicy = Prisma.LatePolicyModel
-/**
  * Model TenantViolation
  * 
  */
@@ -407,6 +402,21 @@ export type TenantVendor = Prisma.TenantVendorModel
  * 
  */
 export type VerificationRequest = Prisma.VerificationRequestModel
+/**
+ * Model TenantInsurance
+ * 
+ */
+export type TenantInsurance = Prisma.TenantInsuranceModel
+/**
+ * Model TenantEquipment
+ * 
+ */
+export type TenantEquipment = Prisma.TenantEquipmentModel
+/**
+ * Model TenantService
+ * 
+ */
+export type TenantService = Prisma.TenantServiceModel
 /**
  * Model Transactions
  * 
@@ -433,10 +443,10 @@ export type Expense = Prisma.ExpenseModel
  */
 export type Session = Prisma.SessionModel
 /**
- * Model AuditLog
+ * Model AuthLog
  * 
  */
-export type AuditLog = Prisma.AuditLogModel
+export type AuthLog = Prisma.AuthLogModel
 /**
  * Model PasswordHistory
  * 

@@ -1,28 +1,35 @@
 model User {
-  id                       String                   @id @default(dbgenerated("gen_random_uuid()"))
-  password                 String
-  firstName                String
-  lastName                 String
-  username                 String                   @unique
-  tenantId                 String
-  createdAt                DateTime                 @default(now())
-  updatedAt                DateTime?                @updatedAt
-  roleId                   String
-  lastChanged              DateTime?
-  email                    String?                  @unique
-  profilePicture           String                   @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
-  show                     Boolean                  @default(true)
-  deletedAt                DateTime?
-  isDeleted                Boolean                  @default(false)
-  requirePasswordChange    Boolean                  @default(true)
-  updatedBy                String?
-  bookingVehicleHistory    BookingVehicleHistory[]
-  expenses                 Expense[]
-  notificationReadStatuses NotificationReadStatus[]
-  rentals                  Rental[]
-  transactions             Transactions[]
+  id                                  String                   @id @default(dbgenerated("gen_random_uuid()"))
+  password                            String
+  firstName                            String
+  lastName                            String
+  username                            String                   @unique
+  tenantId                            String
+  createdAt                           DateTime                 @default(now())
+  updatedAt                           DateTime?                @updatedAt
+  roleId                              String
+  lastChanged                         DateTime?
+  email                               String?                  @unique
+  profilePicture                       String                   @default("https://fleetnexa.s3.us-east-1.amazonaws.com/Global+Images/fallback.png")
+  show                                Boolean                  @default(true)
+  deletedAt                           DateTime?
+  isDeleted                           Boolean                  @default(false)
+  requirePasswordChange               Boolean                  @default(true)
+  updatedBy                           String?
+
   role                     UserRole                 @relation(fields: [roleId], references: [id], onDelete: Cascade)
   tenant                   Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  securityDeposits                    SecurityDeposit[]
+  securityDepositTransactions         SecurityDepositTransaction[]
+  activityLogs                        Activity[]
+  bookingVehicleHistory               BookingVehicleHistory[]
+  expenses                            Expense[]
+  notificationReadStatuses             NotificationReadStatus[]
+  rentals                             Rental[]
+  transactions                        Transactions[]
+  invoices                            Invoice[]
+
 
   @@unique([username, tenantId])
 }

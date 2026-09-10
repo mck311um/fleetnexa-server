@@ -1,7 +1,7 @@
 import { Global, Injectable, Logger } from '@nestjs/common';
-import slug from 'slug';
-import { PrismaService } from '../../prisma/prisma.service.js';
+import slugify from 'slugify';
 import crypto from 'crypto';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Global()
 @Injectable()
@@ -40,7 +40,11 @@ export class GeneratorService {
 
   async generateTenantSlug(tenantName: string): Promise<string> {
     let tenantSlug = '';
-    tenantSlug = slug(tenantName);
+    tenantSlug = slugify(tenantName, {
+      lower: true,
+      strict: true,
+      trim: true,
+    });
 
     const existingTenant = await this.prisma.tenant.findUnique({
       where: { slug: tenantSlug },
@@ -82,7 +86,7 @@ export class GeneratorService {
           return username;
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to generate username', error);
       throw error;
     }
@@ -125,7 +129,7 @@ export class GeneratorService {
       const sequenceNumber = nextNumber.toString().padStart(3, '0');
 
       return `${prefix}${sequenceNumber}`;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to generate invoice number', error);
       throw error;
     }
@@ -147,7 +151,7 @@ export class GeneratorService {
       const nextNumber = lastNumber + 1;
 
       return nextNumber.toString().padStart(6, '0');
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to generate rental number', error);
       throw error;
     }
@@ -203,7 +207,7 @@ export class GeneratorService {
       const sequenceNumber = nextNumber.toString().padStart(6, '0');
 
       return `${prefix}-${sequenceNumber}`;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to generate payment receipt number', error);
       throw error;
     }
@@ -226,7 +230,7 @@ export class GeneratorService {
       const sequenceNumber = nextNumber.toString().padStart(8, '0');
 
       return `${prefix}-${sequenceNumber}`;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to generate transaction number', error);
       throw error;
     }

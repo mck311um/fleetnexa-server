@@ -5,13 +5,14 @@ import {
   Tenant,
   User,
 } from '../../../generated/prisma/client.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
-import { EmailService } from '../../../common/email/email.service.js';
 import { ActionBookingDto } from '../dto/action-booking.dto.js';
 import { VehicleStatusDto } from '../../vehicle/dto/vehicle-status.dto.js';
 import { VehicleService } from '../../vehicle/vehicle.service.js';
 import { DocumentService } from '../../document/document.service.js';
 import { BookingActivityService } from './booking-activity.service.js';
+import { ResendService } from '../../../infrastructure/resend/resend.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
+import { InvoiceService } from '../../finance/invoice/invoice.service.js';
 
 @Injectable()
 export class BookingWorkflowService {
@@ -20,10 +21,11 @@ export class BookingWorkflowService {
   constructor(
     private readonly bookingRepo: BookingRepository,
     private readonly documentService: DocumentService,
-    private readonly emailService: EmailService,
     private readonly prisma: PrismaService,
     private readonly activity: BookingActivityService,
     private readonly vehicleService: VehicleService,
+    private readonly resend: ResendService,
+    private readonly invoiceService: InvoiceService,
   ) {}
 
   private async findBookingOrFail(id: string) {
@@ -60,7 +62,7 @@ export class BookingWorkflowService {
         data.bookingId,
       );
 
-      await this.documentService.generateInvoice(
+      await this.invoiceService.generateInvoice(
         updatedBooking?.id || '',
         tenant,
         user,
@@ -73,7 +75,7 @@ export class BookingWorkflowService {
       );
 
       if (data.sendEmail) {
-        await this.emailService.sendBookingConfirmationEmail(
+        await this.resend.sendBookingConfirmationEmail(
           updatedBooking?.id || '',
           data.includeInvoice,
           data.includeAgreement,
@@ -88,7 +90,7 @@ export class BookingWorkflowService {
         booking: updatedBooking,
         bookings,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to confirm booking', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -127,7 +129,7 @@ export class BookingWorkflowService {
         booking: updatedBooking,
         bookings,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to start booking', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -172,7 +174,7 @@ export class BookingWorkflowService {
         booking: updatedBooking,
         bookings,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to end booking', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,
@@ -199,7 +201,7 @@ export class BookingWorkflowService {
         updatedBooking,
         bookings,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to decline booking', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

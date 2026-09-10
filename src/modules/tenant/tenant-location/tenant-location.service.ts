@@ -1,15 +1,14 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Country, Tenant, User } from '../../../generated/prisma/client.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { TenantLocationDto } from './tenant.location.dto.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantLocationService {
@@ -27,7 +26,7 @@ export class TenantLocationService {
           },
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get tenant locations', error);
       throw error;
     }
@@ -48,17 +47,20 @@ export class TenantLocationService {
 
       if (existing) {
         this.logger.warn(
-          `Tenant location with name ${data.location} already exists for tenant ${tenant.tenantCode}`,
+          `Company Location with name ${data.location} already exists for tenant ${tenant.tenantCode}`,
         );
         throw new ConflictException(
-          'Tenant location with this name already exists',
+          'Company Location with this name already exists',
         );
       }
 
       await this.prisma.tenantLocation.create({
         data: {
-          id: uuidv4(),
           location: data.location,
+          street: data.street,
+          villageId: data.villageId,
+          stateId: data.stateId,
+          countryId: data.countryId,
           tenantId: tenant.id,
           pickupEnabled: data.pickupEnabled,
           returnEnabled: data.returnEnabled,
@@ -74,10 +76,10 @@ export class TenantLocationService {
 
       const locations = await this.getAllTenantLocations(tenant);
       return {
-        message: 'Location created successfully',
+        message: 'Company Location created successfully',
         locations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to create tenant location', error);
       throw error;
     }
@@ -95,9 +97,9 @@ export class TenantLocationService {
 
       if (!location) {
         this.logger.warn(
-          `Tenant location with id ${data.id} not found for tenant ${tenant.tenantCode}`,
+          `Company location with id ${data.id} not found for tenant ${tenant.tenantCode}`,
         );
-        throw new NotFoundException('Location not found');
+        throw new NotFoundException('Company Location not found');
       }
 
       await this.prisma.tenantLocation.update({
@@ -112,15 +114,19 @@ export class TenantLocationService {
           minimumRentalPeriod: data.minimumRentalPeriod,
           updatedAt: new Date(),
           updatedBy: user.id,
+          stateId: data.stateId,
+          countryId: data.countryId,
+          street: data.street,
+          villageId: data.villageId,
         },
       });
 
       const locations = await this.getAllTenantLocations(tenant);
       return {
-        message: 'Location updated successfully',
+        message: 'Company Location updated successfully',
         locations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to update tenant location', error);
       throw error;
     }
@@ -134,9 +140,9 @@ export class TenantLocationService {
 
       if (!location) {
         this.logger.warn(
-          `Tenant location with id ${id} not found for tenant ${tenant.tenantCode}`,
+          `Company Location with id ${id} not found for tenant ${tenant.tenantCode}`,
         );
-        throw new NotFoundException('Tenant location not found');
+        throw new NotFoundException('Company Location not found');
       }
 
       await this.prisma.tenantLocation.update({
@@ -150,10 +156,10 @@ export class TenantLocationService {
 
       const locations = await this.getAllTenantLocations(tenant);
       return {
-        message: 'Tenant location deleted successfully',
+        message: 'Company Location deleted successfully',
         locations,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to delete tenant location', error);
       throw error;
     }
@@ -168,8 +174,9 @@ export class TenantLocationService {
 
         await tx.tenantLocation.create({
           data: {
-            id: uuidv4(),
+            id: randomUUID(),
             location: 'Main Office',
+            countryId: country.id,
             tenantId: tenant.id,
             pickupEnabled: true,
             returnEnabled: true,
@@ -186,9 +193,10 @@ export class TenantLocationService {
         for (const location of presetLocations) {
           await tx.tenantLocation.create({
             data: {
-              id: uuidv4(),
+              id: randomUUID(),
               location: location.location,
               tenantId: tenant.id,
+              countryId: country.id,
               pickupEnabled: true,
               returnEnabled: true,
               deliveryFee: 0,
@@ -201,7 +209,11 @@ export class TenantLocationService {
           });
         }
       });
-    } catch (error) {
+
+      this.logger.log(
+        `Tenant locations initialized successfully for tenant ${tenant.tenantCode}`,
+      );
+    } catch (error: any) {
       this.logger.error('Failed to initialize tenant locations', error);
       throw error;
     }

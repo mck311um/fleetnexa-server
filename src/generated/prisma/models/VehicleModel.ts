@@ -151,7 +151,7 @@ export type VehicleModelGroupByOutputType = {
   _max: VehicleModelMaxAggregateOutputType | null
 }
 
-type GetVehicleModelGroupByPayload<T extends VehicleModelGroupByArgs> = Prisma.PrismaPromise<
+export type GetVehicleModelGroupByPayload<T extends VehicleModelGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<VehicleModelGroupByOutputType, T['by']> &
       {

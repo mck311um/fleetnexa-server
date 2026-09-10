@@ -76,6 +76,9 @@ export const ModelName = {
   VendorType: 'VendorType',
   Port: 'Port',
   InsuranceCompany: 'InsuranceCompany',
+  Values: 'Values',
+  SecurityDeposit: 'SecurityDeposit',
+  SecurityDepositTransaction: 'SecurityDepositTransaction',
   Customer: 'Customer',
   CustomerMessengerApp: 'CustomerMessengerApp',
   CustomerAddress: 'CustomerAddress',
@@ -100,10 +103,10 @@ export const ModelName = {
   Rental: 'Rental',
   StorefrontBooking: 'StorefrontBooking',
   RentalDriver: 'RentalDriver',
-  Values: 'Values',
   RentalExtra: 'RentalExtra',
   RentalCharge: 'RentalCharge',
   VesselInfo: 'VesselInfo',
+  Activity: 'Activity',
   TenantWeeklyStats: 'TenantWeeklyStats',
   TenantYearlyStats: 'TenantYearlyStats',
   TenantMonthlyStats: 'TenantMonthlyStats',
@@ -113,28 +116,27 @@ export const ModelName = {
   SubscriptionPlan: 'SubscriptionPlan',
   PlanFeatures: 'PlanFeatures',
   PlanDetails: 'PlanDetails',
+  TenantLocation: 'TenantLocation',
+  CancellationPolicy: 'CancellationPolicy',
+  LatePolicy: 'LatePolicy',
   Tenant: 'Tenant',
-  EmailVerification: 'EmailVerification',
   PaymentMethod: 'PaymentMethod',
   Address: 'Address',
-  TenantLocation: 'TenantLocation',
-  TenantInsurance: 'TenantInsurance',
-  TenantEquipment: 'TenantEquipment',
-  TenantService: 'TenantService',
   TenantSubscription: 'TenantSubscription',
   TenantContact: 'TenantContact',
   TenantReminders: 'TenantReminders',
-  CancellationPolicy: 'CancellationPolicy',
-  LatePolicy: 'LatePolicy',
   TenantViolation: 'TenantViolation',
   TenantVendor: 'TenantVendor',
   VerificationRequest: 'VerificationRequest',
+  TenantInsurance: 'TenantInsurance',
+  TenantEquipment: 'TenantEquipment',
+  TenantService: 'TenantService',
   Transactions: 'Transactions',
   Payment: 'Payment',
   Refund: 'Refund',
   Expense: 'Expense',
   Session: 'Session',
-  AuditLog: 'AuditLog',
+  AuthLog: 'AuthLog',
   PasswordHistory: 'PasswordHistory',
   Otp: 'Otp',
   User: 'User',
@@ -408,6 +410,69 @@ export const InsuranceCompanyScalarFieldEnum = {
 export type InsuranceCompanyScalarFieldEnum = (typeof InsuranceCompanyScalarFieldEnum)[keyof typeof InsuranceCompanyScalarFieldEnum]
 
 
+export const ValuesScalarFieldEnum = {
+  id: 'id',
+  numberOfDays: 'numberOfDays',
+  basePrice: 'basePrice',
+  totalCost: 'totalCost',
+  discount: 'discount',
+  deliveryFee: 'deliveryFee',
+  collectionFee: 'collectionFee',
+  deposit: 'deposit',
+  totalExtras: 'totalExtras',
+  totalCharges: 'totalCharges',
+  subTotal: 'subTotal',
+  netTotal: 'netTotal',
+  rentalId: 'rentalId',
+  additionalDriverFees: 'additionalDriverFees',
+  cancellationFee: 'cancellationFee',
+  lateFee: 'lateFee',
+  discountAmount: 'discountAmount',
+  discountPolicy: 'discountPolicy',
+  customBasePrice: 'customBasePrice',
+  customCollectionFee: 'customCollectionFee',
+  customDeliveryFee: 'customDeliveryFee',
+  customDiscount: 'customDiscount',
+  customTotalCost: 'customTotalCost',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ValuesScalarFieldEnum = (typeof ValuesScalarFieldEnum)[keyof typeof ValuesScalarFieldEnum]
+
+
+export const SecurityDepositScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  amount: 'amount',
+  amountCollected: 'amountCollected',
+  amountForfeited: 'amountForfeited',
+  amountRefunded: 'amountRefunded',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy'
+} as const
+
+export type SecurityDepositScalarFieldEnum = (typeof SecurityDepositScalarFieldEnum)[keyof typeof SecurityDepositScalarFieldEnum]
+
+
+export const SecurityDepositTransactionScalarFieldEnum = {
+  id: 'id',
+  securityDepositId: 'securityDepositId',
+  type: 'type',
+  amount: 'amount',
+  notes: 'notes',
+  paymentDate: 'paymentDate',
+  paymentMethodId: 'paymentMethodId',
+  currencyId: 'currencyId',
+  createdAt: 'createdAt',
+  createdBy: 'createdBy'
+} as const
+
+export type SecurityDepositTransactionScalarFieldEnum = (typeof SecurityDepositTransactionScalarFieldEnum)[keyof typeof SecurityDepositTransactionScalarFieldEnum]
+
+
 export const CustomerScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
@@ -533,10 +598,12 @@ export const InvoiceScalarFieldEnum = {
   customerId: 'customerId',
   status: 'status',
   invoiceUrl: 'invoiceUrl',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
+  accessToken: 'accessToken',
   createdBy: 'createdBy',
-  updatedBy: 'updatedBy'
+  updatedBy: 'updatedBy',
+  invoiceDate: 'invoiceDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
@@ -750,38 +817,6 @@ export const RentalDriverScalarFieldEnum = {
 export type RentalDriverScalarFieldEnum = (typeof RentalDriverScalarFieldEnum)[keyof typeof RentalDriverScalarFieldEnum]
 
 
-export const ValuesScalarFieldEnum = {
-  id: 'id',
-  numberOfDays: 'numberOfDays',
-  basePrice: 'basePrice',
-  totalCost: 'totalCost',
-  discount: 'discount',
-  deliveryFee: 'deliveryFee',
-  collectionFee: 'collectionFee',
-  deposit: 'deposit',
-  totalExtras: 'totalExtras',
-  subTotal: 'subTotal',
-  netTotal: 'netTotal',
-  rentalId: 'rentalId',
-  discountAmount: 'discountAmount',
-  discountPolicy: 'discountPolicy',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  additionalDriverFees: 'additionalDriverFees',
-  cancellationFee: 'cancellationFee',
-  lateFee: 'lateFee',
-  customBasePrice: 'customBasePrice',
-  customCollectionFee: 'customCollectionFee',
-  customDeliveryFee: 'customDeliveryFee',
-  customDeposit: 'customDeposit',
-  customDiscount: 'customDiscount',
-  customTotalCost: 'customTotalCost',
-  amountDue: 'amountDue'
-} as const
-
-export type ValuesScalarFieldEnum = (typeof ValuesScalarFieldEnum)[keyof typeof ValuesScalarFieldEnum]
-
-
 export const RentalExtraScalarFieldEnum = {
   id: 'id',
   extraId: 'extraId',
@@ -795,13 +830,12 @@ export type RentalExtraScalarFieldEnum = (typeof RentalExtraScalarFieldEnum)[key
 
 export const RentalChargeScalarFieldEnum = {
   id: 'id',
-  rentalId: 'rentalId',
   charge: 'charge',
   reason: 'reason',
   amount: 'amount',
   customerId: 'customerId',
-  tenantId: 'tenantId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  valueId: 'valueId'
 } as const
 
 export type RentalChargeScalarFieldEnum = (typeof RentalChargeScalarFieldEnum)[keyof typeof RentalChargeScalarFieldEnum]
@@ -821,6 +855,25 @@ export const VesselInfoScalarFieldEnum = {
 } as const
 
 export type VesselInfoScalarFieldEnum = (typeof VesselInfoScalarFieldEnum)[keyof typeof VesselInfoScalarFieldEnum]
+
+
+export const ActivityScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tenantId: 'tenantId',
+  action: 'action',
+  module: 'module',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  description: 'description',
+  oldValues: 'oldValues',
+  newValues: 'newValues',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
 
 
 export const TenantWeeklyStatsScalarFieldEnum = {
@@ -947,6 +1000,53 @@ export const PlanDetailsScalarFieldEnum = {
 export type PlanDetailsScalarFieldEnum = (typeof PlanDetailsScalarFieldEnum)[keyof typeof PlanDetailsScalarFieldEnum]
 
 
+export const TenantLocationScalarFieldEnum = {
+  id: 'id',
+  location: 'location',
+  pickupEnabled: 'pickupEnabled',
+  returnEnabled: 'returnEnabled',
+  deliveryFee: 'deliveryFee',
+  collectionFee: 'collectionFee',
+  tenantId: 'tenantId',
+  minimumRentalPeriod: 'minimumRentalPeriod',
+  isDeleted: 'isDeleted',
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy',
+  storefrontEnabled: 'storefrontEnabled',
+  createdAt: 'createdAt',
+  street: 'street',
+  villageId: 'villageId',
+  stateId: 'stateId',
+  countryId: 'countryId'
+} as const
+
+export type TenantLocationScalarFieldEnum = (typeof TenantLocationScalarFieldEnum)[keyof typeof TenantLocationScalarFieldEnum]
+
+
+export const CancellationPolicyScalarFieldEnum = {
+  id: 'id',
+  minimumDays: 'minimumDays',
+  policy: 'policy',
+  amount: 'amount',
+  tenantId: 'tenantId',
+  updatedBy: 'updatedBy',
+  bookingMinimumDays: 'bookingMinimumDays'
+} as const
+
+export type CancellationPolicyScalarFieldEnum = (typeof CancellationPolicyScalarFieldEnum)[keyof typeof CancellationPolicyScalarFieldEnum]
+
+
+export const LatePolicyScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  maxHours: 'maxHours',
+  updatedBy: 'updatedBy',
+  tenantId: 'tenantId'
+} as const
+
+export type LatePolicyScalarFieldEnum = (typeof LatePolicyScalarFieldEnum)[keyof typeof LatePolicyScalarFieldEnum]
+
+
 export const TenantScalarFieldEnum = {
   id: 'id',
   tenantCode: 'tenantCode',
@@ -989,19 +1089,6 @@ export const TenantScalarFieldEnum = {
 export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
 
 
-export const EmailVerificationScalarFieldEnum = {
-  id: 'id',
-  email: 'email',
-  token: 'token',
-  createdAt: 'createdAt',
-  expiresAt: 'expiresAt',
-  verified: 'verified',
-  tenantId: 'tenantId'
-} as const
-
-export type EmailVerificationScalarFieldEnum = (typeof EmailVerificationScalarFieldEnum)[keyof typeof EmailVerificationScalarFieldEnum]
-
-
 export const PaymentMethodScalarFieldEnum = {
   id: 'id',
   method: 'method',
@@ -1024,74 +1111,6 @@ export const AddressScalarFieldEnum = {
 } as const
 
 export type AddressScalarFieldEnum = (typeof AddressScalarFieldEnum)[keyof typeof AddressScalarFieldEnum]
-
-
-export const TenantLocationScalarFieldEnum = {
-  id: 'id',
-  location: 'location',
-  pickupEnabled: 'pickupEnabled',
-  returnEnabled: 'returnEnabled',
-  deliveryFee: 'deliveryFee',
-  collectionFee: 'collectionFee',
-  tenantId: 'tenantId',
-  minimumRentalPeriod: 'minimumRentalPeriod',
-  isDeleted: 'isDeleted',
-  updatedAt: 'updatedAt',
-  updatedBy: 'updatedBy',
-  storefrontEnabled: 'storefrontEnabled',
-  createdAt: 'createdAt'
-} as const
-
-export type TenantLocationScalarFieldEnum = (typeof TenantLocationScalarFieldEnum)[keyof typeof TenantLocationScalarFieldEnum]
-
-
-export const TenantInsuranceScalarFieldEnum = {
-  id: 'id',
-  insurance: 'insurance',
-  description: 'description',
-  pricePolicy: 'pricePolicy',
-  price: 'price',
-  tenantId: 'tenantId',
-  isActive: 'isActive',
-  isDeleted: 'isDeleted',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  updatedBy: 'updatedBy'
-} as const
-
-export type TenantInsuranceScalarFieldEnum = (typeof TenantInsuranceScalarFieldEnum)[keyof typeof TenantInsuranceScalarFieldEnum]
-
-
-export const TenantEquipmentScalarFieldEnum = {
-  id: 'id',
-  equipmentId: 'equipmentId',
-  pricePolicy: 'pricePolicy',
-  price: 'price',
-  tenantId: 'tenantId',
-  isActive: 'isActive',
-  isDeleted: 'isDeleted',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  updatedBy: 'updatedBy'
-} as const
-
-export type TenantEquipmentScalarFieldEnum = (typeof TenantEquipmentScalarFieldEnum)[keyof typeof TenantEquipmentScalarFieldEnum]
-
-
-export const TenantServiceScalarFieldEnum = {
-  id: 'id',
-  serviceId: 'serviceId',
-  tenantId: 'tenantId',
-  price: 'price',
-  pricePolicy: 'pricePolicy',
-  isActive: 'isActive',
-  isDeleted: 'isDeleted',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  updatedBy: 'updatedBy'
-} as const
-
-export type TenantServiceScalarFieldEnum = (typeof TenantServiceScalarFieldEnum)[keyof typeof TenantServiceScalarFieldEnum]
 
 
 export const TenantSubscriptionScalarFieldEnum = {
@@ -1135,30 +1154,6 @@ export const TenantRemindersScalarFieldEnum = {
 } as const
 
 export type TenantRemindersScalarFieldEnum = (typeof TenantRemindersScalarFieldEnum)[keyof typeof TenantRemindersScalarFieldEnum]
-
-
-export const CancellationPolicyScalarFieldEnum = {
-  id: 'id',
-  minimumDays: 'minimumDays',
-  policy: 'policy',
-  amount: 'amount',
-  tenantId: 'tenantId',
-  updatedBy: 'updatedBy',
-  bookingMinimumDays: 'bookingMinimumDays'
-} as const
-
-export type CancellationPolicyScalarFieldEnum = (typeof CancellationPolicyScalarFieldEnum)[keyof typeof CancellationPolicyScalarFieldEnum]
-
-
-export const LatePolicyScalarFieldEnum = {
-  id: 'id',
-  amount: 'amount',
-  maxHours: 'maxHours',
-  updatedBy: 'updatedBy',
-  tenantId: 'tenantId'
-} as const
-
-export type LatePolicyScalarFieldEnum = (typeof LatePolicyScalarFieldEnum)[keyof typeof LatePolicyScalarFieldEnum]
 
 
 export const TenantViolationScalarFieldEnum = {
@@ -1208,6 +1203,55 @@ export const VerificationRequestScalarFieldEnum = {
 } as const
 
 export type VerificationRequestScalarFieldEnum = (typeof VerificationRequestScalarFieldEnum)[keyof typeof VerificationRequestScalarFieldEnum]
+
+
+export const TenantInsuranceScalarFieldEnum = {
+  id: 'id',
+  insurance: 'insurance',
+  description: 'description',
+  pricePolicy: 'pricePolicy',
+  price: 'price',
+  tenantId: 'tenantId',
+  isActive: 'isActive',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy'
+} as const
+
+export type TenantInsuranceScalarFieldEnum = (typeof TenantInsuranceScalarFieldEnum)[keyof typeof TenantInsuranceScalarFieldEnum]
+
+
+export const TenantEquipmentScalarFieldEnum = {
+  id: 'id',
+  equipmentId: 'equipmentId',
+  pricePolicy: 'pricePolicy',
+  price: 'price',
+  tenantId: 'tenantId',
+  isActive: 'isActive',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy'
+} as const
+
+export type TenantEquipmentScalarFieldEnum = (typeof TenantEquipmentScalarFieldEnum)[keyof typeof TenantEquipmentScalarFieldEnum]
+
+
+export const TenantServiceScalarFieldEnum = {
+  id: 'id',
+  serviceId: 'serviceId',
+  tenantId: 'tenantId',
+  price: 'price',
+  pricePolicy: 'pricePolicy',
+  isActive: 'isActive',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy'
+} as const
+
+export type TenantServiceScalarFieldEnum = (typeof TenantServiceScalarFieldEnum)[keyof typeof TenantServiceScalarFieldEnum]
 
 
 export const TransactionsScalarFieldEnum = {
@@ -1307,7 +1351,7 @@ export const SessionScalarFieldEnum = {
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
-export const AuditLogScalarFieldEnum = {
+export const AuthLogScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   userType: 'userType',
@@ -1318,7 +1362,7 @@ export const AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 } as const
 
-export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+export type AuthLogScalarFieldEnum = (typeof AuthLogScalarFieldEnum)[keyof typeof AuthLogScalarFieldEnum]
 
 
 export const PasswordHistoryScalarFieldEnum = {
@@ -1662,6 +1706,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {

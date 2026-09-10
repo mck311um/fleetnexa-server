@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Tenant } from '../../../generated/prisma/client.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class TenantActivityService {
@@ -24,7 +24,7 @@ export class TenantActivityService {
           customer: true,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to get tenant activities', error);
       throw error;
     }

@@ -1,4 +1,5 @@
 {
   "prisma.pinToPrisma6": false,
-  "cSpell.words": ["CSCAPI", "delisted"]
+  "cSpell.words": ["CSCAPI", "delisted"],
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }

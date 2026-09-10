@@ -12,11 +12,13 @@ import { LocalAuthGuard } from './guards/local.guard.js';
 import type { Response } from 'express';
 import { StorefrontAuthDto } from './dto/storefront-auth.dto.js';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard.js';
-import { VerifyOTPDto } from './dto/verify-otp.dto.js';
+import { ResendOTPDto, VerifyOTPDto } from './dto/otp.dto.js';
 import {
   ResetPasswordDto,
   ResetPasswordRequestDto,
 } from './dto/reset-password.dto.js';
+import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
+import { CheckDetailsDto } from '../user/dto/check-details.dto.js';
 
 @Controller('auth')
 export class AuthController {
@@ -183,6 +185,19 @@ export class AuthController {
     return { message: 'Logged out successfully' };
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('session')
+  async getSession() {
+    return {
+      authenticated: true,
+    };
+  }
+
+  @Post('storefront/check-details')
+  async checkDetails(@Body() data: CheckDetailsDto) {
+    return this.authService.checkDetailsExists(data);
+  }
+
   @Post('password/forgot')
   async requestPasswordReset(
     @Request() req,
@@ -199,5 +214,10 @@ export class AuthController {
   @Post('otp/verify')
   async verifyOTP(@Body() data: VerifyOTPDto) {
     return this.authService.verifyOTP(data);
+  }
+
+  @Post('otp/resend')
+  async resendOTP(@Body() data: ResendOTPDto) {
+    return this.authService.resendOTP(data);
   }
 }

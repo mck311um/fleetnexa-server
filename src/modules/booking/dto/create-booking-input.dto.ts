@@ -1,6 +1,10 @@
-import { Agent } from 'src/generated/prisma/client.js';
-import { BookingDriverDto, BookingValuesDto } from './booking-items.dto.js';
-import { StorefrontCustomerDto } from 'src/modules/customer/storefront-customer/storefront-customer.dto.js';
+import { Agent } from '../../../generated/prisma/client.js';
+import {
+  BookingDriverDto,
+  BookingValuesDto,
+  SecurityDepositDto,
+} from './booking-items.dto.js';
+import { StorefrontCustomerDto } from '../../customer/storefront-customer/storefront-customer.dto.js';
 
 export enum BookingSource {
   TENANT = 'TENANT',
@@ -30,6 +34,7 @@ export class CreateBookingInput {
   userId?: string;
 
   values: BookingValuesDto;
+  securityDeposit: SecurityDepositDto;
 
   createdBy?: string;
 }

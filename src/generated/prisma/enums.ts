@@ -276,6 +276,70 @@ export const VehicleEventType = {
 export type VehicleEventType = (typeof VehicleEventType)[keyof typeof VehicleEventType]
 
 
+export const SecurityDepositStatus = {
+  PENDING: 'PENDING',
+  WAIVED: 'WAIVED',
+  COLLECTED: 'COLLECTED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type SecurityDepositStatus = (typeof SecurityDepositStatus)[keyof typeof SecurityDepositStatus]
+
+
+export const SecurityDepositTransactionType = {
+  COLLECTED: 'COLLECTED',
+  REFUNDED: 'REFUNDED',
+  FORFEITED: 'FORFEITED',
+  WAIVED: 'WAIVED'
+} as const
+
+export type SecurityDepositTransactionType = (typeof SecurityDepositTransactionType)[keyof typeof SecurityDepositTransactionType]
+
+
+export const ActivityAction = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+  VIEW: 'VIEW',
+  CONFIRM: 'CONFIRM',
+  DECLINE: 'DECLINE',
+  CANCEL: 'CANCEL',
+  APPROVE: 'APPROVE',
+  REJECT: 'REJECT',
+  PAYMENT: 'PAYMENT',
+  REFUND: 'REFUND',
+  SIGN: 'SIGN',
+  SEND: 'SEND',
+  EXPORT: 'EXPORT',
+  STATUS_CHANGE: 'STATUS_CHANGE',
+  ASSIGN: 'ASSIGN',
+  UNASSIGN: 'UNASSIGN'
+} as const
+
+export type ActivityAction = (typeof ActivityAction)[keyof typeof ActivityAction]
+
+
+export const ActivityModule = {
+  AUTH: 'AUTH',
+  USER: 'USER',
+  ROLE: 'ROLE',
+  VEHICLE: 'VEHICLE',
+  CUSTOMER: 'CUSTOMER',
+  BOOKING: 'BOOKING',
+  PAYMENT: 'PAYMENT',
+  REFUND: 'REFUND',
+  EXPENSE: 'EXPENSE',
+  MAINTENANCE: 'MAINTENANCE',
+  DAMAGE: 'DAMAGE',
+  INVOICE: 'INVOICE',
+  AGREEMENT: 'AGREEMENT',
+  REPORT: 'REPORT',
+  ADMINISTRATION: 'ADMINISTRATION'
+} as const
+
+export type ActivityModule = (typeof ActivityModule)[keyof typeof ActivityModule]
+
+
 export const FormType = {
   customer_info: 'customer_info',
   driver_registration: 'driver_registration',

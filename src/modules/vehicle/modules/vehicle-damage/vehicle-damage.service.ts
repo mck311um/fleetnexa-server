@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../../prisma/prisma.service.js';
+import { PrismaService } from '../../../../infrastructure/prisma/prisma.service.js';
 import { Tenant, User } from '../../../../generated/prisma/client.js';
 import { VehicleDamageDto } from './vehicle-damage.dto.js';
 
@@ -30,7 +30,7 @@ export class VehicleDamageService {
       });
 
       return damages;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get vehicle damages', {
         vehicleId,
         tenantId: tenant.id,
@@ -85,7 +85,7 @@ export class VehicleDamageService {
         message: 'Vehicle damage added successfully',
         damages,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to add vehicle damage', {
         data,
         tenantId: tenant.id,
@@ -154,7 +154,7 @@ export class VehicleDamageService {
         message: 'Vehicle damage updated successfully',
         damages,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to update vehicle damage', {
         data,
         tenantId: tenant.id,
@@ -196,7 +196,7 @@ export class VehicleDamageService {
         message: 'Vehicle damage deleted successfully',
         damages,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error deleting vehicle damage', {
         damageId,
         tenantId: tenant.id,

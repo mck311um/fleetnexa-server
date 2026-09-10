@@ -193,7 +193,7 @@ export type VesselInfoGroupByOutputType = {
   _max: VesselInfoMaxAggregateOutputType | null
 }
 
-type GetVesselInfoGroupByPayload<T extends VesselInfoGroupByArgs> = Prisma.PrismaPromise<
+export type GetVesselInfoGroupByPayload<T extends VesselInfoGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<VesselInfoGroupByOutputType, T['by']> &
       {

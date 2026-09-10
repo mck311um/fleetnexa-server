@@ -13,7 +13,7 @@ import { ExpenseService } from './expense.service.js';
 import { ExpenseDto } from './expense.dto.js';
 import { JwtAuthGuard } from '../../../../modules/auth/guards/jwt-auth.guard.js';
 import { Roles } from '../../../../modules/auth/decorator/role.decorator.js';
-import { Role } from '../../../../common/enums/role.enum.js';
+import { Role } from '../../../../shared/enums/role.enum.js';
 
 @Controller('transaction/expense')
 @UseGuards(JwtAuthGuard)

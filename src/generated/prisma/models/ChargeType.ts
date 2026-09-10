@@ -144,7 +144,7 @@ export type ChargeTypeGroupByOutputType = {
   _max: ChargeTypeMaxAggregateOutputType | null
 }
 
-type GetChargeTypeGroupByPayload<T extends ChargeTypeGroupByArgs> = Prisma.PrismaPromise<
+export type GetChargeTypeGroupByPayload<T extends ChargeTypeGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ChargeTypeGroupByOutputType, T['by']> &
       {

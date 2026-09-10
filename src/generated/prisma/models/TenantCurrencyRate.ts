@@ -217,7 +217,7 @@ export type TenantCurrencyRateGroupByOutputType = {
   _max: TenantCurrencyRateMaxAggregateOutputType | null
 }
 
-type GetTenantCurrencyRateGroupByPayload<T extends TenantCurrencyRateGroupByArgs> = Prisma.PrismaPromise<
+export type GetTenantCurrencyRateGroupByPayload<T extends TenantCurrencyRateGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TenantCurrencyRateGroupByOutputType, T['by']> &
       {
@@ -481,14 +481,6 @@ export type TenantCurrencyRateUncheckedUpdateManyWithoutCurrencyNestedInput = {
   update?: Prisma.TenantCurrencyRateUpdateWithWhereUniqueWithoutCurrencyInput | Prisma.TenantCurrencyRateUpdateWithWhereUniqueWithoutCurrencyInput[]
   updateMany?: Prisma.TenantCurrencyRateUpdateManyWithWhereWithoutCurrencyInput | Prisma.TenantCurrencyRateUpdateManyWithWhereWithoutCurrencyInput[]
   deleteMany?: Prisma.TenantCurrencyRateScalarWhereInput | Prisma.TenantCurrencyRateScalarWhereInput[]
-}
-
-export type NullableFloatFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type TenantCurrencyRateCreateNestedManyWithoutTenantInput = {

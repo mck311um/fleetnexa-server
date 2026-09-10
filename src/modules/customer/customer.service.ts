@@ -1,10 +1,10 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service.js';
 import { CustomerRepository } from './customer.repository.js';
 import { Tenant, User } from '../../generated/prisma/browser.js';
 import { TenantCustomerDto } from './dto/tenant-customer.dto.js';
 import { CreateCustomerDto } from './dto/create-customer.dto.js';
 import { StorefrontCustomerDto } from './storefront-customer/storefront-customer.dto.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class CustomerService {
@@ -18,7 +18,7 @@ export class CustomerService {
   async getCustomers(tenant: Tenant) {
     try {
       return this.customerRepo.getTenantCustomers(tenant.id);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching customers', {
         tenantId: tenant.id,
       });
@@ -29,7 +29,7 @@ export class CustomerService {
   async getCustomerById(id: string) {
     try {
       return this.customerRepo.getCustomerById(id);
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error fetching customer by ID', {
         customerId: id,
       });
@@ -53,7 +53,7 @@ export class CustomerService {
         customer,
         customers,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error creating customer', {
         tenantId: tenant.id,
         userId: user.id,
@@ -75,7 +75,7 @@ export class CustomerService {
         customer,
         customers,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error updating customer', {
         tenantId: tenant.id,
         userId: user.id,
@@ -114,7 +114,7 @@ export class CustomerService {
         message: 'Customer deleted successfully',
         customers,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error deleting customer', {
         tenantId: tenant.id,
         userId: user.id,
@@ -137,7 +137,7 @@ export class CustomerService {
       }
 
       return driver;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         error,
         `Error fetching primary driver for booking ID: ${bookingId}`,
@@ -244,7 +244,7 @@ export class CustomerService {
 
         return customer;
       }
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to get storefront customer', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

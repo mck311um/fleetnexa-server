@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client.js';
-import { PrismaService, TxClient } from '../../prisma/prisma.service.js';
+import {
+  PrismaService,
+  TxClient,
+} from '../../infrastructure/prisma/prisma.service.js';
+import { SecurityDepositDto } from './dto/booking-items.dto.js';
 
 @Injectable()
 export class BookingRepository {
@@ -144,7 +148,6 @@ export class BookingRepository {
           username: true,
         },
       },
-      charges: true,
       refunds: {
         where: { isDeleted: false },
         include: {
@@ -226,9 +229,15 @@ export class BookingRepository {
           receipt: true,
         },
       },
+      securityDeposit: {
+        include: {
+          transactions: true,
+        },
+      },
       values: {
         include: {
           extras: true,
+          charges: true,
         },
       },
     };
@@ -247,7 +256,7 @@ export class BookingRepository {
       if (extras && Array.isArray(extras)) {
         await Promise.all(
           extras.map((extra: any) =>
-            tx.rentalExtra.create({
+            client.rentalExtra.create({
               data: {
                 extraId: extra.extraId,
                 amount: extra.amount,
@@ -261,7 +270,29 @@ export class BookingRepository {
       return createdValues;
     };
 
-    return tx ? run(tx) : this.prisma.$transaction(run);
+    return tx
+      ? run(tx as Prisma.TransactionClient)
+      : this.prisma.$transaction(run);
+  }
+
+  async createSecurityDeposit(
+    bookingId: string,
+    depositData: SecurityDepositDto,
+    tx: TxClient,
+  ) {
+    const run = async (client: Prisma.TransactionClient) => {
+      return client.securityDeposit.create({
+        data: {
+          amount: depositData.amount,
+          status: depositData.status,
+          bookingId,
+        },
+      });
+    };
+
+    return tx
+      ? run(tx as Prisma.TransactionClient)
+      : this.prisma.$transaction(run);
   }
 
   async updateBookingValues(bookingId: string, values: any) {

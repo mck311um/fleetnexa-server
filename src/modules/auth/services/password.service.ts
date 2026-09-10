@@ -1,15 +1,20 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserType } from '../../../generated/prisma/client.js';
 import { UserRepository } from '../../../modules/user/user.repository.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import {
   ResetPasswordDto,
   ResetPasswordRequestDto,
 } from '../dto/reset-password.dto.js';
 import { OtpService } from './otp.service.js';
-import { AuditLogService } from './audit-log.service.js';
 import { EmailService } from '../../../common/email/email.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
+import { AuthLogService } from './auth-log.service.js';
 
 @Injectable()
 export class PasswordService {
@@ -19,7 +24,7 @@ export class PasswordService {
     private readonly prisma: PrismaService,
     private readonly userRepo: UserRepository,
     private readonly otpService: OtpService,
-    private readonly auditLogService: AuditLogService,
+    private readonly auditLogService: AuthLogService,
     private readonly emailService: EmailService,
   ) {}
 
@@ -61,7 +66,7 @@ export class PasswordService {
         token,
         data.userType,
       );
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error resetting tenant user password', {
         email: data.email,
       });
@@ -81,6 +86,15 @@ export class PasswordService {
           `Password change failed: User with email ${data.email} not found.`,
         );
         throw new NotFoundException('User not found');
+      }
+
+      if (!user.password) {
+        this.logger.error(
+          `Password change failed: password hash missing for user ${data.email}.`,
+        );
+        throw new InternalServerErrorException(
+          'Unable to verify current password',
+        );
       }
 
       const isSamePassword = await bcrypt.compare(data.password, user.password);
@@ -130,11 +144,22 @@ export class PasswordService {
         });
       }
 
+      await this.addToPasswordHistory(user.id, user.password, data.userType);
+
+      await this.auditLogService.logEvent({
+        userId: user.id,
+        userType: data.userType,
+        action: 'PASSWORD_CHANGED',
+        ip: '',
+        meta: { email: data.email },
+        userAgent: '',
+      });
+
       return {
         status: 'PASSWORD_CHANGED',
         message: 'Password changed successfully',
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Error changing password', {
         email: data.email,
       });
@@ -162,7 +187,7 @@ export class PasswordService {
       }
 
       return false;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Error checking password history for user ${userId}: ${error.message}`,
       );
@@ -183,7 +208,7 @@ export class PasswordService {
           userType,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Error adding password to history for user ${userId}: ${error.message}`,
       );

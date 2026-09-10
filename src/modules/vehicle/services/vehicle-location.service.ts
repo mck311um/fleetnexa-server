@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { VehicleLocationDto } from '../dto/vehicle-location.dto.js';
 import { Tenant, User } from '../../../generated/prisma/client.js';
 import { VehicleRepository } from '../vehicle.repository.js';
-import { PrismaService } from '../../../prisma/prisma.service.js';
+import { PrismaService } from '../../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class VehicleLocationService {
@@ -64,7 +64,7 @@ export class VehicleLocationService {
         vehicles,
         vehicle: updatedVehicle,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error, 'Failed to update vehicle location', {
         tenantId: tenant.id,
         tenantCode: tenant.tenantCode,

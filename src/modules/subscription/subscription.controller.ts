@@ -3,7 +3,7 @@ import { SubscriptionService } from './subscription.service.js';
 import type { AuthenticatedRequest } from '../../types/authenticated-request.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { Roles } from '../auth/decorator/role.decorator.js';
-import { Role } from '../../common/enums/role.enum.js';
+import { Role } from '../../shared/enums/role.enum.js';
 
 @Controller('subscription')
 @UseGuards(JwtAuthGuard)

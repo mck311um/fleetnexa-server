@@ -4,21 +4,22 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service.js';
+import { AuthLogService } from './services/auth-log.service.js';
 import bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../user/user.repository.js';
 import { StorefrontAuthDto } from './dto/storefront-auth.dto.js';
 import { SessionService } from './services/session.service.js';
-import { AuditLogService } from './services/audit-log.service.js';
-import { VerifyOTPDto } from './dto/verify-otp.dto.js';
+import { ResendOTPDto, VerifyOTPDto } from './dto/otp.dto.js';
 import { OtpService } from './services/otp.service.js';
 import {
   ResetPasswordDto,
   ResetPasswordRequestDto,
 } from './dto/reset-password.dto.js';
 import { PasswordService } from './services/password.service.js';
-import { UserType } from 'src/generated/prisma/enums.js';
+import { UserType } from '../../generated/prisma/enums.js';
+import { CheckDetailsDto } from '../user/dto/check-details.dto.js';
+import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userRepo: UserRepository,
     private readonly sessionService: SessionService,
-    private readonly auditLogService: AuditLogService,
+    private readonly authLogService: AuthLogService,
     private readonly otpService: OtpService,
     private readonly passwordService: PasswordService,
   ) {}
@@ -65,7 +66,7 @@ export class AuthService {
 
       const passwordValid = await bcrypt.compare(password, user.password);
       if (!passwordValid) {
-        this.auditLogService.logEvent({
+        this.authLogService.logEvent({
           userId: user.id,
           userType: type,
           action: 'LOGIN_FAILED',
@@ -86,7 +87,7 @@ export class AuthService {
         username: 'username' in user ? user.username : null,
         tenantId: 'tenantId' in user ? user.tenantId : null,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Error validating user ${username}: ${error.message}`);
       throw error;
     }
@@ -112,7 +113,7 @@ export class AuthService {
         role: userType,
         tenantId: 'tenantId' in user ? user.tenantId : '',
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
         `Error logging in user with ID ${userId}: ${error.message}`,
       );
@@ -141,8 +142,35 @@ export class AuthService {
       });
 
       return { accessToken: newAccessToken };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Error refreshing token: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async checkDetailsExists(data: CheckDetailsDto) {
+    try {
+      const phoneExists = await this.prisma.storefrontUser.findFirst({
+        where: {
+          phone: data.phoneNumber,
+        },
+      });
+
+      const emailExists = await this.prisma.storefrontUser.findFirst({
+        where: {
+          email: data.email,
+        },
+      });
+
+      return {
+        emailExists: !!emailExists,
+        phoneExists: !!phoneExists,
+      };
+    } catch (error: any) {
+      this.logger.error('Error checking user details', error, {
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+      });
       throw error;
     }
   }
@@ -159,23 +187,32 @@ export class AuthService {
     return this.otpService.verifyOTP(data);
   }
 
+  async resendOTP(data: ResendOTPDto) {
+    return this.otpService.resendOTP(data);
+  }
+
   async createStorefrontUser(data: StorefrontAuthDto) {
     try {
-      const [existingEmail, existingLicense] = await Promise.all([
-        this.prisma.storefrontUser.findUnique({ where: { email: data.email } }),
-        this.prisma.storefrontUser.findFirst({
-          where: { driverLicenseNumber: data.licenseNumber },
-        }),
-      ]);
+      const existingEmail = await this.prisma.storefrontUser.findUnique({
+        where: { email: data.email },
+      });
 
-      if (existingEmail || existingLicense) {
-        this.logger.warn('Registration conflict', {
-          emailConflict: !!existingEmail,
-          licenseConflict: !!existingLicense,
-        });
-        throw new ConflictException(
-          'An account with these details already exists.',
+      if (existingEmail) {
+        this.logger.warn(
+          `Registration failed: Email ${data.email} already in use.`,
         );
+        throw new ConflictException('Email already in use');
+      }
+
+      const existingLicense = await this.prisma.storefrontUser.findUnique({
+        where: { driverLicenseNumber: data.licenseNumber },
+      });
+
+      if (existingLicense) {
+        this.logger.warn(
+          `Registration failed: Driver license number ${data.licenseNumber} already in use.`,
+        );
+        throw new ConflictException('Driver license number already in use');
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -192,7 +229,7 @@ export class AuthService {
         licenseExpiry: new Date(data.licenseExpiry),
         licenseIssued: new Date(data.licenseIssued),
         license: data.license,
-        dateOfBirth: data.dateOfBirth,
+        dateOfBirth: new Date(data.dateOfBirth),
         street: data.street || '',
         countryId: data.countryId || null,
         stateId: data.stateId || null,
@@ -206,7 +243,7 @@ export class AuthService {
       const token = this.jwtService.sign(payload);
 
       return { token, user, role: 'STOREFRONT' };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Error creating user', { error });
       throw error;
     }
